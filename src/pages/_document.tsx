@@ -4,7 +4,11 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head />
-      <body>
+      <link
+          href="https://fonts.googleapis.com/css?family=Poppins"
+          rel="stylesheet"
+        ></link>
+      <body className='bg-white'>
         <Main />
         <NextScript />
       </body>
