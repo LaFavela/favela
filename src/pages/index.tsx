@@ -14,7 +14,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/assets/logo/properti.png" />
       </Head>
-      <nav className="mx-auto font-poppins bg-white shadow text-xl pt-16 px-28 text-black">
+      <nav className="mx-auto font-poppins bg-white shadow text-xl pt-16 pb-10 px-28 text-black">
         <div className="flex justify-between">
           <div className="flex items-center">
             <img src="/assets/logo/properti.png" className="w-9 h-9" />
@@ -22,7 +22,7 @@ export default function Home() {
           </div>
           <div className="flex space-x-16">
             <div className="space-x-16">
-              <a className="border-b-2 border-black" href="#">
+              <a className="border-b-[2.5px] border-black" href="#">
                 Home
               </a>
               <a className="nav-button-hover" href="#">

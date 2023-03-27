@@ -112,10 +112,10 @@ a {
 }
 
 .nav-button-hover {
-  @apply relative before:content-[''] before:absolute before:block before:w-full before:h-[2px] 
+  @apply relative before:content-[''] before:absolute before:block before:w-full before:h-[2.5px] 
               before:bottom-0 before:left-0 before:bg-black
-              before:hover:scale-x-100 before:scale-x-0 before:origin-top-left
-              before:transition before:ease-in-out before:duration-300;
+              before:hover:scale-x-100 before:scale-x-0 before:hover:origin-top-left before:origin-top-right
+              before:transition before:ease-in-out before:duration-300 after:hover:scale-x-100;
 }
 
 @layer base {
