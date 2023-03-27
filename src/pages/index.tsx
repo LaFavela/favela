@@ -43,15 +43,9 @@ export default function Home() {
         </div>
         {/* mobile nav */}
       </nav>
-      <div className="items-center m-8 pt-28 bg-white ">
-        <p className="text-2xl text-justify font-bold text-black font-poppins">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione,
-          magni sapiente? Possimus quod porro nemo deleniti maxime non ullam
-          exercitationem totam voluptates sit, commodi voluptatum repellat neque
-          vero eius nostrum unde et tempora. Sint consectetur ea, consequatur
-          assumenda ipsum laboriosam tenetur minima natus dolore labore officia
-          praesentium obcaecati est. Magnam?
-        </p>
+      <div className="flex justify-center aspect-[3/1] place-items-center">
+        <p className="uppercase font-bold font-poppins text-5xl absolute z-10 text-center text-white">Your Property at One Click </p>
+        <img className="brightness-[.75] m-auto h-full w-full object-cover" src="assets/landing/greeting.jpg" alt="Greeting" />
       </div>
     </div>
   );
