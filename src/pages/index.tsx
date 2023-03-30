@@ -43,10 +43,78 @@ export default function Home() {
         </div>
         {/* mobile nav */}
       </nav>
+      {/* Landing Picture and Search Bar - Start*/}
       <div className="flex justify-center aspect-[3/1] place-items-center">
-        <p className="uppercase font-bold font-poppins text-5xl absolute z-10 text-center text-white">Your Property at One Click </p>
+        {/* Search Bar-Start */}
+        <div className="mt-20 grid border-[#bfbebe] border-2 drop-shadow-lg absolute bg-[#e3e3e3] rounded-xl opacity-30 w-2/4 h-[64px] z-10">
+          <form className="grid"action="">
+            <input className="bg-[#bfbebe00] w-[40rem] appearance-none border-none focus:outline-none focus:ring-0 text-[#0c0c0c] font-poppins text-xl ml-6 mt-4 absolute" type="text" placeholder="Search here" name="search" />
+            <button className="flex justify-self-end mt-3 mr-5 ">
+              <img className="opacity-50 "src="assets/landing/search.svg" alt="" />
+            </button>
+          </form>
+        </div>
+        {/* Search Bar-End */}
+        <p className="mb-20 uppercase font-bold font-poppins text-5xl absolute z-10 text-center text-white">Your Property at One Click </p>
         <img className="brightness-[.75] m-auto h-full w-full object-cover" src="assets/landing/greeting.jpg" alt="Greeting" />
       </div>
+      {/* Landing Picture and Search Bar - END */}
+      
+      {/* content - start */}
+      <div className="bg-[#ffffff]">
+        <br />
+        <br />
+        <br />
+        <br />
+        <p className="bg-[#00000000] text-[#ebebeb] font-[700] text-[14rem] leading-none text-center font-poppins uppercase">Searched</p>
+        <p className="bg-[#00000000] text-[#ebebeb] font-[700] text-[14rem] leading-none text-center font-poppins uppercase">This Month.</p>
+        <br />
+        <div className = "columns-2 space-x-5 ml-10">
+            <div className="grid w-11/12 ">
+              <img className="w-full h-full rounded-sm" src="assets/landing/house1.jpg" alt="" />
+              <div className="grid self-end bg-[#ffffff] z-10 absolute w-1/5 h-14 justify-self-center align-self-end rounded-lg mb-5">
+                <button className="grid justify-self-end border-l-2 border-[#e7e7e7] w-1/5 h-14">
+                  <img className="justify-self-end self-center mr-6 w-3"src="assets/landing/arrow.svg" alt="" />
+                </button>
+                <p className="absolute font-poppins ml-4 text-xs self-start text-[#c8c8c8] mt-1">House 1</p>
+                <p className="absolute font-poppins ml-4 text-lg self-start text-[#3d3d3d] mt-4">BTN Dhira Wahyu</p>
+              </div>
+            </div>
+            <div className="grid w-11/12 ">
+              <img className="w-full h-full rounded-sm" src="assets/landing/house2.jpg" alt="" />
+              <div className="grid self-end bg-[#ffffff] z-10 absolute w-1/5 h-14 justify-self-center align-self-end rounded-lg mb-5">
+                <button className="grid justify-self-end border-l-2 border-[#e7e7e7] w-1/5 h-14">
+                  <img className="justify-self-end self-center mr-6 w-3"src="assets/landing/arrow.svg" alt="" />
+                </button>
+                <p className="absolute font-poppins ml-4 text-xs self-start text-[#c8c8c8] mt-1">House 2</p>
+                <p className="absolute font-poppins ml-4 text-lg self-start text-[#3d3d3d] mt-4">BTN Ali</p>
+              </div>
+            </div>
+        </div>
+        <div className = "columns-2 space-x-5 ml-10 mt-10">
+            <div className="grid w-11/12 ">
+              <img className="w-full h-full rounded-sm" src="assets/landing/house3.jpg" alt="" />
+              <div className="grid self-end bg-[#ffffff] z-10 absolute w-1/5 h-14 justify-self-center align-self-end rounded-lg mb-5">
+                <button className="grid justify-self-end border-l-2 border-[#e7e7e7] w-1/5 h-14">
+                  <img className="justify-self-end self-center mr-6 w-3"src="assets/landing/arrow.svg" alt="" />
+                </button>
+                <p className="absolute font-poppins ml-4 text-xs self-start text-[#c8c8c8] mt-1">House 3</p>
+                <p className="absolute font-poppins ml-4 text-lg self-start text-[#3d3d3d] mt-4">BTN Rehan</p>
+              </div>
+            </div>
+            <div className="grid w-11/12 ">
+              <img className="w-full h-full rounded-sm" src="assets/landing/house4.jpg" alt="" />
+              <div className="grid self-end bg-[#ffffff] z-10 absolute w-1/5 h-14 justify-self-center align-self-end rounded-lg mb-5">
+                <button className="grid justify-self-end border-l-2 border-[#e7e7e7] w-1/5 h-14">
+                  <img className="justify-self-end self-center mr-6 w-3"src="assets/landing/arrow.svg" alt="" />
+                </button>
+                <p className="absolute font-poppins ml-4 text-xs self-start text-[#c8c8c8] mt-1">House 4</p>
+                <p className="absolute font-poppins ml-4 text-lg self-start text-[#3d3d3d] mt-4">BTN Rama</p>
+              </div>
+            </div>
+        </div>
+      </div>
+      {/* content - end */}
     </div>
   );
 }
