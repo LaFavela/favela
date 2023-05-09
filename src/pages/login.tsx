@@ -4,14 +4,14 @@ export default function Login() {
 
    return (
       <div>
-         <div className="flex justify-center items-center object-contain bg-cover bg-center min-h-screen" style={{ backgroundImage: "url('/assets/login/bg3.jpg')" }}>
+         <div className="flex justify-center items-center object-contain bg-cover bg-center min-h-screen text-black" style={{ backgroundImage: "url('/assets/login/bg3.jpg')" }}>
             <div className="w-2/4 min-h-full rounded-xl flex justify-center items-center">
                <div className="w-[400px] h-[550px] bg-white  rounded-lg shadow-xl flex flex-col">
-                  <div className="h-12 border-[1px] border-gray-900 w-80 rounded-full mt-8 ml-9 flex justify-center items-center" >
-                  <button className="w-full h-full rounded-l-full border-r-[1px] border-gray-900 font-poppins font-bold  bg-grayhov"><Link href="./login">Login</Link></button>
-                  <button className="w-full h-full rounded-r-full font-poppins font-bold"><Link href="./register">Sign In</Link></button>
+                  <div className="h-12 border-[1px] border-gray-900 w-80 rounded-full mt-8 ml-9 flex" >
+                     <Link className="w-full h-full rounded-l-full border-r-[1px] border-gray-900 font-poppins font-bold bg-grayhov flex justify-center items-center" href = "./login">Login</Link>
+                     <Link className="w-full h-full rounded-r-full font-poppins font-bold flex justify-center items-center" href="./register">Sign In</Link>
                   </div>
-                  
+
                   <form id="login" action="./footer" method="post" >
                      <label htmlFor="email">
                         <span className="block mb-1 font-Poppins pl-11 mt-10">Email Address</span>
