@@ -6,7 +6,7 @@ export default function Register() {
       <div>
          <div className="flex justify-center items-center object-contain bg-cover bg-center min-h-screen text-black" style={{ backgroundImage: "url('/assets/login/bg3.jpg')" }}>
             <div className="w-2/4 min-h-full rounded-xl flex justify-center items-center">
-               <div className="w-[400px] h-[550px] bg-white  rounded-lg shadow-xl flex flex-col ">
+               <div className="w-[400px] h-[550px] bg-nila  rounded-lg shadow-xl flex flex-col ">
                   <div className="h-12 border-[1px] border-gray-900 w-80 rounded-full mt-8 ml-9 flex" >
                      <Link className="w-full h-full rounded-l-full border-r-[1px] border-gray-900 font-poppins font-bold flex justify-center items-center" href="./login">Login</Link>
                      <Link className="w-full h-full rounded-r-full font-poppins font-bold flex justify-center items-center bg-grayhov" href="./register">Sign In</Link>
