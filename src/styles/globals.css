@@ -91,12 +91,14 @@ body {
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
+  /*background: linear-gradient(
       to bottom,
       transparent,
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+    */
+    background: white;    
 }
 
 a {
@@ -117,11 +119,31 @@ a {
               before:transition before:ease-in-out before:duration-500 after:hover:scale-x-100;
 }
 
+.text-light {
+  @apply font-poppins font-light;
+}
+
 .text-footer {
   @apply ml-5 
   font-poppins 
   font-extralight 
   text-zinc-300;
+}
+
+.button-brown{
+  @apply rounded-full
+  text-white
+  bg-[#B17C3F]
+  text-xl
+  h-[58px];
+}
+
+.button-grey{
+  @apply rounded-full
+  text-[#B17C3F]
+  bg-[#DBDBDB]
+  text-xl
+  h-[58px];
 }
 
 @layer base {
