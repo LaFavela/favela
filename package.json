@@ -16,11 +16,13 @@
     "next": "13.2.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-router-dom": "^5.3.4",
     "sequelize": "^6.31.1"
   },
   "devDependencies": {
     "@types/node": "18.15.11",
     "@types/react": "18.0.31",
+    "@types/react-router-dom": "^5.3.3",
     "autoprefixer": "^10.4.14",
     "eslint": "^8.37.0",
     "postcss": "^8.4.21",

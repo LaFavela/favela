@@ -98,7 +98,7 @@ body {
     )
     rgb(var(--background-start-rgb));
     */
-    background: white;    
+  background: white;
 }
 
 a {
@@ -130,7 +130,7 @@ a {
   text-zinc-300;
 }
 
-.button-brown{
+.button-brown {
   @apply rounded-full
   text-white
   bg-[#B17C3F]
@@ -138,13 +138,22 @@ a {
   h-[58px];
 }
 
-.button-grey{
+.button-brown:hover {
+  @apply bg-[#C99963];
+}
+
+.button-grey {
   @apply rounded-full
   text-[#B17C3F]
   bg-[#DBDBDB]
   text-xl
   h-[58px];
 }
+
+.button-grey:hover {
+  @apply bg-[#E7E7E7];
+}
+
 
 @layer base {
   body {
