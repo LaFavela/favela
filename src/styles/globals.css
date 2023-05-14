@@ -86,7 +86,6 @@
 html,
 body {
   max-width: 100vw;
-  overflow-x: hidden;
 }
 
 body {
@@ -120,12 +119,11 @@ a {
 }
 
 .text-light {
-  @apply font-poppins font-light;
+  @apply font-light;
 }
 
 .text-footer {
-  @apply ml-5 
-  font-poppins 
+  @apply ml-5  
   font-extralight 
   text-zinc-300;
 }
