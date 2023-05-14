@@ -13,7 +13,7 @@ export function Project() {
             </div>
             <div className='basis-11/12 ml-9'>
                <p className='text-[38px] font-semibold'>Pesantren An - Nuur</p>
-               <p className='text-[22px]'>
+               <p className='text-[22px] font-extralight'>
                   Lorem ipsum dolor sit amet consectetur adipisicing elit.
                   Quibusdam vitae iusto expedita eos cum autem deserunt
                   tempora voluptatum repellendus! Sint iste eveniet earum
@@ -41,7 +41,7 @@ export function Project() {
             </div>
             <div className='basis-11/12 ml-9'>
                <p className='text-[38px] font-semibold'>Sekret Rental PES</p>
-               <p className='text-[22px]'>
+               <p className='text-[22px] font-extralight'>
                   Lorem ipsum dolor sit amet consectetur adipisicing elit.
                   Quibusdam vitae iusto expedita eos cum autem deserunt
                   tempora voluptatum repellendus! Sint iste eveniet earum
@@ -66,10 +66,10 @@ export function Desain() {
             </div>
             <div className='basis-11/12 ml-9'>
                <p className='text-[38px] font-semibold'>Rumah Minimalis</p>
-               <p className='text-[22px]'>
+               <p className='text-[22px] font-extralight'>
                   Lorem ipsum dolor sit amet consectetur adipisicing elit.
                   Quibusdam vitae iusto expedita eos cum autem deserunt
-                  tempora voluptatum repellendus! Sint iste eveniet 
+                  tempora voluptatum repellendus! Sint iste eveniet
                </p>
                <button className='button-grey w-56 mt-6'>Selengkapnya</button>
             </div>
@@ -80,10 +80,10 @@ export function Desain() {
             </div>
             <div className='basis-11/12 ml-9'>
                <p className='text-[38px] font-semibold'>Rumah Ala Jepang</p>
-               <p className='text-[22px]'>
+               <p className='text-[22px] font-extralight'>
                   Lorem ipsum dolor sit amet consectetur adipisicing elit.
                   Quibusdam vitae iusto expedita eos cum autem deserunt
-                  tempora voluptatum repellendus! Sint iste eveniet 
+                  tempora voluptatum repellendus! Sint iste eveniet
                </p>
                <button className='button-grey w-56 mt-6'>Selengkapnya</button>
             </div>
@@ -94,10 +94,10 @@ export function Desain() {
             </div>
             <div className='basis-11/12 ml-9'>
                <p className='text-[38px] font-semibold'>Rumah Minimalis</p>
-               <p className='text-[22px]'>
+               <p className='text-[22px] font-extralight'>
                   Lorem ipsum dolor sit amet consectetur adipisicing elit.
                   Quibusdam vitae iusto expedita eos cum autem deserunt
-                  tempora voluptatum repellendus! Sint iste eveniet 
+                  tempora voluptatum repellendus! Sint iste eveniet
                </p>
                <button className='button-grey w-56 mt-6'>Selengkapnya</button>
             </div>
@@ -113,6 +113,49 @@ export function Kontak() {
          <div className="border-b-8 rounded-full border-gray-300 relative ">
             <div className="border-b-8 rounded-full absolute border-[#B17C3F] w-[170px]  top-0 left-[21.10rem]"></div>
          </div>
+         <div className='min-w-fit  mt-8'>
+            <p className='text-[22px] text-gray-400'>Nomor Telepon</p>
+            <p className='text-[27px] font-semibold pb-3 '> +6281392709800</p>
+            <svg width="983" height="2" viewBox="0 0 983 2" fill="none" xmlns="http://www.w3.org/2000/svg">
+               <line x1="1" y1="1" x2="982" y2="1" stroke="#D0D0D0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+         </div>
+         <div className='min-w-fit  mt-8'>
+            <p className='text-[22px] text-gray-400'>E-Mail</p>
+            <p className='text-[27px] font-semibold pb-3 '> ali.annr@gmail.com</p>
+            <svg width="983" height="2" viewBox="0 0 983 2" fill="none" xmlns="http://www.w3.org/2000/svg">
+               <line x1="1" y1="1" x2="982" y2="1" stroke="#D0D0D0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+         </div>
+         <div className='min-w-fit  mt-8'>
+            <p className='text-[22px] text-gray-400'>Situs</p>
+            <p className='text-[27px] font-semibold pb-3 '> 88qqterpecaya.com</p>
+            <svg width="983" height="2" viewBox="0 0 983 2" fill="none" xmlns="http://www.w3.org/2000/svg">
+               <line x1="1" y1="1" x2="982" y2="1" stroke="#D0D0D0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+         </div>
+         <div className='min-w-fit  mt-8'>
+            <p className='text-[22px] text-gray-400'>Media Sosial</p>
+            <p className='text-[27px] font-semibold pb-3 '> @ali.annr</p>
+            <svg width="983" height="2" viewBox="0 0 983 2" fill="none" xmlns="http://www.w3.org/2000/svg">
+               <line x1="1" y1="1" x2="982" y2="1" stroke="#D0D0D0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+         </div>
+         <br />
+         <br />
+         <br />
+         <br />
+         <br />
+         <br />
+         <br />
+         <br />
+         <br />
+         <br />
+         <br />
+         <br />
+         <br />
+         <br />
+         <br />
       </div>
    )
 }
@@ -221,6 +264,9 @@ export default function merchantProfile() {
                {currentFunction === 'project' && <Project />}
                {currentFunction === 'desain' && <Desain />}
                {currentFunction === 'kontak' && <Kontak />}
+               <br />
+               <br />
+               <br />
             </div>
          </div>
 
