@@ -1,7 +1,7 @@
 export default function Navbar() {
    // const [navbar, setNavbar] = useState(false);
    return (
-      <nav className="mx-auto font-poppins bg-white shadow text-xl pt-16 pb-10 px-28 text-black">
+      <nav className="mx-auto text-xl pt-16 pb-10 px-28 text-black bg-white z-10">
          <div className="flex justify-between">
             <div className="flex items-center">
                <img src="/assets/logo/properti.png" className="w-9 h-9" />
