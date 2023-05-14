@@ -10,7 +10,7 @@ const poppins = Poppins({
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <main className={`${poppins.variable} font-sans`}>
+    <main className={`${poppins.variable}`}>
       <Component {...pageProps} />
     </main>
   );
