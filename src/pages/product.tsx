@@ -3,15 +3,11 @@ import Navbar from "./navbar";
 import Link from "next/link";
 import Image from "next/image";
 import Footer from "./footer";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Map from "./maps";
+import Carousel from "./carousel";
 
 export default function Product() {
-   const [currentFunction, setCurrentFunction] = useState<'desain' | 'kontak' | 'project'>('project');
-
-   const handleFunctionChange = (functionName: 'desain' | 'kontak' | 'project') => {
-      setCurrentFunction(functionName);
-   };
    function ArrowLogo() {
       return (<div><svg width="28" height="21" viewBox="0 0 28 21" fill="none" xmlns="http://www.w3.org/2000/svg">
          <path d="M15.1843 0.839623L2.24019 0.839624C1.64605 0.839624 1.07625 1.01522 0.656137 1.32778C0.23602 1.64034 -8.20696e-07 2.06426 -8.01375e-07 2.50629L-7.28522e-08 19.1729C-5.35306e-08 19.615 0.236021 20.0389 0.656137 20.3514C1.07626 20.664 1.64606 20.8396 2.24019 20.8396L15.1843 20.8396C15.4943 20.8396 15.801 20.7918 16.0849 20.6991C16.3688 20.6064 16.6238 20.4709 16.8336 20.3011L27.4017 11.9677L27.4171 11.9563C27.7922 11.6495 28 11.2496 28 10.8349C28 10.4202 27.7922 10.0204 27.4171 9.71357C27.4117 9.71002 27.4065 9.70619 27.4017 9.70211L16.8336 1.36879C16.6227 1.2007 16.3672 1.06691 16.0834 0.975838C15.7995 0.88477 15.4934 0.838391 15.1843 0.839623Z" fill="#D0D0D0" />
@@ -27,74 +23,23 @@ export default function Product() {
          </Head>
          <Navbar></Navbar>
          {/* outest div - start */}
-         <div className="p-5 flex flex-warp flex-col space-y-5">
+         <div className="p-12 flex flex-warp flex-col space-y-5">
             {/* main box */}
-            <div className="flex space-x-5">
+            <div className="flex space-x-10">
                {/* Image Box */}
-               <div className="h-[895px] w-7/12 pr-3 flex flex-col space-y-5">
-                  <div className="relative w-full h-5/6">
-                     <Image
-                        className="rounded-3xl"
-                        src={'/assets/product/scandinavian/image 4.png'}
-                        alt={''}
-                        fill={true}
-                        style={{ objectFit: "cover" }} />
-                  </div>
-                  <div className="h-1/6 flex flex-row space-x-5 items-center">
-                     <div className="w-[3%]">
-                        <svg width="14" height="26" viewBox="0 0 14 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                           <path d="M11.2258 25.4855L0.354858 13.9604C0.225826 13.8232 0.134213 13.6746 0.08002 13.5145C0.0258265 13.3544 -0.000840053 13.1829 2.01613e-05 13C2.01613e-05 12.8171 0.0271169 12.6456 0.0813104 12.4855C0.135504 12.3254 0.226686 12.1768 0.354858 12.0396L11.2258 0.480211C11.5269 0.16007 11.9032 0 12.3548 0C12.8065 0 13.1936 0.171504 13.5161 0.514512C13.8387 0.85752 14 1.2577 14 1.71504C14 2.17238 13.8387 2.57256 13.5161 2.91557L4.03227 13L13.5161 23.0844C13.8172 23.4046 13.9677 23.7993 13.9677 24.2685C13.9677 24.7377 13.8065 25.1434 13.4839 25.4855C13.1613 25.8285 12.7849 26 12.3548 26C11.9247 26 11.5484 25.8285 11.2258 25.4855Z" fill="black" />
-                        </svg>
-                     </div>
-                     <div className="relative flex-auto h-full">
-                        <Image
-                           className="rounded-3xl"
-                           src={'/assets/product/scandinavian/image 4.png'}
-                           alt={''}
-                           fill={true}
-                           style={{ objectFit: "cover" }} />
-                     </div>
-                     <div className="relative flex-auto h-full">
-                        <Image
-                           className="rounded-3xl"
-                           src={'/assets/product/scandinavian/image 3.png'}
-                           alt={''}
-                           fill={true}
-                           style={{ objectFit: "cover" }} />
-                     </div>
-                     <div className="relative flex-auto h-full">
-                        <Image
-                           className="rounded-3xl"
-                           src={'/assets/product/scandinavian/image 1.png'}
-                           alt={''}
-                           fill={true}
-                           style={{ objectFit: "cover" }} />
-                     </div>
-                     <div className="relative flex-auto h-full">
-                        <Image
-                           className="rounded-3xl"
-                           src={'/assets/product/scandinavian/image 3.png'}
-                           alt={''}
-                           fill={true}
-                           style={{ objectFit: "cover" }} />
-                     </div>
-                     <div className="w-[3%]">
-                        <svg width="14" height="26" viewBox="0 0 14 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                           <path d="M2.77419 0.514512L13.6451 12.0396C13.7742 12.1768 13.8658 12.3254 13.92 12.4855C13.9742 12.6456 14.0008 12.8171 14 13C14 13.1829 13.9729 13.3544 13.9187 13.5145C13.8645 13.6746 13.7733 13.8232 13.6451 13.9604L2.77419 25.5198C2.47311 25.8399 2.09677 26 1.64516 26C1.19355 26 0.80645 25.8285 0.48387 25.4855C0.16129 25.1425 1.09951e-07 24.7423 1.49934e-07 24.285C1.89916e-07 23.8276 0.16129 23.4274 0.48387 23.0844L9.96773 13L0.483872 2.91557C0.182798 2.59543 0.0322592 2.20074 0.0322592 1.73151C0.0322592 1.26227 0.193549 0.856604 0.51613 0.514512C0.83871 0.171504 1.21505 -1.1177e-06 1.64516 -1.08009e-06C2.07527 -1.04249e-06 2.45161 0.171504 2.77419 0.514512Z" fill="black" />
-                        </svg>
-                     </div>
-                  </div>
+               <div className="w-[55%] h-[60vw]">
+                  <Carousel></Carousel>
                </div>
                {/* Image Box - end */}
                {/* Description Box */}
-               <div className="h-min w-5/12 flex flex-col">
+               <div className="h-min w-[45%] flex flex-col">
                   <p className="text-sm">
                      <Link href="A">Villa</Link> &gt; Scandinavian</p>
-                  <p className="text-3xl mt-3 font-medium">
+                  <p className="text-[1.75rem] mt-3 font-medium">
                      Ampenan Asri
                   </p>
-                  <p className="mt-1">Jl. Seketek Blok 7 Dasan Agung</p>
-                  <div className="mt-3 text-sm flex space-x-2 items-center font-semibold">
+                  <p className="text-lg text-grayhov font-regular">Jl. Seketek Blok 7 Dasan Agung</p>
+                  <div className="text-sm font-medium mt-4 flex space-x-2 items-center">
                      <svg width="74" height="11" viewBox="0 0 74 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M5.00001 9.6471C4.42362 9.6471 3.88195 9.53765 3.37501 9.31876C2.86807 9.09987 2.42709 8.80307 2.05209 8.42835C1.67709 8.05335 1.38029 7.61237 1.16168 7.10543C0.943066 6.59848 0.833621 6.05682 0.833344 5.48043C0.833344 4.90404 0.942788 4.36237 1.16168 3.85543C1.38057 3.34848 1.67737 2.90751 2.05209 2.53251C2.42709 2.15751 2.86807 1.86071 3.37501 1.6421C3.88195 1.42348 4.42362 1.31404 5.00001 1.31376C5.5764 1.31376 6.11807 1.42321 6.62501 1.6421C7.13195 1.86098 7.57293 2.15779 7.94793 2.53251C8.32293 2.90751 8.61987 3.34848 8.83876 3.85543C9.05765 4.36237 9.16695 4.90404 9.16668 5.48043C9.16668 6.05682 9.05723 6.59848 8.83834 7.10543C8.61945 7.61237 8.32265 8.05335 7.94793 8.42835C7.57293 8.80335 7.13195 9.10029 6.62501 9.31918C6.11807 9.53807 5.5764 9.64737 5.00001 9.6471Z" fill="black" />
                         <g clip-path="url(#clip0_70_88)">
@@ -113,10 +58,10 @@ export default function Product() {
                            </clipPath>
                         </defs>
                      </svg>
-                     <p className="text-sm">2 Ulasan</p>
+                     <p className="">2 Ulasan</p>
                   </div>
-                  <p className="mt-3 text-4xl font-medium">Rp 476jt</p>
-                  <div className="mt-3 flex flex-row space-x-3 items-center">
+                  <p className="mt-4 text-[2.06rem] font-medium">Rp 476jt</p>
+                  <div className="mt-4 text-sm flex flex-row space-x-3 items-center">
                      <svg width="22" height="18" viewBox="0 0 22 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M1 17V9C1 8.46957 1.21071 7.96086 1.58579 7.58579C1.96086 7.21071 2.46957 7 3 7M3 7H19M3 7V3C3 2.46957 3.21071 1.96086 3.58579 1.58579C3.96086 1.21071 4.46957 1 5 1H17C17.5304 1 18.0391 1.21071 18.4142 1.58579C18.7893 1.96086 19 2.46957 19 3V7M19 7C19.5304 7 20.0391 7.21071 20.4142 7.58579C20.7893 7.96086 21 8.46957 21 9V17M11 1V7M1 15H21" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                      </svg>
@@ -131,7 +76,7 @@ export default function Product() {
                      </svg>
                      <p>232 m2</p>
                   </div>
-                  <p className="my-10 text-2xl font-extralight">Lorem ipsum dolor sit amet, consectetur adipisicing elit. In, aliquam porro. Maxime nesciunt quae veniam, quidem at fuga illum atque aperiam, cupiditate asperiores repellendus ducimus ratione architecto natus ipsam perferendis.
+                  <p className="my-10 text-2xl font-light">Lorem ipsum dolor sit amet, consectetur adipisicing elit. In, aliquam porro. Maxime nesciunt quae veniam, quidem at fuga illum atque aperiam, cupiditate asperiores repellendus ducimus ratione architecto natus ipsam perferendis.
                      Amet dolorum debitis facilis molestias dignissimos asperiores beatae ad ipsa, harum porro! Suscipit ex ut, adipisci fugiat ipsa ullam esse laborum ad! Et asperiores officia laborum! Saepe accusamus dolores tempora.
                      Deserunt sit sunt tempora explicabo odit quas ipsum molestias ad at, repellendus, pariatur aspernatur laudantium, sed reprehenderit dolores. Quia eius corporis, ut obcaecati reiciendis architecto nisi recusandae voluptatibus doloribus odio.
                      Molestias doloribus accusantium illum nemo error cumque natus reprehenderit dolorem accusamus eaque, nisi itaque aut quas quae minus, quis aliquid, voluptatem corporis architecto vel quaerat sequi? Doloribus corporis nostrum ab.
@@ -151,7 +96,7 @@ export default function Product() {
             {/* description - start */}
             <div className="flex flex-col space-y-1">
                {/* section -start */}
-               <nav className="sticky top-0 z-10 flex flex-col space-y-1 bg-white">
+               <nav className="sticky top-0 z-10 mt-10 pt-10 flex flex-col space-y-1 bg-white">
                   <div className="flex flex-row text-xl text-center text-[#D0D0D0]">
                      <div className="w-[175px] text-[#B17C3F]">
                         <button className="">Detail</button>
@@ -175,7 +120,7 @@ export default function Product() {
                </nav>
                <div className="flex flex-col space-y-10 px-24 pt-9">
                   {/* details */}
-                  <div className="">
+                  <div id="details" className="">
                      <div>
                         <p className="text-4xl font-medium">Detail</p>
                      </div>
@@ -325,7 +270,7 @@ export default function Product() {
                   {/* Lokasi - end */}
                   {/* Review - start */}
                   <div>
-                  <p className="text-4xl font-medium">Ulasan</p>
+                     <p className="text-4xl font-medium">Ulasan</p>
                      <Review></Review>
                   </div>
                   {/* Review - end */}
