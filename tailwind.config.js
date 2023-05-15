@@ -4,8 +4,15 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
+        sans: ["Poppins"],
         poppins: ["Poppins"],
       },
+      colors: {
+        'gold': '#A18565',
+        'grayhov': '#B9B9B9',
+        'nila' : '#EDECE9'
+        
+      }
     },
   },
   plugins: [],
