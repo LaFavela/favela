@@ -1,12 +1,23 @@
 import Head from "next/head";
 import Image from "next/image";
-import { Inter } from "next/font/google";
-import { useState } from "react";
+import Navbar from "./navbar";
+import { useState, useEffect } from "react";
 
-// const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  // const [navbar, setNavbar] = useState(false);
+  const [clientWindowHeight, setClientWindowHeight] = useState(0);
+  const [transparent, setTransparent] = useState(true);
+  
+  const handleScroll = () => {
+    setClientWindowHeight(window.scrollY);
+    setTransparent(clientWindowHeight < 100);
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  });
+
   return (
     <div>
       <Head>
@@ -15,36 +26,9 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/assets/logo/properti.png" />
       </Head>
-      <nav className="mx-auto font-poppins bg-white shadow text-xl pt-16 pb-10 px-28 text-black">
-        <div className="flex justify-between">
-          <div className="flex items-center">
-            <img src="/assets/logo/properti.png" className="w-9 h-9" />
-            <p className="font-poppins font-bold">FAVELA</p>
-          </div>
-          <div className="flex space-x-16 items-center">
-            <div className="space-x-16">
-              <a className="border-b-[2.5px] border-black" href="#">
-                Home
-              </a>
-              <a className="nav-button-hover" href="#">
-                Order
-              </a>
-              <a className="nav-button-hover" href="#">
-                About
-              </a>
-              <a className="nav-button-hover" href="#">
-                Contact
-              </a>
-            </div>
-            <div>
-              <img src="assets/profile/avatar.jpg" alt="" className="w-9 h-9 rounded-full"></img>
-            </div>
-          </div>
-        </div>
-        {/* mobile nav */}
-      </nav>
+      <Navbar transparent={transparent} login={false} />
       {/* Landing Picture and Search Bar - Start*/}
-      <div className="flex justify-center aspect-[3/1] place-items-center">
+      <div className="flex justify-center place-items-center">
         {/* Search Bar-Start */}
         <div className="mt-20 grid border-[#bfbebe] border-2 drop-shadow-lg absolute bg-[#e3e3e3] rounded-xl opacity-30 w-2/4 h-[64px] z-10">
           <form className="grid" action="">
@@ -56,7 +40,7 @@ export default function Home() {
         </div>
         {/* Search Bar-End */}
         <p className="mb-20 uppercase font-bold font-poppins text-5xl absolute z-10 text-center text-white">Your Property at One Click </p>
-        <img className="brightness-[.75] m-auto h-full w-full object-cover" src="assets/landing/greeting.jpg" alt="Greeting" />
+        <img className="brightness-[.75] m-auto h-full w-full object-cover" src="assets/landing/landing 1.png" alt="Greeting" />
       </div>
       {/* Landing Picture and Search Bar - END */}
 
