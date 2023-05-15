@@ -12,7 +12,7 @@ export default function Login() {
                      <Link className="w-full h-full rounded-r-full font-poppins font-bold flex justify-center items-center" href="./register">Sign In</Link>
                   </div>
 
-                  <form id="login" action="./footer" method="post" >
+                  <form id="login" action="./merchantProfile" method="post" >
                      <label htmlFor="email">
                         <span className="block mb-1 font-Poppins pl-11 mt-10">Email Address</span>
                         <input type="email" id="email" placeholder="Enter your email" required className="px-3 py-2 ml-9 rounded-full bg-gray-300 w-80" />
