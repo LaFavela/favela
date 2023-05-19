@@ -12,6 +12,9 @@ module.exports = {
         'grayhov': '#B9B9B9',
         'nila' : '#EDECE9'
         
+      },
+      dropShadow: {
+        'landingShado' : '0 0 10px rgba(0, 0, 0, 0.2)'
       }
     },
   },

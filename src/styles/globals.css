@@ -152,7 +152,6 @@ a {
   @apply bg-[#E7E7E7];
 }
 
-
 @layer base {
   body {
     @apply bg-white;
