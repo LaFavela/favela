@@ -316,6 +316,7 @@ export default function Browse() {
                {data.map((data, idx) => {
                   return (
                      <div
+                        key={idx}
                         className={`relative overflow-hidden rounded-3xl transition-all duration-300 ${
                            hover && index == idx
                               ? "h-[31rem] w-[23.5rem]"
@@ -411,7 +412,9 @@ export default function Browse() {
                                  </svg>
                                  <span>{data.luas} m2</span>
                               </div>
-                              <div className="text-base font-medium">{data.lokasi}</div>
+                              <div className="text-base font-medium">
+                                 {data.lokasi}
+                              </div>
                            </span>
                            <span className="text-xl font-semibold">
                               Rp {data.harga} Jt
