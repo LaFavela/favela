@@ -1,8 +1,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import Product from './product';
-
+import Slider from './Slider';
 export default function Landing() {
 
    const [isPressed, setIsPressed] = useState(false);
@@ -410,6 +409,11 @@ export default function Landing() {
                </p>
             </div>
          </div>
+         <div className='pb-10'>
+            <Slider></Slider>
+         </div>
+
+
       </div>
    )
 }
