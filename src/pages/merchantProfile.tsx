@@ -226,7 +226,7 @@ export function Review() {
                      ,cuttttttttttt itu ngilu nya,saya benar benar langsung kehilangan moment kebersamaan sama
                      sahabat sahabat saya,Dokter sarankan coba deh ibu pakai sensodyne khusus untuk gigi yang
                      sensitif,berkat sensodyne,waaahhhhhh,, saya malah mungkin paling banyak kali tuh kata temen
-                     temen,,... ehhh y'oll pelan pelan dong makannya kita belum kebagian nihh....,,mas es nya
+                     temen,,... ehhh y&apos;oll pelan pelan dong makannya kita belum kebagian nihh....,,mas es nya
                      yang banyak ya... dug dug..
                   </p>
                   <div className='flex flex-row space-x-4 items-center mt-2'>
@@ -293,7 +293,7 @@ export function Review() {
                      ,cuttttttttttt itu ngilu nya,saya benar benar langsung kehilangan moment kebersamaan sama
                      sahabat sahabat saya,Dokter sarankan coba deh ibu pakai sensodyne khusus untuk gigi yang
                      sensitif,berkat sensodyne,waaahhhhhh,, saya malah mungkin paling banyak kali tuh kata temen
-                     temen,,... ehhh y'oll pelan pelan dong makannya kita belum kebagian nihh....,,mas es nya
+                     temen,,... ehhh y&apos;oll pelan pelan dong makannya kita belum kebagian nihh....,,mas es nya
                      yang banyak ya... dug dug..
                   </p>
                   <div className='flex flex-row space-x-4 items-center mt-2'>
@@ -339,9 +339,9 @@ export function Review() {
 
 export default function merchantProfile() {
 
-   const [currentFunction, setCurrentFunction] = useState<'desain' | 'kontak' | 'project' | 'review'>('project');
-   const [activeButton, setActiveButton] = useState<'desain' | 'kontak' | 'project' | 'review'>('project');
-   const handleFunctionChange = (functionName: 'desain' | 'kontak' | 'project' | 'review') => {
+   const [currentFunction, setCurrentFunction] = useState<'Desain' | 'Kontak' | 'Project' | 'Review'>('Project');
+   const [activeButton, setActiveButton] = useState<'Desain' | 'Kontak' | 'Project' | 'Review'>('Project');
+   const handleFunctionChange = (functionName: 'Desain' | 'Kontak' | 'Project' | 'Review') => {
       setCurrentFunction(functionName);
       setActiveButton(functionName);
    };
@@ -430,14 +430,14 @@ export default function merchantProfile() {
             </div>
             <div className="basis-11/12 ml-14 mt-[1.15rem] ">
 
-               <button onClick={() => handleFunctionChange('project')} className={`w-[170px] text-[1.4rem] ${activeButton === 'project' ? 'text-[#B17C3F]' : 'text-gray-400'}`} >Project</button>
-               <button onClick={() => handleFunctionChange('desain')} className={`w-[170px] text-[1.4rem] ${activeButton === 'desain' ? 'text-[#B17C3F]' : 'text-gray-400'}`} >Desain </button>
-               <button onClick={() => handleFunctionChange('kontak')} className={`w-[170px] text-[1.4rem] ${activeButton === 'kontak' ? 'text-[#B17C3F]' : 'text-gray-400'}`}>Contact</button>
-               <button onClick={() => handleFunctionChange('review')} className={`w-[170px] text-[1.4rem] ${activeButton === 'review' ? 'text-[#B17C3F]' : 'text-gray-400'}`}>Review</button>
-               {currentFunction === 'project' && <Project />}
-               {currentFunction === 'desain' && <Desain />}
-               {currentFunction === 'kontak' && <Kontak />}
-               {currentFunction === 'review' && <Review />}
+               <button onClick={() => handleFunctionChange('Project')} className={`w-[170px] text-[1.4rem] ${activeButton === 'Project' ? 'text-[#B17C3F]' : 'text-gray-400'}`} >Project</button>
+               <button onClick={() => handleFunctionChange('Desain')} className={`w-[170px] text-[1.4rem] ${activeButton === 'Desain' ? 'text-[#B17C3F]' : 'text-gray-400'}`} >Desain </button>
+               <button onClick={() => handleFunctionChange('Kontak')} className={`w-[170px] text-[1.4rem] ${activeButton === 'Kontak' ? 'text-[#B17C3F]' : 'text-gray-400'}`}>Contact</button>
+               <button onClick={() => handleFunctionChange('Review')} className={`w-[170px] text-[1.4rem] ${activeButton === 'Review' ? 'text-[#B17C3F]' : 'text-gray-400'}`}>Review</button>
+               {currentFunction === 'Project' && <Project />}
+               {currentFunction === 'Desain' && <Desain />}
+               {currentFunction === 'Kontak' && <Kontak />}
+               {currentFunction === 'Review' && <Review />}
 
 
             </div>
