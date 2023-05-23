@@ -158,7 +158,7 @@ export default function Home() {
             </ul>
           </div>
           <div>
-            <h1 className="text-white font-poppins ml-5 text-2xl mb-4 mt-10">We're here to help</h1>
+            <h1 className="text-white font-poppins ml-5 text-2xl mb-4 mt-10">We&apos;re here to help</h1>
             <h1 className="text-white font-poppins ml-5 text-2xl mb-4 mt-10">Customer Care</h1>
             <ul>
               <li><p className="text-footer" >Monday-Friday : 10.00-17.00</p></li>
