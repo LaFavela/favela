@@ -133,7 +133,7 @@ a {
   text-white
   bg-[#B17C3F]
   text-xl
-  h-[58px];
+  h-[3rem];
 }
 
 .button-brown:hover {
@@ -151,7 +151,6 @@ a {
 .button-grey:hover {
   @apply bg-[#E7E7E7];
 }
-
 
 @layer base {
   body {
