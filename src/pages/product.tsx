@@ -341,7 +341,7 @@ export function Review() {
                      ,cuttttttttttt itu ngilu nya,saya benar benar langsung kehilangan moment kebersamaan sama
                      sahabat sahabat saya,Dokter sarankan coba deh ibu pakai sensodyne khusus untuk gigi yang
                      sensitif,berkat sensodyne,waaahhhhhh,, saya malah mungkin paling banyak kali tuh kata temen
-                     temen,,... ehhh y'oll pelan pelan dong makannya kita belum kebagian nihh....,,mas es nya
+                     temen,,... ehhh y&apos;oll pelan pelan dong makannya kita belum kebagian nihh....,,mas es nya
                      yang banyak ya... dug dug..
                   </p>
                   <div className='flex flex-row space-x-4 items-center mt-2'>
@@ -408,7 +408,7 @@ export function Review() {
                      ,cuttttttttttt itu ngilu nya,saya benar benar langsung kehilangan moment kebersamaan sama
                      sahabat sahabat saya,Dokter sarankan coba deh ibu pakai sensodyne khusus untuk gigi yang
                      sensitif,berkat sensodyne,waaahhhhhh,, saya malah mungkin paling banyak kali tuh kata temen
-                     temen,,... ehhh y'oll pelan pelan dong makannya kita belum kebagian nihh....,,mas es nya
+                     temen,,... ehhh y&apos;oll pelan pelan dong makannya kita belum kebagian nihh....,,mas es nya
                      yang banyak ya... dug dug..
                   </p>
                   <div className='flex flex-row space-x-4 items-center mt-2'>
@@ -437,7 +437,7 @@ export function Review() {
             <path d="M112 16.1606C110.893 16.1606 109.853 15.9505 108.88 15.5302C107.907 15.11 107.06 14.5401 106.34 13.8206C105.62 13.1006 105.05 12.254 104.63 11.2806C104.211 10.3073 104.001 9.26731 104 8.16064C104 7.05398 104.21 6.01398 104.63 5.04064C105.051 4.06731 105.621 3.22064 106.34 2.50064C107.06 1.78064 107.907 1.21078 108.88 0.791045C109.853 0.371311 110.893 0.161178 112 0.160645C113.107 0.160645 114.147 0.370778 115.12 0.791045C116.093 1.21131 116.94 1.78118 117.66 2.50064C118.38 3.22064 118.95 4.06731 119.37 5.04064C119.791 6.01398 120.001 7.05398 120 8.16064C120 9.26731 119.79 10.3073 119.37 11.2806C118.949 12.254 118.379 13.1006 117.66 13.8206C116.94 14.5406 116.093 15.1108 115.12 15.531C114.147 15.9513 113.107 16.1612 112 16.1606Z" fill="#BEB8B8" />
          </svg>
 
-         <form action="">
+         <form action="">a
             <label htmlFor="Judul-ulasan">
                <span className="block mb-1 font-poppins mt-6 text-[17px]">Judul Ulasan</span>
                <div className='border-[1px] border-gray-400 rounded-[10px] max-w-screen-md'>
