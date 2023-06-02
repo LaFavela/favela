@@ -3,7 +3,7 @@ import Navbar from './navbar';
 import Footer from './footer';
 import Map from "./maps";
 
-export default function sellPropertyForm() {
+export default function SellPropertyForm() {
     const [images, setImages] = useState([])
     const fileChangeHandler = (event, index) =>{
         const reader = new FileReader();

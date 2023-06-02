@@ -1,7 +1,8 @@
 import {useState} from "react";
 import Navbar from './navbar';
 import Footer from './footer';
-export default function designForm() {
+
+export default function DesignForm() {
     const [images, setImages] = useState([])
     const fileChangeHandler = (event, index) =>{
         const reader = new FileReader();
