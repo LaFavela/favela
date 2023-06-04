@@ -33,7 +33,7 @@ export default function Navbar(
     searchBackground = "bg-transparent";
     searchTextColor = "text-white";
     btnTextColor = "text-[#559CB2]";
-    btnColor = "bg-[#D3D2D2]";
+    btnColor = "bg-white";
     textColor = "text-white";
     loginTextBtnColor = "text-[#569DB3]";
     loginBtnColor = "bg-white";
