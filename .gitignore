@@ -29,7 +29,10 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # local env files
+.env
 .env*.local
+.env
+.env*
 
 # vercel
 .vercel
@@ -37,3 +40,4 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+.hintrc
