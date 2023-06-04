@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Slider from "./Slider";
-import Footer from "./footer";
-import Navbar from "./navbar";
+import Footer from "../components/footer";
+import Navbar from "@/components/navbar";
 
 export default function Landing() {
    const [isPressed, setIsPressed] = useState(false);
