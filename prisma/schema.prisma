@@ -9,3 +9,180 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Users {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  username  String   @unique
+  firstName String
+  lastName  String
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Role      Role[]
+}
+
+model Role {
+  id         String    @id @default(uuid())
+  user       Users     @relation(fields: [usersId], references: [id])
+  usersId    String
+  role       String
+  Pembeli    Pembeli?  @relation(fields: [pembeliId], references: [id])
+  pembeliId  String?
+  Penjual    Penjual?  @relation(fields: [penjualId], references: [id])
+  penjualId  String?
+  Desainer   Desainer? @relation(fields: [desainerId], references: [id])
+  desainerId String?
+  Tukang     Tukang?   @relation(fields: [tukangId], references: [id])
+  tukangId   String?
+}
+
+model Pembeli {
+  id               String     @id @default(uuid())
+  keranjang        String[]
+  wishlist         String[]
+  pesanan_properti Properti[]
+  pesanan_desain   Desain[]
+  Role             Role[]
+}
+
+model Desainer {
+  id          String        @id @default(uuid())
+  desain      Desain[]
+  mengerjakan Mengerjakan[]
+  Role        Role[]
+}
+
+model Tukang {
+  id          String        @id @default(uuid())
+  desain      Desain[]
+  mengerjakan Mengerjakan[]
+  Role        Role[]
+}
+
+model Penjual {
+  id       String    @id @default(uuid())
+  properti Menjual[]
+  Role     Role[]
+}
+
+model Mengerjakan {
+  id         String    @id @default(uuid())
+  username   String
+  id_desain  String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  Desainer   Desainer? @relation(fields: [desainerId], references: [id])
+  desainerId String?
+  Tukang     Tukang?   @relation(fields: [tukangId], references: [id])
+  tukangId   String?
+}
+
+model Menjual {
+  id        String   @id @default(uuid())
+  id_produk String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Penjual   Penjual? @relation(fields: [penjualId], references: [id])
+  penjualId String?
+}
+
+model Properti {
+  id             String          @id @default(uuid())
+  namaProduk     String
+  id_alamat      Int
+  deskripsi      String
+  foto           String[]
+  sarana         String[]
+  id_rating      Int
+  posisi         Decimal[]
+  Detail_product Detail_product?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  Pembeli        Pembeli?        @relation(fields: [pembeliId], references: [id])
+  pembeliId      String?
+  Rating         Rating[]
+}
+
+model Detail_product {
+  id                String   @id @default(uuid())
+  tipe              String
+  pengembang        String
+  sertifikat        String
+  tahun             Int
+  harga             Decimal
+  jumlah_kamar      Int
+  jumlah_kamarMandi Int
+  luas_product      Decimal
+  Properti          Properti @relation(fields: [propertiId], references: [id])
+  propertiId        String   @unique
+}
+
+model Desain {
+  id          String         @id @default(uuid())
+  nama_desain String
+  deskripsi   String
+  foto        String[]
+  Detail      Detail_desain?
+  id_rating   String
+  harga       Decimal
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  Pembeli     Pembeli?       @relation(fields: [pembeliId], references: [id])
+  pembeliId   String?
+  Rating      Rating[]
+  Desainer    Desainer?      @relation(fields: [desainerId], references: [id])
+  desainerId  String?
+  Tukang      Tukang?        @relation(fields: [tukangId], references: [id])
+  tukangId    String?
+}
+
+model Detail_desain {
+  id                String  @id @default(uuid())
+  harga             Decimal
+  username          String
+  tipe              String
+  sertifikat        String
+  luas_desain       Decimal
+  jumlah_kamar      Int
+  jumlah_kamarMandi Int
+  desain            Desain  @relation(fields: [desainId], references: [id])
+  desainId          String  @unique
+}
+
+model Rating {
+  id         String    @id @default(uuid())
+  username   String
+  rating     Int
+  komentar   String
+  properti   Properti? @relation(fields: [propertiId], references: [id])
+  desain     Desain?   @relation(fields: [desainId], references: [id])
+  propertiId String?
+  desainId   String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model Provinsi {
+  id            String          @id @default(uuid())
+  kabupatenKota KabupatenKota[]
+  namaProvinsi  String
+}
+
+model KabupatenKota {
+  id         String   @id @default(uuid())
+  nama       String
+  Provinsi   Provinsi @relation(fields: [provinsiId], references: [id])
+  provinsiId String
+  Alamat     Alamat[]
+}
+
+model Alamat {
+  id_alamat       String        @id @default(uuid())
+  kabupatenKota   KabupatenKota @relation(fields: [kabupatenKotaId], references: [id])
+  kabupatenKotaId String
+  kecamatan       String
+  kelurahan       String
+  kode_pos        Int
+  jalan           String
+}
