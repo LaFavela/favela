@@ -25,7 +25,7 @@ export default function Landing() {
 
    return (
       <div className="transition-all ease-linear duration-300">
-         <Navbar transparent={transparent} home={true} />
+         <Navbar transparent={transparent} home={true} login={false}/>
          <div
             className="flex min-h-screen flex-col bg-cover bg-center object-contain text-black"
             style={{ backgroundImage: "url('/assets/landing/landingBG.jpg')" }}
