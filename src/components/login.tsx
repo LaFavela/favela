@@ -1,4 +1,3 @@
-import Register from "../components/register";
 import React, { useState } from "react";
 export default function Login(props: {visible: any; onClose: any }) {
   const [showRegister, setShowRegister] = useState(false);
