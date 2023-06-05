@@ -98,13 +98,13 @@ export default function Footer() {
             <p className=" text-[1.5rem] font-medium text-[#B17C3F]">
               Website Link
             </p>
-            <Link href={"./index"}>
+            <Link href={"./"}>
               <p className="text-[#9ca3af] text-[0.75rem] pb-2">Home</p>
             </Link>
             <Link href={"#"}>
               <p className="text-[#9ca3af] text-[0.75rem] pb-2">Category</p>
             </Link>
-            <Link href={"./browse"}>
+            <Link href={"./build"}>
               <p className="text-[#9ca3af] text-[0.75rem] pb-2">Build</p>
             </Link>
             <Link href={"#"}>
@@ -115,7 +115,7 @@ export default function Footer() {
             <p className=" text-[1.5rem] font-medium text-[#B17C3F]">
               Our Service
             </p>
-            <Link href={"./index"}>
+            <Link href={"./"}>
               <p className="text-[#9ca3af] text-[0.75rem] pb-2">Home</p>
             </Link>
             <Link href={"#"}>
