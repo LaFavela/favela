@@ -3,7 +3,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import { registerLocale } from "react-datepicker";
 import id from "date-fns/locale/id";
-import Footer from "./footer";
+import Footer from "@/components/footer";
 import { Listbox, Transition } from "@headlessui/react";
 
 const job = ["Front End Developer", "Data Analyst"];

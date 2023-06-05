@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import Navbar from './navbar';
+import Navbar from '@/components/navbar';
 import StarRating from './rating';
-import Footer from './footer';
+import Footer from '../components/footer';
 
 export function Project() {
    return (
