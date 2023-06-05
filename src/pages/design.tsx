@@ -1,9 +1,9 @@
-import Navbar from "./navbar";
+import Navbar from "@/components/navbar";
 import { Fragment } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { useState } from "react";
 import Image from "next/image";
-import Footer from "./footer";
+import Footer from "@/components/footer";
 import Link from "next/link";
 
 const type = [

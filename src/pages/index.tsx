@@ -1,22 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Slider from "./Slider";
-import Footer from "./footer";
+import Footer from "@/components/footer";
+import Navbar from "@/components/navbar";
+
 import { data } from "./browse";
 import { designerData } from "./designer";
 import Image from "next/image";
 
 export default function Landing() {
-  const [isPressed, setIsPressed] = useState(false);
-  const handleButtonClick = () => {
-    setIsPressed(!isPressed);
-  };
+   const [isPressed, setIsPressed] = useState(false);
+   const handleButtonClick = () => {
+      setIsPressed(!isPressed);
+   };
 
   const [visibleItems] = useState(6);
   const [visibleDesigner] =useState(3);
 
+  const [clientWindowHeight, setClientWindowHeight] = useState(0);
+  const [transparent, setTransparent] = useState(true);
+
+  const handleScroll = () => {
+     setClientWindowHeight(window.scrollY);
+     setTransparent(clientWindowHeight < 100);
+  };
+
+  useEffect(() => {
+     window.addEventListener("scroll", handleScroll);
+     return () => window.removeEventListener("scroll", handleScroll);
+  });
+
   return (
-    <div>
+    <div className="transition-all ease-linear duration-300">
+      <Navbar transparent={transparent} home={true} login={false}/>
       <div
         className="flex min-h-screen flex-col bg-cover bg-center object-contain text-black"
         style={{ backgroundImage: "url('/assets/landing/landingBG.jpg')" }}

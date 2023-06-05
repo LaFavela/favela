@@ -1,11 +1,11 @@
 import Head from "next/head";
-import Navbar from "./navbar";
+import Navbar from "@/components/navbar";
 import Link from "next/link";
 import Image from "next/image";
-import Footer from "./footer";
+import Footer from "../components/footer";
 import { useState, useRef } from "react";
-import Map from "./maps";
-import Carousel from "./carousel";
+import Map from "@/components/maps";
+import Carousel from "@/components/carousel";
 import { Modal } from "@mui/material";
 import React from "react";
 import Popup from "reactjs-popup";
