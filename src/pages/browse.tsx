@@ -1,9 +1,9 @@
-import Navbar from "./navbar";
+import Navbar from "@/components/navbar";
 import { Fragment } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { useState } from "react";
 import Image from "next/image";
-import Footer from "./footer"
+import Footer from "@/components/footer"
 import Link from "next/link";
 
 const people = [
@@ -13,7 +13,7 @@ const people = [
   { id: 4, name: "Tanah" },
   { id: 5, name: "Villa" },
 ];
-const data = [
+ export const data = [
   {
     id: 1,
     nama: "Blue Resort Bali",
@@ -251,7 +251,7 @@ export default function Browse() {
     <div>
       <Navbar></Navbar>
       <div className="sticky top-0 z-50 flex justify-between bg-white px-16 py-5">
-        <div className="flex space-x-3">
+        <div className="flex space-x-3 ml-12 ">
           <button className="h-12 w-28 rounded-3xl bg-[#B17C3F] text-xl text-white">
             Buy
           </button>
@@ -343,7 +343,7 @@ export default function Browse() {
           </div>
         </div>
         <div>
-          <div>
+          <div className="mr-10">
             <button
               onClick={() => setIsOpen(!isOpen)}
               // className=" flex h-[3rem] w-[25rem] flex-row  justify-between rounded-full  text-xl font-light focus:outline-none"
@@ -437,7 +437,7 @@ export default function Browse() {
       </div>
       {/* batas */}
       <div>
-        <div className="flex flex-grow flex-row flex-wrap gap-5 pl-44">
+        <div className="flex flex-grow flex-row flex-wrap gap-5 justify-center px-35">
           {data.map((data, idx) => {
             return (
               <div

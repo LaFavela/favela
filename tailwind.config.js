@@ -8,7 +8,7 @@ module.exports = {
         poppins: ["Poppins"],
       },
       colors: {
-        'gold': '#A18565',
+        'gold': '#B17C3F',
         'grayhov': '#B9B9B9',
         'nila' : '#EDECE9'
         

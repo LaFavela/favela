@@ -1,15 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Slider from "./Slider";
-import Footer from "./footer";
+import Footer from "@/components/footer";
+import Navbar from "@/components/navbar";
+
+import { data } from "./browse";
+import { designerData } from "./designer";
+import Image from "next/image";
+
 export default function Landing() {
-  const [isPressed, setIsPressed] = useState(false);
-  const handleButtonClick = () => {
-    setIsPressed(!isPressed);
+   const [isPressed, setIsPressed] = useState(false);
+   const handleButtonClick = () => {
+      setIsPressed(!isPressed);
+   };
+
+  const [visibleItems] = useState(6);
+  const [visibleDesigner] =useState(3);
+
+  const [clientWindowHeight, setClientWindowHeight] = useState(0);
+  const [transparent, setTransparent] = useState(true);
+
+  const handleScroll = () => {
+     setClientWindowHeight(window.scrollY);
+     setTransparent(clientWindowHeight < 100);
   };
 
+  useEffect(() => {
+     window.addEventListener("scroll", handleScroll);
+     return () => window.removeEventListener("scroll", handleScroll);
+  });
+
   return (
-    <div>
+    <div className="transition-all ease-linear duration-300">
+      <Navbar transparent={transparent} home={true} login={false}/>
       <div
         className="flex min-h-screen flex-col bg-cover bg-center object-contain text-black"
         style={{ backgroundImage: "url('/assets/landing/landingBG.jpg')" }}
@@ -29,6 +52,9 @@ export default function Landing() {
           <button className="button-brown w-44">Explore now</button>
         </div>
       </div>
+
+      {/* PEMBATAS 1 */}
+
       <div className="mt-28 flex flex-col items-center justify-center">
         <p className="text-[2.2rem] font-medium">
           The <span className="text-[#B17C3F]">Service</span> You Get From{" "}
@@ -43,6 +69,9 @@ export default function Landing() {
           </p>
         </div>
       </div>
+
+      {/* PEMBATAS 2 */}
+
       <div className="mt-16 flex flex-row items-center justify-center gap-8 pb-10">
         <div className="h-[18.3rem] w-[18.3rem] rounded-[1.5625rem] bg-white drop-shadow-landingShado ">
           <div className="ml-7 mt-5 flex flex-row">
@@ -230,6 +259,9 @@ export default function Landing() {
           </button>
         </div>
       </div>
+
+      {/* PEMBATAS 3 */}
+
       <div className="mt-28 flex flex-col items-center justify-center pb-28">
         <p className="text-[2.2rem] font-medium">
           We Provide The <span className="text-[#B17C3F]">Base Based</span> On{" "}
@@ -244,332 +276,73 @@ export default function Landing() {
           </p>
         </div>
       </div>
-      <div className="grid grid-cols-3 gap-y-10">
-        <div className="relative ml-[8.5rem] h-[24rem] w-[20.75rem] rounded-[1.5625rem]">
-          <img
-            src="/assets/landing/build1.jpg"
-            alt="build1"
-            className="h-[24rem] w-[20.75rem] rounded-[1.5625rem]"
-          />
-          <div className="absolute inset-0 flex rounded-[1.5625rem] bg-black bg-opacity-25 opacity-0 transition-opacity duration-500 ease-in-out hover:opacity-100">
-            <div className="absolute inset-0 flex justify-between">
-              <div className="ml-5 mt-5 flex">
-                <div className="flex h-8 w-24 items-center justify-center rounded-full border-2 border-white">
-                  <p className="text-[0.75rem] font-medium text-white">Rumah</p>
+
+      {/* PEMBATAS 4 */}
+      <div className="px-35 flex flex-grow flex-row flex-wrap justify-center gap-14 pl-7 pr-7">
+        {data.slice(0, visibleItems).map((data, idx) => {
+          return (
+            <div key={idx} className="">
+              <div className="relative flex-auto gap-20">
+                <img
+                  src={data.img}
+                  alt=""
+                  className="h-[25rem] w-[20rem] rounded-3xl "
+                />
+                <div className="absolute inset-0 flex rounded-[1.5625rem] bg-black bg-opacity-25 opacity-0 transition-opacity duration-500 ease-in-out hover:opacity-100">
+                  <div className="absolute inset-0 flex justify-between">
+                    <div className="ml-5 mt-5 flex">
+                      <p className="p-1 px-8 text-[1rem] rounded-full font-normal text-white border-[0.15rem] h-max">
+                        {data.type}
+                      </p>
+                    </div>
+                    <div className="mr-5 mt-5">
+                      <button onClick={handleButtonClick}>
+                        <svg
+                          width="34"
+                          height="28"
+                          viewBox="0 0 38 32"
+                          fill={isPressed ? "white" : "none"}
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M19.0107 30L4.58209 17.1029C-3.25953 9.36467 8.26766 -5.49276 19.0107 6.52732C29.7537 -5.49276 41.2286 9.41626 33.4393 17.1029L19.0107 30Z"
+                            stroke="white"
+                            strokeWidth="3"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div className="flex items-end">
+                    <Link
+                      href={"./build"}
+                      className="absolute mb-5 ml-5 h-[2.5rem] w-[2.5rem]  rounded-full"
+                    >
+                      <svg
+                        width="44"
+                        height="44"
+                        viewBox="0 0 44 44"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M22 30.8L30.8 22L22 13.2L18.92 16.28L22.44 19.8H13.2V24.2H22.44L18.92 27.72L22 30.8ZM22 44C18.9567 44 16.0967 43.4221 13.42 42.2664C10.7433 41.1107 8.415 39.5435 6.435 37.565C4.455 35.585 2.88787 33.2567 1.7336 30.58C0.579334 27.9033 0.00146667 25.0433 0 22C0 18.9567 0.577867 16.0967 1.7336 13.42C2.88933 10.7433 4.45647 8.415 6.435 6.435C8.415 4.455 10.7433 2.88787 13.42 1.7336C16.0967 0.579334 18.9567 0.00146667 22 0C25.0433 0 27.9033 0.577867 30.58 1.7336C33.2567 2.88933 35.585 4.45647 37.565 6.435C39.545 8.415 41.1129 10.7433 42.2686 13.42C43.4243 16.0967 44.0015 18.9567 44 22C44 25.0433 43.4221 27.9033 42.2664 30.58C41.1107 33.2567 39.5435 35.585 37.565 37.565C35.585 39.545 33.2567 41.1129 30.58 42.2686C27.9033 43.4243 25.0433 44.0015 22 44Z"
+                          className="fill-white hover:fill-gray-200"
+                        />
+                      </svg>
+                    </Link>
+                  </div>
                 </div>
               </div>
-              <div className="mr-5 mt-5">
-                <button onClick={handleButtonClick}>
-                  <svg
-                    width="34"
-                    height="28"
-                    viewBox="0 0 38 32"
-                    fill={isPressed ? "white" : "none"}
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M19.0107 30L4.58209 17.1029C-3.25953 9.36467 8.26766 -5.49276 19.0107 6.52732C29.7537 -5.49276 41.2286 9.41626 33.4393 17.1029L19.0107 30Z"
-                      stroke="white"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
-              </div>
             </div>
-            <div className="flex items-end">
-              <Link
-                href={"./product"}
-                className="absolute mb-5 ml-5 h-[2.5rem] w-[2.5rem]  rounded-full"
-              >
-                <svg
-                  width="44"
-                  height="44"
-                  viewBox="0 0 44 44"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M22 30.8L30.8 22L22 13.2L18.92 16.28L22.44 19.8H13.2V24.2H22.44L18.92 27.72L22 30.8ZM22 44C18.9567 44 16.0967 43.4221 13.42 42.2664C10.7433 41.1107 8.415 39.5435 6.435 37.565C4.455 35.585 2.88787 33.2567 1.7336 30.58C0.579334 27.9033 0.00146667 25.0433 0 22C0 18.9567 0.577867 16.0967 1.7336 13.42C2.88933 10.7433 4.45647 8.415 6.435 6.435C8.415 4.455 10.7433 2.88787 13.42 1.7336C16.0967 0.579334 18.9567 0.00146667 22 0C25.0433 0 27.9033 0.577867 30.58 1.7336C33.2567 2.88933 35.585 4.45647 37.565 6.435C39.545 8.415 41.1129 10.7433 42.2686 13.42C43.4243 16.0967 44.0015 18.9567 44 22C44 25.0433 43.4221 27.9033 42.2664 30.58C41.1107 33.2567 39.5435 35.585 37.565 37.565C35.585 39.545 33.2567 41.1129 30.58 42.2686C27.9033 43.4243 25.0433 44.0015 22 44Z"
-                    className="fill-white hover:fill-gray-200"
-                  />
-                </svg>
-              </Link>
-            </div>
-          </div>
-        </div>
-        <div className="relative ml-[4rem] h-[24rem] w-[20.75rem] rounded-[1.5625rem]">
-          <img
-            src="/assets/landing/build2.jpg"
-            alt="build2"
-            className="h-[24rem] w-[20.75rem] rounded-[1.5625rem]"
-          />
-          <div className="absolute inset-0 flex rounded-[1.5625rem] bg-black bg-opacity-25 opacity-0 transition-opacity duration-500 ease-in-out hover:opacity-100">
-            <div className="absolute inset-0 flex justify-between">
-              <div className="ml-5 mt-5 flex">
-                <div className="flex h-8 w-24 items-center justify-center rounded-full border-2 border-white">
-                  <p className="text-[0.75rem] font-medium text-white">Rumah</p>
-                </div>
-              </div>
-              <div className="mr-5 mt-5">
-                <button onClick={handleButtonClick}>
-                  <svg
-                    width="34"
-                    height="28"
-                    viewBox="0 0 38 32"
-                    fill={isPressed ? "white" : "none"}
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M19.0107 30L4.58209 17.1029C-3.25953 9.36467 8.26766 -5.49276 19.0107 6.52732C29.7537 -5.49276 41.2286 9.41626 33.4393 17.1029L19.0107 30Z"
-                      stroke="white"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-            <div className="flex items-end">
-              <Link
-                href={"./product"}
-                className="absolute mb-5 ml-5 h-[2.5rem] w-[2.5rem]  rounded-full"
-              >
-                <svg
-                  width="44"
-                  height="44"
-                  viewBox="0 0 44 44"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M22 30.8L30.8 22L22 13.2L18.92 16.28L22.44 19.8H13.2V24.2H22.44L18.92 27.72L22 30.8ZM22 44C18.9567 44 16.0967 43.4221 13.42 42.2664C10.7433 41.1107 8.415 39.5435 6.435 37.565C4.455 35.585 2.88787 33.2567 1.7336 30.58C0.579334 27.9033 0.00146667 25.0433 0 22C0 18.9567 0.577867 16.0967 1.7336 13.42C2.88933 10.7433 4.45647 8.415 6.435 6.435C8.415 4.455 10.7433 2.88787 13.42 1.7336C16.0967 0.579334 18.9567 0.00146667 22 0C25.0433 0 27.9033 0.577867 30.58 1.7336C33.2567 2.88933 35.585 4.45647 37.565 6.435C39.545 8.415 41.1129 10.7433 42.2686 13.42C43.4243 16.0967 44.0015 18.9567 44 22C44 25.0433 43.4221 27.9033 42.2664 30.58C41.1107 33.2567 39.5435 35.585 37.565 37.565C35.585 39.545 33.2567 41.1129 30.58 42.2686C27.9033 43.4243 25.0433 44.0015 22 44Z"
-                    className="fill-white hover:fill-gray-200"
-                  />
-                </svg>
-              </Link>
-            </div>
-          </div>
-        </div>
-        <div className="relative ml-[1] h-[24rem] w-[20.75rem] rounded-[1.5625rem]">
-          <img
-            src="/assets/landing/build3.jpg"
-            alt="build3"
-            className="h-[24rem] w-[20.75rem] rounded-[1.5625rem]"
-          />
-          <div className="absolute inset-0 flex rounded-[1.5625rem] bg-black bg-opacity-25 opacity-0 transition-opacity duration-500 ease-in-out hover:opacity-100">
-            <div className="absolute inset-0 flex justify-between">
-              <div className="ml-5 mt-5 flex">
-                <div className="flex h-8 w-24 items-center justify-center rounded-full border-2 border-white">
-                  <p className="text-[0.75rem] font-medium text-white">Rumah</p>
-                </div>
-              </div>
-              <div className="mr-5 mt-5">
-                <button onClick={handleButtonClick}>
-                  <svg
-                    width="34"
-                    height="28"
-                    viewBox="0 0 38 32"
-                    fill={isPressed ? "white" : "none"}
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M19.0107 30L4.58209 17.1029C-3.25953 9.36467 8.26766 -5.49276 19.0107 6.52732C29.7537 -5.49276 41.2286 9.41626 33.4393 17.1029L19.0107 30Z"
-                      stroke="white"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-            <div className="flex items-end">
-              <Link
-                href={"./product"}
-                className="absolute mb-5 ml-5 h-[2.5rem] w-[2.5rem]  rounded-full"
-              >
-                <svg
-                  width="44"
-                  height="44"
-                  viewBox="0 0 44 44"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M22 30.8L30.8 22L22 13.2L18.92 16.28L22.44 19.8H13.2V24.2H22.44L18.92 27.72L22 30.8ZM22 44C18.9567 44 16.0967 43.4221 13.42 42.2664C10.7433 41.1107 8.415 39.5435 6.435 37.565C4.455 35.585 2.88787 33.2567 1.7336 30.58C0.579334 27.9033 0.00146667 25.0433 0 22C0 18.9567 0.577867 16.0967 1.7336 13.42C2.88933 10.7433 4.45647 8.415 6.435 6.435C8.415 4.455 10.7433 2.88787 13.42 1.7336C16.0967 0.579334 18.9567 0.00146667 22 0C25.0433 0 27.9033 0.577867 30.58 1.7336C33.2567 2.88933 35.585 4.45647 37.565 6.435C39.545 8.415 41.1129 10.7433 42.2686 13.42C43.4243 16.0967 44.0015 18.9567 44 22C44 25.0433 43.4221 27.9033 42.2664 30.58C41.1107 33.2567 39.5435 35.585 37.565 37.565C35.585 39.545 33.2567 41.1129 30.58 42.2686C27.9033 43.4243 25.0433 44.0015 22 44Z"
-                    className="fill-white hover:fill-gray-200"
-                  />
-                </svg>
-              </Link>
-            </div>
-          </div>
-        </div>
-        <div className="relative ml-[8.5rem] h-[24rem] w-[20.75rem] rounded-[1.5625rem]">
-          <img
-            src="/assets/landing/build4.jpg"
-            alt="build4"
-            className="h-[24rem] w-[20.75rem] rounded-[1.5625rem]"
-          />
-          <div className="absolute inset-0 flex rounded-[1.5625rem] bg-black bg-opacity-25 opacity-0 transition-opacity duration-500 ease-in-out hover:opacity-100">
-            <div className="absolute inset-0 flex justify-between">
-              <div className="ml-5 mt-5 flex">
-                <div className="flex h-8 w-24 items-center justify-center rounded-full border-2 border-white">
-                  <p className="text-[0.75rem] font-medium text-white">Rumah</p>
-                </div>
-              </div>
-              <div className="mr-5 mt-5">
-                <button onClick={handleButtonClick}>
-                  <svg
-                    width="34"
-                    height="28"
-                    viewBox="0 0 38 32"
-                    fill={isPressed ? "white" : "none"}
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M19.0107 30L4.58209 17.1029C-3.25953 9.36467 8.26766 -5.49276 19.0107 6.52732C29.7537 -5.49276 41.2286 9.41626 33.4393 17.1029L19.0107 30Z"
-                      stroke="white"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-            <div className="flex items-end">
-              <Link
-                href={"./product"}
-                className="absolute mb-5 ml-5 h-[2.5rem] w-[2.5rem]  rounded-full"
-              >
-                <svg
-                  width="44"
-                  height="44"
-                  viewBox="0 0 44 44"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M22 30.8L30.8 22L22 13.2L18.92 16.28L22.44 19.8H13.2V24.2H22.44L18.92 27.72L22 30.8ZM22 44C18.9567 44 16.0967 43.4221 13.42 42.2664C10.7433 41.1107 8.415 39.5435 6.435 37.565C4.455 35.585 2.88787 33.2567 1.7336 30.58C0.579334 27.9033 0.00146667 25.0433 0 22C0 18.9567 0.577867 16.0967 1.7336 13.42C2.88933 10.7433 4.45647 8.415 6.435 6.435C8.415 4.455 10.7433 2.88787 13.42 1.7336C16.0967 0.579334 18.9567 0.00146667 22 0C25.0433 0 27.9033 0.577867 30.58 1.7336C33.2567 2.88933 35.585 4.45647 37.565 6.435C39.545 8.415 41.1129 10.7433 42.2686 13.42C43.4243 16.0967 44.0015 18.9567 44 22C44 25.0433 43.4221 27.9033 42.2664 30.58C41.1107 33.2567 39.5435 35.585 37.565 37.565C35.585 39.545 33.2567 41.1129 30.58 42.2686C27.9033 43.4243 25.0433 44.0015 22 44Z"
-                    className="fill-white hover:fill-gray-200"
-                  />
-                </svg>
-              </Link>
-            </div>
-          </div>
-        </div>
-        <div className="relative ml-[4rem] h-[24rem] w-[20.75rem] rounded-[1.5625rem]">
-          <img
-            src="/assets/landing/build5.jpg"
-            alt="build5"
-            className="h-[24rem] w-[20.75rem] rounded-[1.5625rem]"
-          />
-          <div className="absolute inset-0 flex rounded-[1.5625rem] bg-black bg-opacity-25 opacity-0 transition-opacity duration-500 ease-in-out hover:opacity-100">
-            <div className="absolute inset-0 flex justify-between">
-              <div className="ml-5 mt-5 flex">
-                <div className="flex h-8 w-24 items-center justify-center rounded-full border-2 border-white">
-                  <p className="text-[0.75rem] font-medium text-white">Rumah</p>
-                </div>
-              </div>
-              <div className="mr-5 mt-5">
-                <button onClick={handleButtonClick}>
-                  <svg
-                    width="34"
-                    height="28"
-                    viewBox="0 0 38 32"
-                    fill={isPressed ? "white" : "none"}
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M19.0107 30L4.58209 17.1029C-3.25953 9.36467 8.26766 -5.49276 19.0107 6.52732C29.7537 -5.49276 41.2286 9.41626 33.4393 17.1029L19.0107 30Z"
-                      stroke="white"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-            <div className="flex items-end">
-              <Link
-                href={"./product"}
-                className="absolute mb-5 ml-5 h-[2.5rem] w-[2.5rem]  rounded-full"
-              >
-                <svg
-                  width="44"
-                  height="44"
-                  viewBox="0 0 44 44"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M22 30.8L30.8 22L22 13.2L18.92 16.28L22.44 19.8H13.2V24.2H22.44L18.92 27.72L22 30.8ZM22 44C18.9567 44 16.0967 43.4221 13.42 42.2664C10.7433 41.1107 8.415 39.5435 6.435 37.565C4.455 35.585 2.88787 33.2567 1.7336 30.58C0.579334 27.9033 0.00146667 25.0433 0 22C0 18.9567 0.577867 16.0967 1.7336 13.42C2.88933 10.7433 4.45647 8.415 6.435 6.435C8.415 4.455 10.7433 2.88787 13.42 1.7336C16.0967 0.579334 18.9567 0.00146667 22 0C25.0433 0 27.9033 0.577867 30.58 1.7336C33.2567 2.88933 35.585 4.45647 37.565 6.435C39.545 8.415 41.1129 10.7433 42.2686 13.42C43.4243 16.0967 44.0015 18.9567 44 22C44 25.0433 43.4221 27.9033 42.2664 30.58C41.1107 33.2567 39.5435 35.585 37.565 37.565C35.585 39.545 33.2567 41.1129 30.58 42.2686C27.9033 43.4243 25.0433 44.0015 22 44Z"
-                    className="fill-white hover:fill-gray-200"
-                  />
-                </svg>
-              </Link>
-            </div>
-          </div>
-        </div>
-        <div className="relative ml-[1] h-[24rem] w-[20.75rem] rounded-[1.5625rem]">
-          <img
-            src="/assets/landing/build6.jpg"
-            alt="build6"
-            className="h-[24rem] w-[20.75rem] rounded-[1.5625rem]"
-          />
-          <div className="absolute inset-0 flex rounded-[1.5625rem] bg-black bg-opacity-25 opacity-0 transition-opacity duration-500 ease-in-out hover:opacity-100">
-            <div className="absolute inset-0 flex justify-between">
-              <div className="ml-5 mt-5 flex">
-                <div className="flex h-8 w-24 items-center justify-center rounded-full border-2 border-white">
-                  <p className="text-[0.75rem] font-medium text-white">Rumah</p>
-                </div>
-              </div>
-              <div className="mr-5 mt-5">
-                <button onClick={handleButtonClick}>
-                  <svg
-                    width="34"
-                    height="28"
-                    viewBox="0 0 38 32"
-                    fill={isPressed ? "white" : "none"}
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M19.0107 30L4.58209 17.1029C-3.25953 9.36467 8.26766 -5.49276 19.0107 6.52732C29.7537 -5.49276 41.2286 9.41626 33.4393 17.1029L19.0107 30Z"
-                      stroke="white"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-            <div className="flex items-end">
-              <Link
-                href={"./product"}
-                className="absolute mb-5 ml-5 h-[2.5rem] w-[2.5rem]  rounded-full"
-              >
-                <svg
-                  width="44"
-                  height="44"
-                  viewBox="0 0 44 44"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M22 30.8L30.8 22L22 13.2L18.92 16.28L22.44 19.8H13.2V24.2H22.44L18.92 27.72L22 30.8ZM22 44C18.9567 44 16.0967 43.4221 13.42 42.2664C10.7433 41.1107 8.415 39.5435 6.435 37.565C4.455 35.585 2.88787 33.2567 1.7336 30.58C0.579334 27.9033 0.00146667 25.0433 0 22C0 18.9567 0.577867 16.0967 1.7336 13.42C2.88933 10.7433 4.45647 8.415 6.435 6.435C8.415 4.455 10.7433 2.88787 13.42 1.7336C16.0967 0.579334 18.9567 0.00146667 22 0C25.0433 0 27.9033 0.577867 30.58 1.7336C33.2567 2.88933 35.585 4.45647 37.565 6.435C39.545 8.415 41.1129 10.7433 42.2686 13.42C43.4243 16.0967 44.0015 18.9567 44 22C44 25.0433 43.4221 27.9033 42.2664 30.58C41.1107 33.2567 39.5435 35.585 37.565 37.565C35.585 39.545 33.2567 41.1129 30.58 42.2686C27.9033 43.4243 25.0433 44.0015 22 44Z"
-                    className="fill-white hover:fill-gray-200"
-                  />
-                </svg>
-              </Link>
-            </div>
-          </div>
-        </div>
+          );
+        })}
       </div>
+
+      {/* PEMBATAS 5 */}
+
       <div className="mt-28 flex flex-col items-center justify-center pb-20 ">
         <p className="text-[2.2rem] font-medium">
           Start <span className="text-[#B17C3F]">Consult Or Buy</span> A Design{" "}
@@ -584,165 +357,77 @@ export default function Landing() {
           </p>
         </div>
       </div>
-      <div className="grid grid-cols-3 pb-28">
-        <div className="relative ml-[8.5rem] h-[24rem] w-[20.75rem] rounded-[1.5625rem]">
-          <img
-            src="/assets/landing/Designer1.jpg"
-            alt="Designer 1"
-            className="h-[24rem] w-[20.75rem] rounded-[1.5625rem] object-cover"
-          />
-          <div className="absolute inset-0 flex rounded-[1.5625rem] bg-black bg-opacity-25 opacity-0 transition-opacity duration-500 ease-in-out hover:opacity-100">
-            <div className="absolute inset-0 flex justify-between">
-              <div className="ml-5 mt-5 flex">
-                <p className="text-[1.3rem] font-semibold text-white">
-                  Paper Pot
-                </p>
-              </div>
-              <div className="mr-5 mt-5">
-                <button onClick={handleButtonClick}>
-                  <svg
-                    width="34"
-                    height="28"
-                    viewBox="0 0 38 32"
-                    fill={isPressed ? "white" : "none"}
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M19.0107 30L4.58209 17.1029C-3.25953 9.36467 8.26766 -5.49276 19.0107 6.52732C29.7537 -5.49276 41.2286 9.41626 33.4393 17.1029L19.0107 30Z"
-                      stroke="white"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-            <div className="flex items-end">
-              <Link
-                href={"./product"}
-                className="absolute mb-5 ml-5 h-[2.5rem] w-[2.5rem]  rounded-full"
-              >
-                <svg
-                  width="44"
-                  height="44"
-                  viewBox="0 0 44 44"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M22 30.8L30.8 22L22 13.2L18.92 16.28L22.44 19.8H13.2V24.2H22.44L18.92 27.72L22 30.8ZM22 44C18.9567 44 16.0967 43.4221 13.42 42.2664C10.7433 41.1107 8.415 39.5435 6.435 37.565C4.455 35.585 2.88787 33.2567 1.7336 30.58C0.579334 27.9033 0.00146667 25.0433 0 22C0 18.9567 0.577867 16.0967 1.7336 13.42C2.88933 10.7433 4.45647 8.415 6.435 6.435C8.415 4.455 10.7433 2.88787 13.42 1.7336C16.0967 0.579334 18.9567 0.00146667 22 0C25.0433 0 27.9033 0.577867 30.58 1.7336C33.2567 2.88933 35.585 4.45647 37.565 6.435C39.545 8.415 41.1129 10.7433 42.2686 13.42C43.4243 16.0967 44.0015 18.9567 44 22C44 25.0433 43.4221 27.9033 42.2664 30.58C41.1107 33.2567 39.5435 35.585 37.565 37.565C35.585 39.545 33.2567 41.1129 30.58 42.2686C27.9033 43.4243 25.0433 44.0015 22 44Z"
-                    className="fill-white hover:fill-gray-200"
-                  />
-                </svg>
-              </Link>
-            </div>
-          </div>
-        </div>
-        <div className="relative ml-[4rem] h-[24rem] w-[20.75rem] rounded-[1.5625rem]">
-          <img
-            src="/assets/landing/Designer2.jpg"
-            alt="Designer 2"
-            className="h-[24rem] w-[20.75rem] rounded-[1.5625rem] object-cover"
-          />
-          <div className="absolute inset-0 flex rounded-[1.5625rem] bg-black bg-opacity-25 opacity-0 transition-opacity duration-500 ease-in-out hover:opacity-100">
-            <div className="absolute inset-0 flex justify-between">
-              <div className="ml-5 mt-5 flex">
-                <p className="text-[1.3rem] font-semibold text-white">Freya</p>
-              </div>
-              <div className="mr-5 mt-5">
-                <button onClick={handleButtonClick}>
-                  <svg
-                    width="34"
-                    height="28"
-                    viewBox="0 0 38 32"
-                    fill={isPressed ? "white" : "none"}
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M19.0107 30L4.58209 17.1029C-3.25953 9.36467 8.26766 -5.49276 19.0107 6.52732C29.7537 -5.49276 41.2286 9.41626 33.4393 17.1029L19.0107 30Z"
-                      stroke="white"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
+      
+      {/* PEMBATAS 6 */}
+      
+      <div className="px-35 flex flex-grow flex-row flex-wrap justify-center gap-14 pl-7 pr-7">
+        {designerData.slice(0, visibleDesigner).map((designerData, idx) => {
+          return (
+            <div key={idx} className="">
+              <div className="relative flex-auto gap-20">
+                <img
+                  src={designerData.img}
+                  alt=""
+                  className="h-[25rem] w-[20rem] rounded-3xl object-cover"
+                />
+                <div className="absolute inset-0 flex rounded-[1.5625rem] bg-black bg-opacity-25 opacity-0 transition-opacity duration-500 ease-in-out hover:opacity-100">
+                  <div className="absolute inset-0 flex justify-between">
+                    <div className="ml-5 mt-5 flex">
+                      <p className="text-[1.3rem] font-semibold text-white">
+                        {designerData.nama}
+                      </p>
+                    </div>
+                    <div className="mr-5 mt-5">
+                      <button onClick={handleButtonClick}>
+                        <svg
+                          width="34"
+                          height="28"
+                          viewBox="0 0 38 32"
+                          fill={isPressed ? "white" : "none"}
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M19.0107 30L4.58209 17.1029C-3.25953 9.36467 8.26766 -5.49276 19.0107 6.52732C29.7537 -5.49276 41.2286 9.41626 33.4393 17.1029L19.0107 30Z"
+                            stroke="white"
+                            strokeWidth="3"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div className="flex items-end">
+                    <Link
+                      href={"./build"}
+                      className="absolute mb-5 ml-5 h-[2.5rem] w-[2.5rem]  rounded-full"
+                    >
+                      <svg
+                        width="44"
+                        height="44"
+                        viewBox="0 0 44 44"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M22 30.8L30.8 22L22 13.2L18.92 16.28L22.44 19.8H13.2V24.2H22.44L18.92 27.72L22 30.8ZM22 44C18.9567 44 16.0967 43.4221 13.42 42.2664C10.7433 41.1107 8.415 39.5435 6.435 37.565C4.455 35.585 2.88787 33.2567 1.7336 30.58C0.579334 27.9033 0.00146667 25.0433 0 22C0 18.9567 0.577867 16.0967 1.7336 13.42C2.88933 10.7433 4.45647 8.415 6.435 6.435C8.415 4.455 10.7433 2.88787 13.42 1.7336C16.0967 0.579334 18.9567 0.00146667 22 0C25.0433 0 27.9033 0.577867 30.58 1.7336C33.2567 2.88933 35.585 4.45647 37.565 6.435C39.545 8.415 41.1129 10.7433 42.2686 13.42C43.4243 16.0967 44.0015 18.9567 44 22C44 25.0433 43.4221 27.9033 42.2664 30.58C41.1107 33.2567 39.5435 35.585 37.565 37.565C35.585 39.545 33.2567 41.1129 30.58 42.2686C27.9033 43.4243 25.0433 44.0015 22 44Z"
+                          className="fill-white hover:fill-gray-200"
+                        />
+                      </svg>
+                    </Link>
+                  </div>
+                </div>
               </div>
             </div>
-            <div className="flex items-end">
-              <button className="absolute mb-5 ml-5 h-[2.5rem] w-[2.5rem]  rounded-full">
-                <svg
-                  width="44"
-                  height="44"
-                  viewBox="0 0 44 44"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M22 30.8L30.8 22L22 13.2L18.92 16.28L22.44 19.8H13.2V24.2H22.44L18.92 27.72L22 30.8ZM22 44C18.9567 44 16.0967 43.4221 13.42 42.2664C10.7433 41.1107 8.415 39.5435 6.435 37.565C4.455 35.585 2.88787 33.2567 1.7336 30.58C0.579334 27.9033 0.00146667 25.0433 0 22C0 18.9567 0.577867 16.0967 1.7336 13.42C2.88933 10.7433 4.45647 8.415 6.435 6.435C8.415 4.455 10.7433 2.88787 13.42 1.7336C16.0967 0.579334 18.9567 0.00146667 22 0C25.0433 0 27.9033 0.577867 30.58 1.7336C33.2567 2.88933 35.585 4.45647 37.565 6.435C39.545 8.415 41.1129 10.7433 42.2686 13.42C43.4243 16.0967 44.0015 18.9567 44 22C44 25.0433 43.4221 27.9033 42.2664 30.58C41.1107 33.2567 39.5435 35.585 37.565 37.565C35.585 39.545 33.2567 41.1129 30.58 42.2686C27.9033 43.4243 25.0433 44.0015 22 44Z"
-                    className="fill-white hover:fill-gray-200"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-        <div className="relative ml-[1] h-[24rem] w-[20.75rem] rounded-[1.5625rem]">
-          <img
-            src="/assets/landing/Designer3.jpg"
-            alt="Designer 3"
-            className="h-[24rem] w-[20.75rem] rounded-[1.5625rem] object-cover"
-          />
-          <div className="absolute inset-0 flex rounded-[1.5625rem] bg-black bg-opacity-25 opacity-0 transition-opacity duration-500 ease-in-out hover:opacity-100">
-            <div className="absolute inset-0 flex justify-between">
-              <div className="ml-5 mt-5 flex">
-                <p className="text-[1.3rem] font-semibold text-white">
-                  Antonio Rudiger
-                </p>
-              </div>
-              <div className="mr-5 mt-5">
-                <button onClick={handleButtonClick}>
-                  <svg
-                    width="34"
-                    height="28"
-                    viewBox="0 0 38 32"
-                    fill={isPressed ? "white" : "none"}
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M19.0107 30L4.58209 17.1029C-3.25953 9.36467 8.26766 -5.49276 19.0107 6.52732C29.7537 -5.49276 41.2286 9.41626 33.4393 17.1029L19.0107 30Z"
-                      stroke="white"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-            <div className="flex items-end">
-              <button className="absolute mb-5 ml-5 h-[2.5rem] w-[2.5rem]  rounded-full">
-                <svg
-                  width="44"
-                  height="44"
-                  viewBox="0 0 44 44"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M22 30.8L30.8 22L22 13.2L18.92 16.28L22.44 19.8H13.2V24.2H22.44L18.92 27.72L22 30.8ZM22 44C18.9567 44 16.0967 43.4221 13.42 42.2664C10.7433 41.1107 8.415 39.5435 6.435 37.565C4.455 35.585 2.88787 33.2567 1.7336 30.58C0.579334 27.9033 0.00146667 25.0433 0 22C0 18.9567 0.577867 16.0967 1.7336 13.42C2.88933 10.7433 4.45647 8.415 6.435 6.435C8.415 4.455 10.7433 2.88787 13.42 1.7336C16.0967 0.579334 18.9567 0.00146667 22 0C25.0433 0 27.9033 0.577867 30.58 1.7336C33.2567 2.88933 35.585 4.45647 37.565 6.435C39.545 8.415 41.1129 10.7433 42.2686 13.42C43.4243 16.0967 44.0015 18.9567 44 22C44 25.0433 43.4221 27.9033 42.2664 30.58C41.1107 33.2567 39.5435 35.585 37.565 37.565C35.585 39.545 33.2567 41.1129 30.58 42.2686C27.9033 43.4243 25.0433 44.0015 22 44Z"
-                    className="fill-white hover:fill-gray-200"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
+          );
+        })}
       </div>
-      <div className="mt-5 flex flex-col items-center justify-center pb-20 ">
+      
+    {/* PEMBATAS 7 */}
+      
+      <div className="mt-20 flex flex-col items-center justify-center pb-20 ">
         <p className="text-[2.2rem] font-medium">
-          <span className="text-[#B17C3F]">This</span> Is What Theres have{" "}
+          <span className="text-[#B17C3F]">This</span> Is What Theres have
           <span className="text-[#B17C3F]">To Say</span>
         </p>
         <div className="w-[44.6rem]">
