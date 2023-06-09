@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
 import Login from '../components/login';
+import { signIn } from 'next-auth/react';
+
 
 export default function LoginButton(
     props: any ={transparent:false}
