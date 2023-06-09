@@ -1,26 +1,35 @@
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import React from "react";
 import Router from "next/router";
+import { useLocation } from "react-router-dom";
 import { addAbortSignal } from "stream";
 import { Asap_Condensed } from "next/font/google";
 import LoginButton from "../components/loginButton";
 import ProfileButton from "../components/profileButton";
+import { motion } from "framer-motion";
+import { useRouter } from "next/router";
 
 export default function Navbar(
-  props: any = { transparent: false, login: false, home: false, about: false }
-  
+  props: any = {
+    transparent: false,
+    login: false,
+    home: false,
+    place: "",
+    about: false,
+  }
 ) {
   const { transparent } = props;
   let navBackground = "bg-white drop-shadow";
   let logoColor = "text-[#B17C3F]";
-  let searchRing = " border-white border-[1px] placeholder:text-[#B17C3F] ";
+  let searchRing =
+    " placeholder:text-[#B17C3F] focus:outline-none focus:border-[#B17C3F] focus:ring-2 focus:ring-[#B17C3F] ";
   let searchBackground = "bg-[#F1F1F1]";
   let searchTextColor = "text-[#B17C3F]";
   let btnTextColor = "text-[#B17C3F]";
   let btnColor = "bg-[#E4D1BC]";
-  let textColor = "text-[#CAC5C5]";
+  let textColor = "text-[#CAC5C5] hover:text-[#B17C3F]";
   let loginTextBtnColor = "text-white";
   let loginBtnColor = "bg-[#B17C3F]";
   let profileTextColor = "text-black";
@@ -43,6 +52,48 @@ export default function Navbar(
   function clickHandler(link: string) {
     return Router.push(link);
   }
+  type NavItemType = {
+    label: string;
+    link: string;
+  };
+  const NavItem = ({ label, link }: NavItemType) => {
+    {
+      // const {pathname}  = useLocation();
+      // const [pathname, setPathname] = useState("");
+      // useEffect(() => {
+      //   setPathname(window.location.pathname);
+      // }, []);
+      const pathname = useRouter().pathname;
+      // let pathname = window.location.pathname;
+      console.log(pathname);
+
+      let param = "h-11 w-32 rounded-full font-light " + textColor;
+      let button = " h-11 w-32 rounded-full top-[22%] absolute -z-10"+ btnColor;
+      if (pathname === link)
+        button = "h-11 w-32 rounded-full top-[22%] absolute -z-10 " + btnColor;
+      if (pathname === link)
+        param =
+          "h-11 w-32 rounded-full text-xl font-normal " +
+          btnTextColor +
+          " ";
+
+      return (
+        <div>
+          <button onClick={() => clickHandler(link)} className={param}>
+            {label}
+
+          </button>
+          {pathname === link && (
+            <motion.div
+              layoutId="underline"
+              transition={{ duration: 0.4 }}
+              className={button + " underline"}
+            ></motion.div>
+          )}
+        </div>
+      );
+    }
+  };
 
   return (
     <nav
@@ -67,7 +118,7 @@ export default function Navbar(
         </div>
         <div className="flex items-center justify-center space-x-12">
           <div className="flex items-center justify-center space-x-4">
-            <form className="h-12 w-[25rem]" action="">
+            <form className="h-12 w-[35rem]" action="">
               <div className="float-right pr-12">
                 <svg
                   className={"absolute mt-2 fill-current " + searchTextColor}
@@ -88,38 +139,16 @@ export default function Navbar(
                   searchTextColor +
                   " focus:outline-none " +
                   searchBackground +
-                  searchRing
+                  searchRing +
+                  "caret-pink-600"
                 }
                 placeholder="Search..."
               ></input>
             </form>
-            <button
-              onClick={() => clickHandler("/")}
-              className={
-                "h-11 w-32 rounded-full text-xl font-normal " +
-                btnTextColor +
-                " " +
-                btnColor
-              }
-            >
-              Home
-            </button>
-            <button
-              onClick={() => clickHandler("/browse")}
-              className={"h-11 w-32 rounded-full font-light " + textColor}
-            >
-              Browse
-            </button>
-            <button
-              className={"h-11 w-32 rounded-full font-light " + textColor}
-            >
-              Build
-            </button>
-            <button
-              className={"h-11 w-32 rounded-full font-light " + textColor}
-            >
-              About Us
-            </button>
+            <NavItem label="Home" link="/"></NavItem>
+            <NavItem label="Browse" link="/browse"></NavItem>
+            <NavItem label="Build" link="/build"></NavItem>
+            <NavItem label="About" link="/aboutUs"></NavItem>
           </div>
           {props.login ? (
             <ProfileButton transparent={transparent}></ProfileButton>
