@@ -3,7 +3,7 @@ import Link from "next/link";
 import Slider from "./Slider";
 import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
-
+import ChatButton from "@/components/chatButton";
 import { data } from "./browse";
 import { designerData } from "./designer";
 import Image from "next/image";
@@ -32,6 +32,7 @@ export default function Landing() {
 
   return (
     <div className="transition-all ease-linear duration-300">
+      <ChatButton></ChatButton>
       <Navbar transparent={transparent} home={true} login={false}/>
       <div
         className="flex min-h-screen flex-col bg-cover bg-center object-contain text-black"
