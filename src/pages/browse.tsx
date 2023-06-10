@@ -249,8 +249,8 @@ export default function Browse() {
 
   return (
     <div>
-      <Navbar></Navbar>
-      <div className="sticky top-0 z-50 flex justify-between bg-white px-16 py-5">
+      {/* <Navbar></Navbar> */}
+      <div className="sticky top-20 z-40 flex justify-between bg-white px-16 py-5">
         <div className="flex space-x-3 ml-12 ">
           <button className="h-12 w-28 rounded-3xl bg-[#B17C3F] text-xl text-white">
             Buy
