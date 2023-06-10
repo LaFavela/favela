@@ -1,7 +1,7 @@
 import {useState} from "react";
 import Image from "next/image";
-import Navbar from "./navbar";
-import Footer from "./footer";
+import Navbar from "@/components/navbar";
+import Footer from "@/components/footer";
 import { Fragment } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import calculate from "@/tools/calculate";
