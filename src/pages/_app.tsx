@@ -1,17 +1,45 @@
-import '@/styles/globals.css'
-import type { AppProps } from 'next/app'
-import { Poppins } from 'next/font/google'
-
-const poppins = Poppins({
-  subsets: ['latin'],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  variable: '--font-poppins',
-});
+import Providers from "@/components/Providers";
+import "@/styles/globals.css";
+import type { AppProps } from "next/app";
+import "@/styles/globals.css";
+import Navbar from "@/components/navbar";
+import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
+import {
+  addTransparentChangeListener,
+  removeTransparentChangeListener,
+} from "../tools/transparent";
 
 export default function App({ Component, pageProps }: AppProps) {
+  const router = useRouter();
+  const [transparent, setTransparent] = useState(true);
+  let home = false;
+  useEffect(() => {
+    const handleChange = (value: boolean) => {
+      setTransparent(value);
+    };
+    addTransparentChangeListener(handleChange);
+    return () => {
+      removeTransparentChangeListener(handleChange);
+    };
+  }, []);
+  console.log(transparent);
+
+  let temp = transparent;
+  if (router.pathname === "/") {
+    home = true;
+  } else {
+    temp = false;
+    home = false;
+  }
+  console.log(temp);
+
   return (
-    <main className={`${poppins.variable}`}>
-      <Component {...pageProps} />
-    </main>
+    <Providers>
+      <main>
+        <Navbar home={home} transparent={temp} login={true}></Navbar>
+        <Component {...pageProps} />
+      </main>
+    </Providers>
   );
 }
