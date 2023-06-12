@@ -86,43 +86,6 @@ export function Infrastructure() {
             );
           })}
         </div>
-
-        {/* <div className="flex flex-row space-x-20">
-          <div className="flex w-6/12 flex-row items-center space-x-4 pt-9">
-            <ArrowLogo></ArrowLogo>
-            <p className="text-2xl font-normal">Kamar Mandi</p>
-          </div>
-          <div className="flex w-6/12 flex-row items-center space-x-4 pt-9">
-            <ArrowLogo></ArrowLogo>
-            <p className="text-2xl font-normal">Kamar Pembantu</p>
-          </div>
-        </div>
-        <div className="flex flex-row space-x-20">
-          <div className="flex w-6/12 flex-row items-center space-x-4 pt-9">
-            <ArrowLogo></ArrowLogo>
-            <p className="text-2xl font-normal">Garasi</p>
-          </div>
-          <div className="flex w-6/12 flex-row items-center space-x-4 pt-9">
-            <ArrowLogo></ArrowLogo>
-            <p className="text-2xl font-normal">Teras</p>
-          </div>
-        </div>
-        <div className="flex flex-row space-x-20">
-          <div className="flex w-6/12 flex-row items-center space-x-4 pt-9">
-            <ArrowLogo></ArrowLogo>
-            <p className="text-2xl font-normal">Kolam Aerobik</p>
-          </div>
-          <div className="flex w-6/12 flex-row items-center space-x-4 pt-9">
-            <ArrowLogo></ArrowLogo>
-            <p className="text-2xl font-normal">Teras Terbuka</p>
-          </div>
-        </div>
-        <div className="flex flex-row space-x-20">
-          <div className="flex w-6/12 flex-row items-center space-x-4 pt-9">
-            <ArrowLogo></ArrowLogo>
-            <p className="text-2xl font-normal">Lapangan Basket</p>
-          </div>
-        </div> */}
       </div>
     </div>
   );
