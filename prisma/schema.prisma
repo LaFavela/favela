@@ -164,23 +164,27 @@ model Rating {
 }
 
 model Provinsi {
-  id            String          @id @default(uuid())
+  id            Int             @id @default(autoincrement())
   kabupatenKota KabupatenKota[]
   namaProvinsi  String
+  latitude      Decimal
+  longitude     Decimal
 }
 
 model KabupatenKota {
-  id         String   @id @default(uuid())
+  id         Int   @id @default(autoincrement())
   nama       String
-  Provinsi   Provinsi @relation(fields: [provinsiId], references: [id])
-  provinsiId String
+  provinsi   Provinsi @relation(fields: [provinsiId], references: [id])
+  provinsiId Int
+  latitude   Decimal
+  longitude  Decimal
   Alamat     Alamat[]
 }
 
 model Alamat {
   id_alamat       String        @id @default(uuid())
   kabupatenKota   KabupatenKota @relation(fields: [kabupatenKotaId], references: [id])
-  kabupatenKotaId String
+  kabupatenKotaId Int
   kecamatan       String
   kelurahan       String
   kode_pos        Int
