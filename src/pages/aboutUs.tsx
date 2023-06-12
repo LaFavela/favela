@@ -1,5 +1,4 @@
-import Navbar from "./navbar";
-import Footer from "./footer";
+import Footer from "@/components/footer";
 import Image from "next/image";
 
 const data = [
@@ -23,7 +22,6 @@ const data = [
 export default function AboutUs() {
   return (
     <div className="bg-black">
-      <Navbar></Navbar>
       <div className="flex justify-center space-x-[4.1875rem]">
         {data.map((item, index) => (
           <div key={index} className="mt-[7.25rem] flex">
