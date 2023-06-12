@@ -14,7 +14,7 @@ const poppins = Poppins({
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
-  const [transparent, setTransparent] = useState(false);
+  const [transparent, setTransparent] = useState(true);
   let home = false;
   useEffect(() => {
     const handleChange = (value: boolean) => {
@@ -41,6 +41,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <Navbar 
       home={home} 
       transparent={temp}
+      login={true}
       ></Navbar>
       <Component {...pageProps} />
     </main>
