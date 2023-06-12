@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from "react";
 import { signIn } from "next-auth/react";
+import { set } from "react-hook-form";
 
 // const username = "admin";
 // const email = "ramadhanialqadri12@gmail.com";
@@ -10,18 +11,33 @@ import { signIn } from "next-auth/react";
 export default function Login(props: { visible: any; onClose: any }) {
    const usernameLogin = useRef<any>(null);
    const passwordLogin = useRef<any>(null);
+   const rememberMe = useRef<any>(null);
 
    const handleSubmitLogin = async (event: any) => {
-      const result = await signIn("credentials", {
-         username: usernameLogin.current?.value,
-         password: passwordLogin.current?.value,
-      });
+      event.preventDefault();
+      const result = await signIn("username-login", {
+         redirect: false,
+         username: usernameLogin?.current.value,
+         password: passwordLogin?.current.value,
+         rememberMe: rememberMe?.current.checked,
+         error: "Invalid username or password",
+      })
+         .then((res) => {
+            if (res?.error) {
+               alert("Login Failed");
+            }
+         })
+         .catch((err) => {
+            alert("Login Failed");
+         });
    };
 
    const usernameRegister = useRef<any>(null);
    const emailRegister = useRef<any>(null);
    const passwordRegister = useRef<any>(null);
    const passwordConfirmRegister = useRef<any>(null);
+
+   const accept = useRef<any>(null);
 
    const handleSubmitRegister = async (event: any) => {
       event.preventDefault();
@@ -32,7 +48,11 @@ export default function Login(props: { visible: any; onClose: any }) {
          alert("Password and Confirm Password must be same");
          return;
       }
-      await fetch("/api/register", {
+      if (!accept.current?.checked) {
+         alert("CCAPET THE TERMS AND SERVICE");
+         return;
+      }
+      const res = await fetch("/api/register", {
          method: "POST",
          headers: {
             "Content-Type": "application/json",
@@ -42,6 +62,14 @@ export default function Login(props: { visible: any; onClose: any }) {
             email: emailRegister.current?.value,
             password: passwordRegister.current?.value,
          }),
+         // callback if success
+      }).then((res) => {
+         if (res.status === 200) {
+            alert("Register Success");
+            setShowRegister(false);
+         } else {
+            alert("Register Failed");
+         }
       });
    };
 
@@ -137,9 +165,10 @@ export default function Login(props: { visible: any; onClose: any }) {
                                     focus:outline-none
                                     focus:outline
                                     "
+                        ref={rememberMe}
                      />
                      <label
-                        for="checkbox1"
+                        htmlFor="checkbox1"
                         className="ml-[0.5rem] w-full cursor-pointer text-[0.625rem] font-normal text-[#B17C3F]"
                      >
                         Keep me logged in
@@ -249,7 +278,11 @@ export default function Login(props: { visible: any; onClose: any }) {
                   </div>
                </div>
                {/* Kontainer untuk form Register */}
-               <form onSubmit={handleSubmitLogin} className="w-1/2 " action="">
+               <form
+                  onSubmit={handleSubmitRegister}
+                  className="w-1/2 "
+                  action=""
+               >
                   {/* Register*/}
                   <p className="ml-[2.3125rem] mt-[1.5625rem] text-[1.25rem] font-semibold text-[#B17C3F]">
                      Register
@@ -261,10 +294,9 @@ export default function Login(props: { visible: any; onClose: any }) {
                      </p>
                      <input
                         type="text"
-                        value={formValues.username || ""}
-                        onChange={handleChange}
                         className="mt-[0.2rem] h-[2.5rem] w-[22.375rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-[0.9rem] text-[#B17C3F] placeholder:text-[0.8rem] placeholder:font-light "
                         placeholder="Username"
+                        ref={usernameRegister}
                      />
                   </div>
                   {/* Email */}
@@ -274,10 +306,9 @@ export default function Login(props: { visible: any; onClose: any }) {
                      </p>
                      <input
                         type="email"
-                        value={formValues.email || ""}
-                        onChange={handleChange}
                         className="mt-[0.2rem] h-[2.5rem] w-[22.375rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-[0.9rem] text-[#B17C3F] placeholder:text-[0.8rem] placeholder:font-light "
                         placeholder="Email"
+                        ref={emailRegister}
                      />
                   </div>
                   {/* Password */}
@@ -288,10 +319,9 @@ export default function Login(props: { visible: any; onClose: any }) {
                         </p>
                         <input
                            type="password"
-                           value={formValues.password || ""}
-                           onChange={handleChange}
                            className="mt-[0.2rem] h-[2.5rem] w-[10.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-[0.9rem] text-[#B17C3F] placeholder:text-[0.8rem] placeholder:font-light "
                            placeholder="Password"
+                           ref={passwordRegister}
                         />
                      </div>
                      <div>
@@ -300,10 +330,9 @@ export default function Login(props: { visible: any; onClose: any }) {
                         </p>
                         <input
                            type="password"
-                           value={formValues.password || ""}
-                           onChange={handleChange}
                            className="mt-[0.2rem] h-[2.5rem] w-[10.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-[0.9rem] text-[#B17C3F] placeholder:text-[0.8rem] placeholder:font-light "
                            placeholder="Password"
+                           ref={passwordConfirmRegister}
                         />
                      </div>
                   </div>
@@ -319,8 +348,6 @@ export default function Login(props: { visible: any; onClose: any }) {
                   <div className="ml-[2.3125rem] mt-[0.3rem] flex w-[22.375rem] items-center">
                      <input
                         type="checkbox"
-                        checked={formValues.keepLogin || false}
-                        onChange={handleChange}
                         id="checkbox1"
                         className="
                                 peer 
@@ -347,9 +374,10 @@ export default function Login(props: { visible: any; onClose: any }) {
                                 focus:outline-none
                                 focus:outline
                                 "
+                        ref={accept}
                      />
                      <label
-                        // for="checkbox1"
+                        htmlFor="checkbox1"
                         className="ml-[0.5rem] w-full cursor-pointer text-[0.625rem] font-normal text-[#B17C3F]"
                      >
                         have read and accept the Terms and Condition
