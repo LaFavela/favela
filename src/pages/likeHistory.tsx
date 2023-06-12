@@ -1,6 +1,5 @@
 import {useState} from "react";
 import Image from "next/image";
-import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import { Fragment } from "react";
 import { Listbox, Transition } from "@headlessui/react";
@@ -79,7 +78,6 @@ export default function LikeHistory() {
     const [selectedFilter, setSelectedFilter] = useState(filter[0]);
     return (
         <div>
-            <Navbar></Navbar>
             
             <div className="flex justify-center  ">
                 <div className="mt-[2.625rem] space-y-[2.4375rem] mb-11 justify-start w-[83.7rem]">

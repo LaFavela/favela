@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 
 const data = "rumahku";
@@ -50,7 +49,6 @@ export default function DesignForm() {
   };
   return (
     <div>
-      <Navbar></Navbar>
       <div className="flex justify-center ">
         <form action="">
           <div className="mb-11 mt-[2.625rem] space-y-[2.4375rem]">

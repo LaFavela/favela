@@ -1,7 +1,6 @@
 import {useState} from "react";
-import Navbar from './navbar';
-import Footer from './footer';
-import Map from "./maps";
+import Footer from '@/components/footer';
+import Map from "@/components/maps";
 
 export default function SellPropertyForm() {
     const [images, setImages] = useState([])
@@ -21,7 +20,6 @@ export default function SellPropertyForm() {
     }
     return (
         <div>
-            <Navbar></Navbar>
             <div className="flex justify-center ">
                 <div className="mt-[2.625rem] space-y-[2.4375rem] mb-11">
                     {/* Tittle */}
