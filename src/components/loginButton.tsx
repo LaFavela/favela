@@ -1,11 +1,10 @@
 import React, {useState} from 'react';
 import Login from '../components/login';
-import { signIn } from 'next-auth/react';
-
+import { useSession } from 'next-auth/react';
 
 export default function LoginButton(
     props: any ={transparent:false}
-){
+){    
     const [showLogin, setShowLogin] = useState(false);
     const handleOnClose = () => setShowLogin(false);
     

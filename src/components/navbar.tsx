@@ -6,9 +6,10 @@ import React from "react";
 import Router from "next/router";
 import { useLocation } from "react-router-dom";
 import LoginButton from "@/components/loginButton";
-import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
+
 
 export default function Navbar(
    props: any = {
@@ -19,7 +20,9 @@ export default function Navbar(
       about: false,
    }
 ) {
-   let { data: session } = useSession();
+   const { data : session } = useSession();
+   console.log(session);
+   
    const { transparent } = props;
    let navBackground = "bg-white drop-shadow";
    let logoColor = "text-[#B17C3F]";
@@ -155,7 +158,7 @@ export default function Navbar(
                   <NavItem label="Build" link="/build"></NavItem>
                   <NavItem label="About" link="/aboutUs"></NavItem>
                </div>
-               {props.login ? (
+               {session ? (
                   <ProfileButton transparent={transparent}></ProfileButton>
                ) : (
                   <LoginButton transparent={transparent}></LoginButton>

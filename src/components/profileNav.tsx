@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {motion, AnimatePresence} from "framer-motion";
+import { signOut } from "next-auth/react";
 export default function ProfileNav(
   props: any = {
     visible: false,
@@ -177,7 +178,7 @@ export default function ProfileNav(
                   </p>
                 </div>
                 {/* Log Out */}
-                <div className="flex w-[11.5rem] items-center rounded-[0.5rem] bg-white py-[0.3rem] hover:bg-[#EAEAEA]">
+                <button onClick={() => signOut()} className="flex w-[11.5rem] items-center rounded-[0.5rem] bg-white py-[0.3rem] hover:bg-[#EAEAEA]">
                   <svg
                     className="ml-[0.5rem]"
                     width="40"
@@ -198,7 +199,7 @@ export default function ProfileNav(
                   <p className="ml-[1rem] text-[1rem] font-medium text-black">
                     Log Out
                   </p>
-                </div>
+                </button>
               </div>
             </div>
           </motion.div>
