@@ -3,7 +3,7 @@ import Navbar from "@/components/navbar";
 import Link from "next/link";
 import Image from "next/image";
 import Footer from "../components/footer";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Map from "@/components/maps";
 import Carousel from "@/components/carousel";
 import { Modal } from "@mui/material";
@@ -11,6 +11,7 @@ import React from "react";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 import { AnyAaaaRecord } from "dns";
+// import { Review } from "./merchantProfile";
 
 const data = [
   {
@@ -37,26 +38,212 @@ const prices = [
   },
 ];
 
-export default function Product() {
-  function ArrowLogo() {
-    return (
-      <div>
-        <svg
-          width="28"
-          height="21"
-          viewBox="0 0 28 21"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M15.1843 0.839623L2.24019 0.839624C1.64605 0.839624 1.07625 1.01522 0.656137 1.32778C0.23602 1.64034 -8.20696e-07 2.06426 -8.01375e-07 2.50629L-7.28522e-08 19.1729C-5.35306e-08 19.615 0.236021 20.0389 0.656137 20.3514C1.07626 20.664 1.64606 20.8396 2.24019 20.8396L15.1843 20.8396C15.4943 20.8396 15.801 20.7918 16.0849 20.6991C16.3688 20.6064 16.6238 20.4709 16.8336 20.3011L27.4017 11.9677L27.4171 11.9563C27.7922 11.6495 28 11.2496 28 10.8349C28 10.4202 27.7922 10.0204 27.4171 9.71357C27.4117 9.71002 27.4065 9.70619 27.4017 9.70211L16.8336 1.36879C16.6227 1.2007 16.3672 1.06691 16.0834 0.975838C15.7995 0.88477 15.4934 0.838391 15.1843 0.839623Z"
-            fill="#D0D0D0"
-          />
-        </svg>
-      </div>
-    );
-  }
+const infrastructure = [
+  "Kamar mandi",
+  "Garasi",
+  "Kolam Aerobik",
+  "Lapangan Basket",
+  "Kamar Pembantu",
+  "Teras",
+  "Teras Terbuka",
+];
 
+function ArrowLogo() {
+  return (
+    <div>
+      <svg
+        width="28"
+        height="21"
+        viewBox="0 0 28 21"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M15.1843 0.839623L2.24019 0.839624C1.64605 0.839624 1.07625 1.01522 0.656137 1.32778C0.23602 1.64034 -8.20696e-07 2.06426 -8.01375e-07 2.50629L-7.28522e-08 19.1729C-5.35306e-08 19.615 0.236021 20.0389 0.656137 20.3514C1.07626 20.664 1.64606 20.8396 2.24019 20.8396L15.1843 20.8396C15.4943 20.8396 15.801 20.7918 16.0849 20.6991C16.3688 20.6064 16.6238 20.4709 16.8336 20.3011L27.4017 11.9677L27.4171 11.9563C27.7922 11.6495 28 11.2496 28 10.8349C28 10.4202 27.7922 10.0204 27.4171 9.71357C27.4117 9.71002 27.4065 9.70619 27.4017 9.70211L16.8336 1.36879C16.6227 1.2007 16.3672 1.06691 16.0834 0.975838C15.7995 0.88477 15.4934 0.838391 15.1843 0.839623Z"
+          fill="#D0D0D0"
+        />
+      </svg>
+    </div>
+  );
+}
+
+export function Infrastructure() {
+  return (
+    <div>
+      <div className="">
+        <div>
+          <p className="text-4xl font-medium">Sarana & Prasarana</p>
+        </div>
+        <div className="grid grid-cols-2 gap-5 mt-10">
+          {infrastructure.map((infrastructure, idx) => {
+            return (
+              <div key={idx}>
+                <div className="flex">
+                  <ArrowLogo />
+                  <span className="ml-5 text-xly">{infrastructure}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* <div className="flex flex-row space-x-20">
+          <div className="flex w-6/12 flex-row items-center space-x-4 pt-9">
+            <ArrowLogo></ArrowLogo>
+            <p className="text-2xl font-normal">Kamar Mandi</p>
+          </div>
+          <div className="flex w-6/12 flex-row items-center space-x-4 pt-9">
+            <ArrowLogo></ArrowLogo>
+            <p className="text-2xl font-normal">Kamar Pembantu</p>
+          </div>
+        </div>
+        <div className="flex flex-row space-x-20">
+          <div className="flex w-6/12 flex-row items-center space-x-4 pt-9">
+            <ArrowLogo></ArrowLogo>
+            <p className="text-2xl font-normal">Garasi</p>
+          </div>
+          <div className="flex w-6/12 flex-row items-center space-x-4 pt-9">
+            <ArrowLogo></ArrowLogo>
+            <p className="text-2xl font-normal">Teras</p>
+          </div>
+        </div>
+        <div className="flex flex-row space-x-20">
+          <div className="flex w-6/12 flex-row items-center space-x-4 pt-9">
+            <ArrowLogo></ArrowLogo>
+            <p className="text-2xl font-normal">Kolam Aerobik</p>
+          </div>
+          <div className="flex w-6/12 flex-row items-center space-x-4 pt-9">
+            <ArrowLogo></ArrowLogo>
+            <p className="text-2xl font-normal">Teras Terbuka</p>
+          </div>
+        </div>
+        <div className="flex flex-row space-x-20">
+          <div className="flex w-6/12 flex-row items-center space-x-4 pt-9">
+            <ArrowLogo></ArrowLogo>
+            <p className="text-2xl font-normal">Lapangan Basket</p>
+          </div>
+        </div> */}
+      </div>
+    </div>
+  );
+}
+
+export function Details() {
+  return (
+    <div>
+      <div id="details" className="">
+        <div>
+          <p className="text-4xl font-medium">Detail</p>
+        </div>
+        <div className="flex flex-row space-x-20">
+          <div className="flex w-6/12 flex-col space-y-2 pt-9">
+            <p className="text-sm font-medium text-grayhov">Tipe Properti</p>
+            <p className="text-lg font-medium">Villa</p>
+            <div className="relative flex flex-col space-y-3 rounded-full border-b-2"></div>
+          </div>
+          <div className="flex w-6/12 flex-col space-y-2 pt-9">
+            <p className="text-sm font-medium text-grayhov">ID Listing</p>
+            <p className="text-lg font-medium">20862274</p>
+            <div className="relative flex flex-col space-y-3 rounded-full border-b-2"></div>
+          </div>
+        </div>
+        <div className="flex flex-row space-x-20">
+          <div className="flex w-6/12 flex-col space-y-2 pt-9">
+            <p className="text-sm font-medium text-grayhov">Pengembang</p>
+            <p className="text-lg font-medium">ProbHunt</p>
+            <div className="relative flex flex-col space-y-3 rounded-full border-b-2"></div>
+          </div>
+          <div className="flex w-6/12 flex-col space-y-2 pt-9">
+            <p className="text-sm font-medium text-grayhov">Listrik</p>
+            <p className="text-lg font-medium">N/A</p>
+            <div className="relative flex flex-col space-y-3 rounded-full border-b-2"></div>
+          </div>
+        </div>
+        <div className="flex flex-row space-x-20">
+          <div className="flex w-6/12 flex-col space-y-2 pt-9">
+            <p className="text-sm font-medium text-grayhov">Sertifikat</p>
+            <p className="text-lg font-medium">SHM - Sertifikat Hak Milik</p>
+            <div className="relative flex flex-col space-y-3 rounded-full border-b-2"></div>
+          </div>
+          <div className="flex w-6/12 flex-col space-y-2 pt-9">
+            <p className="text-sm font-medium text-grayhov">Terdaftar Pada</p>
+            <p className="text-lg font-medium">1 Jam Lalu</p>
+            <div className="relative flex flex-col space-y-3 rounded-full border-b-2"></div>
+          </div>
+        </div>
+        <div className="flex flex-row space-x-20">
+          <div className="flex w-6/12 flex-col space-y-2 pt-9">
+            <p className="text-sm font-medium text-grayhov">Tahun Selesai</p>
+            <p className="text-lg font-medium">2017</p>
+            <div className="relative flex flex-col space-y-3 rounded-full border-b-2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function Location() {
+  return (
+    <div>
+      <div className="">
+        <div className="">
+          <p className="text-4xl font-medium">Lokasi</p>
+          <div></div>
+          <div className="flex flex-row space-x-20">
+            <div className="flex w-6/12 flex-col space-y-2 pt-9">
+              <p className="text-sm font-medium text-grayhov">Tipe Properti</p>
+              <p className="text-lg font-medium">Villa</p>
+              <div className="relative flex flex-col space-y-3 rounded-full border-b-2"></div>
+            </div>
+            <div className="flex w-6/12 flex-col space-y-2 pt-9">
+              <p className="text-sm font-medium text-grayhov">ID Listing</p>
+              <p className="text-lg font-medium">20862274</p>
+              <div className="relative flex flex-col space-y-3 rounded-full border-b-2"></div>
+            </div>
+          </div>
+          <div className="flex flex-row space-x-20">
+            <div className="flex w-6/12 flex-col space-y-2 pt-9">
+              <p className="text-sm font-medium text-grayhov">Pengembang</p>
+              <p className="text-lg font-medium">ProbHunt</p>
+              <div className="relative flex flex-col space-y-3 rounded-full border-b-2"></div>
+            </div>
+            <div className="flex w-6/12 flex-col space-y-2 pt-9">
+              <p className="text-sm font-medium text-grayhov">Listrik</p>
+              <p className="text-lg font-medium">N/A</p>
+              <div className="relative flex flex-col space-y-3 rounded-full border-b-2"></div>
+            </div>
+          </div>
+          <div className="flex flex-row space-x-20">
+            <div className="flex w-6/12 flex-col space-y-2 pt-9">
+              <p className="text-sm font-medium text-grayhov">Sertifikat</p>
+              <p className="text-lg font-medium">SHM - Sertifikat Hak Milik</p>
+              <div className="relative flex flex-col space-y-3 rounded-full border-b-2"></div>
+            </div>
+            <div className="flex w-6/12 flex-col space-y-2 pt-9">
+              <p className="text-sm font-medium text-grayhov">Terdaftar Pada</p>
+              <p className="text-lg font-medium">1 Jam Lalu</p>
+              <div className="relative flex flex-col space-y-3 rounded-full border-b-2"></div>
+            </div>
+          </div>
+          <div className="flex flex-row space-x-20">
+            <div className="flex w-6/12 flex-col space-y-2 pt-9">
+              <p className="text-sm font-medium text-grayhov">Tahun Selesai</p>
+              <p className="text-lg font-medium">2017</p>
+              <div className="relative flex flex-col space-y-3 rounded-full border-b-2"></div>
+            </div>
+          </div>
+        </div>
+        {/* details - end */}
+        <div className="mt-14 h-[80vh] w-full overflow-hidden rounded-3xl ">
+          <Map lat={-8.59194106934345} lng={116.08996926363294}></Map>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function Product() {
   function PopupPayment() {
     const closePopup = (event: any) => {
       event.preventDefault();
@@ -136,7 +323,7 @@ export default function Product() {
 
     const [selectedOption, setSelectedOption] = useState("");
 
-    const handleChange = (event:any) => {
+    const handleChange = (event: any) => {
       setSelectedOption(event.target.value);
     };
 
@@ -188,7 +375,11 @@ export default function Product() {
                       <option value="Year">Year</option>
                       <option value="Month">Month</option>
                     </select>
-                    {selectedOption === "Year" ? prices[0].year : selectedOption === "Month" ? prices[0].month : ""}
+                    {selectedOption === "Year"
+                      ? prices[0].year
+                      : selectedOption === "Month"
+                      ? prices[0].month
+                      : ""}
                   </span>
                 </div>
               </div>
@@ -212,6 +403,62 @@ export default function Product() {
       </div>
     );
   }
+
+  const navRef = useRef<HTMLDivElement>(null);
+  const detailsRef = useRef<HTMLDivElement>(null);
+  const infrastructureRef = useRef<HTMLDivElement>(null);
+  const locationRef = useRef<HTMLDivElement>(null);
+  const reviewRef = useRef<HTMLDivElement>(null);
+
+  const [activeSection, setActiveSection] = useState("");
+
+  const scrollToSection = (
+    ref: React.RefObject<HTMLDivElement>,
+    section: string
+  ) => {
+    if (ref.current) {
+      ref.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+      setActiveSection(section);
+    }
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition =
+        window.pageYOffset || document.documentElement.scrollTop;
+      const navHeight = navRef.current?.offsetHeight || 0;
+
+      if (scrollPosition < detailsRef.current!.offsetTop - navHeight) {
+        setActiveSection("details");
+      } else if (
+        scrollPosition >= detailsRef.current!.offsetTop - navHeight &&
+        scrollPosition < infrastructureRef.current!.offsetTop - navHeight
+      ) {
+        setActiveSection("details");
+      } else if (
+        scrollPosition >= infrastructureRef.current!.offsetTop - navHeight &&
+        scrollPosition < locationRef.current!.offsetTop - navHeight
+      ) {
+        setActiveSection("infrastructure");
+      } else if (
+        scrollPosition >= locationRef.current!.offsetTop - navHeight &&
+        scrollPosition < reviewRef.current!.offsetTop - navHeight
+      ) {
+        setActiveSection("location");
+      } else if (scrollPosition >= reviewRef.current!.offsetTop - navHeight) {
+        setActiveSection("review");
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
     <div>
@@ -380,204 +627,89 @@ export default function Product() {
         {/* description - start */}
         <div className="flex flex-col space-y-1">
           {/* section -start */}
-          <nav className="sticky top-0 z-10 mt-10 flex flex-col space-y-1 bg-white pt-10">
+          <nav
+            ref={navRef}
+            className="sticky top-16 z-10 mt-10 flex flex-col space-y-1 bg-white pt-10"
+          >
             <div className="flex flex-row text-center text-xl text-[#D0D0D0]">
-              <div className="w-[175px] text-[#B17C3F]">
-                <button className="">Detail</button>
-                <div className="absolute z-10 mt-1 w-[175px] rounded-full border-b-8 border-[#B17C3F]"></div>
+              <div
+                className={`w-[175px] text-[#B17C3F] ${
+                  activeSection === "details" ? "text-[#B17C3F]" : ""
+                }`}
+              >
+                <button onClick={() => scrollToSection(detailsRef, "details")}>
+                  Detail
+                </button>
+                <div
+                  className={`absolute z-10 mt-1 w-[175px] rounded-full border-b-8 ${
+                    activeSection === "details"
+                      ? "border-[#B17C3F]"
+                      : "border-[#D0D0D0]"
+                  }`}
+                ></div>
               </div>
-              <div className="w-[325px]">
-                <button className="">Sarana & Prasarana</button>
-                <div className="absolute z-10 mt-1 w-[325px] rounded-full border-b-8 border-[#D0D0D0]"></div>
+              <div
+                className={`w-[325px] ${
+                  activeSection === "infrastructure" ? "text-[#B17C3F]" : ""
+                }`}
+              >
+                <button
+                  onClick={() =>
+                    scrollToSection(infrastructureRef, "infrastructure")
+                  }
+                >
+                  Sarana & Prasarana
+                </button>
+                <div
+                  className={`absolute z-10 mt-1 w-[325px] rounded-full border-b-8 ${
+                    activeSection === "infrastructure"
+                      ? "border-[#B17C3F]"
+                      : "border-[#D0D0D0]"
+                  }`}
+                ></div>
               </div>
-              <div className="w-[175px]">
-                <button className="">Lokasi</button>
-                <div className="absolute z-10 mt-1 w-[175px] rounded-full border-b-8 border-[#D0D0D0]"></div>
+              <div
+                className={`w-[175px] ${
+                  activeSection === "location" ? "text-[#B17C3F]" : ""
+                }`}
+              >
+                <button
+                  onClick={() => scrollToSection(locationRef, "location")}
+                >
+                  Lokasi
+                </button>
+                <div
+                  className={`absolute z-10 mt-1 w-[175px] rounded-full border-b-8 ${
+                    activeSection === "location"
+                      ? "border-[#B17C3F]"
+                      : "border-[#D0D0D0]"
+                  }`}
+                ></div>
               </div>
-              <div className="w-[175px]">
-                <button className="">Ulasan</button>
-                <div className="absolute z-10 mt-1 w-[175px] rounded-full border-b-8 border-[#D0D0D0]"></div>
+              <div
+                className={`w-[175px] ${
+                  activeSection === "review" ? "text-[#B17C3F]" : ""
+                }`}
+              >
+                <button onClick={() => scrollToSection(reviewRef, "review")}>
+                  Ulasan
+                </button>
+                <div
+                  className={`absolute z-10 mt-1 w-[175px] rounded-full border-b-8 ${
+                    activeSection === "review"
+                      ? "border-[#B17C3F]"
+                      : "border-[#D0D0D0]"
+                  }`}
+                ></div>
               </div>
             </div>
             <div className="rounded-full border-b-8 border-[#D0D0D0] "></div>
           </nav>
           <div className="flex flex-col space-y-10 px-24 pt-9">
-            {/* details */}
-            <div id="details" className="">
-              <div>
-                <p className="text-4xl font-medium">Detail</p>
-              </div>
-              <div className="flex flex-row space-x-20">
-                <div className="flex w-6/12 flex-col space-y-2 pt-9">
-                  <p className="text-sm font-medium text-grayhov">
-                    Tipe Properti
-                  </p>
-                  <p className="text-lg font-medium">Villa</p>
-                  <div className="relative flex flex-col space-y-3 rounded-full border-b-2"></div>
-                </div>
-                <div className="flex w-6/12 flex-col space-y-2 pt-9">
-                  <p className="text-sm font-medium text-grayhov">ID Listing</p>
-                  <p className="text-lg font-medium">20862274</p>
-                  <div className="relative flex flex-col space-y-3 rounded-full border-b-2"></div>
-                </div>
-              </div>
-              <div className="flex flex-row space-x-20">
-                <div className="flex w-6/12 flex-col space-y-2 pt-9">
-                  <p className="text-sm font-medium text-grayhov">Pengembang</p>
-                  <p className="text-lg font-medium">ProbHunt</p>
-                  <div className="relative flex flex-col space-y-3 rounded-full border-b-2"></div>
-                </div>
-                <div className="flex w-6/12 flex-col space-y-2 pt-9">
-                  <p className="text-sm font-medium text-grayhov">Listrik</p>
-                  <p className="text-lg font-medium">N/A</p>
-                  <div className="relative flex flex-col space-y-3 rounded-full border-b-2"></div>
-                </div>
-              </div>
-              <div className="flex flex-row space-x-20">
-                <div className="flex w-6/12 flex-col space-y-2 pt-9">
-                  <p className="text-sm font-medium text-grayhov">Sertifikat</p>
-                  <p className="text-lg font-medium">
-                    SHM - Sertifikat Hak Milik
-                  </p>
-                  <div className="relative flex flex-col space-y-3 rounded-full border-b-2"></div>
-                </div>
-                <div className="flex w-6/12 flex-col space-y-2 pt-9">
-                  <p className="text-sm font-medium text-grayhov">
-                    Terdaftar Pada
-                  </p>
-                  <p className="text-lg font-medium">1 Jam Lalu</p>
-                  <div className="relative flex flex-col space-y-3 rounded-full border-b-2"></div>
-                </div>
-              </div>
-              <div className="flex flex-row space-x-20">
-                <div className="flex w-6/12 flex-col space-y-2 pt-9">
-                  <p className="text-sm font-medium text-grayhov">
-                    Tahun Selesai
-                  </p>
-                  <p className="text-lg font-medium">2017</p>
-                  <div className="relative flex flex-col space-y-3 rounded-full border-b-2"></div>
-                </div>
-              </div>
-            </div>
-            {/* details - end */}
-            {/* Sarana & Prasarana */}
-            <div className="">
-              <div>
-                <p className="text-4xl font-medium">Sarana & Prasarana</p>
-              </div>
-              <div className="flex flex-row space-x-20">
-                <div className="flex w-6/12 flex-row items-center space-x-4 pt-9">
-                  <ArrowLogo></ArrowLogo>
-                  <p className="text-2xl font-normal">Kamar Mandi</p>
-                </div>
-                <div className="flex w-6/12 flex-row items-center space-x-4 pt-9">
-                  <ArrowLogo></ArrowLogo>
-                  <p className="text-2xl font-normal">Kamar Pembantu</p>
-                </div>
-              </div>
-              <div className="flex flex-row space-x-20">
-                <div className="flex w-6/12 flex-row items-center space-x-4 pt-9">
-                  <ArrowLogo></ArrowLogo>
-                  <p className="text-2xl font-normal">Garasi</p>
-                </div>
-                <div className="flex w-6/12 flex-row items-center space-x-4 pt-9">
-                  <ArrowLogo></ArrowLogo>
-                  <p className="text-2xl font-normal">Teras</p>
-                </div>
-              </div>
-              <div className="flex flex-row space-x-20">
-                <div className="flex w-6/12 flex-row items-center space-x-4 pt-9">
-                  <ArrowLogo></ArrowLogo>
-                  <p className="text-2xl font-normal">Kolam Aerobik</p>
-                </div>
-                <div className="flex w-6/12 flex-row items-center space-x-4 pt-9">
-                  <ArrowLogo></ArrowLogo>
-                  <p className="text-2xl font-normal">Teras Terbuka</p>
-                </div>
-              </div>
-              <div className="flex flex-row space-x-20">
-                <div className="flex w-6/12 flex-row items-center space-x-4 pt-9">
-                  <ArrowLogo></ArrowLogo>
-                  <p className="text-2xl font-normal">Lapangan Basket</p>
-                </div>
-              </div>
-            </div>
-            {/* Sarana & Prasarana - end */}
-            {/* Lokasi */}
-            <div className="">
-              <div className="">
-                <p className="text-4xl font-medium">Lokasi</p>
-                <div></div>
-                <div className="flex flex-row space-x-20">
-                  <div className="flex w-6/12 flex-col space-y-2 pt-9">
-                    <p className="text-sm font-medium text-grayhov">
-                      Tipe Properti
-                    </p>
-                    <p className="text-lg font-medium">Villa</p>
-                    <div className="relative flex flex-col space-y-3 rounded-full border-b-2"></div>
-                  </div>
-                  <div className="flex w-6/12 flex-col space-y-2 pt-9">
-                    <p className="text-sm font-medium text-grayhov">
-                      ID Listing
-                    </p>
-                    <p className="text-lg font-medium">20862274</p>
-                    <div className="relative flex flex-col space-y-3 rounded-full border-b-2"></div>
-                  </div>
-                </div>
-                <div className="flex flex-row space-x-20">
-                  <div className="flex w-6/12 flex-col space-y-2 pt-9">
-                    <p className="text-sm font-medium text-grayhov">
-                      Pengembang
-                    </p>
-                    <p className="text-lg font-medium">ProbHunt</p>
-                    <div className="relative flex flex-col space-y-3 rounded-full border-b-2"></div>
-                  </div>
-                  <div className="flex w-6/12 flex-col space-y-2 pt-9">
-                    <p className="text-sm font-medium text-grayhov">Listrik</p>
-                    <p className="text-lg font-medium">N/A</p>
-                    <div className="relative flex flex-col space-y-3 rounded-full border-b-2"></div>
-                  </div>
-                </div>
-                <div className="flex flex-row space-x-20">
-                  <div className="flex w-6/12 flex-col space-y-2 pt-9">
-                    <p className="text-sm font-medium text-grayhov">
-                      Sertifikat
-                    </p>
-                    <p className="text-lg font-medium">
-                      SHM - Sertifikat Hak Milik
-                    </p>
-                    <div className="relative flex flex-col space-y-3 rounded-full border-b-2"></div>
-                  </div>
-                  <div className="flex w-6/12 flex-col space-y-2 pt-9">
-                    <p className="text-sm font-medium text-grayhov">
-                      Terdaftar Pada
-                    </p>
-                    <p className="text-lg font-medium">1 Jam Lalu</p>
-                    <div className="relative flex flex-col space-y-3 rounded-full border-b-2"></div>
-                  </div>
-                </div>
-                <div className="flex flex-row space-x-20">
-                  <div className="flex w-6/12 flex-col space-y-2 pt-9">
-                    <p className="text-sm font-medium text-grayhov">
-                      Tahun Selesai
-                    </p>
-                    <p className="text-lg font-medium">2017</p>
-                    <div className="relative flex flex-col space-y-3 rounded-full border-b-2"></div>
-                  </div>
-                </div>
-              </div>
-              {/* details - end */}
-              <div className="mt-14 h-[80vh] w-full overflow-hidden rounded-3xl ">
-                <Map lat={-8.59194106934345} lng={116.08996926363294}></Map>
-              </div>
-            </div>
-            {/* Lokasi - end */}
-            {/* Review - start */}
-            <div>
-              <p className="text-4xl font-medium">Ulasan</p>
-              <Review></Review>
-            </div>
-            {/* Review - end */}
+            <div ref={detailsRef}>{<Details />}</div>
+            <div ref={infrastructureRef}>{<Infrastructure />}</div>
+            <div ref={locationRef}>{<Location />}</div>
+            <div ref={reviewRef}>{<Review />}</div>
           </div>
           {/* description - end */}
         </div>
@@ -593,6 +725,7 @@ export default function Product() {
 export function Review() {
   return (
     <div>
+      <p className="text-4xl font-medium">Ulasan</p>
       <div className="flex flex-col">
         <div className="mt-8 flex flex-row">
           <div className="mt-3">
