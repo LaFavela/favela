@@ -1,7 +1,6 @@
-import Navbar from "@/components/navbar";
 import { Fragment } from "react";
 import { Listbox, Transition } from "@headlessui/react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import Footer from "@/components/footer";
 import Link from "next/link";
@@ -553,6 +552,16 @@ export default function Browse() {
     setCurrentFunction(functionName);
     setActiveButton(functionName);
   };
+  
+  const hargaMax = useRef<any>(null);
+  const hargaMin = useRef<any>(null);
+  const hargaHandler = (event:any) => {
+    event.preventDefault();
+    console.log(hargaMax.current.value);
+    console.log(hargaMin.current.value);
+    setIsOpen(false);
+    
+  }
 
   return (
     <div>
@@ -660,6 +669,7 @@ export default function Browse() {
             </form>
           </div>
         </div>
+        {/* List Harga */}
         <div>
           <div className="mr-10">
             <button
@@ -670,11 +680,11 @@ export default function Browse() {
               }`}
             >
               <span
-                className={`mt-2 pl-5 ${
+                className={`mt-2 pl-5 truncate ${
                   isOpen ? "text-[#B17C3F]" : "text-[#9ca3af]"
                 }`}
               >
-                Harga
+                Harga {hargaMin.current === null ? "" : " : " + hargaMin?.current?.value} {hargaMax.current === null ? "" : " - " + hargaMax?.current?.value}
               </span>
               <span className="mt-4 pr-5">
                 {isOpen ? (
@@ -726,11 +736,13 @@ export default function Browse() {
                         <p className="pr-2 text-[1rem] text-[#B17C3F]">Rp.</p>
                       </div>
                       <div className="w-[19rem] rounded-r-xl  border-b-2 border-r-2  border-t-2 border-[#B17C3F]">
-                        <form action="">
+                        <form onSubmit={hargaHandler}>
                           <input
                             type="text"
+                            value={hargaMin?.current?.value}
                             className="h-full w-[95%] pb-1 pl-5 text-[1rem] text-xl font-light focus:outline-none bg-white"
                             placeholder="Harga Minimum"
+                            ref = {hargaMin}
                           ></input>
                         </form>
                       </div>
@@ -743,11 +755,13 @@ export default function Browse() {
                         <p className="pr-2 text-[1rem] text-[#B17C3F]">Rp.</p>
                       </div>
                       <div className="w-[19rem] rounded-r-xl  border-b-2 border-r-2  border-t-2 border-[#B17C3F]">
-                        <form action="">
+                        <form onSubmit={hargaHandler}>
                           <input
                             type="text"
                             className="h-full w-[95%] pb-1 pl-5 text-[1rem] text-xl font-light focus:outline-none bg-white"
                             placeholder="Harga Minimum"
+                            value = {hargaMax?.current?.value}
+                            ref={hargaMax}
                           ></input>
                         </form>
                       </div>
@@ -758,6 +772,7 @@ export default function Browse() {
             </Transition>
           </div>
         </div>
+        {/* BATAS HARGA LIST */}
       </div>
       {/* batas */}
       <Transition
