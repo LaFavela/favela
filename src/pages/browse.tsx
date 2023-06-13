@@ -577,7 +577,7 @@ export default function Browse() {
           */
          function handleClickOutside(event: any) {
             if (ref.current && !ref.current.contains(event.target)) {
-               setIsClick(false);
+               if (!isClick) setIsClick(false);
             }
          }
          // Bind the event listener
@@ -596,7 +596,7 @@ export default function Browse() {
           */
          function handleClickOutside(event: any) {
             if (ref.current && !ref.current.contains(event.target)) {
-               setIsOpen(false);
+               if (isOpen === true) setIsOpen(false);
             }
          }
          // Bind the event listener
