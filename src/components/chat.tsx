@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRef, useEffect } from "react";
 
 const user = [
   { id: 1, firsName: "Ramadhani", img: "/assets/profile/avatar.jpg" },
@@ -13,6 +14,46 @@ const participant = [
     newChat:
       "adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
     img: "/assets/profile/ali.jpg",
+  },
+  {
+    id: 1,
+    firstName: "Ali",
+    newChatAt: "12.00",
+    newChat:
+      "adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
+    img: "/assets/profile/ali.jpg",
+  },
+  {
+    id: 2,
+    firstName: "Rama",
+    newChatAt: "12.00",
+    newChat:
+      "adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
+    img: "/assets/profile/avatar.jpg",
+  },
+  {
+    id: 2,
+    firstName: "Rama",
+    newChatAt: "12.00",
+    newChat:
+      "adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
+    img: "/assets/profile/avatar.jpg",
+  },
+  {
+    id: 2,
+    firstName: "Rama",
+    newChatAt: "12.00",
+    newChat:
+      "adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
+    img: "/assets/profile/avatar.jpg",
+  },
+  {
+    id: 2,
+    firstName: "Rama",
+    newChatAt: "12.00",
+    newChat:
+      "adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
+    img: "/assets/profile/avatar.jpg",
   },
   {
     id: 2,
@@ -92,82 +133,103 @@ const wasChat = { id: 1, firstname: "Ali", img: "/assets/profile/ali.jpg" };
 const chat = [
   {
     id: 1,
+    chatAt: "12.00",
     receiver: true,
-    chat: "ma",
+    chat: "m lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
     img: "/assets/profile/ali.jpg",
   },
   {
-    id: 2,
+    id: 1,
+    chatAt: "12.00",
     receiver: true,
-    chat: "MTM",
-    img: "",
+    chat: "m lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
+    img: "/assets/profile/ali.jpg",
   },
   {
-    id: 3,
+    id: 1,
+    chatAt: "12.00",
+    receiver: true,
+    chat: "m lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
+    img: "/assets/profile/ali.jpg",
+  },
+  {
+    id: 1,
+    chatAt: "12.00",
+    receiver: true,
+    chat: "m lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
+    img: "/assets/profile/ali.jpg",
+  },
+  {
+    id: 1,
+    chatAt: "12.00",
+    receiver: true,
+    chat: "m lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
+    img: "/assets/profile/ali.jpg",
+  },
+  {
+    id: 1,
+    chatAt: "12.00",
     receiver: false,
-    img: "",
-    chat: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
+    chat: "m lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
+    img: "/assets/profile/ali.jpg",
   },
   {
-    id: 4,
+    id: 1,
+    chatAt: "12.00",
     receiver: true,
-    img: "",
-    chat: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
+    chat: "m lorem ",
+    img: "/assets/product/scandinavian/image 1.png",
   },
   {
-    id: 5,
-    receiver: false,
-    img: "",
-    chat: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
-  },
-  {
-    id: 6,
+    id: 1,
+    chatAt: "12.00",
     receiver: true,
+    chat: "m lorem ",
     img: "",
-    chat: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
   },
   {
-    id: 7,
-    receiver: false,
-    img: "",
-    chat: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
-  },
-  {
-    id: 8,
+    id: 1,
+    chatAt: "12.00",
     receiver: true,
-    img: "",
-    chat: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
+    chat: "m lorem ",
+    img: "/assets/profile/ali.jpg",
   },
   {
-    id: 9,
-    receiver: false,
-    img: "",
-    chat: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
-  },
-  {
-    id: 10,
+    id: 1,
+    chatAt: "12.00",
     receiver: true,
-    img: "",
-    chat: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
+    chat: "m lorem ",
+    img: "/assets/profile/ali.jpg",
   },
 ];
 
 export default function Chat(props: { visible: any; onClose: any }) {
+  const lastMessage = useRef<any>(null);
+  function scrollToBottom() {
+    lastMessage?.current?.scrollIntoView({ behavior: "smooth" });
+  }
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [chat.length]);
   return (
     <div>
       <AnimatePresence>
         {props.visible && (
           <motion.div
-            initial={{ x: 0, y: 200 }}
-            animate={{ x: 0, y: 0 }}
-            exit={{ x: 0, y: 200 }}
-            transition={{ ease: "easeIn", duration: 0.05 }}
+            drag
+            initial={{y: 200 }}
+            animate={{y: 0 }}
+            exit={{y: 200 }}
+            transition={{ ease: "easeIn", duration: 0.05  }}
             className="fixed bottom-0 right-0 mb-3 mr-3 "
           >
-            <div className="flex h-[28.3125rem] w-[40.875rem] justify-center rounded-[1rem] bg-white drop-shadow">
+            <div className="flex h-[38rem] w-[50rem] justify-center rounded-[1rem] bg-white drop-shadow-lg">
               <div className="space-y-2">
-                <div className="mt-3 flex w-[39.5rem] justify-between ">
-                  <p className="text-[1rem] font-normal text-[#B17C3F]">Chat</p>
+                <div className="mt-3 flex w-[47.5rem] justify-between ">
+                  <p className="bg-font-normal text-[1rem] text-[#B17C3F]">
+                    Chat
+                  </p>
                   <svg
                     onClick={props.onClose}
                     className="cursor-pointer"
@@ -190,16 +252,16 @@ export default function Chat(props: { visible: any; onClose: any }) {
                     </defs>
                   </svg>
                 </div>
-                <div className="flex w-[39.5rem] justify-between ">
+                <div className="flex w-[47.5rem] justify-between ">
                   {/* partisipant chat */}
-                  <div className="no-scrollbar h-[25rem] w-[13.625rem] overflow-y-scroll  rounded-[0.5rem] bg-white drop-shadow">
+                  <div className="no-scrollbar h-[34rem] w-[16rem] overflow-y-scroll  rounded-[0.5rem] bg-white drop-shadow">
                     {/* looping */}
                     {participant.map((data, idx) => (
-                      <div
+                      <motion.div
                         key={idx}
-                        className="flex h-[3.375rem] w-[13.625rem] cursor-pointer snap-start items-center bg-white hover:bg-[#D9D9D9] "
+                        className="flex h-[4rem] w-full cursor-pointer snap-proximity items-center bg-white hover:bg-[#D9D9D9] "
                       >
-                        <div className="relative ml-2 h-[2.3125rem] w-[2.3125rem]">
+                        <div className="relative ml-2 h-[2.7rem] w-[2.7rem]">
                           <Image
                             className="rounded-full"
                             src={data.img}
@@ -208,26 +270,26 @@ export default function Chat(props: { visible: any; onClose: any }) {
                             style={{ objectFit: "fill" }}
                           />
                         </div>
-                        <div className="ml-2 w-[9.0625rem]">
+                        <div className="ml-2 w-[11.4rem]">
                           <div className="flex w-full items-center justify-between ">
-                            <p className="text-[0.625rem] font-light">
+                            <p className="text-[0.9rem] font-light">
                               {data.firstName}
                             </p>
-                            <p className="text-[0.375rem] font-light">
+                            <p className="text-[0.5rem] font-light">
                               {data.newChatAt}
                             </p>
                           </div>
-                          <p className="truncate text-[0.5rem] font-light ">
+                          <p className="truncate text-[0.63rem] font-light ">
                             {data.newChat}
                           </p>
                         </div>
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
                   {/* isi chat */}
-                  <div className="h-[25rem] w-[25.125rem] rounded-[0.5rem] bg-white drop-shadow">
-                    <div className="mt-3 flex items-center border-b-2 border-gray-300 pb-2">
-                      <div className="relative ml-4 h-[2.3125rem] w-[2.3125rem]">
+                  <div className="h-[34rem] w-[30.4rem]  overflow-hidden rounded-[0.5rem] bg-[#f4f4f4] drop-shadow">
+                    <div className="flex items-center border-b-[0.05rem] bg-white pb-2  pt-3">
+                      <div className="relative ml-4 h-[2.3125rem] w-[2.3125rem] bg-white">
                         <Image
                           className="rounded-full"
                           src={wasChat.img}
@@ -240,25 +302,63 @@ export default function Chat(props: { visible: any; onClose: any }) {
                         {wasChat.firstname}
                       </p>
                     </div>
-                    <div className="no-scrollbar mb-2 ml-5 mr-5 mt-2 h-[17rem] w-[22.5625rem] space-y-4 overflow-hidden overflow-y-scroll">
+                    <div className="no-scrollbar mb-2 ml-5 mr-5 mt-2 h-[25.6rem] w-[27.8rem] snap-proximity space-y-4 overflow-hidden overflow-y-scroll">
                       {chat.map((data, idx) => (
-                        <div className="grid w-full">
+                        <div
+                          ref={idx == chat.length - 1 ? lastMessage : null}
+                          className="grid w-full "
+                        >
                           {data.receiver ? (
-                            <div className="w-[11.625rem] rounded-b-lg rounded-tr-lg bg-[#E6E6E6] pb-2 pl-2 pr-2 pt-2 text-[0.5rem]">
-                              {/* <div className="relative h-[7rem] w-[7rem] ">
-                                <Image
-                                  className="rounded-sm"
-                                  src={data.img}
-                                  fill={true}
-                                  alt={"chat"}
-                                  style={{ objectFit: "fill" }}
-                                />
-                              </div> */}
-                              <p>{data.chat}</p>
+                            <div className="space-y-2 snap-end max-w-[16rem] rounded-b-lg rounded-tr-lg bg-[#E6E6E6] pb-2 pl-2 pr-2 pt-2 drop-shadow ">
+                              <div className="flex justify-center ">
+                                {data.img != "" ? (
+                                  <div className="relative max-w-[16rem] h-auto rounded-lg ">
+                                    <Image
+                                      className="rounded-sm place-content-center "
+                                      // sizes="(max-width: 16rem)"
+                                      height={0}
+                                      width={256}
+                                      src={data.img}
+                                      // fill={true}
+                                      alt={"chat"}
+                                      style={{ objectFit: "fill" }}
+                                    />
+                                  </div>
+                                ) : (null)}
+                              </div>
+                              <div className="flex justify-between ">
+                                <p className="text-[0.7rem]">{data.chat}</p>
+                                <p className="place-self-end text-[0.5rem]">
+                                  {data.chatAt}
+                                </p>
+
+                              </div>
                             </div>
                           ) : (
-                            <div className="w-[11.625rem] place-self-end rounded-b-lg rounded-tl-lg bg-[#e3d0ba] pb-2 pl-2 pr-2 pt-2 text-[0.5rem]">
-                              <p>{data.chat}</p>
+                            <div className="space-y-2 snap-end max-w-[16rem] justify-between place-self-end rounded-b-lg rounded-tl-lg bg-[#e3d0ba] pb-2 pl-2 pr-2 pt-2 drop-shadow">
+                              <div className="flex justify-center ">
+                                {data.img != "" ? (
+                                  <div className="relative max-w-[16rem] h-auto rounded-lg ">
+                                    <Image
+                                      className="rounded-sm place-content-center "
+                                      // sizes="(max-width: 16rem)"
+                                      height={0}
+                                      width={256}
+                                      src={data.img}
+                                      // fill={true}
+                                      alt={"chat"}
+                                      style={{ objectFit: "fill" }}
+                                    />
+                                  </div>
+                                ) : (null)}
+                              </div>
+                              <div className="flex justify-between">
+                                <p className="text-[0.7rem]">{data.chat}</p>
+                                <p className="place-self-end text-[0.5rem]">
+                                  {data.chatAt}
+                                </p>
+
+                              </div>
                             </div>
                           )}
                         </div>
@@ -266,7 +366,7 @@ export default function Chat(props: { visible: any; onClose: any }) {
                     </div>
                     {/* input chat */}
                     <form className="flex w-full justify-center">
-                      <div className="flex h-[2.625rem] w-[22.5625rem] items-center justify-center space-x-2 rounded-[0.5rem] bg-white drop-shadow">
+                      <div className="flex h-[2.625rem] w-[27.8rem] items-center justify-center space-x-2 rounded-[0.5rem] bg-white drop-shadow">
                         <label className="cursor-pointer hover:bg-gray-200">
                           <svg
                             width="18"
@@ -302,7 +402,7 @@ export default function Chat(props: { visible: any; onClose: any }) {
                         </label>
 
                         <input
-                          className="w-[17.5625rem] bg-white pl-1 text-[0.6rem]  text-[#B17C3F] placeholder:text-[0.6rem] focus:outline-none"
+                          className="w-[20.5625rem] bg-white pl-1 text-[0.6rem]  text-[#B17C3F] placeholder:text-[0.6rem] focus:outline-none"
                           type="text"
                           placeholder="Tulis Pesan Disini"
                         />
