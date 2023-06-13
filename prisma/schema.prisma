@@ -172,7 +172,7 @@ model Provinsi {
 }
 
 model KabupatenKota {
-  id         Int   @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   nama       String
   provinsi   Provinsi @relation(fields: [provinsiId], references: [id])
   provinsiId Int
@@ -189,4 +189,33 @@ model Alamat {
   kelurahan       String
   kode_pos        Int
   jalan           String
+}
+
+model ListChat {
+  id                 String   @id @default(uuid())
+  id_user            String
+  id_userDestination String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  Chat               Chat[]
+}
+
+model Chat {
+  id         String     @id @default(uuid())
+  id_user    String
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  ListChat   ListChat   @relation(fields: [listChatId], references: [id])
+  listChatId String
+  Messages   Messages[]
+}
+
+model Messages {
+  id        String   @id @default(uuid())
+  id_user   String
+  pesan     String
+  image     String
+  createdAt DateTime @default(now())
+  Chat      Chat     @relation(fields: [chatId], references: [id])
+  chatId    String
 }
