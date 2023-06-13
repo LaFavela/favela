@@ -3,26 +3,28 @@ import Link from "next/link";
 import Slider from "./Slider";
 import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
-
+import { setTransparent } from "../tools/transparent";
 import { data } from "./browse";
 import { designerData } from "./designer";
 import Image from "next/image";
+import {useRouter} from "next/router";
+
+
 
 export default function Landing() {
    const [isPressed, setIsPressed] = useState(false);
    const handleButtonClick = () => {
       setIsPressed(!isPressed);
    };
-
   const [visibleItems] = useState(6);
   const [visibleDesigner] =useState(3);
-
-  const [clientWindowHeight, setClientWindowHeight] = useState(0);
-  const [transparent, setTransparent] = useState(true);
-
   const handleScroll = () => {
-     setClientWindowHeight(window.scrollY);
-     setTransparent(clientWindowHeight < 100);
+    const scrollPosition = window.pageYOffset;
+    const threshold = 100;
+    const transparentValue = scrollPosition < threshold;
+    console.log(transparentValue);
+    setTransparent(transparentValue);
+    
   };
 
   useEffect(() => {
@@ -32,7 +34,7 @@ export default function Landing() {
 
   return (
     <div className="transition-all ease-linear duration-300">
-      <Navbar transparent={transparent} home={true} login={false}/>
+      {/* <Navbar transparent={transparent} home={true} login={false}/> */}
       <div
         className="flex min-h-screen flex-col bg-cover bg-center object-contain text-black"
         style={{ backgroundImage: "url('/assets/landing/landingBG.jpg')" }}

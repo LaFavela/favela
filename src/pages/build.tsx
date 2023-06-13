@@ -293,7 +293,7 @@ export default function Build() {
         </p>
       </div>
       <div>
-        <div className="sticky top-0 z-50 flex justify-between bg-white px-16 py-5">
+        <div className="sticky top-20 z-40 flex justify-between bg-white px-16 py-5">
           <div className="ml-[5.5rem] flex space-x-3">
             <button
               onClick={() => handleFunctionChange("Design")}
