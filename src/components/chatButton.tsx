@@ -8,7 +8,13 @@ export default function ChatButton(props: any = { login: false }) {
   return (
     <div className="fixed bottom-0 right-0 z-40 flex">
       <div 
-      onClick={() => setShowChat(true)}
+      onClick={() => {
+        if (showChat) {
+          setShowChat(false);
+       } else {
+          setShowChat(true);
+       }
+      }}
       className="mb-[3rem] mr-[3rem] flex h-[3rem] w-[3rem] items-center justify-center rounded-full bg-[#B17C3F] hover:bg-[#bd9363]">
           
         <svg

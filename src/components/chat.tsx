@@ -16,20 +16,20 @@ const participant = [
     img: "/assets/profile/ali.jpg",
   },
   {
+    id: 2,
+    firstName: "Rama",
+    newChatAt: "12.00",
+    newChat:
+    "adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
+    img: "/assets/profile/avatar.jpg",
+  },
+  {
     id: 1,
     firstName: "Ali",
     newChatAt: "12.00",
     newChat:
       "adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
     img: "/assets/profile/ali.jpg",
-  },
-  {
-    id: 2,
-    firstName: "Rama",
-    newChatAt: "12.00",
-    newChat:
-      "adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
-    img: "/assets/profile/avatar.jpg",
   },
   {
     id: 2,
@@ -218,10 +218,10 @@ export default function Chat(props: { visible: any; onClose: any }) {
         {props.visible && (
           <motion.div
             drag
-            initial={{y: 200 }}
-            animate={{y: 0 }}
-            exit={{y: 200 }}
-            transition={{ ease: "easeIn", duration: 0.05  }}
+            initial={{x:350, y: 250, scale:0, opacity:0 }}
+            animate={{x:0,y: 0, scale:1, opacity:1 }}
+            exit={{y: 250, x:350 , scale:0, opacity:0}}
+            transition={{ ease: "easeIn", duration: 0.25  }}
             className="fixed bottom-0 right-0 mb-3 mr-3 "
           >
             <div className="flex h-[38rem] w-[50rem] justify-center rounded-[1rem] bg-white drop-shadow-lg">
@@ -258,6 +258,7 @@ export default function Chat(props: { visible: any; onClose: any }) {
                     {/* looping */}
                     {participant.map((data, idx) => (
                       <motion.div
+                        transition={{ ease: "easeIn", duration: 0.25, delay:idx*0.1 }}
                         key={idx}
                         className="flex h-[4rem] w-full cursor-pointer snap-proximity items-center bg-white hover:bg-[#D9D9D9] "
                       >
@@ -309,7 +310,7 @@ export default function Chat(props: { visible: any; onClose: any }) {
                           className="grid w-full "
                         >
                           {data.receiver ? (
-                            <div className="space-y-2 snap-end max-w-[16rem] rounded-b-lg rounded-tr-lg bg-[#E6E6E6] pb-2 pl-2 pr-2 pt-2 drop-shadow ">
+                            <div className="space-y-2 snap-end max-w-[16rem] w-auto rounded-b-lg rounded-tr-lg bg-[#E6E6E6] pb-2 pl-2 pr-2 pt-2 drop-shadow ">
                               <div className="flex justify-center ">
                                 {data.img != "" ? (
                                   <div className="relative max-w-[16rem] h-auto rounded-lg ">
