@@ -11,24 +11,25 @@ datasource db {
 }
 
 model Users {
-  id          String       @id @default(uuid())
-  email       String       @unique
-  username    String       @unique
+  id          String     @id @default(uuid())
+  email       String     @unique
+  username    String     @unique
   firstName   String
   lastName    String
   password    String
-  image       String       @default("assets/profile/default.jpg")
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  role        Role[]
-  roleName    RoleSelect[] @default([PEMBELI])
-  birthDay    DateTime     @default(now())
-  gender      Gender       @default(UNKNOWN)
-  number      String?
-  city        String?
-  job         String[]
-  socialMedia String?
-  description String?
+  image       String     @default("assets/profile/default.jpg")
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  role        Role?
+  roleName    RoleSelect @default(PEMBELI)
+  birthDay    DateTime   @default(now())
+  gender      Gender     @default(UNKNOWN)
+  phone       String     @default("")
+  website     String     @default("")
+  city        String     @default("")
+  job         String[]   @default([""])
+  socialMedia String     @default("")
+  description String     @default("")
 }
 
 enum RoleSelect {
@@ -48,7 +49,7 @@ enum Gender {
 model Role {
   id         String    @id @default(uuid())
   user       Users     @relation(fields: [usersId], references: [id])
-  usersId    String
+  usersId    String    @unique
   role       String
   Pembeli    Pembeli?  @relation(fields: [pembeliId], references: [id])
   pembeliId  String?
