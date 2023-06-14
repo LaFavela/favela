@@ -1,17 +1,13 @@
 import Head from "next/head";
-import Navbar from "@/components/navbar";
 import Link from "next/link";
-import Image from "next/image";
 import Footer from "../components/footer";
 import { useState, useRef, useEffect } from "react";
 import Map from "@/components/maps";
 import Carousel from "@/components/carousel";
-import { Modal } from "@mui/material";
 import React from "react";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
-import { AnyAaaaRecord } from "dns";
-// import { Review } from "./merchantProfile";
+import Status from "@/components/status";
 
 const data = [
   {
@@ -74,13 +70,13 @@ export function Infrastructure() {
         <div>
           <p className="text-4xl font-medium">Sarana & Prasarana</p>
         </div>
-        <div className="grid grid-cols-2 gap-5 mt-10">
+        <div className="mt-10 grid grid-cols-2 gap-5">
           {infrastructure.map((infrastructure, idx) => {
             return (
               <div key={idx}>
                 <div className="flex">
                   <ArrowLogo />
-                  <span className="ml-5 text-xly">{infrastructure}</span>
+                  <span className="text-xly ml-5">{infrastructure}</span>
                 </div>
               </div>
             );
@@ -212,67 +208,85 @@ export default function Product() {
       event.preventDefault();
       event.target.closest(".popup-overlay").style.display = "none";
     };
-
+    const [isPaymentSuccessful, setIsPaymentSuccessful] = useState(false);
+    const handlePayment = () => {
+      setIsPaymentSuccessful(true);
+      // window.location.href = "./browse";
+    };
     return (
       <div>
-        <div className="h-max rounded-full">
-          <Popup
-            trigger={
-              <button className="h-[3.7rem] w-[15rem] rounded-full border-2 border-[#B17C3F] bg-[#B17C3F] text-xl text-white duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white">
-                Buy
-              </button>
-            }
-            modal
-            nested
-            className="h-max rounded-full "
-            contentStyle={{
-              borderRadius: "20px", // Tingkat radius yang diinginkan
-              paddingBottom: "2rem",
-            }}
-          >
-            <div className="h-full rounded-xl">
-              <span className=" relative top-5 ml-9 font-semibold text-gold ">
-                Properti yang di beli
-              </span>
-              <div className="ml-9 mt-8 flex h-16 w-16 rounded-full">
-                <img src={data[0].img} alt="" className="rounded-full" />
-                <div className="ml-6 mt-2 flex flex-col">
-                  <span className="font-semibold">{data[0].name}</span>
-                  <span className="text-sm text-gray-300">{data[0].city}</span>
-                </div>
-              </div>
-              <div className="ml-9 mt-6 flex">
-                <img
-                  src={properti[0].img}
-                  alt=""
-                  className="h-[6.3rem] w-[7.9rem] rounded-lg object-cover"
-                />
-                <div className="ml-6 flex flex-col gap-1">
-                  <span className="text-2xl font-light">
-                    {properti[0].name}
-                  </span>
-                  <span className="text-gray-300">{properti[0].type}</span>
-                  <span className="text-2xl font-medium">
-                    {properti[0].price}
-                  </span>
-                </div>
-              </div>
-              <span className=" relative top-5 ml-9 font-medium text-gold ">
-                Pilih Metode Pembayaran
-              </span>
-              <div className="mt-10 flex justify-center gap-8">
-                <button
-                  onClick={closePopup}
-                  className="  h-11 w-[20rem] rounded-lg border-2 border-[#B17C3F] bg-white text-sm text-[#B17C3F] duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white"
-                >
-                  Batal
+        <div>
+          {isPaymentSuccessful ? ( 
+            <div>
+              
+              <div className="absolute left-0 top-0 min-h-screen w-full bg-[#0000007c]"></div>
+              <Status status={"Pembayaran Berhasil"} statusChild={"Menunggu konfirmasi dari penjual"} isSuccessful ={true}></Status>
+            </div> 
+          ) : (
+            <Popup
+              trigger={
+                <button className="h-[3.7rem] w-[15rem] rounded-full border-2 border-[#B17C3F] bg-[#B17C3F] text-xl text-white duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white">
+                  Buy
                 </button>
-                <button className=" h-11 w-[20rem] rounded-lg border-2 border-[#B17C3F] bg-[#B17C3F] text-sm text-white duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white">
-                  Bayar
-                </button>
-              </div>
-            </div>
-          </Popup>
+              }
+              modal
+              nested
+              
+              // contentStyle={{
+              //   borderRadius: "20px", // Tingkat radius yang diinginkan
+              //   paddingBottom: "2rem",
+              // }}
+            >
+              {/* <Status></Status> */}
+              {/* <div className="h-full rounded-xl">
+                <span className=" relative top-5 ml-9 font-semibold text-gold ">
+                  Properti yang di beli
+                </span>
+                <div className="ml-9 mt-8 flex h-16 w-16 rounded-full">
+                  <img src={data[0].img} alt="" className="rounded-full" />
+                  <div className="ml-6 mt-2 flex flex-col">
+                    <span className="font-semibold">{data[0].name}</span>
+                    <span className="text-sm text-gray-300">
+                      {data[0].city}
+                    </span>
+                  </div>
+                </div>
+                <div className="ml-9 mt-6 flex">
+                  <img
+                    src={properti[0].img}
+                    alt=""
+                    className="h-[6.3rem] w-[7.9rem] rounded-lg object-cover"
+                  />
+                  <div className="ml-6 flex flex-col gap-1">
+                    <span className="text-2xl font-light">
+                      {properti[0].name}
+                    </span>
+                    <span className="text-gray-300">{properti[0].type}</span>
+                    <span className="text-2xl font-medium">
+                      {properti[0].price}
+                    </span>
+                  </div>
+                </div>
+                <span className=" relative top-5 ml-9 font-medium text-gold ">
+                  Pilih Metode Pembayaran
+                </span>
+                <div className="mt-10 flex justify-center gap-8">
+                  <button
+                    onClick={closePopup}
+                    className="  h-11 w-[20rem] rounded-lg border-2 border-[#B17C3F] bg-white text-sm text-[#B17C3F] duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    onClick={handlePayment}
+                    className=" h-11 w-[20rem] rounded-lg border-2 border-[#B17C3F] bg-[#B17C3F] text-sm text-white duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white"
+                  >
+                    Bayar
+                  </button>
+                </div>
+              </div> */}
+            </Popup>
+          )}
         </div>
       </div>
     );
@@ -431,7 +445,6 @@ export default function Product() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/assets/logo/properti.png" />
       </Head>
-      <Navbar></Navbar>
       {/* outest div - start */}
       <div className="flex-warp flex flex-col space-y-5 p-12">
         {/* main box */}

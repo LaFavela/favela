@@ -613,7 +613,7 @@ export default function Browse() {
 
    return (
       <div>
-         <div className="sticky top-20 z-40 flex space-x-10 bg-white px-16 py-5">
+         <div className="sticky top-20 z-30 flex space-x-10 bg-white px-16 py-5">
             <div className="ml-12 flex space-x-3 ">
                <button
                   onClick={() => handleFunctionChange("Buy")}
