@@ -11,15 +11,38 @@ datasource db {
 }
 
 model Users {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  username  String   @unique
-  firstName String
-  lastName  String
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  Role      Role[]
+  id          String       @id @default(uuid())
+  email       String       @unique
+  username    String       @unique
+  firstName   String
+  lastName    String
+  password    String
+  image       String       @default("assets/profile/default.jpg")
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  role        Role[]
+  roleName    RoleSelect[] @default([PEMBELI])
+  birthDay    DateTime     @default(now())
+  gender      Gender       @default(UNKNOWN)
+  number      String?
+  city        String?
+  job         String[]
+  socialMedia String?
+  description String?
+}
+
+enum RoleSelect {
+  ADMIN
+  PEMBELI
+  PENJUAL
+  DESAINER
+  TUKANG
+}
+
+enum Gender {
+  UNKNOWN
+  MALE
+  FEMALE
 }
 
 model Role {
