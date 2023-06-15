@@ -23,23 +23,24 @@ const data = [
 
 export default function AboutUs() {
   return (
-    <ParallaxProvider>
+    <ParallaxProvider
+    >
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ ease: "easeIn", duration: 0.9 }}
-        className=" h-[1000rem] bg-white "
+        className=" h-[1000rem]  -z-10 "
       >
         <Parallax 
         
         shouldAlwaysCompleteAnimation={true}
-        className="sticky mt-10 top-[10rem] flex justify-center items-center">
-          <div className=" sticky flex items-center justify-center space-x-[6.7rem]">
+        className="sticky mt-10 top-[10rem] -z-10 flex justify-center items-center">
+          <div className=" sticky flex items-center justify-center space-x-[6.7rem] z-10">
             <motion.div
               initial={{ x: -300 }}
               animate={{ x: 0 }}
               transition={{ ease: "easeInOut", duration: 0.9 }}
-              className="space-y-5 "
+              className="space-y-5 z-10"
             >
               <Parallax
                 speed={0}
