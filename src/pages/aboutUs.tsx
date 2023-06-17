@@ -2,6 +2,8 @@ import Footer from "@/components/footer";
 import Image from "next/image";
 import { Parallax, ParallaxProvider } from "react-scroll-parallax";
 import { motion } from "framer-motion";
+import { useRef} from "react";
+import { useFollowPointer } from "../tools/useFollowPointer";
 
 const data = [
   {
@@ -22,6 +24,10 @@ const data = [
 ];
 
 export default function AboutUs() {
+  const ref = useRef(null);
+  const { x, y } = useFollowPointer(ref);
+  console.log(ref)
+  console.log(x, y);
   return (
     <ParallaxProvider
     >
@@ -29,7 +35,7 @@ export default function AboutUs() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ ease: "easeIn", duration: 0.9 }}
-        className=" h-[1000rem]  -z-10 "
+        className="   -z-10 "
       >
         <Parallax 
         
@@ -341,19 +347,200 @@ export default function AboutUs() {
         <div className="sticky top-0">
 
           <Parallax
+          // opacity={[1,0]}
+          className="top-0 ">
+            <div
+            className="text-[6.25rem] text-white font-semibold bg-[#DF6C4D] w-screen h-[250vh] flex justify-center items-center"
+            >
+              <div className="h-full">
+              <motion.p
+                className="mt-[50vh]"
+                initial="hidden"
+                whileInView="visible"
+                exit={{opacity:0}}
+                // viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+                variants={{
+                  visible: { opacity: 1},
+                  hidden: { opacity: 0}
+                }} 
+                
+                >Let's Meet</motion.p>
+                <motion.p
+                className="mt-[100vh]"
+                initial="hidden"
+                whileInView="visible"
+                exit={{opacity:0}}
+                // viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+                variants={{
+                  visible: { opacity: 1},
+                  hidden: { opacity: 0}
+                }} 
+                
+                >Our Team</motion.p>
+              </div>
+                
+    
+
+            </div>
+          </Parallax> 
+          <Parallax
+          className="w-screen h-[120vh] bg-gradient-to-b from-[#DF6C4D] to-[#e3d0ba]"
+          
+          >
+
+          </Parallax>
+          <Parallax
           
           // opacity={[1,0]}
-          className=" top-0 h-screen">
+          className="sticky top-0">
             <div
-            className="text-[6.25rem] text-white font-semibold bg-[#DF6C4D] w-screen h-screen flex justify-center items-center "
+            className=" bg-[#e3d0ba] -space-x-15 w-screen h-screen flex justify-center items-center "
             >
-              <Parallax
-                opacity={[0, 1]}
-                
+              <motion.div
+              initial={{x:-1000, opacity:0}}
+              whileInView={{x:0, opacity:1}}
+              transition={{ duration: 1, delay: 0.4 }}
               >
-                <p>Let's Meet</p>
-              </Parallax>
+                <div className="flex -space-x-4 ">
+                  <div
+                  className="flex justify-center items-center text-white text-[2.625rem] font-semibold w-[23.875rem] h-[5.5rem] bg-[#DF6C4D] rounded-[1.5625rem]"
+                  >
+                    <p>Co-Founder</p>
 
+                  </div>
+                  <div className="z-10 self-end mt-[4rem] border-8 border-[#e3d0ba] w-[3.4375rem] h-[3.4375rem] bg-[#DF6C4D] rounded-full">
+
+                  </div>
+                  <div
+                  className="flex justify-center items-center text-white text-[2.625rem] font-semibold w-[23.875rem] h-[5.5rem] bg-[#DF6C4D] rounded-[1.5625rem]"
+                  >
+                    <p>Full Stack</p>
+
+                  </div>
+                </div>
+                <div className="w-[50rem]  text-[#B17C3F] text-[1.75rem] font-semibold">
+                  <p>Katanya orang buat website itu susah. Lah emang susah anjeng siapa coba yang punya ide e-commerce bangsat bangsat. ASU dah babi klean gak hargain gua ngentot. Tapi paling nggak gua yang punya repo hehe.</p>
+                </div>
+                
+              
+              </motion.div>
+              <motion.div
+              initial={{x:500, opacity:0}}
+              whileInView={{x:0, opacity:1}}
+              transition={{ duration: 1, delay: 0.4 }}
+              >
+                  <div className="overflow-hidden rounded-xl">
+                    <Image
+                      src={"/assets/profile/mas.png"}
+                      // fill={true}
+                      height={600}
+                      width={600}
+                      alt={"Image1"}
+                      quality={50}
+                    />
+                  </div>
+                  <p className="text-center text-[#DF6C4D] font-semibold text-[3.125rem]">Muhammad Dwimas <br />Catur Nugraha</p>
+              </motion.div>
+            </div>
+            <div
+            className=" bg-[#e3d0ba] -space-x-15 w-screen h-screen flex justify-center items-center "
+            >
+              <motion.div
+              initial={{x:-1000, opacity:0}}
+              whileInView={{x:0, opacity:1}}
+              transition={{ duration: 1, delay: 0.4 }}
+              >
+                <div className="flex -space-x-4 ">
+                  <div
+                  className="flex justify-center items-center text-white text-[2.625rem] font-semibold w-[23.875rem] h-[5.5rem] bg-[#DF6C4D] rounded-[1.5625rem]"
+                  >
+                    <p>Front-End</p>
+
+                  </div>
+                  <div className="z-10 self-end mt-[4rem] border-8 border-[#e3d0ba] w-[3.4375rem] h-[3.4375rem] bg-[#DF6C4D] rounded-full">
+
+                  </div>
+                  <div
+                  className="flex justify-center items-center text-white text-[2.625rem] font-semibold w-[23.875rem] h-[5.5rem] bg-[#DF6C4D] rounded-[1.5625rem]"
+                  >
+                    <p>Product Manager</p>
+
+                  </div>
+                </div>
+                <div className="w-[50rem]  text-[#B17C3F] text-[1.75rem] font-semibold">
+                  <p>Katanya orang buat website itu susah. Lah emang susah anjeng siapa coba yang punya ide e-commerce bangsat bangsat. ASU dah babi klean gak hargain gua ngentot. Tapi paling nggak gua yang punya repo hehe.</p>
+                </div>
+                
+              
+              </motion.div>
+              <motion.div
+              initial={{x:500, opacity:0}}
+              whileInView={{x:0, opacity:1}}
+              transition={{ duration: 1, delay: 0.4 }}
+              >
+                  <div className="overflow-hidden rounded-xl">
+                    <Image
+                      src={"/assets/profile/raihan.png"}
+                      // fill={true}
+                      height={600}
+                      width={600}
+                      alt={"Image1"}
+                      quality={50}
+                    />
+                  </div>
+                  <p className="text-center text-[#DF6C4D] font-semibold text-[3.125rem]">Muhammad  <br />Dzulhi Raihan</p>
+              </motion.div>
+            </div>
+            <div
+            className=" bg-[#e3d0ba] -space-x-15 w-screen h-screen flex justify-center items-center "
+            >
+              <motion.div
+              initial={{x:-1000, opacity:0}}
+              whileInView={{x:0, opacity:1}}
+              transition={{ duration: 1, delay: 0.4 }}
+              >
+                <div className="flex -space-x-4 ">
+                  <div
+                  className="flex justify-center items-center text-white text-[2.625rem] font-semibold w-[23.875rem] h-[5.5rem] bg-[#DF6C4D] rounded-[1.5625rem]"
+                  >
+                    <p>UI/UX</p>
+
+                  </div>
+                  <div className="z-10 self-end mt-[4rem] border-8 border-[#e3d0ba] w-[3.4375rem] h-[3.4375rem] bg-[#DF6C4D] rounded-full">
+
+                  </div>
+                  <div
+                  className="flex justify-center items-center text-white text-[2.625rem] font-semibold w-[23.875rem] h-[5.5rem] bg-[#DF6C4D] rounded-[1.5625rem]"
+                  >
+                    <p>Front-End</p>
+
+                  </div>
+                </div>
+                <div className="w-[50rem]  text-[#B17C3F] text-[1.75rem] font-semibold">
+                  <p>Katanya orang buat website itu susah. Lah emang susah anjeng siapa coba yang punya ide e-commerce bangsat bangsat. ASU dah babi klean gak hargain gua ngentot. Tapi paling nggak gua yang punya repo hehe.</p>
+                </div>
+                
+              
+              </motion.div>
+              <motion.div
+              initial={{x:500, opacity:0}}
+              whileInView={{x:0, opacity:1}}
+              transition={{ duration: 1, delay: 0.4 }}
+              >
+                  <div className="overflow-hidden rounded-xl">
+                    <Image
+                      src={"/assets/profile/rama.png"}
+                      // fill={true}
+                      height={600}
+                      width={600}
+                      alt={"Image1"}
+                      quality={50}
+                    />
+                  </div>
+                  <p className="text-center text-[#DF6C4D] font-semibold text-[3.125rem]">Ramadhani Al-Qadri</p>
+              </motion.div>
             </div>
           </Parallax> 
           
@@ -362,5 +549,34 @@ export default function AboutUs() {
         
       </motion.div>
     </ParallaxProvider>
+    // <div>
+
+    //   {/* <div className="flex justify-center h-[1000rem]">
+    //     <div className="flex justify-center mt-[200rem]">
+          
+    //       <motion.div 
+    //       initial={{x:0, scale:1, opacity:0}}
+          
+    //       transition={{duration:1}}
+    //       whileInView={{x:100, scale:10, opacity:1, color:"blue"}}
+    //       // viewport={{once:true}}s
+    //       className="w-20 h-20 bg-red-500">
+
+    //       </motion.div>
+    //     </div>
+        
+    //   </div> */}
+    //   {/* <motion.div
+    //     ref={ref}
+    //     className="w-[3rem] h-[3rem] border border-5 border-[#DF6C4D] rounded-full "
+    //     animate={{ x, y }}
+    //     transition={{
+    //       type: "spring",
+    //       damping: 3,
+    //       stiffness: 50,
+    //       restDelta: 0.001
+    //     }}
+    //     /> */}
+    // </div>
   );
 }
