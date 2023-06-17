@@ -1,17 +1,28 @@
-import { useSession } from "next-auth/react";
+import { useSession, getSession } from "next-auth/react";
 import ProfileNav from "./profileNav";
 import { useState, useRef, useEffect } from "react";
 
-export default function ProfileButton(props: any = { transparent: false }) {
-   
-   const {data: session} = useSession();
+export const getServerSideProps = async (req: any, res: any) => {
+   // get session
+   const session = await getSession({ req });
+   return {
+      props: { session },
+   };
+};
 
+export default function ProfileButton(
+   props: any = { transparent: false },
+   { session }: any
+) {
    const [showProfileNav, setShowProfileNav] = useState(false);
    const handleOnClose = () => setShowProfileNav(false);
    let textColor = "text-black ";
    if (props.transparent) {
       textColor = "text-white ";
    }
+   const { data: userData } = useSession();
+   console.log(session);
+   console.log(userData);
 
    function useOutsideAlerter(ref: any) {
       useEffect(() => {
@@ -34,7 +45,6 @@ export default function ProfileButton(props: any = { transparent: false }) {
 
    const wrapperRef = useRef(null);
    useOutsideAlerter(wrapperRef);
-   
 
    return (
       <div
