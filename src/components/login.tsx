@@ -3,6 +3,7 @@
 import React, { useState, useRef } from "react";
 import { signIn } from "next-auth/react";
 import { set } from "react-hook-form";
+import {motion, AnimatePresence} from "framer-motion" 
 
 // const username = "admin";
 // const email = "ramadhanialqadri12@gmail.com";
@@ -13,6 +14,8 @@ export default function Login(props: { visible: any; onClose: any }) {
    const passwordLogin = useRef<any>(null);
    const rememberMe = useRef<any>(null);
 
+   const [isError, setIsError] = useState(false)
+   const [errorMessage, setErrorMessage] = useState("")
    const handleSubmitLogin = async (event: any) => {
       event.preventDefault();
       const result = await signIn("username-login", {
@@ -24,11 +27,16 @@ export default function Login(props: { visible: any; onClose: any }) {
       })
          .then((res) => {
             if (res?.error) {
-               alert("Login Failed");
+               setIsError(true);
+               setErrorMessage("Invalid username or password")
+               
+               // alert("Login Failed");
             }
          })
          .catch((err) => {
-            alert("Login Failed");
+            setIsError(true);
+            setErrorMessage("Invalid username or password")
+            // alert("Login Failed");
          });
    };
 
@@ -77,14 +85,25 @@ export default function Login(props: { visible: any; onClose: any }) {
    if (!props.visible) return null;
    return (
       // blur Background
-      <div className="fixed inset-0 flex h-screen w-screen items-center justify-center">
-         <div
-            onClick={props.onClose}
-            className="absolute left-0 top-0 h-full w-full bg-[#0000007c]"
-         ></div>
+      <AnimatePresence>
+      <div 
+      
+      className="fixed inset-0 flex h-screen w-screen items-center justify-center">
+         
+         <motion.div
+         initial={{opacity: 0}}
+         animate={{opacity: 1}}
+         exit={{opacity: 0}}
+         transition={{duration: 0.4}}
+         
+         onClick={props.onClose}
+         
+         className="absolute left-0 top-0 h-full w-full bg-[#0000007c]"
+         ></motion.div>
          {!showRegister ? (
             // {/* Kotak Login */}
-            <div className="z-50 flex h-[34.5rem] w-[54rem] justify-center rounded-[25px] bg-white opacity-100">
+            <div 
+            className="z-50 flex h-[34.5rem] w-[54rem] justify-center rounded-[25px] bg-white opacity-100">
                {/* Kontainer untuk welcome dan foto */}
                <div className="h-full w-1/2">
                   {/* welcome */}
@@ -118,6 +137,7 @@ export default function Login(props: { visible: any; onClose: any }) {
                         id="username"
                         ref={usernameLogin}
                      />
+                     
                   </div>
                   {/* Password */}
                   <div className="ml-[2.3125rem] mt-[1.8rem] w-[22.375rem] ">
@@ -176,6 +196,17 @@ export default function Login(props: { visible: any; onClose: any }) {
                   </div>
                   {/* button login now */}
                   <div className="ml-[2.3125rem] mt-[1.2rem] w-[22.375rem]">
+                    {isError ? (
+                        
+                       <motion.p
+                       className="text-[#e82d2dfb] -mt-6 text-[0.8rem] font-medium"
+                       initial={{ opacity: 0 }}
+                       animate={{ opacity: 1 }}
+                        >{errorMessage}</motion.p>
+                     ):(
+                        null
+                     )}
+                    
                      <button
                         onSubmit={handleSubmitLogin}
                         type="submit"
@@ -183,6 +214,7 @@ export default function Login(props: { visible: any; onClose: any }) {
                      >
                         Login Now
                      </button>
+                     
                      <div className="flex justify-start space-x-1">
                         <p className="mt-[0.2rem] text-[0.6rem] font-normal ">
                            Don't have account?
@@ -469,5 +501,7 @@ export default function Login(props: { visible: any; onClose: any }) {
          )}
            
       </div>
+      </AnimatePresence>
+      
    );
 }

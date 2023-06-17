@@ -15,6 +15,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const [transparent, setTransparent] = useState(true);
   let home = false;
+  let about = false;
   useEffect(() => {
     const handleChange = (value: boolean) => {
       setTransparent(value);
@@ -29,16 +30,21 @@ export default function App({ Component, pageProps }: AppProps) {
   let temp = transparent;
   if (router.pathname === "/") {
     home = true;
-  } else {
+  } else if (router.pathname === "/aboutUs"){
+    about = true;
     temp = false;
     home = false;
+  }else{
+    temp = false;
+    home = false;
+
   }
   console.log(temp);
 
   return (
     <Providers>
       <main>
-        <Navbar home={home} transparent={temp} login={true}></Navbar>
+        <Navbar home={home} transparent={temp} about={about} login={true}></Navbar>
         <ChatButton></ChatButton>
         <Component {...pageProps} />
       </main>
