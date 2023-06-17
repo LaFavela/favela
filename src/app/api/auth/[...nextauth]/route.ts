@@ -47,6 +47,9 @@ const handler = NextAuth({
          },
       }),
    ],
+   jwt: {
+      secret: process.env.JWT_KEY,
+   },
    callbacks: {
       async jwt({ token, user }) {
          return { ...token, ...user};

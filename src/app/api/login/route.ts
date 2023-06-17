@@ -41,7 +41,6 @@ export async function POST(request: Request) {
       const result = {
          ...userWithoutPassword,
          accessToken,
-         expiresIn: expiresIn.expiresIn,
       };
       return new Response(JSON.stringify(result));
    } else {
