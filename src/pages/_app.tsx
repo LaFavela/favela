@@ -9,6 +9,7 @@ import {
   addTransparentChangeListener,
   removeTransparentChangeListener,
 } from "../tools/transparent";
+import ChatButton from "@/components/chatButton";
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -38,6 +39,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <Providers>
       <main>
         <Navbar home={home} transparent={temp} login={true}></Navbar>
+        <ChatButton></ChatButton>
         <Component {...pageProps} />
       </main>
     </Providers>

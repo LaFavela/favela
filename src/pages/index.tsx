@@ -4,6 +4,7 @@ import Slider from "./Slider";
 import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
 import { setTransparent } from "../tools/transparent";
+import ChatButton from "@/components/chatButton";
 import { data } from "./browse";
 import { designerData } from "./designer";
 import Image from "next/image";
