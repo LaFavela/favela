@@ -38,6 +38,7 @@ export default function Navbar(
    let profileTextColor = "text-black";
    let homie = " sticky top-0";
    if (props.home) homie = " fixed";
+   if (props.about) homie = " ";
    if (props.transparent) {
       navBackground = "bg-transparent";
       logoColor = "text-white";

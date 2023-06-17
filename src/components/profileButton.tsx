@@ -70,7 +70,7 @@ export default function ProfileButton(
                </p>
             </div>
          </div>
-         <div className="absolute right-5 -z-50 mt-[0rem]">
+         <div className="absolute right-5 z-40 mt-[0rem]">
             <ProfileNav
                className=""
                isAgent={true}
