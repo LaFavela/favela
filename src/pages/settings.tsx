@@ -7,59 +7,73 @@ import { Transition } from "@headlessui/react";
 import { getSession, useSession } from "next-auth/react";
 import { Users, Gender, RoleSelect } from "@prisma/client";
 import { useGet, usePost } from "@/lib/axios";
+import { GetServerSideProps } from "next";
 
 interface ProfileProps {
    data: Users;
 }
 
-export const getStaticProps = async () => {
-   const session = await getSession();
-   console.log(session);
+export const getServerSideProps: GetServerSideProps<{ data: Users }> = async (
+   context
+) => {
+   const session = await getSession(context);
    const token = session?.user.accessToken;
    const data = await useGet("/user", {
       authorization: token as string,
    });
    return {
       props: {
-         data: data,
+         data,
       },
    };
 };
 
-export function Profile({ data }: ProfileProps) {
-   const { data: session } = useSession();
+export function Profile(props: ProfileProps) {
+   const { data: session, update } = useSession();
    const token = session?.user.accessToken;
-   console.log(data);
 
    registerLocale("id", id);
 
    const [file, setFile] = useState<File | null>(null);
    const [preview, setPreview] = useState<string | null>(null);
 
-   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+   const handleFileChange = async (
+      event: React.ChangeEvent<HTMLInputElement>
+   ) => {
+      event.preventDefault();
       const selectedFile = event.target.files && event.target.files[0];
+
+      const uploadImage = async () => {
+         try {
+            if (!selectedFile) return;
+            const formData = new FormData();
+            formData.append("myImage", selectedFile);
+
+            const upload = await fetch(
+               "https://localhost:3000/api/user/upload",
+               {
+                  method: "POST",
+                  body: formData,
+                  headers: {
+                     "Content-Type": "multipart/form-data",
+                  },
+               }
+            );
+         } catch (error: any) {
+            console.log(error);
+         }
+      };
+
       if (selectedFile) {
          setFile(selectedFile);
          setPreview(URL.createObjectURL(selectedFile));
+         uploadImage();
       }
-      // try {
-      //    if (!selectedFile) return;
-      //    const formData = new FormData();
-      //    formData.append("myImage", selectedFile);
-      //    const { data } = usePost(
-      //       `/user/upload/`,
-      //       { authorization: token as string },
-      //       formData
-      //    );
-      //    console.log(data);
-      // } catch (error: any) {
-      //    console.log(error.response?.data);
-      // }
    };
 
    useEffect(() => {
       // Ambil URL foto profil dari database atau sumber penyimpanan file
-      const existingProfilePicture = data.image;
+      const existingProfilePicture = props.data.image;
       setPreview(existingProfilePicture);
    }, []);
 
@@ -70,27 +84,33 @@ export function Profile({ data }: ProfileProps) {
       }
    };
 
-   const [selectedCity, setSelectedCity] = useState(data.city);
-   const [selectedGender, setSelectedGender] = useState<Gender>(data.gender);
-   const [selectedRole, setSelectedRole] = useState<RoleSelect>(data.roleName);
-   const [firstName, setFirstName] = useState(data.firstName);
-   const [lastName, setLastName] = useState(data.lastName);
-   const [selectedEmail, setSelectedEmail] = useState(data.email);
-   const [selectedNumber, setSelectedNumber] = useState(data.phone);
-   const [selectedWebsite, setSelectedWebsite] = useState(data.website);
-   const [selectedSocialMedia, setSelectedSocialMedia] = useState(
-      data.socialMedia
+   const [selectedCity, setSelectedCity] = useState(props.data.city);
+   const [selectedGender, setSelectedGender] = useState<Gender>(
+      props.data.gender
    );
-   const [selectedReview, setSelectedReview] = useState(data.description);
+   const [selectedRole, setSelectedRole] = useState<RoleSelect>(
+      props.data.roleName
+   );
+   const [firstName, setFirstName] = useState(props.data.firstName);
+   const [lastName, setLastName] = useState(props.data.lastName);
+   const [selectedEmail, setSelectedEmail] = useState(props.data.email);
+   const [selectedNumber, setSelectedNumber] = useState(props.data.phone);
+   const [selectedWebsite, setSelectedWebsite] = useState(props.data.website);
+   const [selectedSocialMedia, setSelectedSocialMedia] = useState(
+      props.data.socialMedia
+   );
+   const [selectedReview, setSelectedReview] = useState(props.data.description);
 
    const [birthday, setBirthday] = useState<Date | null>(
-      new Date(data.birthDay)
+      new Date(props.data.birthDay)
    );
 
-   const handleSubmit = (event: React.FormEvent) => {
+   const [sideJobs, setSideJobs] = useState<string[]>(props.data.job); // State untuk menyimpan daftar pekerjaan sampingan
+
+   const handleSubmit = async (event: React.FormEvent) => {
       event.preventDefault();
       // Kirim data ke API
-      const data = usePost(
+      const data = await usePost(
          "/user",
          {
             authorization: token as string,
@@ -110,6 +130,29 @@ export function Profile({ data }: ProfileProps) {
             gender: selectedGender,
          } as Users
       );
+
+      const handleUpdateUser = async () => {
+         const newSession = {
+            ...session,
+            user: {
+               ...session?.user,
+               firstName: firstName,
+               lastName: lastName,
+               email: selectedEmail,
+               phone: selectedNumber,
+               website: selectedWebsite,
+               socialMedia: selectedSocialMedia,
+               description: selectedReview,
+               birthDay: birthday,
+               job: sideJobs,
+               city: selectedCity,
+               roleName: selectedRole,
+               gender: selectedGender,
+            },
+         };
+         await update(newSession);
+      };
+      await handleUpdateUser();
    };
 
    const handleGenderChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -119,8 +162,6 @@ export function Profile({ data }: ProfileProps) {
    const handleRoleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
       setSelectedRole(event.target.value as RoleSelect);
    };
-
-   const [sideJobs, setSideJobs] = useState<string[]>(data.job); // State untuk menyimpan daftar pekerjaan sampingan
 
    const handleAddSideJob = () => {
       setSideJobs([...sideJobs, ""]); // Menambahkan input box baru ke dalam daftar pekerjaan sampingan
@@ -489,7 +530,7 @@ export function Account() {
    );
 }
 
-export default function Settings() {
+export default function Settings({ data }: ProfileProps) {
    const [currentFunction, setCurrentFunction] = useState<
       "Profile" | "Account"
    >("Profile");
@@ -540,7 +581,7 @@ export default function Settings() {
                      leaveFrom="opacity-100"
                      leaveTo="opacity-0"
                   >
-                     <Profile></Profile>
+                     <Profile data={data}></Profile>
                   </Transition>
                   <Transition
                      show={currentFunction === "Account"}

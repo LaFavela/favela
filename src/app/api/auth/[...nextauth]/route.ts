@@ -2,7 +2,6 @@ import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "@/lib/prisma";
 
-
 const handler = NextAuth({
    secret: process.env.NEXTAUTH_SECRET,
    providers: [
@@ -40,7 +39,6 @@ const handler = NextAuth({
 
             const user = await res.json();
 
-
             if (res.ok && user) {
                return user;
             } else return null;
@@ -51,8 +49,11 @@ const handler = NextAuth({
       secret: process.env.JWT_KEY,
    },
    callbacks: {
-      async jwt({ token, user }) {
-         return { ...token, ...user};
+      async jwt({ token, user, trigger, session }) {
+         if (trigger === "update") {
+            return { ...token, ...session.user };
+         }
+         return { ...token, ...user };
       },
       async session({ session, token, user }) {
          // Send properties to the client, like an access_token from a provider.

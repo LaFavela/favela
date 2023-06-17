@@ -1,8 +1,13 @@
-import { NextApiResponse, NextApiRequest } from "next";
-import formidable from "formidable";
+import { NextApiRequest, NextApiResponse } from "next";
+import formidable, { File } from "formidable";
+import fs from "fs";
 import path from "path";
-import fs from "fs/promises";
-import { verifyJwt } from "@/lib/jwt";
+
+export type FormidableParseReturn = {
+   fields: formidable.Fields;
+   files: formidable.Files;
+};
+
 
 export const config = {
    api: {
@@ -10,44 +15,45 @@ export const config = {
    },
 };
 
-const readFile = (
-   req: NextApiRequest,
-   params: string,
-   saveLocally?: boolean
-): Promise<{ fields: formidable.Fields; files: formidable.Files }> => {
-   const options: formidable.Options = {};
-   if (saveLocally) {
-      options.uploadDir = path.join(process.cwd(), `/public/assets${params}`);
-      options.filename = (name, ext, path, form) => {
-         return Date.now().toString() + "_" + path.originalFilename;
-      };
-   }
-   options.maxFileSize = 4000 * 1024 * 1024;
-   const form = formidable(options);
-   return new Promise((resolve, reject) => {
-      form.parse(req, (err, fields, files) => {
-         if (err) reject(err);
+export async function parseFormAsync(
+   request: NextApiRequest,
+   formidableOptions?: formidable.Options
+): Promise<FormidableParseReturn> {
+   const form = formidable(formidableOptions);
+
+   return await new Promise<FormidableParseReturn>((resolve, reject) => {
+      form.parse(request, async (err, fields, files) => {
+         if (err) {
+            reject(err);
+         }
+
          resolve({ fields, files });
       });
    });
-};
+}
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-   const decoded = verifyJwt(req.headers.authorization!);
-   if (!decoded) {
-      return res.status(401).json({ error: "unauthorized" });
-   }
-   try {
-      await fs.readdir(
-         path.join(process.cwd() + "/public", `assets/profile/${decoded?.id}`)
-      );
-   } catch (error) {
-      await fs.mkdir(
-         path.join(process.cwd() + "/public", `assets/profile/${decoded?.id}`)
-      );
-   }
-   await readFile(req, decoded?.id, true);
-   res.json({ done: "ok" });
-};
+export async function POST(request: NextApiRequest, response: NextApiResponse<string>) {
+   try {      // Parse request with formidable
+      const { fields, files } = await parseFormAsync(request);
 
-export default handler;
+      // Files are always arrays (formidable v3+)
+      const myfile = (files["myfile"] as any as File[])[0];
+
+      // Save file in the public folder
+      saveFile(myfile, "/public/assets/profile");
+
+      // Return success
+      response.status(200).json("success!");
+   } catch (e: any) {
+      return response.status(500).json(e);
+   }
+}
+
+function saveFile(file: File, publicFolder: string): void {
+   const fileExt = path.extname(file.originalFilename || "");
+
+   fs.renameSync(
+      file.filepath,
+      `${publicFolder}/${file.newFilename}${fileExt}`
+   );
+}
