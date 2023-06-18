@@ -1,4 +1,4 @@
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker, { registerLocale } from "react-datepicker";
 import id from "date-fns/locale/id";
@@ -8,7 +8,6 @@ import { getSession, useSession } from "next-auth/react";
 import { Users, Gender, RoleSelect } from "@prisma/client";
 import { useGet, usePost } from "@/lib/axios";
 import { GetServerSideProps } from "next";
-import { v4 } from "uuid";
 interface ProfileProps {
    data: Users;
 }
@@ -57,7 +56,6 @@ export function Profile(props: ProfileProps) {
                },
                formData
             );
-            console.log(upload);
          } catch (error: any) {
             console.log(error);
          }
