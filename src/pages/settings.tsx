@@ -30,7 +30,6 @@ const data = [
 
 export function Profile() {
   registerLocale("id", id);
-  
 
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -113,8 +112,8 @@ export function Profile() {
 
   return (
     <div>
-      <div className="left-0 top-0 w-[170px] rounded-full  border-b-8 border-[#B17C3F]"></div>
-      <form onSubmit={handleSubmit} className="mt-10">
+      <div className="left-0 top-0 w-[170px] rounded-full border-b-8 border-[#B17C3F]"></div>
+      <form onSubmit={handleSubmit} className="mt-10 w-full">
         <div className="flex pr-[4rem]">
           <div className="w-[18]rem">
             <div className="ml-[0.3rem] h-[13rem] w-[13rem]">
@@ -179,7 +178,7 @@ export function Profile() {
               />
             </label>
             <label className="flex pr-[4.8rem]">
-              <span className="mt-3 w-[10rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
+              <span className="mt-3 w-[10.5rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
                 Birthday
               </span>
               <DatePicker
@@ -252,7 +251,7 @@ export function Profile() {
               />
             </label>
             <div className="flex">
-              <span className="mt-3 w-[11rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
+              <span className="mt-3 w-[11.5rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
                 Job
               </span>
               <div className="w-full">
@@ -399,9 +398,6 @@ export function Account() {
   };
   return (
     <div>
-      {/* <div className="relative rounded-full border-b-8 border-gray-300 ">
-        <div className="absolute left-[10.35rem] top-0 w-[170px] rounded-full  border-b-8 border-[#B17C3F]"></div>
-      </div> */}
       <div className="top-0 ml-[10.35rem] w-[170px] rounded-full  border-b-8 border-[#B17C3F]"></div>
       <div className="mt-10">
         <form onSubmit={handleSubmit} className="pl-[10.4rem] pr-[4rem]">
@@ -481,7 +477,6 @@ export default function Settings() {
     <div>
       <div className="ml-[12rem] mt-6 pr-[13rem]">
         <h1 className="text-[1.7rem] font-medium">Setting</h1>
-
         <div className="relative">
           <div className="mt-10">
             <button
@@ -502,7 +497,7 @@ export default function Settings() {
             </button>
             <div className="rounded-full border-b-8 border-gray-300 "></div>
           </div>
-          <div className="absolute top-[2.1rem]">
+          <div className="absolute top-[2.1rem] w-full">
             <Transition
               show={currentFunction === "Profile"}
               enter="transition-opacity duration-300"

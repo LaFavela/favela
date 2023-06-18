@@ -26,8 +26,7 @@ const data = [
 export default function AboutUs() {
   const ref = useRef(null);
   const { x, y } = useFollowPointer(ref);
-  console.log(ref)
-  console.log(x, y);
+  
   return (
     <ParallaxProvider
     >
@@ -53,7 +52,7 @@ export default function AboutUs() {
                 translateX={[0, -50]}
                 opacity={[1, 0]}
                 shouldAlwaysCompleteAnimation={true}
-                className=""
+                className="space-y-2"
               >
                 <svg
                   className="h-[13.125rem] w-[40.875rem]"
@@ -68,10 +67,8 @@ export default function AboutUs() {
                     fill="#B17C3F"
                   />
                 </svg>
-                <p className="ml-6 w-[47.125rem] text-[2.375rem] font-normal text-[#7D6C57]">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. ipsa
-                  iste eius, iure odit dolorum qui adipisci repellat doloremque!
-                  safaufn a asdja asfna asdnajwn asndjawnd ASnSN SAD
+                <p className="ml-6 w-[48rem] text-[2rem] text-justify font-normal text-[#7D6C57]">
+                Website Favela adalah platform yang menyediakan layanan untuk mencari, membeli, dan menjual properti dengan mudah. Favela hadir untuk mempermudah pengguna dalam menemukan properti yang sesuai, bertransaksi dengan aman, dan mendapatkan layanan terbaik dari para desainer dan tukang bangunan.
                 </p>
               </Parallax>
             </motion.div>
@@ -117,13 +114,13 @@ export default function AboutUs() {
               </div>
               <div className="flex w-screen justify-center">
                 <div>
-                  <Parallax className="space-y-20 text-[2.1875rem] font-medium">
+                  <Parallax className="space-y-28 text-[2rem] font-medium">
                     <Parallax
                     translateY={[200, 0]}
                     opacity={[0, 1]}
                     >
                       <div className="mr-5 flex items-center justify-end space-x-4">
-                        <p>Lorem ipsum dolor</p>
+                        <p>Platform terpercaya dan inovatif</p>
                         <svg
                           width="42"
                           height="39"
@@ -150,7 +147,7 @@ export default function AboutUs() {
                     opacity={[0, 1]}
                     >
                       <div className="mr-[3rem] flex items-center justify-end space-x-4">
-                        <p>Lorem ipsum dolor</p>
+                        <p>Kolaborasi desainer dan pengguna</p>
                         <svg
                           width="42"
                           height="39"
@@ -177,7 +174,7 @@ export default function AboutUs() {
                     opacity={[0, 1]}
                     >
                       <div className="mr-5 flex items-center justify-end space-x-4">
-                        <p>Lorem ipsum dolor</p>
+                        <p>Sumber informasi properti terlengkap</p>
                         <svg
                           width="42"
                           height="39"
@@ -243,7 +240,7 @@ export default function AboutUs() {
                   </svg>
                 </Parallax>
                 <div>
-                  <Parallax className="space-y-20 text-[2.1875rem] font-medium">
+                  <Parallax className="space-y-28 text-[2rem] font-medium">
                     <Parallax
                     translateY={[200, 0]}
                     opacity={[0, 1]}
@@ -268,7 +265,7 @@ export default function AboutUs() {
                             fill="#B17C3F"
                           />
                         </svg>
-                        <p>Lorem ipsum dolor</p>
+                        <p>Alat pemasaran efisien untuk penjual</p>
                       </div>
                     </Parallax>
                     <Parallax
@@ -296,7 +293,7 @@ export default function AboutUs() {
                             fill="#B17C3F"
                           />
                         </svg>
-                        <p>Lorem ipsum dolor</p>
+                        <p>Layanan penyewaan tukang</p>
                       </div>
                     </Parallax>
                     <Parallax
@@ -324,7 +321,7 @@ export default function AboutUs() {
                             fill="#B17C3F"
                           />
                         </svg>
-                        <p>Lorem ipsum dolor</p>
+                        <p>Komunitas properti aktif</p>
                       </div>
                     </Parallax>
                   </Parallax>
@@ -399,9 +396,9 @@ export default function AboutUs() {
             className=" bg-[#e3d0ba] -space-x-15 w-screen h-screen flex justify-center items-center "
             >
               <motion.div
-              initial={{x:-1000, opacity:0}}
-              whileInView={{x:0, opacity:1}}
-              transition={{ duration: 1, delay: 0.4 }}
+              // initial={{x:-1000, opacity:0}}
+              // whileInView={{x:0, opacity:1}}
+              // transition={{ duration: 1, delay: 0.4 }}
               >
                 <div className="flex -space-x-4 ">
                   <div
@@ -427,9 +424,9 @@ export default function AboutUs() {
               
               </motion.div>
               <motion.div
-              initial={{x:500, opacity:0}}
-              whileInView={{x:0, opacity:1}}
-              transition={{ duration: 1, delay: 0.4 }}
+              // initial={{x:500, opacity:0}}
+              // whileInView={{x:0, opacity:1}}
+              // transition={{ duration: 1, delay: 0.4 }}
               >
                   <div className="overflow-hidden rounded-xl">
                     <Image
@@ -448,9 +445,9 @@ export default function AboutUs() {
             className=" bg-[#e3d0ba] -space-x-15 w-screen h-screen flex justify-center items-center "
             >
               <motion.div
-              initial={{x:-1000, opacity:0}}
-              whileInView={{x:0, opacity:1}}
-              transition={{ duration: 1, delay: 0.4 }}
+              // initial={{x:-1000, opacity:0}}
+              // whileInView={{x:0, opacity:1}}
+              // transition={{ duration: 1, delay: 0.4 }}
               >
                 <div className="flex -space-x-4 ">
                   <div
@@ -476,9 +473,9 @@ export default function AboutUs() {
               
               </motion.div>
               <motion.div
-              initial={{x:500, opacity:0}}
-              whileInView={{x:0, opacity:1}}
-              transition={{ duration: 1, delay: 0.4 }}
+              // initial={{x:500, opacity:0}}
+              // whileInView={{x:0, opacity:1}}
+              // transition={{ duration: 1, delay: 0.4 }}
               >
                   <div className="overflow-hidden rounded-xl">
                     <Image
@@ -497,9 +494,9 @@ export default function AboutUs() {
             className=" bg-[#e3d0ba] -space-x-15 w-screen h-screen flex justify-center items-center "
             >
               <motion.div
-              initial={{x:-1000, opacity:0}}
-              whileInView={{x:0, opacity:1}}
-              transition={{ duration: 1, delay: 0.4 }}
+              // initial={{x:-1000, opacity:0}}
+              // whileInView={{x:0, opacity:1}}
+              // transition={{ duration: 1, delay: 0.4 }}
               >
                 <div className="flex -space-x-4 ">
                   <div
@@ -525,9 +522,9 @@ export default function AboutUs() {
               
               </motion.div>
               <motion.div
-              initial={{x:500, opacity:0}}
-              whileInView={{x:0, opacity:1}}
-              transition={{ duration: 1, delay: 0.4 }}
+              // initial={{x:500, opacity:0}}
+              // whileInView={{x:0, opacity:1}}
+              // transition={{ duration: 1, delay: 0.4 }}
               >
                   <div className="overflow-hidden rounded-xl">
                     <Image

@@ -3,7 +3,7 @@ export default function Footer() {
   return (
     <div>
       <div className="pb-28 pt-28 justify-center items-center flex flex-col">
-        <div className="flex items-center justify-center gap-20 border-b-2 pb-9 w-[67rem]">
+        <div className="flex items-center justify-center gap-20 border-b-2 pb-9 w-full">
           <div>
             <p className=" text-[1.5rem] font-medium text-[#B17C3F] pb-4">
               Contact Us
@@ -101,13 +101,13 @@ export default function Footer() {
             <Link href={"./"}>
               <p className="text-[#9ca3af] text-[0.75rem] pb-2">Home</p>
             </Link>
-            <Link href={"#"}>
-              <p className="text-[#9ca3af] text-[0.75rem] pb-2">Category</p>
+            <Link href={"./browse"}>
+              <p className="text-[#9ca3af] text-[0.75rem] pb-2">Browse</p>
             </Link>
             <Link href={"./build"}>
               <p className="text-[#9ca3af] text-[0.75rem] pb-2">Build</p>
             </Link>
-            <Link href={"#"}>
+            <Link href={"./aboutUs"}>
               <p className="text-[#9ca3af] text-[0.75rem] pb-2">About Us</p>
             </Link>
           </div>
@@ -115,17 +115,17 @@ export default function Footer() {
             <p className=" text-[1.5rem] font-medium text-[#B17C3F]">
               Our Service
             </p>
-            <Link href={"./"}>
-              <p className="text-[#9ca3af] text-[0.75rem] pb-2">Home</p>
+            <Link href={"./browse"}>
+              <p className="ml-1 text-[#9ca3af] text-[0.75rem] pb-2">Buy Properties</p>
             </Link>
-            <Link href={"#"}>
-              <p className="text-[#9ca3af] text-[0.75rem] pb-2">Category</p>
+            <Link href={"./sellPropertyForm"}>
+              <p className="ml-1 text-[#9ca3af] text-[0.75rem] pb-2">Sell Properties</p>
             </Link> 
             <Link href={"./browse"}>
-              <p className="text-[#9ca3af] text-[0.75rem] pb-2">Build</p>
+              <p className="ml-1 text-[#9ca3af] text-[0.75rem] pb-2">Rent Properies</p>
             </Link>
-            <Link href={"#"}>
-              <p className="text-[#9ca3af] text-[0.75rem] pb-2">About Us</p>
+            <Link href={"./build"}>
+              <p className="ml-1 text-[#9ca3af] text-[0.75rem] pb-2">Build Properties</p>
             </Link>
           </div>
         </div>

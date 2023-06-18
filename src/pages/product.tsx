@@ -2,7 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import Footer from "../components/footer";
 import { useState, useRef, useEffect } from "react";
-import Map from "@/components/maps";
+import {Map} from "@/components/maps";
 import Carousel from "@/components/carousel";
 import React from "react";
 import Popup from "reactjs-popup";
@@ -214,6 +214,16 @@ export default function Product() {
       // window.location.href = "./browse";
     };
 
+    const [isCreditCard, setIsCreditCard] = useState(false);
+    const handleCard = () => {
+      setIsCreditCard(true);
+    };
+
+    const handleSubmit = (event: React.FormEvent) => {
+      event.preventDefault();
+      console.log("Succes");
+    };
+
     return (
       <div>
         <div>
@@ -240,57 +250,128 @@ export default function Product() {
                 paddingBottom: "2rem",
               }}
             >
-              {/* <Status></Status> */}
-              <div className="h-full rounded-xl">
-                <span className=" relative top-5 ml-9 font-semibold text-gold ">
-                  Properti yang di beli
-                </span>
-                <div className="ml-9 mt-8 flex h-16 w-16 rounded-full">
-                  <img src={data[0].img} alt="" className="rounded-full" />
-                  <div className="ml-6 mt-2 flex flex-col">
-                    <span className="font-semibold">{data[0].name}</span>
-                    <span className="text-sm text-gray-300">
-                      {data[0].city}
-                    </span>
+              {isCreditCard ? (
+                <div className="h-full rounded-xl">
+                  <div>
+                    <div className="ml-9 mt-5 flex flex-col">
+                      <p className="ml-1 font-semibold text-gold">
+                        Card Credit Methode
+                      </p>
+                      <p className="ml-1 mt-3 text-sm font-semibold text-gold">
+                        Only valid for credit/debit cards with a logo
+                      </p>
+                      <img
+                        src="./assets/product/pngwing.png"
+                        alt=""
+                        className="mt-2 w-[8rem]"
+                      />
+                    </div>
+                    <div className="ml-10 mr-10 mt-5">
+                      <form onSubmit={handleSubmit}>
+                        <label htmlFor="" className="text-sm text-gold">
+                          Credit Card Number
+                        </label>
+                        <input
+                          type="text"
+                          className="h-[2.8rem] w-full rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F]"
+                          placeholder="Credit Card Number"
+                        />
+                        <div className="mt-4 flex justify-between">
+                          <div className="flex flex-col">
+                            <label htmlFor="" className="text-sm text-gold">
+                              CVC
+                            </label>
+                            <input
+                              type="text"
+                              className="h-[2.8rem] w-[22rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F]"
+                              placeholder="CVC"
+                            />
+                          </div>
+                          <div className="flex flex-col">
+                            <label htmlFor="" className="text-sm text-gold">
+                              Expiration Date
+                            </label>
+                            <input
+                              type="date"
+                              className="h-[2.8rem] w-[22rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F]"
+                              placeholder="00/00"
+                            />
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                    <div className="ml-10 mt-5">
+                      <p className="text-lg">Total</p>
+                      <span className="text-2xl font-medium">
+                        {properti[0].price}
+                      </span>
+                    </div>
+                    <div className="mt-10 flex justify-center gap-8">
+                      <button
+                        type="submit"
+                        onClick={closePopup}
+                        className="  h-11 w-[22.8rem] rounded-lg border-2 border-[#B17C3F] bg-white text-sm text-[#B17C3F] duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white"
+                      >
+                        Batal
+                      </button>
+                      <button
+                        onClick={handlePayment}
+                        className=" h-11 w-[22.8rem] rounded-lg border-2 border-[#B17C3F] bg-[#B17C3F] text-sm text-white duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white"
+                      >
+                        Bayar
+                      </button>
+                    </div>
                   </div>
                 </div>
-                <div className="ml-9 mt-6 flex">
-                  <img
-                    src={properti[0].img}
-                    alt=""
-                    className="h-[6.3rem] w-[7.9rem] rounded-lg object-cover"
-                  />
-                  <div className="ml-6 flex flex-col gap-1">
-                    <span className="text-2xl font-light">
-                      {properti[0].name}
-                    </span>
-                    <span className="text-gray-300">{properti[0].type}</span>
-                    <span className="text-2xl font-medium">
-                      {properti[0].price}
-                    </span>
+              ) : (
+                <div className="h-full rounded-xl">
+                  <span className=" relative top-5 ml-9 font-semibold text-gold ">
+                    Properti yang di beli
+                  </span>
+                  <div className="ml-9 mt-8 flex h-16 w-16 rounded-full">
+                    <img src={data[0].img} alt="" className="rounded-full" />
+                    <div className="ml-6 mt-2 flex flex-col">
+                      <span className="font-semibold">{data[0].name}</span>
+                      <span className="text-sm text-gray-300">
+                        {data[0].city}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="ml-9 mt-6 flex">
+                    <img
+                      src={properti[0].img}
+                      alt=""
+                      className="h-[6.3rem] w-[7.9rem] rounded-lg object-cover"
+                    />
+                    <div className="ml-6 flex flex-col gap-1">
+                      <span className="text-2xl font-light">
+                        {properti[0].name}
+                      </span>
+                      <span className="text-gray-300">{properti[0].type}</span>
+                      <span className="text-2xl font-medium">
+                        {properti[0].price}
+                      </span>
+                    </div>
+                  </div>
+                  <span className=" relative top-14 ml-9 font-medium text-gold ">
+                    Pilih Metode Pembayaran
+                  </span>
+                  <div className="ml-9 mr-9 mt-16 flex justify-between pb-10">
+                    <button
+                      onClick={handleCard}
+                      className="left-8 flex h-[2.5rem] w-[15rem] justify-center rounded-lg border-2 border-gold duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white"
+                    >
+                      <p className="ml-2 mt-2 text-sm">Kartu Kredit/Cicilan</p>
+                    </button>
+                    <button className="left-8 flex h-[2.5rem] w-[15rem] justify-center rounded-lg border-2 border-gold duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white ">
+                      <p className="ml-2 mt-2 text-sm">Transfer Bank</p>
+                    </button>
+                    <button className="left-8 flex h-[2.5rem] w-[15rem] justify-center rounded-lg border-2 border-gold duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white">
+                      <p className="ml-2 mt-2 text-sm">Virtual Account</p>
+                    </button>
                   </div>
                 </div>
-                <span className=" relative top-5 ml-9 font-medium text-gold ">
-                  Pilih Metode Pembayaran
-                </span>
-                <div>
-                  
-                </div>
-                <div className="mt-10 flex justify-center gap-8">
-                  <button
-                    onClick={closePopup}
-                    className="  h-11 w-[22.8rem] rounded-lg border-2 border-[#B17C3F] bg-white text-sm text-[#B17C3F] duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white"
-                  >
-                    Batal
-                  </button>
-                  <button
-                    onClick={handlePayment}
-                    className=" h-11 w-[22.8rem] rounded-lg border-2 border-[#B17C3F] bg-[#B17C3F] text-sm text-white duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white"
-                  >
-                    Bayar
-                  </button>
-                </div>
-              </div>
+              )}
             </Popup>
           )}
         </div>
@@ -316,6 +397,16 @@ export default function Product() {
       // window.location.href = "./browse";
     };
 
+    const [isCreditCard, setIsCreditCard] = useState(false);
+    const handleCard = () => {
+      setIsCreditCard(true);
+    };
+
+    const handleSubmit = (event: React.FormEvent) => {
+      event.preventDefault();
+      console.log("Succes");
+    };
+
     return (
       <div>
         <div className="h-max rounded-full">
@@ -339,69 +430,153 @@ export default function Product() {
                 paddingBottom: "2rem",
               }}
             >
-              <div className="h-full rounded-xl">
-                <span className=" relative top-5 ml-9 font-semibold text-gold ">
-                  Properti yang di Sewa
-                </span>
-                <div className="ml-9 mt-8 flex h-16 w-16 rounded-full">
-                  <img src={data[0].img} alt="" className="rounded-full" />
-                  <div className="ml-6 mt-2 flex flex-col">
-                    <span className="font-semibold">{data[0].name}</span>
-                    <span className="text-sm text-gray-300">
-                      {data[0].city}
-                    </span>
-                  </div>
-                </div>
-                <div className="ml-9 mt-6 flex">
-                  <img
-                    src={properti[0].img}
-                    alt=""
-                    className="h-[6.3rem] w-[7.9rem] rounded-lg object-cover"
-                  />
-                  <div className="ml-6 flex flex-col gap-1">
-                    <span className="text-2xl font-light">
-                      {properti[0].name}
-                    </span>
-                    <span className="text-gray-300">{properti[0].type}</span>
-                    <span className="flex w-max gap-3 text-2xl font-medium">
-                      <select
-                        id="role"
-                        placeholder="Choose Range"
-                        className="rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
-                        onChange={handleChange}
+              {isCreditCard ? (
+                <div className="h-full rounded-xl">
+                  <div>
+                    <div className="ml-9 mt-5 flex flex-col">
+                      <p className="ml-1 font-semibold text-gold">
+                        Card Credit Methode
+                      </p>
+                      <p className="ml-1 mt-3 text-sm font-semibold text-gold">
+                        Only valid for credit/debit cards with a logo
+                      </p>
+                      <img
+                        src="./assets/product/pngwing.png"
+                        alt=""
+                        className="mt-2 w-[8rem]"
+                      />
+                    </div>
+                    <div className="ml-10 mr-10 mt-5">
+                      <form onSubmit={handleSubmit}>
+                        <label htmlFor="" className="text-sm text-gold">
+                          Credit Card Number
+                        </label>
+                        <input
+                          type="text"
+                          className="h-[2.8rem] w-full rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F]"
+                          placeholder="Credit Card Number"
+                        />
+                        <div className="mt-4 flex justify-between">
+                          <div className="flex flex-col">
+                            <label htmlFor="" className="text-sm text-gold">
+                              CVC
+                            </label>
+                            <input
+                              type="text"
+                              className="h-[2.8rem] w-[22rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F]"
+                              placeholder="CVC"
+                            />
+                          </div>
+                          <div className="flex flex-col">
+                            <label htmlFor="" className="text-sm text-gold">
+                              Expiration Date
+                            </label>
+                            <input
+                              type="date"
+                              className="h-[2.8rem] w-[22rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F]"
+                              placeholder="00/00"
+                            />
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                    <div className="ml-10 mt-5">
+                      <p className="text-lg">Total</p>
+
+                      {selectedOption === "Year" ? (
+                        <span className="text-2xl font-medium">
+                          {prices[0].year}
+                        </span>
+                      ) : selectedOption === "Month" ? (
+                        <span className="text-2xl font-medium">
+                          {prices[0].month}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                    <div className="mt-10 flex justify-center gap-8">
+                      <button
+                        type="submit"
+                        onClick={closePopup}
+                        className="  h-11 w-[22.8rem] rounded-lg border-2 border-[#B17C3F] bg-white text-sm text-[#B17C3F] duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white"
                       >
-                        <option value="" hidden>
-                          Choose Range
-                        </option>
-                        <option value="Year">Year</option>
-                        <option value="Month">Month</option>
-                      </select>
-                      {selectedOption === "Year"
-                        ? prices[0].year
-                        : selectedOption === "Month"
-                        ? prices[0].month
-                        : ""}
-                    </span>
+                        Batal
+                      </button>
+                      <button
+                        onClick={handleRent}
+                        className=" h-11 w-[22.8rem] rounded-lg border-2 border-[#B17C3F] bg-[#B17C3F] text-sm text-white duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white"
+                      >
+                        Bayar
+                      </button>
+                    </div>
                   </div>
                 </div>
-                <span className=" relative top-5 ml-9 font-medium text-gold ">
-                  Pilih Metode Pembayaran
-                </span>
-                <div className="mt-10 flex justify-center gap-8">
-                  <button
-                    onClick={closePopup}
-                    className="  h-11 w-[20rem] rounded-lg border-2 border-[#B17C3F] bg-white text-sm text-[#B17C3F] duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white"
-                  >
-                    Batal
-                  </button>
-                  <button
-                    onClick={handleRent}
-                    className=" h-11 w-[20rem] rounded-lg border-2 border-[#B17C3F] bg-[#B17C3F] text-sm text-white duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white"
-                  >
-                    Bayar
-                  </button>
+              ) : (
+                <div className="h-full rounded-xl">
+                  <span className=" relative top-5 ml-9 font-semibold text-gold ">
+                    Properti yang di Sewa
+                  </span>
+                  <div className="ml-9 mt-8 flex h-16 w-16 rounded-full">
+                    <img src={data[0].img} alt="" className="rounded-full" />
+                    <div className="ml-6 mt-2 flex flex-col">
+                      <span className="font-semibold">{data[0].name}</span>
+                      <span className="text-sm text-gray-300">
+                        {data[0].city}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="ml-9 mt-6 flex">
+                    <img
+                      src={properti[0].img}
+                      alt=""
+                      className="h-[6.3rem] w-[7.9rem] rounded-lg object-cover"
+                    />
+                    <div className="ml-6 flex flex-col gap-1">
+                      <span className="text-2xl font-light">
+                        {properti[0].name}
+                      </span>
+                      <span className="text-gray-300">{properti[0].type}</span>
+                      <span className="flex w-max gap-3 text-2xl font-medium">
+                        <select
+                          id="role"
+                          placeholder="Choose Range"
+                          className="rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
+                          onChange={handleChange}
+                        >
+                          <option value="" hidden>
+                            Choose Range
+                          </option>
+                          <option value="Year">Year</option>
+                          <option value="Month">Month</option>
+                        </select>
+                        {selectedOption === "Year"
+                          ? prices[0].year
+                          : selectedOption === "Month"
+                          ? prices[0].month
+                          : ""}
+                      </span>
+                    </div>
+                  </div>
+                  <span className=" relative top-14 ml-9 font-medium text-gold ">
+                    Pilih Metode Pembayaran
+                  </span>
+                  <div className="ml-9 mr-9 mt-16 flex justify-between pb-10">
+                    <button
+                      onClick={handleCard}
+                      className="left-8 flex h-[2.5rem] w-[15rem] justify-center rounded-lg border-2 border-gold duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white"
+                    >
+                      <p className="ml-2 mt-2 text-sm">Kartu Kredit/Cicilan</p>
+                    </button>
+                    <button className="left-8 flex h-[2.5rem] w-[15rem] justify-center rounded-lg border-2 border-gold duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white ">
+                      <p className="ml-2 mt-2 text-sm">Transfer Bank</p>
+                    </button>
+                    <button className="left-8 flex h-[2.5rem] w-[15rem] justify-center rounded-lg border-2 border-gold duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white">
+                      <p className="ml-2 mt-2 text-sm">Virtual Account</p>
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
             </Popup>
           )}
         </div>
@@ -478,7 +653,7 @@ export default function Product() {
         {/* main box */}
         <div className="flex space-x-10">
           {/* Image Box */}
-          <div className="h-[60vw] w-[55%] z-0">
+          <div className="z-0 h-[60vw] w-[55%]">
             <Carousel></Carousel>
           </div>
           {/* Image Box - end */}
