@@ -8,7 +8,7 @@ import { getSession, useSession } from "next-auth/react";
 import { Users, Gender, RoleSelect } from "@prisma/client";
 import { useGet, usePost } from "@/lib/axios";
 import { GetServerSideProps } from "next";
-
+import { v4 } from "uuid";
 interface ProfileProps {
    data: Users;
 }
@@ -49,16 +49,15 @@ export function Profile(props: ProfileProps) {
             const formData = new FormData();
             formData.append("myImage", selectedFile);
 
-            const upload = await fetch(
-               "https://localhost:3000/api/user/upload",
+            const upload = await usePost(
+               "/upload",
                {
-                  method: "POST",
-                  body: formData,
-                  headers: {
-                     "Content-Type": "multipart/form-data",
-                  },
-               }
+                  authorization: token as string,
+                  username : session?.user.username as string,
+               },
+               formData
             );
+            console.log(upload);
          } catch (error: any) {
             console.log(error);
          }
@@ -128,6 +127,7 @@ export function Profile(props: ProfileProps) {
             city: selectedCity,
             roleName: selectedRole,
             gender: selectedGender,
+            image: "/assets/profile/private/" + props.data.id + "/avatar.jpg" 
          } as Users
       );
 
@@ -148,9 +148,11 @@ export function Profile(props: ProfileProps) {
                city: selectedCity,
                roleName: selectedRole,
                gender: selectedGender,
+               image: "/assets/profile/private/" + props.data.id + "/avatar.jpg" 
             },
          };
          await update(newSession);
+         window.location.reload();
       };
       await handleUpdateUser();
    };
