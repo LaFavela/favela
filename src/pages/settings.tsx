@@ -49,7 +49,7 @@ export function Profile(props: ProfileProps) {
             formData.append("myImage", selectedFile);
 
             const upload = await usePost(
-               "/upload",
+               "profile/upload",
                {
                   authorization: token as string,
                   username : session?.user.username as string,
@@ -173,27 +173,27 @@ export function Profile(props: ProfileProps) {
       setSideJobs(updatedSideJobs);
    };
 
-   return (
-      <div>
-         <div className="left-0 top-0 w-[170px] rounded-full  border-b-8 border-[#B17C3F]"></div>
-         <form onSubmit={handleSubmit} className="mt-10">
-            <div className="flex pr-[4rem]">
-               <div className="w-[18]rem">
-                  <div className="ml-[0.3rem] h-[13rem] w-[13rem]">
-                     {preview ? (
-                        <img
-                           src={preview}
-                           alt="Preview"
-                           className="h-[13rem] w-[13rem] rounded-3xl object-cover"
-                        />
-                     ) : (
-                        <div className="flex h-[13rem] w-[13rem] items-center justify-center rounded-3xl bg-gray-300">
-                           <span className="text-gray-500">
-                              Foto Profil Tidak Tersedia
-                           </span>
-                        </div>
-                     )}
-                  </div>
+  return (
+    <div>
+      <div className="left-0 top-0 w-[170px] rounded-full border-b-8 border-[#B17C3F]"></div>
+      <form onSubmit={handleSubmit} className="mt-10 w-full">
+        <div className="flex pr-[4rem]">
+          <div className="w-[18]rem">
+            <div className="ml-[0.3rem] h-[13rem] w-[13rem]">
+              {preview ? (
+                <img
+                  src={preview}
+                  alt="Preview"
+                  className="h-[13rem] w-[13rem] rounded-3xl object-cover"
+                />
+              ) : (
+                <div className="flex h-[13rem] w-[13rem] items-center justify-center rounded-3xl bg-gray-300">
+                  <span className="text-gray-500">
+                    Foto Profil Tidak Tersedia
+                  </span>
+                </div>
+              )}
+            </div>
 
                   <div className="mt-4 flex justify-center ">
                      <button
@@ -241,7 +241,7 @@ export function Profile(props: ProfileProps) {
                      />
                   </label>
                   <label className="flex pr-[4.8rem]">
-                     <span className="mt-3 w-[10rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
+                     <span className="mt-3 w-[10.5rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
                         Birthday
                      </span>
                      <DatePicker
@@ -314,7 +314,7 @@ export function Profile(props: ProfileProps) {
                      />
                   </label>
                   <div className="flex">
-                     <span className="mt-3 w-[11rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
+                     <span className="mt-3 w-[11.5rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
                         Job
                      </span>
                      <div className="w-full">
@@ -458,76 +458,73 @@ export function Profile(props: ProfileProps) {
 }
 
 export function Account() {
-   const handleSubmit = (event: React.FormEvent) => {
-      event.preventDefault();
-      // Lakukan pengiriman file ke server dan penyimpanan ke database menggunakan Prisma di sini
-   };
-   return (
-      <div>
-         {/* <div className="relative rounded-full border-b-8 border-gray-300 ">
-        <div className="absolute left-[10.35rem] top-0 w-[170px] rounded-full  border-b-8 border-[#B17C3F]"></div>
-      </div> */}
-         <div className="top-0 ml-[10.35rem] w-[170px] rounded-full  border-b-8 border-[#B17C3F]"></div>
-         <div className="mt-10">
-            <form onSubmit={handleSubmit} className="pl-[10.4rem] pr-[4rem]">
-               <div className="flex flex-col gap-8">
-                  <label className="flex w-full">
-                     <span className="mt-3 w-[11rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
-                        Username
-                     </span>
-                     <input
-                        type="text"
-                        name="username"
-                        className="ml-[5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
-                        placeholder="username"
-                     />
-                  </label>
-                  <label className="flex w-full">
-                     <span className="mt-3 w-[11rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
-                        Old Password
-                     </span>
-                     <input
-                        type="password"
-                        name="password"
-                        className="ml-[5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
-                        placeholder="password"
-                     />
-                  </label>
-                  <label className="flex w-full">
-                     <span className="mt-3 w-[11rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
-                        New Password
-                     </span>
-                     <input
-                        type="pasword"
-                        name="newPassword"
-                        className="ml-[5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
-                        placeholder="new password"
-                     />
-                  </label>
-                  <label className="flex w-full">
-                     <span className="mt-3 w-[13rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
-                        Confirm Password
-                     </span>
-                     <input
-                        type="password"
-                        name="confirmPassword"
-                        className="ml-[3.5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
-                        placeholder="confirm password"
-                     />
-                  </label>
-               </div>
-               <div className="mt-[5rem] flex justify-end">
-                  <button
-                     type="submit"
-                     className=" h-11 w-32 rounded-xl border-2 border-[#B17C3F] bg-[#B17C3F] text-base text-white duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white"
-                  >
-                     Simpan
-                  </button>
-               </div>
-            </form>
-         </div>
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    // Lakukan pengiriman file ke server dan penyimpanan ke database menggunakan Prisma di sini
+  };
+  return (
+    <div>
+      <div className="top-0 ml-[10.35rem] w-[170px] rounded-full  border-b-8 border-[#B17C3F]"></div>
+      <div className="mt-10">
+        <form onSubmit={handleSubmit} className="pl-[10.4rem] pr-[4rem]">
+          <div className="flex flex-col gap-8">
+            <label className="flex w-full">
+              <span className="mt-3 w-[11rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
+                Username
+              </span>
+              <input
+                type="text"
+                name="username"
+                className="ml-[5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
+                placeholder="username"
+              />
+            </label>
+            <label className="flex w-full">
+              <span className="mt-3 w-[11rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
+                Old Password
+              </span>
+              <input
+                type="password"
+                name="password"
+                className="ml-[5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
+                placeholder="password"
+              />
+            </label>
+            <label className="flex w-full">
+              <span className="mt-3 w-[11rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
+                New Password
+              </span>
+              <input
+                type="pasword"
+                name="newPassword"
+                className="ml-[5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
+                placeholder="new password"
+              />
+            </label>
+            <label className="flex w-full">
+              <span className="mt-3 w-[13rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
+                Confirm Password
+              </span>
+              <input
+                type="password"
+                name="confirmPassword"
+                className="ml-[3.5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
+                placeholder="confirm password"
+              />
+            </label>
+          </div>
+          <div className="mt-[5rem] flex justify-end">
+            <button
+              type="submit"
+              className=" h-11 w-32 rounded-xl border-2 border-[#B17C3F] bg-[#B17C3F] text-base text-white duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white"
+            >
+              Simpan
+            </button>
+          </div>
+        </form>
       </div>
-   );
+    </div>
+  );
 }
 
 export default function Settings({ data }: ProfileProps) {
@@ -571,7 +568,7 @@ export default function Settings({ data }: ProfileProps) {
                   </button>
                   <div className="rounded-full border-b-8 border-gray-300 "></div>
                </div>
-               <div className="absolute top-[2.1rem]">
+               <div className="absolute top-[2.1rem] w-full">
                   <Transition
                      show={currentFunction === "Profile"}
                      enter="transition-opacity duration-300"

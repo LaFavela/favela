@@ -133,9 +133,21 @@ a {
   text-white
   bg-[#B17C3F]
   text-xl
-  h-[3rem];
+  h-[58px];
+}
+.button-nila {
+  @apply rounded-full
+  text-[#B17C3F]
+  bg-white
+  border-2
+  border-[#B17C3F]
+  text-xl
+  h-[50px];
 }
 
+.button-nila:hover {
+  @apply bg-[#e3d0ba];
+}
 .button-brown:hover {
   @apply bg-[#C99963];
 }
