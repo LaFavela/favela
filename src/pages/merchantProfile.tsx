@@ -3,20 +3,19 @@ import StarRating from "./rating";
 import Footer from "../components/footer";
 import Router from "next/router";
 import calculate from "@/tools/calculate";
-import {motion} from "framer-motion";
 
 const user = {
   id: 1,
-  firstName: "Muhammad Dzulhi",
+  firstName: "Dhira Wahyu",
   role: "PENJUAL",
-  lastName: "Raihan",
+  lastName: "Febrian",
   city: "Mataram",
   country: "Indonesia",
   jumlahUlasan: 20,
   follower: 500000,
   userDescription:
     "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam vitae iusto expedita eos cum autem deserunt tempora voluptatum repellendus! Sint iste eveniet earum amet deserunt eligendi, minima reprehenderit consequuntur doloribus",
-  userIMG: "/assets/profile/dzulhi.jpg",
+  userIMG: "/assets/profile/dhira.jpg",
   job: [
     {
       id: 1,
@@ -546,7 +545,7 @@ export default function merchantProfile() {
           <div className="mt-3  basis-1/2">
             <div className="flex items-center justify-center">
               <img
-                src="/assets/profile/raihan.jpg"
+                src={user.userIMG}
                 alt="foto profil"
                 className="ml-10 mt-6  h-[26rem] w-[26rem] rounded-3xl"
               />
