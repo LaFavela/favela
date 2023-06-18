@@ -7,75 +7,39 @@ import calculate from "@/tools/calculate";
 import Router from "next/router";
 const people = [
     { id: 1, name: "Semua" },
-    { id: 2, name: "Rumah" },
-    { id: 3, name: "Kondominum" },
-    { id: 4, name: "Tanah" },
-    { id: 5, name: "Villa" },
+    { id: 2, name: "Property" },
+    { id: 3, name: "Design" },
+    { id: 4, name: "Build" },
   ];
 const data = [
     {
         id: 1,
-        transactionType: "Property",
+        transactionType: "PROPERTI",
         propertyName: "Ampenan Asri",
         img: "/assets/browse/Build14.png",
         propertyType: "Villa",
         price: 476000000,
-        status: "Menunggu Konfirmasi",
+        status: "PENDING",
     },
     {
         id: 2,
-        transactionType: "Property",
+        transactionType: "DESAIN",
         propertyName: "Perumahan Bumi Asri",
         img: "/assets/browse/Build13.png",
         propertyType: "Villa",
         price: 476000000,
-        status: "Menunggu Konfirmasi",
+        status: "FINISHED",
     },
     {
         id: 3,
-        transactionType: "Property",
+        transactionType: "BUILD",
         propertyName: "BTN Ali",
         img: "/assets/browse/Build9.png",
         propertyType: "Rumah",
         price: 476000000,
-        status: "Menunggu Konfirmasi",
+        status: "PENDING",
     },
-    {
-        id: 3,
-        transactionType: "Property",
-        propertyName: "BTN Ali",
-        img: "/assets/browse/Build9.png",
-        propertyType: "Rumah",
-        price: 476000000,
-        status: "Menunggu Konfirmasi",
-    },
-    {
-        id: 3,
-        transactionType: "Property",
-        propertyName: "BTN Ali",
-        img: "/assets/browse/Build9.png",
-        propertyType: "Rumah",
-        price: 476000000,
-        status: "Menunggu Konfirmasi",
-    },
-    {
-        id: 3,
-        transactionType: "Property",
-        propertyName: "BTN Ali",
-        img: "/assets/browse/Build9.png",
-        propertyType: "Rumah",
-        price: 476000000,
-        status: "Menunggu Konfirmasi",
-    },
-    {
-        id: 3,
-        transactionType: "Property",
-        propertyName: "BTN Ali",
-        img: "/assets/browse/Build9.png",
-        propertyType: "Rumah",
-        price: 476000000,
-        status: "Menunggu Konfirmasi",
-    },
+    
 ];
 export default function Transaction() {
     function clickHandler(link: string) {
@@ -185,8 +149,7 @@ export default function Transaction() {
                                         <button 
                                         onClick={() => clickHandler("/detailTransaction")} 
                                         className="text-[#B17C3F] text-[0.75rem] font-normal w-[9.1875rem] h-[2.5rem] border border-[#B17C3F] rounded-[7px]">Detail</button>
-                                        <button className="text-[#B17C3F] text-[0.75rem] font-normal w-[9.1875rem] h-[2.5rem] border border-[#B17C3F] rounded-[7px]">Batal</button>
-                                        <button className="text-white text-[0.75rem] font-normal w-[9.1875rem] h-[2.5rem] bg-[#B17C3F] rounded-[7px]">Konfirmasi</button>
+                
                                     </div>
                                 </div>
                             </div>

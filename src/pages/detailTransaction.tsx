@@ -1,6 +1,7 @@
 import Footer from "@/components/footer"
 import React from "react";
 import Router from "next/router";
+
 const data = [
     {
         transactionType: "Design",
@@ -13,7 +14,7 @@ const data = [
         productType :"Rumah",
         productPrice :80000000,
         noTrans:"123wd4567wd8fwa9",
-        status : "Selesai",
+        status : "FINISHED",
         paymentMethode:"Credit Card",
         paymentTime:"2021-08-20 13:00:00",
         isProperty:false,
@@ -96,6 +97,28 @@ export default function DetailTransaction(){
                             
                         </div>
                     ):(null)}
+                    <div className="space-y-[2rem]">
+                        <p className="font-medium text-[1.5rem]">Action</p>
+                        <div>
+                            {data[0].status === "PENDING" ? (
+                                <div className="space-x-2">
+
+                                <button 
+                                    className="px-[2rem] py-[0.5rem] border-[0.2rem] border-[#B17C3F] rounded-[16px] text-gold hover:bg-[#e4d1bc] text-[1rem] font-medium">
+                                    <p className="">Reject</p>
+                                </button>
+                                <button 
+                                    className="px-[2rem] py-[0.5rem]  bg-[#B17C3F] rounded-[16px] text-white hover:bg-[#cd9a60] text-[1rem] font-medium">
+                                    <p className="">Confirm</p>
+                                </button>
+                                </div>
+
+                            ):(
+                                <p className="text-10 font-light">Tidak Ada Aksi</p>
+                            )}
+                            
+                        </div>
+                    </div>
                     
                 </div>
             </div>
