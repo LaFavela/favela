@@ -4,6 +4,7 @@ import Router from "next/router";
 const data = [
     {
         transactionType: "Design",
+        paymentType: "",
         toName : "Dhira Wahyu Febrian",
         toImg : "assets/profile/dhira.jpg",
         productName :"Rumah Minimalis Karya Anak Bangsa",
