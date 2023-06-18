@@ -10,10 +10,10 @@ type Person = {
    name: string;
 };
 const people: Person[] = [
-   { id: 1, name: "Semua" },
-   { id: 2, name: "Rumah" },
+   { id: 1, name: "All" },
+   { id: 2, name: "House" },
    { id: 3, name: "Kondominum" },
-   { id: 4, name: "Tanah" },
+   { id: 4, name: "Land" },
    { id: 5, name: "Villa" },
 ];
 export const data = [
@@ -719,7 +719,7 @@ export default function Browse() {
                      <input
                         type="text"
                         className="h-full w-full rounded-full bg-[#F1F1F1] pl-5 text-xl font-light focus:outline-none"
-                        placeholder="Lokasi..."
+                        placeholder="Location..."
                      ></input>
                   </form>
                </div>
@@ -739,10 +739,10 @@ export default function Browse() {
                            isOpen ? "text-[#B17C3F]" : "text-[#9ca3af]"
                         }`}
                      >
-                        Harga{" "}
+                        Price{" "}
                         {hargaMin.current === null
                            ? ""
-                           : " : " + hargaMin?.current?.value}{" "}
+                           : " : " + hargaMin?.current?.value.toLocaleString("en-US")}{" "}
                         {hargaMax.current === null
                            ? ""
                            : " - " + hargaMax?.current?.value}
@@ -809,7 +809,7 @@ export default function Browse() {
                                           type="text"
                                           value={hargaMin?.current?.value}
                                           className="h-full w-[95%] bg-white pb-1 pl-5 text-[1rem] text-xl font-light focus:outline-none"
-                                          placeholder="Harga Minimum"
+                                          placeholder="Minimum Price"
                                           ref={hargaMin}
                                        ></input>
                                     </form>
@@ -831,8 +831,8 @@ export default function Browse() {
                                        <input
                                           type="text"
                                           className="h-full w-[95%] bg-white pb-1 pl-5 text-[1rem] text-xl font-light focus:outline-none"
-                                          placeholder="Harga Minimum"
-                                          value={hargaMax?.current?.value}
+                                          placeholder="Maximum Price"
+                                          value={hargaMax?.current?.value} 
                                           ref={hargaMax}
                                        ></input>
                                     </form>
