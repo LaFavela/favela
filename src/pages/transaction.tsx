@@ -4,6 +4,7 @@ import Footer from "@/components/footer";
 import { Fragment } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import calculate from "@/tools/calculate";
+import Router from "next/router";
 const people = [
     { id: 1, name: "Semua" },
     { id: 2, name: "Rumah" },
@@ -77,10 +78,12 @@ const data = [
     },
 ];
 export default function Transaction() {
+    function clickHandler(link: string) {
+        return Router.push(link);
+     }
     const [selected, setSelected] = useState(people[0]);
     return (
         <div>
-            
             <div className="flex justify-center ">
                 <div className="mt-[2.625rem] space-y-[2.4375rem] mb-11 justify-start">
                     {/* Tittle */}
@@ -179,6 +182,9 @@ export default function Transaction() {
                                         <p className="font-light text-black mt-[1.6rem] text-[1.25rem]">{data.status}</p>
                                     </div>
                                     <div className="space-x-[1rem]">
+                                        <button 
+                                        onClick={() => clickHandler("/detailTransaction")} 
+                                        className="text-[#B17C3F] text-[0.75rem] font-normal w-[9.1875rem] h-[2.5rem] border border-[#B17C3F] rounded-[7px]">Detail</button>
                                         <button className="text-[#B17C3F] text-[0.75rem] font-normal w-[9.1875rem] h-[2.5rem] border border-[#B17C3F] rounded-[7px]">Batal</button>
                                         <button className="text-white text-[0.75rem] font-normal w-[9.1875rem] h-[2.5rem] bg-[#B17C3F] rounded-[7px]">Konfirmasi</button>
                                     </div>
