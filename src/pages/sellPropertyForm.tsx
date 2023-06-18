@@ -1,11 +1,82 @@
 import { useState } from "react";
 import Footer from "@/components/footer";
-import Map from "@/components/maps";
+import {MapSelect} from "@/components/maps";
+import { type } from "os";
 
-const sarana = ["Kolam Renang", "Lapangan Bulutangkis"];
 
-export default function SellPropertyForm() {
-  const [saranaLain, setSaranaLain] = useState<string[]>(sarana);
+const data = [
+  {
+    id : 1,
+    name : "Rumah Ala Jepang",
+    type : "Rumah",
+    description : "Begitu masuk serasa di jepang beneran",
+    developer : "Favela Corp",
+    certificate : "Sertifikat Hak Milik",
+    finished : "2017",
+    listrik : 4400,
+    kamarTidur : 3,
+    kamarMandi : 4,
+    luas : 23,
+    others : ["Kolam Renang", "Lapangan Bulutangkis"],
+    hargaJual : 230000000,
+    hargaSewaBulan : 5000000,
+    hargaSewaTahun : 60000000,
+    provinsi : "NTB",
+    kota : "Mataram",
+    kecamatan : "Sekarbela",
+    kodePos : "83115",
+    alamat : "Kekalik Jaya"
+  }
+]
+
+export default function SellPropertyForm() {  
+  const [saranaLain, setSaranaLain] = useState<string[]>(data[0].others);
+  const [name, setName] = useState(data[0].name);
+  const [marker, setMarker] = useState({lat:0,lng:0});
+  const [description,setDescription] = useState(data[0].description);
+  const [developer,setDeveloper] = useState(data[0].developer);
+  const [certificate, setCertificate] = useState(data[0].certificate);
+  const [finished, setFinished] = useState(data[0].finished);
+  const [listrik, setListrik] = useState(data[0].listrik);
+  const [kamarTidur,setKamarTidur] = useState(data[0].kamarTidur);
+  const [kamarMandi,setKamarMandi] = useState(data[0].kamarMandi);
+  const [luas,setLuas] = useState(data[0].luas);
+  const [hargaJual,setHargaJual] = useState(data[0].hargaJual);
+  const [hargaSewaBulan,setHargaSewaBulan] = useState(data[0].hargaSewaBulan);
+  const [hargaSewaTahun,setHargaSewaTahun] = useState(data[0].hargaSewaTahun);
+  const [provinsi, setProvinsi] = useState(data[0].provinsi);
+  const [kota, setKota] = useState(data[0].kota);
+  const [kecamatan,setKecamatan] = useState(data[0].kecamatan);
+  const [kodePos,setKodePos] = useState(data[0].kodePos);
+  const [alamat,setAlamat] = useState(data[0].alamat);
+  
+  
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    console.log(
+      saranaLain,
+      name,
+      marker,
+      description,
+      developer,
+      certificate,
+      finished,
+      listrik,
+      kamarMandi,
+      kamarTidur,
+      luas,
+      hargaJual,
+      hargaSewaBulan,
+      hargaSewaTahun,
+      provinsi,
+      kota,
+      kecamatan,
+      kodePos,
+      alamat,
+      infoImg,
+      detailImg,
+      );
+  };
 
   const handleTambahLainnya = () => {
     setSaranaLain([...saranaLain, ""]);
@@ -79,7 +150,7 @@ export default function SellPropertyForm() {
     });
   };
 
-  const [selectedOption, setSelectedOption] = useState("");
+  const [selectedOption, setSelectedOption] = useState(data[0].type);
   const handleChange = (event: any) => {
     setSelectedOption(event.target.value);
   };
@@ -87,7 +158,7 @@ export default function SellPropertyForm() {
   return (
     <div>
       <div className="flex justify-center ">
-        <form action="">
+        <form onSubmit={handleSubmit}>
           <div className="mb-11 mt-[2.625rem] space-y-[2.4375rem]">
             {/* Tittle */}
             <p className="text-[2rem] font-medium ">Jual Properti</p>
@@ -107,6 +178,8 @@ export default function SellPropertyForm() {
                     <input
                       className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
                       placeholder="Nama Properti"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
                     />
                   </div>
                 </div>
@@ -121,6 +194,8 @@ export default function SellPropertyForm() {
                       placeholder="Choose Type"
                       className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F]"
                       onChange={handleChange}
+                      value={selectedOption}
+                     
                     >
                       <option value="" hidden>
                         Choose Type
@@ -141,6 +216,8 @@ export default function SellPropertyForm() {
                     <textarea
                       className="mt-[0.625rem] h-[14.9375rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] pt-[0.5rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
                       placeholder="Deskripsi Properti"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
                     />
                   </div>
                 </div>
@@ -257,6 +334,8 @@ export default function SellPropertyForm() {
                     <input
                       className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
                       placeholder="Pengembang"
+                      value={developer}
+                      onChange={(e) => setDeveloper(e.target.value)}
                     />
                   </div>
                 </div>
@@ -269,6 +348,8 @@ export default function SellPropertyForm() {
                     <input
                       className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
                       placeholder="Sertifikat"
+                      value={certificate}
+                      onChange={(e) => setCertificate(e.target.value)}
                     />
                   </div>
                 </div>
@@ -281,6 +362,8 @@ export default function SellPropertyForm() {
                     <input
                       className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
                       placeholder="Tahun Selesai"
+                      value={finished}
+                      onChange={(e) => setFinished(e.target.value)}
                     />
                   </div>
                 </div>
@@ -293,6 +376,8 @@ export default function SellPropertyForm() {
                     <input
                       className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
                       placeholder="Pengembang"
+                      value={listrik}
+                      onChange={(e:any) => setListrik(e.target.value)}
                     />
                   </div>
                 </div>
@@ -409,6 +494,8 @@ export default function SellPropertyForm() {
                     <input
                       className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
                       placeholder="Kamar Tidur"
+                      value={kamarTidur}
+                      onChange={(e:any) => setKamarTidur(e.target.value)}
                     />
                   </div>
                 </div>
@@ -421,6 +508,8 @@ export default function SellPropertyForm() {
                     <input
                       className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
                       placeholder="Kamar Mandi"
+                      value={kamarMandi}
+                      onChange={(e:any) => setKamarMandi(e.target.value)}
                     />
                   </div>
                 </div>
@@ -433,6 +522,8 @@ export default function SellPropertyForm() {
                     <input
                       className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
                       placeholder="Luas Properti"
+                      value={luas}
+                      onChange={(e:any) => setLuas(e.target.value)}
                     />
                   </div>
                 </div>
@@ -493,6 +584,8 @@ export default function SellPropertyForm() {
                     <input
                       className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
                       placeholder="Harga"
+                      value={hargaJual}
+                      onChange={(e:any) => setHargaJual(e.target.value)}
                     />
                   </div>
                 </div>
@@ -505,6 +598,8 @@ export default function SellPropertyForm() {
                     <input
                       className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
                       placeholder="Harga"
+                      value={hargaSewaBulan}
+                      onChange={(e:any) => setHargaSewaBulan(e.target.value)}
                     />
                   </div>
                 </div>
@@ -517,13 +612,15 @@ export default function SellPropertyForm() {
                     <input
                       className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
                       placeholder="Harga"
+                      value={hargaSewaTahun}
+                      onChange={(e:any) => setHargaSewaTahun(e.target.value)}
                     />
                   </div>
                 </div>
               </div>
             </div>
             {/* Lokasi */}
-            <div className="flex h-[47rem] w-[78.93rem] justify-center rounded-[25px] bg-white drop-shadow-[0_0px_3px_rgba(0,0,0,0.25)]">
+            <div className="flex h-max pb-10 w-[78.93rem] justify-center rounded-[25px] bg-white drop-shadow-[0_0px_3px_rgba(0,0,0,0.25)]">
               <div className="mt-[2rem]  flex w-[67.625rem] flex-col space-y-[2.43rem]">
                 {/* Lokasi Tittle */}
                 <p className="text-[1.31rem] font-semibold text-[#b17c3f] ">
@@ -538,6 +635,8 @@ export default function SellPropertyForm() {
                     <input
                       className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
                       placeholder="Provinsi"
+                      value={provinsi} 
+                      onChange={(e) => setProvinsi(e.target.value)}
                     />
                   </div>
                 </div>
@@ -550,6 +649,8 @@ export default function SellPropertyForm() {
                     <input
                       className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
                       placeholder="Kabupaten/Kota"
+                      value={kota}
+                      onChange={(e) => setKota(e.target.value)}
                     />
                   </div>
                 </div>
@@ -562,6 +663,8 @@ export default function SellPropertyForm() {
                     <input
                       className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
                       placeholder="Kecamatan"
+                      value={kecamatan}
+                      onChange={(e) => setKecamatan(e.target.value)}
                     />
                   </div>
                 </div>
@@ -574,6 +677,8 @@ export default function SellPropertyForm() {
                     <input
                       className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
                       placeholder="Kode Pos"
+                      value={kodePos}
+                      onChange={(e) => setKodePos(e.target.value)}
                     />
                   </div>
                 </div>
@@ -586,11 +691,13 @@ export default function SellPropertyForm() {
                     <textarea
                       className="mt-[0.625rem] h-[14.9375rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] pt-[0.5rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
                       placeholder="Alamat"
+                      value={alamat}
+                      onChange={(e) => setAlamat(e.target.value)}
                     />
                   </div>
                 </div>
                 <div className="mt-14 h-[80vh] w-full overflow-hidden rounded-3xl ">
-                  <Map lat={-8.59194106934345} lng={116.08996926363294}></Map>
+                 <MapSelect setState={setMarker}></MapSelect>
                 </div>
               </div>
             </div>
