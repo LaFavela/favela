@@ -1,9 +1,12 @@
 import Footer from "@/components/footer"
 import React from "react";
 import Router from "next/router";
+
 const data = [
     {
         transactionType: "Design",
+        paymentType: "Sewa",
+        rentFrequency: "Bulan",
         toName : "Dhira Wahyu Febrian",
         toImg : "assets/profile/dhira.jpg",
         productName :"Rumah Minimalis Karya Anak Bangsa",
@@ -11,7 +14,7 @@ const data = [
         productType :"Rumah",
         productPrice :80000000,
         noTrans:"123wd4567wd8fwa9",
-        status : "Selesai",
+        status : "FINISHED",
         paymentMethode:"Credit Card",
         paymentTime:"2021-08-20 13:00:00",
         isProperty:false,
@@ -50,7 +53,18 @@ export default function DetailTransaction(){
                             <div className="grid align-middle">
                                 <p className="text-[2.5rem] font-light">{data[0].productName}</p>
                                 <p className="text-[1.6rem] text-gray-500">{data[0].productType}</p>
-                                <p className="text-[2.5rem]">Rp {data[0].productPrice.toLocaleString("en-US")}.00</p>
+                                {data[0].paymentType === "Sewa" ? (
+                                    
+                                    <p className="text-[2.5rem]">Rp {data[0].productPrice.toLocaleString("en-US")}.00 / {data[0].rentFrequency}</p>
+
+                                    
+                                ):(
+                                    
+                                    <p className="text-[2.5rem]">Rp {data[0].productPrice.toLocaleString("en-US")}.00</p>
+
+                
+                                    
+                                )}
                             </div>
                         </div>
                     </div>
@@ -83,6 +97,28 @@ export default function DetailTransaction(){
                             
                         </div>
                     ):(null)}
+                    <div className="space-y-[2rem]">
+                        <p className="font-medium text-[1.5rem]">Action</p>
+                        <div>
+                            {data[0].status === "PENDING" ? (
+                                <div className="space-x-2">
+
+                                <button 
+                                    className="px-[2rem] py-[0.5rem] border-[0.2rem] border-[#B17C3F] rounded-[16px] text-gold hover:bg-[#e4d1bc] text-[1rem] font-medium">
+                                    <p className="">Reject</p>
+                                </button>
+                                <button 
+                                    className="px-[2rem] py-[0.5rem]  bg-[#B17C3F] rounded-[16px] text-white hover:bg-[#cd9a60] text-[1rem] font-medium">
+                                    <p className="">Confirm</p>
+                                </button>
+                                </div>
+
+                            ):(
+                                <p className="text-10 font-light">Tidak Ada Aksi</p>
+                            )}
+                            
+                        </div>
+                    </div>
                     
                 </div>
             </div>
