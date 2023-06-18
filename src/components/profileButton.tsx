@@ -2,9 +2,8 @@ import { useSession } from "next-auth/react";
 import ProfileNav from "./profileNav";
 import { useState, useRef, useEffect } from "react";
 
-export default function ProfileButton(props: any = { transparent: false }) {
-   
-   const {data: session} = useSession();
+export default function ProfileButton(props = { transparent: false }) {
+   const { data: session } = useSession();
 
    const [showProfileNav, setShowProfileNav] = useState(false);
    const handleOnClose = () => setShowProfileNav(false);
@@ -34,7 +33,6 @@ export default function ProfileButton(props: any = { transparent: false }) {
 
    const wrapperRef = useRef(null);
    useOutsideAlerter(wrapperRef);
-   
 
    return (
       <div
@@ -50,7 +48,7 @@ export default function ProfileButton(props: any = { transparent: false }) {
       >
          <div className="flex items-center space-x-4">
             <img
-               src="assets/profile/avatar.jpg"
+               src={session?.user?.image}
                alt=""
                className="aspect-square w-14 rounded-full"
             ></img>

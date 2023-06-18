@@ -4,7 +4,6 @@ import Chat from "../components/chat";
 export default function ChatButton(props: any = { login: false }) {
   const [showChat, setShowChat] = useState(false);
   const handleOnClose = () => setShowChat(false);
-  {console.log(showChat)}
   return (
     <div className="fixed bottom-0 right-0 z-40 flex">
       <div 

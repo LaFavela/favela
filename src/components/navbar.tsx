@@ -21,7 +21,6 @@ export default function Navbar(
    }
 ) {
    const { data : session } = useSession();
-   console.log(session);
    
    const { transparent } = props;
    let navBackground = "bg-white drop-shadow";
@@ -69,7 +68,6 @@ export default function Navbar(
          // }, []);
          const pathname = useRouter().pathname;
          // let pathname = window.location.pathname;
-         console.log(pathname);
 
          let param = "h-11 w-32 rounded-full font-light " + textColor;
          let button =
