@@ -49,13 +49,13 @@ const Slider = () => {
       </div>
       <div className="flex items-center justify-center gap-5">
         <button
-          className="h-10 w-20 rounded-xl bg-gray-500"
+          className="h-10 w-20 rounded-xl border-2 border-[#B17C3F] bg-white text-base text-[#B17C3F] duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white"
           onClick={handlePrev}
         >
           Prev
         </button>
         <button
-          className="h-10 w-20 rounded-xl bg-gray-500"
+          className="h-10 w-20 rounded-xl border-2 border-[#B17C3F] bg-white text-base text-[#B17C3F] duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white"
           onClick={handleNext}
         >
           Next
