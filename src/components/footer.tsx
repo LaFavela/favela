@@ -3,7 +3,7 @@ export default function Footer() {
   return (
     <div>
       <div className="pb-28 pt-28 justify-center items-center flex flex-col">
-        <div className="flex items-center justify-center gap-20 border-b-2 pb-9 w-[67rem]">
+        <div className="flex items-center justify-center gap-20 border-b-2 pb-9 w-screen">
           <div>
             <p className=" text-[1.5rem] font-medium text-[#B17C3F] pb-4">
               Contact Us
