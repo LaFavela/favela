@@ -2,8 +2,27 @@ import { useState } from "react";
 import Footer from "@/components/footer";
 
 const data = "rumahku";
+const sarana = ["Kolam Renang", "Lapangan Bulutangkis"];
 
 export default function DesignForm() {
+  const [saranaLain, setSaranaLain] = useState<string[]>(sarana);
+
+  const handleTambahLainnya = () => {
+    setSaranaLain([...saranaLain, ""]);
+  };
+
+  const handleChangeSaranaLain = (index: number, value: string) => {
+    const updatedSaranaLain = [...saranaLain];
+    updatedSaranaLain[index] = value;
+    setSaranaLain(updatedSaranaLain);
+  };
+
+  const handleHapusSaranaLain = (index: number) => {
+    const updatedSaranaLain = [...saranaLain];
+    updatedSaranaLain.splice(index, 1);
+    setSaranaLain(updatedSaranaLain);
+  };
+
   const [hover, setHover] = useState(false);
   const [index, setIndex] = useState(-1);
 
@@ -27,6 +46,13 @@ export default function DesignForm() {
     };
     reader.readAsDataURL(event.target.files[0]);
   };
+
+  const handleImageDelete = (index: number) => {
+    setInfoImg((prevImages: any[]) => {
+      return prevImages.filter((imageInfo: any) => imageInfo.index !== index);
+    });
+  };
+
   const [detailImg, setDetailImg] = useState([] as any[]);
   const [imageDetailList, setDetailImageList] = useState([1, 2, 3, 4, 5]);
   const fileDetailChangeHandler = (event: any, index: any) => {
@@ -47,6 +73,37 @@ export default function DesignForm() {
     };
     reader.readAsDataURL(event.target.files[0]);
   };
+  const handleDesignDelete = (index: number) => {
+    setDetailImg((prevImages: any[]) => {
+      return prevImages.filter((imageInfo: any) => imageInfo.index !== index);
+    });
+  };
+
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const file = event.target.files[0];
+      setSelectedFile(file);
+    }
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLLabelElement>) => {
+    event.preventDefault();
+  };
+
+  const handleDrop = (event: React.DragEvent<HTMLLabelElement>) => {
+    event.preventDefault();
+    if (event.dataTransfer.files && event.dataTransfer.files.length > 0) {
+      const file = event.dataTransfer.files[0];
+      setSelectedFile(file);
+    }
+  };
+  const [selectedOption, setSelectedOption] = useState("");
+  const handleChange = (event: any) => {
+    setSelectedOption(event.target.value);
+  };
+
   return (
     <div>
       <div className="flex justify-center ">
@@ -71,7 +128,7 @@ export default function DesignForm() {
                       id="nama_desain"
                       name="nama_desain"
                       value={data}
-                      className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] "
+                      className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
                       placeholder="Nama Desain"
                     />
                   </div>
@@ -83,7 +140,7 @@ export default function DesignForm() {
                   </p>
                   <div>
                     <textarea
-                      className="mt-[0.625rem] h-[14.9375rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] pt-[0.5rem] "
+                      className="mt-[0.625rem] h-[14.9375rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] pt-[0.5rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
                       placeholder="Deskripsi Desain"
                     />
                   </div>
@@ -106,15 +163,37 @@ export default function DesignForm() {
                           setIndex(-1);
                         }}
                       >
-                        <img
-                          key={imageData.index}
-                          src={imageData.src}
-                          alt={"Foto ${imageData.index+1}"}
-                          className="h-[9.375rem] w-[9.375rem] rounded-lg"
-                        />
+                        <div className="relative">
+                          <div className="  absolute h-full w-full rounded-xl hover:bg-[#0000007c]"></div>
+                          <img
+                            key={imageData.index}
+                            src={imageData.src}
+                            alt={"Foto ${imageData.index+1}"}
+                            className=" h-[9.375rem] w-[9.375rem] rounded-lg"
+                          />
+                        </div>
                         {hover && index === idx ? (
-                          <button className="absolute right-0 top-0">
-                            awwokaowka
+                          <button
+                            className="absolute right-2 top-2"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleImageDelete(imageData.index);
+                              imageInfoList.unshift(1);
+                              console.log(imageDetailList);
+                            }}
+                          >
+                            <svg
+                              width="28"
+                              height="28"
+                              viewBox="0 0 28 28"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M14 0C6.2 0 0 6.2 0 14C0 21.8 6.2 28 14 28C21.8 28 28 21.8 28 14C28 6.2 21.8 0 14 0ZM19.4 21L14 15.6L8.6 21L7 19.4L12.4 14L7 8.6L8.6 7L14 12.4L19.4 7L21 8.6L15.6 14L21 19.4L19.4 21Z"
+                                fill="#DF3D3D"
+                              />
+                            </svg>
                           </button>
                         ) : (
                           <div></div>
@@ -176,41 +255,62 @@ export default function DesignForm() {
                     Tipe Properti
                   </p>
                   <div>
-                    <input
-                      className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] "
-                      placeholder="Tipe Properti"
-                    />
+                    <select
+                      id="type"
+                      placeholder="Choose Type"
+                      className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F]"
+                      onChange={handleChange}
+                    >
+                      <option value="" hidden>
+                        Choose Type
+                      </option>
+                      <option value="Rumah">Rumah</option>
+                      <option value="Kondomonium">Kondomonium</option>
+                      <option value="Villa">Villa</option>
+                      <option value="Tanah">Tanah</option>
+                    </select>
                   </div>
                 </div>
                 {/* Blude Print */}
-                <div className="flex justify-between ">
-                  <p className="pt-[1rem] text-[1.125rem] font-normal text-[#b17c3f] ">
+                <div className="flex justify-between">
+                  <p className="pt-[1rem] text-[1.125rem] font-normal text-[#b17c3f]">
                     File Blue Print
                   </p>
                   <div>
-                    <label className="flex h-[9.375rem] w-[53.875rem] cursor-pointer flex-col items-center rounded-lg border-4 border-dashed border-[#e3d0ba] px-4 py-6 font-medium tracking-wide text-[#e3d0ba] hover:border-[#B17C3F]">
-                      <svg
-                        width="61"
-                        height="82"
-                        viewBox="0 0 61 82"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M40.0312 46.0416C40.0312 45.5361 39.8304 45.0512 39.4729 44.6937C39.1154 44.3362 38.6306 44.1354 38.125 44.1354H22.875C22.3694 44.1354 21.8846 44.3362 21.5271 44.6937C21.1696 45.0512 20.9688 45.5361 20.9688 46.0416C20.9688 46.5472 21.1696 47.0321 21.5271 47.3895C21.8846 47.747 22.3694 47.9479 22.875 47.9479H38.125C38.6306 47.9479 39.1154 47.747 39.4729 47.3895C39.8304 47.0321 40.0312 46.5472 40.0312 46.0416ZM40.0312 56.2083C40.0312 55.7027 39.8304 55.2179 39.4729 54.8604C39.1154 54.5029 38.6306 54.302 38.125 54.302H22.875C22.3694 54.302 21.8846 54.5029 21.5271 54.8604C21.1696 55.2179 20.9688 55.7027 20.9688 56.2083C20.9688 56.7139 21.1696 57.1987 21.5271 57.5562C21.8846 57.9137 22.3694 58.1145 22.875 58.1145H38.125C38.6306 58.1145 39.1154 57.9137 39.4729 57.5562C39.8304 57.1987 40.0312 56.7139 40.0312 56.2083Z"
-                          fill="#B17C3F"
-                        />
-                        <path
-                          fill-rule="evenodd"
-                          clip-rule="evenodd"
-                          d="M17.7923 18.7188C15.9386 18.7188 14.1607 19.4552 12.8499 20.766C11.5391 22.0768 10.8027 23.8546 10.8027 25.7083V61.2917C10.8027 63.1454 11.5391 64.9232 12.8499 66.2341C14.1607 67.5449 15.9386 68.2812 17.7923 68.2812H43.209C45.0627 68.2812 46.8406 67.5449 48.1514 66.2341C49.4622 64.9232 50.1986 63.1454 50.1986 61.2917V33.252C50.1986 32.2836 49.8834 31.3432 49.2988 30.5705L41.6789 20.4852C41.2643 19.9365 40.7281 19.4914 40.1125 19.1849C39.4968 18.8784 38.8185 18.7188 38.1307 18.7188H17.7923ZM14.6152 25.7083C14.6152 23.9546 16.0386 22.5312 17.7923 22.5312H36.2194V33.707C36.2194 34.7592 37.0734 35.6132 38.1256 35.6132H46.3861V61.2917C46.3861 63.0454 44.9627 64.4688 43.209 64.4688H17.7923C16.0386 64.4688 14.6152 63.0454 14.6152 61.2917V25.7083Z"
-                          fill="#B17C3F"
-                        />
-                      </svg>
-
-                      <span className="mt-1 leading-normal text-[#B17C3F]">
-                        Click This Area to Upload a File
-                      </span>
-                      <input type="file" className="hidden" />
+                    <label
+                      className={`flex h-[9.375rem] w-[53.875rem] cursor-pointer flex-col items-center rounded-lg border-4 border-dashed border-[#e3d0ba] px-4 py-6 font-medium tracking-wide text-[#e3d0ba] hover:border-[#B17C3F] ${
+                        selectedFile ? "border-gold" : " "
+                      }`}
+                      onDragOver={handleDragOver}
+                      onDrop={handleDrop}
+                    >
+                      {selectedFile ? (
+                        <div className="text-gold">{selectedFile.name}</div>
+                      ) : (
+                        <>
+                          <svg
+                            width="61"
+                            height="82"
+                            viewBox="0 0 61 82"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              clip-rule="evenodd"
+                              d="M17.7923 18.7188C15.9386 18.7188 14.1607 19.4552 12.8499 20.766C11.5391 22.0768 10.8027 23.8546 10.8027 25.7083V61.2917C10.8027 63.1454 11.5391 64.9232 12.8499 66.2341C14.1607 67.5449 15.9386 68.2812 17.7923 68.2812H43.209C45.0627 68.2812 46.8406 67.5449 48.1514 66.2341C49.4622 64.9232 50.1986 63.1454 50.1986 61.2917V33.252C50.1986 32.2836 49.8834 31.3432 49.2988 30.5705L41.6789 20.4852C41.2643 19.9365 40.7281 19.4914 40.1125 19.1849C39.4968 18.8784 38.8185 18.7188 38.1307 18.7188H17.7923ZM14.6152 25.7083C14.6152 23.9546 16.0386 22.5312 17.7923 22.5312H36.2194V33.707C36.2194 34.7592 37.0734 35.6132 38.1256 35.6132H46.3861V61.2917C46.3861 63.0454 44.9627 64.4688 43.209 64.4688H17.7923C16.0386 64.4688 14.6152 63.0454 14.6152 61.2917V25.7083Z"
+                              fill="#B17C3F"
+                            />
+                          </svg>
+                          <span className="mt-1 leading-normal text-[#B17C3F]">
+                            Click or Drag a File to This Area
+                          </span>
+                        </>
+                      )}
+                      <input
+                        type="file"
+                        className="hidden"
+                        onChange={handleFileSelect}
+                      />
                     </label>
                   </div>
                 </div>
@@ -220,14 +320,54 @@ export default function DesignForm() {
                     Denah Desain
                   </p>
                   <div className="flex w-[53.875rem] justify-between">
-                    {detailImg.map((imageData) => (
-                      <img
-                        className="z-10 "
-                        key={imageData.index}
-                        src={imageData.src}
-                        alt={"Foto ${imageData.index+1}"}
-                        className="h-[9.375rem] w-[9.375rem] rounded-lg"
-                      />
+                    {detailImg.map((imageData, idx) => (
+                      <div
+                        className="relative"
+                        onMouseEnter={() => {
+                          setHover(true);
+                          setIndex(idx);
+                        }}
+                        onMouseLeave={() => {
+                          setHover(false);
+                          setIndex(-1);
+                        }}
+                      >
+                        <div className="relative">
+                          <div className="  absolute h-full w-full rounded-xl hover:bg-[#0000007c]"></div>
+                          <img
+                            key={imageData.index}
+                            src={imageData.src}
+                            alt={"Foto ${imageData.index+1}"}
+                            className=" h-[9.375rem] w-[9.375rem] rounded-lg"
+                          />
+                        </div>
+                        {hover && index === idx ? (
+                          <button
+                            className="absolute right-2 top-2"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleDesignDelete(imageData.index);
+                              imageDetailList.unshift(1);
+                              console.log(imageDetailList);
+                            }}
+                          >
+                            <svg
+                              width="28"
+                              height="28"
+                              viewBox="0 0 28 28"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M14 0C6.2 0 0 6.2 0 14C0 21.8 6.2 28 14 28C21.8 28 28 21.8 28 14C28 6.2 21.8 0 14 0ZM19.4 21L14 15.6L8.6 21L7 19.4L12.4 14L7 8.6L8.6 7L14 12.4L19.4 7L21 8.6L15.6 14L21 19.4L19.4 21Z"
+                                fill="#DF3D3D"
+                              />
+                            </svg>
+                          </button>
+                        ) : (
+                          <div></div>
+                        )}
+                      </div>
                     ))}
                     {imageDetailList.map((index) => (
                       <div>
@@ -276,7 +416,7 @@ export default function DesignForm() {
                   </p>
                   <div>
                     <textarea
-                      className="mt-[0.625rem] h-[14.9375rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] pt-[0.5rem] "
+                      className="mt-[0.625rem] h-[14.9375rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] pt-[0.5rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
                       placeholder="Deskripsi Fitur"
                     />
                   </div>
@@ -297,7 +437,7 @@ export default function DesignForm() {
                   </p>
                   <div>
                     <input
-                      className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] "
+                      className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
                       placeholder="Harga"
                     />
                   </div>
@@ -305,7 +445,7 @@ export default function DesignForm() {
               </div>
             </div>
             {/* Sarana */}
-            <div className="flex h-[31rem] w-[78.93rem] justify-center rounded-[25px] bg-white drop-shadow-[0_0px_3px_rgba(0,0,0,0.25)]">
+            <div className=" flex h-max w-[78.93rem] justify-center rounded-[25px] bg-white pb-5 drop-shadow-[0_0px_3px_rgba(0,0,0,0.25)]">
               <div className="mt-[2rem]  flex w-[67.625rem] flex-col space-y-[2.43rem]">
                 {/* Sarana Tittle */}
                 <p className="text-[1.31rem] font-semibold text-[#b17c3f] ">
@@ -319,7 +459,7 @@ export default function DesignForm() {
                   <div>
                     <input
                       type="number"
-                      className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] "
+                      className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
                       placeholder="Kamar Tidur"
                     />
                   </div>
@@ -332,7 +472,7 @@ export default function DesignForm() {
                   <div>
                     <input
                       type="number"
-                      className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] "
+                      className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
                       placeholder="Kamar Mandi"
                     />
                   </div>
@@ -344,22 +484,48 @@ export default function DesignForm() {
                   </p>
                   <div>
                     <input
-                      className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] "
+                      className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
                       placeholder="Luas Properti"
                     />
                   </div>
                 </div>
                 {/* Sarana Lain */}
-                <div className="flex justify-between ">
-                  <p className="pt-[1rem] text-[1.125rem] font-normal text-[#b17c3f] ">
+                <div className="flex justify-between">
+                  <p className="pt-[1rem] text-[1.125rem] font-normal text-[#b17c3f]">
                     Lainnya
                   </p>
-                  <div>
-                    <input
-                      className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] "
-                      placeholder="Sarana Lain"
-                    />
-                    <p className="mt-1 text-[#b17c3f]">+ Tambah Lainnya</p>
+                  <div className="flex flex-col">
+                    {saranaLain.map((sarana, index) => (
+                      <input
+                        key={index}
+                        className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-gold pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
+                        placeholder="Sarana Lain"
+                        value={sarana}
+                        onChange={(e) =>
+                          handleChangeSaranaLain(index, e.target.value)
+                        }
+                      />
+                    ))}
+                    <div className="flex w-full justify-between">
+                      <button
+                        className="mt-1 text-[#b17c3f]"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleTambahLainnya();
+                        }}
+                      >
+                        + Tambah Lainnya (optional)
+                      </button>
+                      <button
+                        className="mt-1 text-[#b17c3f]"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleHapusSaranaLain(index);
+                        }}
+                      >
+                        Hapus
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
