@@ -4,9 +4,8 @@ import Router from "next/router";
 
 const data = [
     {
-        transactionType: "Design",
-        paymentType: "Sewa",
-        rentFrequency: "Bulan",
+        transactionType: "SEWA",
+        quantity: 1,
         toName : "Dhira Wahyu Febrian",
         toImg : "assets/profile/dhira.jpg",
         productName :"Rumah Minimalis Karya Anak Bangsa",
@@ -53,9 +52,15 @@ export default function DetailTransaction(){
                             <div className="grid align-middle">
                                 <p className="text-[2.5rem] font-light">{data[0].productName}</p>
                                 <p className="text-[1.6rem] text-gray-500">{data[0].productType}</p>
-                                {data[0].paymentType === "Sewa" ? (
+                                {data[0].transactionType === "SEWA" ? (
+                                    data[0].quantity===12 ? (
+                                        <p className="text-[2.5rem]">Rp {data[0].productPrice.toLocaleString("en-US")}.00 / Tahunan</p>
+                                        
+                                    ) : (
+                                        <p className="text-[2.5rem]">Rp {data[0].productPrice.toLocaleString("en-US")}.00 / Bulanan</p>
+
+                                    )
                                     
-                                    <p className="text-[2.5rem]">Rp {data[0].productPrice.toLocaleString("en-US")}.00 / {data[0].rentFrequency}</p>
 
                                     
                                 ):(
