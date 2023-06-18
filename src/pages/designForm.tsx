@@ -1,10 +1,97 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Footer from "@/components/footer";
 
-const data = "rumahku";
 const sarana = ["Kolam Renang", "Lapangan Bulutangkis"];
+const data = [
+  {
+    id: 1,
+    designName: "Rumahku",
+    description: "Rumah nyaman minimalis enak",
+    fotoDesign: [
+      "./assets/landing/Build1.jpg",
+      "./assets/landing/Build2.jpg",
+      "./assets/landing/Build3.jpg",
+      "./assets/landing/Build4.jpg",
+      "./assets/landing/Build5.jpg",
+    ],
+    type: "Rumah",
+    file: "./assets/form/PRETES_PEMROGRAMAN_WEB_RAIHAN.pdf",
+    denahDesign: [
+      "./assets/landing/Build1.jpg",
+      "./assets/landing/Build2.jpg",
+      "./assets/landing/Build3.jpg",
+      "./assets/landing/Build4.jpg",
+      "./assets/landing/Build5.jpg",
+    ],
+    fitur: "Rumah ini bisa berubah menjadi robot",
+    harga: 235000000,
+    kamarTidur: 3,
+    kamarMandi: 4,
+    luas: 25.5,
+  },
+];
 
 export default function DesignForm() {
+  const [designName, setDesignName] = useState(data[0].designName);
+  const [description, setDescription] = useState(data[0].description);
+  const [fotoDesign,setFotoDesign] = useState(data[0].fotoDesign);
+  const [type,setType] = useState(data[0].type);
+  const [fitur, setFitur] = useState(data[0].fitur)
+  const [harga, setHarga] = useState(data[0].harga)
+  const [kamarTidur,setKamarTidur] = useState(data[0].kamarTidur);
+  const [kamarMandi,setKamarMandi] = useState(data[0].kamarMandi);
+  const [luas,setLuas] = useState(data[0].luas);
+  
+  const handleChange = (event: any) => {
+    setType(event.target.value);
+  };
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    console.log(
+      designName,
+      description,
+      type,
+      fitur,
+      harga,
+      kamarMandi,
+      kamarTidur,
+      luas,
+      preview,
+      infoImg);
+  };
+  
+
+  
+  
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files && event.target.files[0];
+    if (selectedFile) {
+      setSelectedFile(selectedFile);
+      setPreview(URL.createObjectURL(selectedFile));
+    }
+  };
+  useEffect(() => {
+    // Ambil URL foto profil dari database atau sumber penyimpanan file
+    const existingProfilePicture = data[0].file;
+    setPreview(existingProfilePicture);
+  }, []);
+  
+  const handleDragOver = (event: React.DragEvent<HTMLLabelElement>) => {
+    event.preventDefault();
+  };
+
+  const handleDrop = (event: React.DragEvent<HTMLLabelElement>) => {
+    event.preventDefault();
+    if (event.dataTransfer.files && event.dataTransfer.files.length > 0) {
+      const file = event.dataTransfer.files[0];
+      setSelectedFile(file);
+    }
+  };
+
   const [saranaLain, setSaranaLain] = useState<string[]>(sarana);
 
   const handleTambahLainnya = () => {
@@ -79,35 +166,13 @@ export default function DesignForm() {
     });
   };
 
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      const file = event.target.files[0];
-      setSelectedFile(file);
-    }
-  };
-
-  const handleDragOver = (event: React.DragEvent<HTMLLabelElement>) => {
-    event.preventDefault();
-  };
-
-  const handleDrop = (event: React.DragEvent<HTMLLabelElement>) => {
-    event.preventDefault();
-    if (event.dataTransfer.files && event.dataTransfer.files.length > 0) {
-      const file = event.dataTransfer.files[0];
-      setSelectedFile(file);
-    }
-  };
-  const [selectedOption, setSelectedOption] = useState("");
-  const handleChange = (event: any) => {
-    setSelectedOption(event.target.value);
-  };
+  
+  
 
   return (
     <div>
       <div className="flex justify-center ">
-        <form action="">
+        <form onSubmit={handleSubmit}>
           <div className="mb-11 mt-[2.625rem] space-y-[2.4375rem]">
             {/* Tittle */}
             <p className="text-[2rem] font-medium ">Jual Design</p>
@@ -127,7 +192,8 @@ export default function DesignForm() {
                     <input
                       id="nama_desain"
                       name="nama_desain"
-                      value={data}
+                      value={designName}
+                      onChange={(e) => setDesignName(e.target.value)}
                       className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
                       placeholder="Nama Desain"
                     />
@@ -140,6 +206,8 @@ export default function DesignForm() {
                   </p>
                   <div>
                     <textarea
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
                       className="mt-[0.625rem] h-[14.9375rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] pt-[0.5rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
                       placeholder="Deskripsi Desain"
                     />
@@ -156,7 +224,7 @@ export default function DesignForm() {
                         className="relative"
                         onMouseEnter={() => {
                           setHover(true);
-                          setIndex(idx);
+                          setIndex(idx);  
                         }}
                         onMouseLeave={() => {
                           setHover(false);
@@ -165,12 +233,12 @@ export default function DesignForm() {
                       >
                         <div className="relative">
                           <div className="  absolute h-full w-full rounded-xl hover:bg-[#0000007c]"></div>
-                          <img
-                            key={imageData.index}
-                            src={imageData.src}
-                            alt={"Foto ${imageData.index+1}"}
-                            className=" h-[9.375rem] w-[9.375rem] rounded-lg"
-                          />
+                            <img
+                              key={imageData.index}
+                              src={imageData.src}
+                              alt={"Foto ${imageData.index+1}"}
+                              className=" h-[9.375rem] w-[9.375rem] rounded-lg"
+                            />
                         </div>
                         {hover && index === idx ? (
                           <button
@@ -232,8 +300,10 @@ export default function DesignForm() {
                               onChange={(event) => {
                                 fileInfoChangeHandler(event, index);
                                 imageInfoList.shift();
+                  
                               }}
-                            />
+                            
+                               />
                           </label>
                         </div>
                       </div>
@@ -260,6 +330,7 @@ export default function DesignForm() {
                       placeholder="Choose Type"
                       className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F]"
                       onChange={handleChange}
+                      value={type}
                     >
                       <option value="" hidden>
                         Choose Type
@@ -285,7 +356,7 @@ export default function DesignForm() {
                       onDrop={handleDrop}
                     >
                       {selectedFile ? (
-                        <div className="text-gold">{selectedFile.name}</div>
+                        <div className="text-gold">{preview}</div>
                       ) : (
                         <>
                           <svg
@@ -418,6 +489,8 @@ export default function DesignForm() {
                     <textarea
                       className="mt-[0.625rem] h-[14.9375rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] pt-[0.5rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
                       placeholder="Deskripsi Fitur"
+                      value={fitur}
+                      onChange={(e) => setFitur(e.target.value)}
                     />
                   </div>
                 </div>
@@ -439,6 +512,9 @@ export default function DesignForm() {
                     <input
                       className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
                       placeholder="Harga"
+                      value={harga}
+                      onChange={(e:any) => setHarga(e.target.value)}
+
                     />
                   </div>
                 </div>
@@ -461,6 +537,8 @@ export default function DesignForm() {
                       type="number"
                       className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
                       placeholder="Kamar Tidur"
+                      value={kamarTidur}
+                      onChange={(e:any) => setKamarTidur(e.target.value)}
                     />
                   </div>
                 </div>
@@ -474,6 +552,8 @@ export default function DesignForm() {
                       type="number"
                       className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
                       placeholder="Kamar Mandi"
+                      value={kamarMandi}
+                      onChange={(e:any) => setKamarMandi(e.target.value)}
                     />
                   </div>
                 </div>
@@ -486,6 +566,8 @@ export default function DesignForm() {
                     <input
                       className="mt-[0.625rem] h-[2.5rem] w-[53.875rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-gold focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] "
                       placeholder="Luas Properti"
+                      value={luas}
+                      onChange={(e:any) => setLuas(e.target.value)}
                     />
                   </div>
                 </div>
@@ -536,6 +618,7 @@ export default function DesignForm() {
                 <button
                   type="submit"
                   value="kirim"
+                  onSubmit={handleSubmit}
                   className="h-[2.5rem] w-[7.3125rem] rounded-[7px] bg-[#B17C3F] text-[0.875rem] font-normal text-white hover:bg-[#c88f4d]"
                 >
                   Simpan
