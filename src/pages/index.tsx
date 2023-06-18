@@ -2,39 +2,33 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Slider from "./Slider";
 import Footer from "@/components/footer";
-import Navbar from "@/components/navbar";
 import { setTransparent } from "../tools/transparent";
-import ChatButton from "@/components/chatButton";
 import { data } from "./browse";
 import { designerData } from "./designer";
-import Image from "next/image";
-import {useRouter} from "next/router";
-
-
+import build from "next/dist/build";
 
 export default function Landing() {
-   const [isPressed, setIsPressed] = useState(false);
-   const handleButtonClick = () => {
-      setIsPressed(!isPressed);
-   };
-  const [visibleItems] = useState(6);
-  const [visibleDesigner] =useState(3);
+  const [isPressed, setIsPressed] = useState(false);
+  const handleButtonClick = () => {
+    setIsPressed(!isPressed);
+  };
+  const [visibleItems] = useState(3);
+  const [visibleDesigner] = useState(3);
   const handleScroll = () => {
     const scrollPosition = window.pageYOffset;
     const threshold = 100;
     const transparentValue = scrollPosition < threshold;
     console.log(transparentValue);
     setTransparent(transparentValue);
-    
   };
 
   useEffect(() => {
-     window.addEventListener("scroll", handleScroll);
-     return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   });
 
   return (
-    <div className="transition-all ease-linear duration-300">
+    <div className="transition-all duration-300 ease-linear">
       {/* <Navbar transparent={transparent} home={true} login={false}/> */}
       <div
         className="flex min-h-screen flex-col bg-cover bg-center object-contain text-black"
@@ -165,21 +159,23 @@ export default function Landing() {
             ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
             aliquip ex ea commodo
           </p>
-          <button className="ml-7 mt-2 h-[2rem] w-[2rem] rounded-full bg-[#B17C3F]">
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="ml-[0.44rem]"
-            >
-              <path
-                d="M9 17.5L6 14.5L9.5 11H0V7H9.5L6 2.5L9 0L17.5 9L9 17.5Z"
-                fill="white"
-              />
-            </svg>
-          </button>
+          <Link href={"./sellPropertyForm"}>
+            <button className="ml-7 mt-2 h-[2rem] w-[2rem] rounded-full bg-[#B17C3F]">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="ml-[0.44rem]"
+              >
+                <path
+                  d="M9 17.5L6 14.5L9.5 11H0V7H9.5L6 2.5L9 0L17.5 9L9 17.5Z"
+                  fill="white"
+                />
+              </svg>
+            </button>
+          </Link>
         </div>
         <div className="h-[18.3rem] w-[18.3rem] rounded-[1.5625rem] bg-white drop-shadow-landingShado">
           <div className="ml-7 mt-5 flex flex-row">
@@ -205,21 +201,23 @@ export default function Landing() {
             ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
             aliquip ex ea commodo
           </p>
-          <button className="ml-7 mt-2 h-[2rem] w-[2rem] rounded-full bg-[#B17C3F]">
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="ml-[0.44rem]"
-            >
-              <path
-                d="M9 17.5L6 14.5L9.5 11H0V7H9.5L6 2.5L9 0L17.5 9L9 17.5Z"
-                fill="white"
-              />
-            </svg>
-          </button>
+          <Link href={"./browse"}>
+            <button className="ml-7 mt-2 h-[2rem] w-[2rem] rounded-full bg-[#B17C3F]">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="ml-[0.44rem]"
+              >
+                <path
+                  d="M9 17.5L6 14.5L9.5 11H0V7H9.5L6 2.5L9 0L17.5 9L9 17.5Z"
+                  fill="white"
+                />
+              </svg>
+            </button>
+          </Link>
         </div>
         <div className="h-[18.3rem] w-[18.3rem] rounded-[1.5625rem] bg-white drop-shadow-landingShado">
           <div className="ml-7 mt-5 flex flex-row">
@@ -245,21 +243,23 @@ export default function Landing() {
             ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
             aliquip ex ea commodo
           </p>
-          <button className="ml-7 mt-2 h-[2rem] w-[2rem] rounded-full bg-[#B17C3F]">
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="ml-[0.44rem]"
-            >
-              <path
-                d="M9 17.5L6 14.5L9.5 11H0V7H9.5L6 2.5L9 0L17.5 9L9 17.5Z"
-                fill="white"
-              />
-            </svg>
-          </button>
+          <Link href={"./build"}>
+            <button className="ml-7 mt-2 h-[2rem] w-[2rem] rounded-full bg-[#B17C3F]">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="ml-[0.44rem]"
+              >
+                <path
+                  d="M9 17.5L6 14.5L9.5 11H0V7H9.5L6 2.5L9 0L17.5 9L9 17.5Z"
+                  fill="white"
+                />
+              </svg>
+            </button>
+          </Link>
         </div>
       </div>
 
@@ -294,7 +294,7 @@ export default function Landing() {
                 <div className="absolute inset-0 flex rounded-[1.5625rem] bg-black bg-opacity-25 opacity-0 transition-opacity duration-500 ease-in-out hover:opacity-100">
                   <div className="absolute inset-0 flex justify-between">
                     <div className="ml-5 mt-5 flex">
-                      <p className="p-1 px-8 text-[1rem] rounded-full font-normal text-white border-[0.15rem] h-max">
+                      <p className="h-max rounded-full border-[0.15rem] p-1 px-8 text-[1rem] font-normal text-white">
                         {data.type}
                       </p>
                     </div>
@@ -360,9 +360,9 @@ export default function Landing() {
           </p>
         </div>
       </div>
-      
+
       {/* PEMBATAS 6 */}
-      
+
       <div className="px-35 flex flex-grow flex-row flex-wrap justify-center gap-14 pl-7 pr-7">
         {designerData.slice(0, visibleDesigner).map((designerData, idx) => {
           return (
@@ -425,9 +425,9 @@ export default function Landing() {
           );
         })}
       </div>
-      
-    {/* PEMBATAS 7 */}
-      
+
+      {/* PEMBATAS 7 */}
+
       <div className="mt-20 flex flex-col items-center justify-center pb-20 ">
         <p className="text-[2.2rem] font-medium">
           <span className="text-[#B17C3F]">This</span> Is What Theres have

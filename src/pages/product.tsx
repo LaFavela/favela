@@ -2,7 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import Footer from "../components/footer";
 import { useState, useRef, useEffect } from "react";
-import Map from "@/components/maps";
+import {Map} from "@/components/maps";
 import Carousel from "@/components/carousel";
 import React from "react";
 import Popup from "reactjs-popup";
