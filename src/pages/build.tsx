@@ -11,10 +11,10 @@ type Data = {
 };
 
 const type: Data[] = [
-  { id: 1, name: "Semua" },
-  { id: 2, name: "Rumah" },
+  { id: 1, name: "All" },
+  { id: 2, name: "House" },
   { id: 3, name: "Kondominum" },
-  { id: 4, name: "Tanah" },
+  { id: 4, name: "Land" },
   { id: 5, name: "Villa" },
 ];
 
@@ -136,7 +136,7 @@ export function Dropdown() {
                            isOpen ? "text-[#B17C3F]" : "text-[#9ca3af]"
                         }`}
                      >
-                        Harga{" "}
+                        Price{" "}
                         {hargaMin.current === null
                            ? ""
                            : " : " + hargaMin?.current?.value}{" "}
@@ -206,7 +206,7 @@ export function Dropdown() {
                                           type="text"
                                           value={hargaMin?.current?.value}
                                           className="h-full w-[95%] bg-white pb-1 pl-5 text-[1rem] text-xl font-light focus:outline-none"
-                                          placeholder="Harga Minimum"
+                                          placeholder="Minimum Price"
                                           ref={hargaMin}
                                        ></input>
                                     </form>
@@ -215,7 +215,7 @@ export function Dropdown() {
                            </div>
                            <div className="ml-5 mt-1">
                               <p className="pl-1 text-[1rem] text-[#B17C3F]">
-                                 Maksimum
+                                 Maximum
                               </p>
                               <div className="flex flex-row rounded-3xl">
                                  <div className="rounded-l-xl border-b-2 border-l-2 border-r-2 border-t-2 border-[#B17C3F] bg-[#E3D0BA] pl-2">
@@ -228,7 +228,7 @@ export function Dropdown() {
                                        <input
                                           type="text"
                                           className="h-full w-[95%] bg-white pb-1 pl-5 text-[1rem] text-xl font-light focus:outline-none"
-                                          placeholder="Harga Minimum"
+                                          placeholder="Maximum Price"
                                           value={hargaMax?.current?.value}
                                           ref={hargaMax}
                                        ></input>
@@ -370,7 +370,7 @@ export default function Build() {
         </p>
       </div>
       <div>
-        <div className="sticky top-20 z-30 flex justify-between bg-white px-16 py-5">
+        <div className="sticky top-20 z-30 flex justify-start space-x-10 bg-white px-16 py-5">
           <div className="ml-[5.5rem] flex space-x-3">
             <button
               onClick={() => handleFunctionChange("Design")}
