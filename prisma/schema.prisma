@@ -11,59 +11,117 @@ datasource db {
 }
 
 model Users {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  username  String   @unique
-  firstName String
-  lastName  String
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  Role      Role[]
+  id          String     @id @default(uuid())
+  email       String     @unique
+  username    String     @unique
+  firstName   String
+  lastName    String
+  password    String
+  image       String     @default("assets/profile/default.jpg")
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  role        Role?
+  roleName    RoleSelect @default(PEMBELI)
+  birthDay    DateTime   @default(now())
+  gender      Gender     @default(UNKNOWN)
+  phone       String     @default("")
+  website     String     @default("")
+  city        String     @default("")
+  job         String[]   @default([""])
+  socialMedia String     @default("")
+  description String     @default("")
+}
+
+enum RoleSelect {
+  ADMIN
+  PEMBELI
+  PENJUAL
+  DESAINER
+  TUKANG
+}
+
+enum Gender {
+  UNKNOWN
+  MALE
+  FEMALE
+}
+
+enum Status {
+  PENDING
+  BUILDING
+  FINISHED
+  CANCELLED
+}
+
+enum TransctionType {
+  BELI
+  SEWA
+  DESAIN
+  BUILD
 }
 
 model Role {
-  id         String    @id @default(uuid())
-  user       Users     @relation(fields: [usersId], references: [id])
-  usersId    String
+  id         String   @id @default(uuid())
+  user       Users    @relation(fields: [usersId], references: [id])
+  usersId    String   @unique
   role       String
-  Pembeli    Pembeli?  @relation(fields: [pembeliId], references: [id])
-  pembeliId  String?
-  Penjual    Penjual?  @relation(fields: [penjualId], references: [id])
-  penjualId  String?
-  Desainer   Desainer? @relation(fields: [desainerId], references: [id])
-  desainerId String?
-  Tukang     Tukang?   @relation(fields: [tukangId], references: [id])
-  tukangId   String?
+  Pembeli    Pembeli  @relation(fields: [pembeliId], references: [id])
+  pembeliId  String   @unique
+  Penjual    Penjual  @relation(fields: [penjualId], references: [id])
+  penjualId  String   @unique
+  Desainer   Desainer @relation(fields: [desainerId], references: [id])
+  desainerId String   @unique
+  Tukang     Tukang   @relation(fields: [tukangId], references: [id])
+  tukangId   String   @unique
+}
+
+model Transaksi {
+  id         String         @id @default(uuid())
+  id_user    String
+  harga      Decimal
+  type       TransctionType
+  quantity   Int
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+  Pembeli    Pembeli        @relation(fields: [pembeliId], references: [id])
+  pembeliId  String
+  Penjual    Penjual        @relation(fields: [penjualId], references: [id])
+  penjualId  String
+  properti   Properti?      @relation(fields: [propertiId], references: [id])
+  propertiId String
+  desain     Desain?        @relation(fields: [desainId], references: [id])
+  desainId   String
 }
 
 model Pembeli {
-  id               String     @id @default(uuid())
+  id               String      @id @default(uuid())
   keranjang        String[]
   wishlist         String[]
   pesanan_properti Properti[]
   pesanan_desain   Desain[]
-  Role             Role[]
+  Role             Role?
+  Transaksi        Transaksi[]
 }
 
 model Desainer {
   id          String        @id @default(uuid())
   desain      Desain[]
   mengerjakan Mengerjakan[]
-  Role        Role[]
+  Role        Role?
 }
 
 model Tukang {
   id          String        @id @default(uuid())
   desain      Desain[]
   mengerjakan Mengerjakan[]
-  Role        Role[]
+  Role        Role?
 }
 
 model Penjual {
-  id       String    @id @default(uuid())
-  properti Menjual[]
-  Role     Role[]
+  id        String      @id @default(uuid())
+  transaksi Transaksi[]
+  Role      Role?
+  Properti  Properti[]
 }
 
 model Mengerjakan {
@@ -78,30 +136,25 @@ model Mengerjakan {
   tukangId   String?
 }
 
-model Menjual {
-  id        String   @id @default(uuid())
-  id_produk String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  Penjual   Penjual? @relation(fields: [penjualId], references: [id])
-  penjualId String?
-}
-
 model Properti {
   id             String          @id @default(uuid())
   namaProduk     String
-  id_alamat      Int
   deskripsi      String
   foto           String[]
   sarana         String[]
-  id_rating      Int
   posisi         Decimal[]
+  penjual        Penjual         @relation(fields: [penjualId], references: [id])
+  penjualId      String          @unique
+  alamat         Alamat?
   Detail_product Detail_product?
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   Pembeli        Pembeli?        @relation(fields: [pembeliId], references: [id])
   pembeliId      String?
   Rating         Rating[]
+  Liked          Liked?          @relation(fields: [likedId], references: [id])
+  likedId        String?
+  Transaksi      Transaksi[]
 }
 
 model Detail_product {
@@ -111,9 +164,11 @@ model Detail_product {
   sertifikat        String
   tahun             Int
   harga             Decimal
+  hargaSewa         Decimal
   jumlah_kamar      Int
   jumlah_kamarMandi Int
   luas_product      Decimal
+  foto              String[]
   Properti          Properti @relation(fields: [propertiId], references: [id])
   propertiId        String   @unique
 }
@@ -135,6 +190,9 @@ model Desain {
   desainerId  String?
   Tukang      Tukang?        @relation(fields: [tukangId], references: [id])
   tukangId    String?
+  Liked       Liked?         @relation(fields: [likedId], references: [id])
+  likedId     String?
+  Transaksi   Transaksi[]
 }
 
 model Detail_desain {
@@ -178,17 +236,18 @@ model KabupatenKota {
   provinsiId Int
   latitude   Decimal
   longitude  Decimal
-  Alamat     Alamat[]
 }
 
 model Alamat {
-  id_alamat       String        @id @default(uuid())
-  kabupatenKota   KabupatenKota @relation(fields: [kabupatenKotaId], references: [id])
-  kabupatenKotaId Int
-  kecamatan       String
-  kelurahan       String
-  kode_pos        Int
-  jalan           String
+  id_alamat     String   @id @default(uuid())
+  provinsi      String
+  kabupatenKota String
+  kecamatan     String
+  kelurahan     String
+  kode_pos      Int
+  jalan         String
+  Properti      Properti @relation(fields: [propertiId], references: [id])
+  propertiId    String   @unique
 }
 
 model ListChat {
@@ -218,4 +277,11 @@ model Messages {
   createdAt DateTime @default(now())
   Chat      Chat     @relation(fields: [chatId], references: [id])
   chatId    String
+}
+
+model Liked {
+  id       String     @id @default(uuid())
+  id_user  String
+  properti Properti[]
+  desain   Desain[]
 }

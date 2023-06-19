@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Users" ALTER COLUMN "job" SET DEFAULT ARRAY['']::TEXT[];
