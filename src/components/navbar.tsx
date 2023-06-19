@@ -103,7 +103,7 @@ export default function Navbar(
    return (
       <nav
          className={
-            "z-50 flex h-20 w-full items-center justify-center text-xl text-black transition-colors duration-300 " +
+            "z-40 flex h-20 w-full items-center justify-center text-xl text-black transition-colors duration-300 " +
             navBackground +
             homie
          }

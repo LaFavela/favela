@@ -1,8 +1,16 @@
 import { motion } from "framer-motion";
 export default function LandingLoad() {
   return (
-    <div className="w-screen h-screen bg-black flex justify-center items-center text-[20rem] text-gold">
-        <div className="flex">
+    <motion.div 
+    initial={{opacity:1}}
+    animate={{opacity:0,transitionEnd: {display: "none",}}}
+    transition={{delay:6}}
+    className="z-50 absolute w-full h-full bg-white flex justify-center items-center text-[20rem] text-gold">
+        <motion.div 
+        initial={{opacity:1}}
+        animate={{opacity:0}}
+        transition={{duration:6}}
+        className="flex">
             <motion.p 
             initial={{opacity:0}}
             whileInView={{opacity:1}}
@@ -34,8 +42,8 @@ export default function LandingLoad() {
             transition={{duration:0.7, delay:1.8}}
             className="font-['Redressed'] font">a</motion.p>
             
-        </div>
+        </motion.div>
         
-    </div>
+    </motion.div>
   );
 }

@@ -5,6 +5,8 @@ import Footer from "@/components/footer";
 import { setTransparent } from "../tools/transparent";
 import { data } from "./browse";
 import { designerData } from "./designer";
+import {motion} from "framer-motion";
+import LandingLoad from "@/components/landingLoad";       
 import build from "next/dist/build";
 
 export default function Landing() {
@@ -30,6 +32,8 @@ export default function Landing() {
   return (
     <div className="transition-all duration-300 ease-linear">
       {/* <Navbar transparent={transparent} home={true} login={false}/> */}
+      <LandingLoad
+      ></LandingLoad>
       <div
         className="flex min-h-screen flex-col bg-cover bg-center object-contain text-black"
         style={{ backgroundImage: "url('/assets/landing/landingBG.jpg')" }}

@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { useState, useRef } from "react";
-
+import PageLoad from "@/components/pageLoad";
 import Design from "./design";
 import Designer from "./designer";
 
@@ -361,6 +361,7 @@ export default function Build() {
 
   return (
     <div>
+      <PageLoad></PageLoad>
       <div
         className="flex h-max flex-col bg-cover bg-center object-contain text-black"
         style={{ backgroundImage: "url('/assets/build/bg.jpg')" }}

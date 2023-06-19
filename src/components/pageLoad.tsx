@@ -1,11 +1,16 @@
 import { motion } from "framer-motion";
 export default function PageLoad() {
   return (
-    <div className="flex h-screen w-screen items-center justify-center bg-white text-[20rem] text-gold">
+    <motion.div 
+    initial={{opacity:1}}
+    animate={{opacity:0,transitionEnd: {display: "none",}}}
+    transition={{delay:1}}
+    
+    className="absolute z-50 bg-white flex h-screen w-full items-center justify-center  text-[20rem] text-gold">
       <motion.div
         initial={{ rotate: -360 }}
-        whileInView={{ rotate: 3000 }}
-        transition={{ duration: 7 }}
+        animate={{ rotate: 1500 }}
+        transition={{ duration: 2 }}
       >
         <svg
           width="150"
@@ -24,6 +29,6 @@ export default function PageLoad() {
           />
         </svg>
       </motion.div>
-    </div>
+    </motion.div>
   );
 }
