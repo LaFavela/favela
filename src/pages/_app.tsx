@@ -25,8 +25,7 @@ export default function App({ Component, pageProps }: AppProps) {
       removeTransparentChangeListener(handleChange);
     };
   }, []);
-  console.log(transparent);
-
+  
   let temp = transparent;
   if (router.pathname === "/") {
     home = true;
@@ -37,9 +36,7 @@ export default function App({ Component, pageProps }: AppProps) {
   }else{
     temp = false;
     home = false;
-
   }
-  console.log(temp);
 
   return (
     <Providers>
