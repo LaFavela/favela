@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { useRef} from "react";
 import { useFollowPointer } from "../tools/useFollowPointer";
 
+
 const data = [
   {
     id: 1,
@@ -14,7 +15,7 @@ const data = [
   {
     id: 2,
     name: "Dwimas Nugraha",
-    src: "/assets/profile/dwimas.png",
+    src: "/assets/profile/dwimas2.png",
   },
   {
     id: 3,
@@ -404,7 +405,7 @@ export default function AboutUs() {
                   <div
                   className="flex justify-center items-center text-white text-[2.625rem] font-semibold w-[23.875rem] h-[5.5rem] bg-[#DF6C4D] rounded-[1.5625rem]"
                   >
-                    <p>Co-Founder</p>
+                    <p>Founder</p>
 
                   </div>
                   <div className="z-10 self-end mt-[4rem] border-8 border-[#e3d0ba] w-[3.4375rem] h-[3.4375rem] bg-[#DF6C4D] rounded-full">
@@ -418,7 +419,7 @@ export default function AboutUs() {
                   </div>
                 </div>
                 <div className="w-[50rem]  text-[#B17C3F] text-[1.75rem] font-semibold">
-                  <p>Katanya orang buat website itu susah. Lah emang susah anjeng siapa coba yang punya ide e-commerce bangsat bangsat. ASU dah babi klean gak hargain gua ngentot. Tapi paling nggak gua yang punya repo hehe.</p>
+                  <p>Saya adalah pendiri Website Favela dan saya memiliki keahlian dalam pengembangan fullstack. Saya bertanggung jawab atas segala hal terkait dengan proyek ini, mulai dari ide awal hingga pengembangan penuh. Saya sangat menguasai bagian depan (front-end) dan belakang (back-end) dari website ini. Saya memiliki pemahaman yang mendalam tentang teknologi dan infrastruktur yang digunakan untuk memastikan kinerja dan kehandalan sistem secara menyeluruh</p>
                 </div>
                 
               
@@ -430,7 +431,7 @@ export default function AboutUs() {
               >
                   <div className="overflow-hidden rounded-xl">
                     <Image
-                      src={"/assets/profile/mas.png"}
+                      src={"/assets/profile/dwimas2.png"}
                       // fill={true}
                       height={600}
                       width={600}
@@ -467,7 +468,7 @@ export default function AboutUs() {
                   </div>
                 </div>
                 <div className="w-[50rem]  text-[#B17C3F] text-[1.75rem] font-semibold">
-                  <p>Katanya orang buat website itu susah. Lah emang susah anjeng siapa coba yang punya ide e-commerce bangsat bangsat. ASU dah babi klean gak hargain gua ngentot. Tapi paling nggak gua yang punya repo hehe.</p>
+                  <p>Saya bertanggung jawab dalam mengembangkan antarmuka pengguna (UI) dan saya juga berperan sebagai manajer produk. Saya sangat terampil dalam merancang tampilan dan fungsionalitas yang menarik bagi pengguna. Selain itu, saya juga memiliki peran sebagai manajer produk yang mengurus perencanaan dan pengelolaan produk secara keseluruhan. Saya bekerja sama dengan tim pengembangan untuk memastikan produk yang dikembangkan sesuai dengan kebutuhan pengguna dan tujuan bisnis yang diinginkan</p>
                 </div>
                 
               
@@ -516,7 +517,7 @@ export default function AboutUs() {
                   </div>
                 </div>
                 <div className="w-[50rem]  text-[#B17C3F] text-[1.75rem] font-semibold">
-                  <p>Katanya orang buat website itu susah. Lah emang susah anjeng siapa coba yang punya ide e-commerce bangsat bangsat. ASU dah babi klean gak hargain gua ngentot. Tapi paling nggak gua yang punya repo hehe.</p>
+                  <p>Saya adalah desainer antarmuka pengguna (UI) dan pengalaman pengguna (UX), serta memiliki keterampilan dalam pengembangan front-end. Saya berfokus pada desain yang menarik dan memikat untuk pengguna. Saya juga memiliki pemahaman yang baik tentang bagaimana pengguna berinteraksi dengan antarmuka dan pengalaman pengguna. Saya terlibat dalam merancang tata letak, ikon, dan elemen visual lainnya yang menciptakan desain yang menarik</p>
                 </div>
                 
               
