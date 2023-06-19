@@ -543,7 +543,6 @@ export default function Settings({ data }: ProfileProps) {
       <div>
          <div className="ml-[12rem] mt-6 pr-[13rem]">
             <h1 className="text-[1.7rem] font-medium">Setting</h1>
-
             <div className="relative">
                <div className="mt-10">
                   <button
