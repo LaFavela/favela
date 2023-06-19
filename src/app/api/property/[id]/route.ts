@@ -13,6 +13,7 @@ export default async function handler(
          where: { id: params.id },
          include: {
             Detail_product: true,
+            alamat: true,
          },
       }) as any;
 
