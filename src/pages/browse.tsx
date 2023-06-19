@@ -5,11 +5,16 @@ import Image from "next/image";
 import Footer from "@/components/footer";
 import Link from "next/link";
 import PageLoad from "@/components/pageLoad";
+import Router from "next/router";
+
 
 type Person = {
   id: number;
   name: string;
 };
+function clickHandler(link: string) {
+  return Router.push(link);
+}
 const people: Person[] = [
   { id: 1, name: "All" },
   { id: 2, name: "House" },
@@ -262,6 +267,7 @@ export function Buy() {
           return (
             <div
               key={idx}
+              onClick={() => clickHandler("/product")} 
               className={`relative overflow-hidden rounded-3xl transition-all duration-300 ${
                 hover && index == idx
                   ? "h-[31rem] w-[23.5rem]"
@@ -426,6 +432,7 @@ export function Rent() {
           return (
             <div
               key={idx}
+              onClick={() => clickHandler("/product")} 
               className={`relative overflow-hidden rounded-3xl transition-all duration-300 ${
                 hover && index == idx
                   ? "h-[31rem] w-[23.5rem]"
