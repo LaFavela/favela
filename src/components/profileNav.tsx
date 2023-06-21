@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import {motion, AnimatePresence} from "framer-motion";
-import Link from "next/link"
+import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import { signOut } from "next-auth/react";
 
 export default function ProfileNav(
@@ -9,22 +9,20 @@ export default function ProfileNav(
     onClose: false,
     isDesigner: false,
     isAgent: false,
-
   }
 ) {
   return (
     <div>
       <AnimatePresence>
         {props.visible && (
-          <motion.div 
-          initial={{ y: -75}}
-          animate={{ y: 75}}
-          exit={{ opacity:0, y:-75}}
-          transition={{ linear: true, duration: 0.15 }}
-          
-          // className="transition-all ease-in-out delay-150"
+          <motion.div
+            initial={{ y: -75 }}
+            animate={{ y: 75 }}
+            exit={{ opacity: 0, y: -75 }}
+            transition={{ linear: true, duration: 0.15 }}
+
+            // className="transition-all ease-in-out delay-150"
           >
-            
             <div className=" flex w-[13.75rem] justify-center rounded-[1rem] bg-white drop-shadow">
               <div className="my-[0.7rem] space-y-2">
                 {/* Profile */}
@@ -51,73 +49,96 @@ export default function ProfileNav(
                     </p>
                   </div>
                 </Link>
+                {/* Dashboard */}
+                <Link href={"/dashboard"}>
+                  <div className="flex w-[11.5rem] items-center rounded-[0.5rem] bg-white py-[0.3rem] hover:bg-[#EAEAEA]">
+                    <svg
+                      className="ml-[0.5rem]"
+                      width="40"
+                      height="40"
+                      viewBox="0 0 40 40"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <circle cx="20" cy="20" r="20" fill="#EAEAEA" />
+                      <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M9 12.0938C9 11.2732 9.32595 10.4863 9.90614 9.90614C10.4863 9.32595 11.2732 9 12.0938 9H27.9062C28.7268 9 29.5137 9.32595 30.0939 9.90614C30.6741 10.4863 31 11.2732 31 12.0938V23.7812C31 24.6018 30.6741 25.3887 30.0939 25.9689C29.5137 26.5491 28.7268 26.875 27.9062 26.875H23.6369C23.9054 27.7747 24.4311 28.5762 25.1494 29.1809C25.3109 29.3173 25.4267 29.5002 25.4808 29.7046C25.535 29.909 25.525 30.1251 25.4522 30.3237C25.3794 30.5223 25.2474 30.6936 25.0739 30.8146C24.9004 30.9356 24.694 31.0003 24.4825 31H15.5175C15.3061 31 15.0999 30.9351 14.9266 30.814C14.7534 30.6929 14.6215 30.5216 14.5489 30.3231C14.4763 30.1246 14.4664 29.9085 14.5206 29.7042C14.5748 29.5 14.6905 29.3173 14.852 29.1809C15.5697 28.576 16.095 27.7745 16.3631 26.875H12.0938C11.2732 26.875 10.4863 26.5491 9.90614 25.9689C9.32595 25.3887 9 24.6018 9 23.7812V12.0938ZM11.0625 12.0938C11.0625 11.8202 11.1711 11.5579 11.3645 11.3645C11.5579 11.1711 11.8202 11.0625 12.0938 11.0625H27.9062C28.1798 11.0625 28.4421 11.1711 28.6355 11.3645C28.8289 11.5579 28.9375 11.8202 28.9375 12.0938V22.4062C28.9375 22.6798 28.8289 22.9421 28.6355 23.1355C28.4421 23.3289 28.1798 23.4375 27.9062 23.4375H12.0938C11.8202 23.4375 11.5579 23.3289 11.3645 23.1355C11.1711 22.9421 11.0625 22.6798 11.0625 22.4062V12.0938Z"
+                        fill="black"
+                      />
+                    </svg>
+
+                    <p className="ml-[1rem] text-[1rem] font-medium text-black">
+                      Dashboard
+                    </p>
+                  </div>
+                </Link>
                 {props.isAgent && (
                   // {/* Jual Property */}
                   <Link href={"/sellPropertyForm"}>
                     <div className="flex w-[11.5rem] items-center rounded-[0.5rem] bg-white py-[0.3rem] hover:bg-[#EAEAEA]">
-                        <svg
+                      <svg
                         className="ml-[0.5rem]"
                         width="40"
                         height="40"
                         viewBox="0 0 40 40"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
-                        >
+                      >
                         <circle cx="20" cy="20" r="20" fill="#EAEAEA" />
                         <g clip-path="url(#clip0_1249_2984)">
-                            <path
+                          <path
                             d="M29.9166 20.1945C29.8252 20.195 29.7346 20.1775 29.65 20.1429C29.5654 20.1084 29.4884 20.0574 29.4235 19.9931L19.4999 10.0625L9.57633 19.9931C9.44348 20.1068 9.27259 20.1663 9.09782 20.1595C8.92304 20.1528 8.75725 20.0803 8.63357 19.9567C8.5099 19.833 8.43744 19.6672 8.43069 19.4924C8.42394 19.3176 8.48339 19.1467 8.59716 19.0139L19.0138 8.59723C19.1439 8.46789 19.3199 8.39529 19.5034 8.39529C19.6869 8.39529 19.8629 8.46789 19.993 8.59723L30.4097 19.0139C30.5052 19.1114 30.5699 19.2349 30.5957 19.3689C30.6215 19.503 30.6071 19.6417 30.5545 19.7676C30.5019 19.8936 30.4134 20.0013 30.2999 20.0772C30.1864 20.1531 30.0531 20.1939 29.9166 20.1945Z"
                             fill="black"
-                            />
-                            <path
+                          />
+                          <path
                             d="M19.4998 12.4097L11.1665 20.7708V29.2222C11.1665 29.5906 11.3128 29.9439 11.5733 30.2043C11.8338 30.4648 12.187 30.6111 12.5554 30.6111H17.4165V23.6667H21.5832V30.6111H26.4443C26.8126 30.6111 27.1659 30.4648 27.4264 30.2043C27.6868 29.9439 27.8332 29.5906 27.8332 29.2222V20.7222L19.4998 12.4097Z"
                             fill="black"
-                            />
+                          />
                         </g>
                         <defs>
-                            <clipPath id="clip0_1249_2984">
+                          <clipPath id="clip0_1249_2984">
                             <rect
-                                width="25"
-                                height="25"
-                                fill="white"
-                                transform="translate(7 7)"
+                              width="25"
+                              height="25"
+                              fill="white"
+                              transform="translate(7 7)"
                             />
-                            </clipPath>
+                          </clipPath>
                         </defs>
-                        </svg>
+                      </svg>
 
-                        <p className="ml-[1rem] text-[1rem] font-medium text-black">
+                      <p className="ml-[1rem] text-[1rem] font-medium text-black">
                         Jual Property
-                        </p>
+                      </p>
                     </div>
                   </Link>
-
                 )}
                 {props.isDesigner && (
                   // {/* Jual Design */}
                   <Link href={"/designForm"}>
                     <div className="flex w-[11.5rem] items-center rounded-[0.5rem] bg-white py-[0.3rem] hover:bg-[#EAEAEA]">
-                        <svg
+                      <svg
                         className="ml-[0.5rem]"
                         width="40"
                         height="40"
                         viewBox="0 0 40 40"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
-                        >
+                      >
                         <circle cx="20" cy="20" r="20" fill="#EAEAEA" />
                         <path
-                            d="M31 26.6854L24.764 20.4494L26.5281 18.6854L22.3146 14.4719L20.5506 16.236L14.3146 10L9 15.3146L15.236 21.5506L9.88764 26.8989V31.1124H14.1011L19.4494 25.764L25.6854 32L31 26.6854ZM16.8315 19.9551L12.1798 15.3146L14.3146 13.1798L15.7416 14.6067L14.4045 15.9438L15.9888 17.5281L17.3258 16.191L18.9551 17.8202L16.8315 19.9551ZM21.0449 24.1685L23.1798 22.0337L24.809 23.6629L23.4719 25L25.0562 26.5843L26.3933 25.2472L27.8202 26.6742L25.6854 28.809L21.0449 24.1685ZM23.5202 13.273L26.3719 10.4202L30.5831 14.6315L27.7315 17.4843L23.5202 13.273Z"
-                            fill="black"
+                          d="M31 26.6854L24.764 20.4494L26.5281 18.6854L22.3146 14.4719L20.5506 16.236L14.3146 10L9 15.3146L15.236 21.5506L9.88764 26.8989V31.1124H14.1011L19.4494 25.764L25.6854 32L31 26.6854ZM16.8315 19.9551L12.1798 15.3146L14.3146 13.1798L15.7416 14.6067L14.4045 15.9438L15.9888 17.5281L17.3258 16.191L18.9551 17.8202L16.8315 19.9551ZM21.0449 24.1685L23.1798 22.0337L24.809 23.6629L23.4719 25L25.0562 26.5843L26.3933 25.2472L27.8202 26.6742L25.6854 28.809L21.0449 24.1685ZM23.5202 13.273L26.3719 10.4202L30.5831 14.6315L27.7315 17.4843L23.5202 13.273Z"
+                          fill="black"
                         />
-                        </svg>
+                      </svg>
 
-                        <p className="ml-[1rem] text-[1rem] font-medium text-black">
+                      <p className="ml-[1rem] text-[1rem] font-medium text-black">
                         Jual Design
-                        </p>
+                      </p>
                     </div>
                   </Link>
-
                 )}
                 {/* Transaction */}
                 <Link href={"/transaction"}>
@@ -192,7 +213,10 @@ export default function ProfileNav(
                   </div>
                 </Link>
                 {/* Log Out */}
-                <button onClick={() => signOut()} className="flex w-[11.5rem] items-center rounded-[0.5rem] bg-white py-[0.3rem] hover:bg-[#EAEAEA]">
+                <button
+                  onClick={() => signOut()}
+                  className="flex w-[11.5rem] items-center rounded-[0.5rem] bg-white py-[0.3rem] hover:bg-[#EAEAEA]"
+                >
                   <svg
                     className="ml-[0.5rem]"
                     width="40"
