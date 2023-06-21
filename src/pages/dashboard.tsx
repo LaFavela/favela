@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 const user = [
   {
     id: 1,
@@ -160,14 +161,15 @@ export default function Dashboard() {
       <div className="mt-10 w-fit space-y-10 ">
         <p className="text-[2rem] font-medium">Dashboard</p>
         <div>
-
-            <p className="w-[170px] text-center text-[#B17C3F] font-medium text-[1.6875rem]">User</p>
-            <div className="relative rounded-full border-b-8 border-gray-300 ">
+          <p className="w-[170px] text-center text-[1.6875rem] font-medium text-[#B17C3F]">
+            User
+          </p>
+          <div className="relative rounded-full border-b-8 border-gray-300 ">
             <div className="absolute left-0 top-0 w-[170px] rounded-full  border-b-8 border-[#B17C3F]"></div>
-            </div>
+          </div>
         </div>
 
-        <div className="flex w-[78.93rem] min-h-[40rem] justify-center overflow-hidden rounded-[25px] bg-white pb-5 drop-shadow-[0_0px_3px_rgba(0,0,0,0.25)]">
+        <div className="flex min-h-[40rem] w-[78.93rem] justify-center overflow-hidden rounded-[25px] bg-white pb-5 drop-shadow-[0_0px_3px_rgba(0,0,0,0.25)]">
           <div className="w-full">
             <div className="flex h-[4.25rem] w-full items-center justify-center bg-[#F6F6F6]">
               <p className=" w-[20.875rem] text-center text-[1.125rem] font-medium">
@@ -204,25 +206,27 @@ export default function Dashboard() {
                   <p className="text-[1rem] font-normal">{data.role}</p>
                 </div>
                 <div className="flex w-[13.4375rem] items-center justify-center space-x-4 py-2">
-                  <button className="flex w-[4.25rem] items-center justify-center space-x-1 rounded-lg border border-[#B17C3F] bg-white p-1 hover:bg-[#e4d1bc]">
-                    <svg
-                      width="19"
-                      height="18"
-                      viewBox="0 0 19 18"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M14.4893 1.69849L16.6829 3.89203L15.0106 5.56498L12.8171 3.37143L14.4893 1.69849ZM6.45508 11.9263H8.64863L13.9768 6.59814L11.7832 4.40459L6.45508 9.73272V11.9263Z"
-                        fill="#B17C3F"
-                      />
-                      <path
-                        d="M14.4978 14.1198H6.57027C6.55126 14.1198 6.53152 14.1271 6.51251 14.1271C6.48838 14.1271 6.46425 14.1206 6.43939 14.1198H4.26119V3.88326H9.2676L10.73 2.4209H4.26119C3.4547 2.4209 2.79883 3.07604 2.79883 3.88326V14.1198C2.79883 14.9271 3.4547 15.5822 4.26119 15.5822H14.4978C14.8856 15.5822 15.2576 15.4281 15.5318 15.1539C15.8061 14.8796 15.9601 14.5077 15.9601 14.1198V7.78193L14.4978 9.2443V14.1198Z"
-                        fill="#B17C3F"
-                      />
-                    </svg>
-                    <p className="text-[0.625rem] text-[#B17C3F]">Edit</p>
-                  </button>
+                  <Link href={"./adminSettings"}>
+                    <button className="flex w-[4.25rem] items-center justify-center space-x-1 rounded-lg border border-[#B17C3F] bg-white p-1 hover:bg-[#e4d1bc]">
+                      <svg
+                        width="19"
+                        height="18"
+                        viewBox="0 0 19 18"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M14.4893 1.69849L16.6829 3.89203L15.0106 5.56498L12.8171 3.37143L14.4893 1.69849ZM6.45508 11.9263H8.64863L13.9768 6.59814L11.7832 4.40459L6.45508 9.73272V11.9263Z"
+                          fill="#B17C3F"
+                        />
+                        <path
+                          d="M14.4978 14.1198H6.57027C6.55126 14.1198 6.53152 14.1271 6.51251 14.1271C6.48838 14.1271 6.46425 14.1206 6.43939 14.1198H4.26119V3.88326H9.2676L10.73 2.4209H4.26119C3.4547 2.4209 2.79883 3.07604 2.79883 3.88326V14.1198C2.79883 14.9271 3.4547 15.5822 4.26119 15.5822H14.4978C14.8856 15.5822 15.2576 15.4281 15.5318 15.1539C15.8061 14.8796 15.9601 14.5077 15.9601 14.1198V7.78193L14.4978 9.2443V14.1198Z"
+                          fill="#B17C3F"
+                        />
+                      </svg>
+                      <p className="text-[0.625rem] text-[#B17C3F]">Edit</p>
+                    </button>
+                  </Link>
                   <button className="flex w-[4.25rem] items-center justify-center space-x-1 rounded-lg bg-[#DC7567] p-[0.35rem] hover:bg-[#e09388]">
                     <svg
                       width="19"
