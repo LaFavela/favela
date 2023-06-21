@@ -50,7 +50,7 @@ export default function ProfileNav(
                   </div>
                 </Link>
                 {/* Dashboard */}
-                <Link href={"/dashboard"}>
+                <Link href={"/admin/dashboard"}>
                   <div className="flex w-[11.5rem] items-center rounded-[0.5rem] bg-white py-[0.3rem] hover:bg-[#EAEAEA]">
                     <svg
                       className="ml-[0.5rem]"
