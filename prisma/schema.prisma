@@ -17,7 +17,7 @@ model Users {
   firstName   String
   lastName    String
   password    String
-  image       String     @default("assets/profile/default.jpg")
+  image       String     @default("/assets/profile/default.jpg")
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   role        Role?
