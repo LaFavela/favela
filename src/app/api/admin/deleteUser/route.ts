@@ -39,12 +39,31 @@ export async function POST(request: Request) {
 
       const id = request.headers.get("id");
 
+      const role = await prisma.role.delete({
+         where: { usersId: id as string },
+         include: {
+            user: true,
+            Desainer: true,
+            Pembeli: true,
+            Penjual: true,
+            Tukang: true,
+         },
+      });
       const userToDelete = await prisma.$transaction([
-         prisma.role.delete({
-            where: { usersId: id as string },
-         }),
          prisma.users.delete({
-            where: { id: id as string },
+            where: { id: role.usersId },
+         }),
+         prisma.pembeli.delete({
+            where: { id: role.Pembeli.id },
+         }),
+         prisma.penjual.delete({
+            where: { id: role.Penjual.id },
+         }),
+         prisma.desainer.delete({
+            where: { id: role.Desainer.id },
+         }),
+         prisma.tukang.delete({
+            where: { id: role.Tukang.id },
          }),
       ]);
 
