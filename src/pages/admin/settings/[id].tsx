@@ -12,25 +12,39 @@ interface ProfileProps {
    data: Users;
 }
 
-// export const getServerSideProps: GetServerSideProps<{ data: Users }> = async (
-//    context
-// ) => {
-//    const session = await getSession(context);
-//    const token = session?.user.accessToken;
-//    const data = await useGet("/user", {
-//       authorization: token as string,
-//    });
-//    return {
-//       props: {
-//          data,
-//       },
-//    };
-// };
+export const getServerSideProps: GetServerSideProps<{ data: Users }> = async (
+   context
+) => {
+   const session = await getSession(context);
+   const token = session?.user.accessToken;
+   const checkAdmin: Users = await useGet("/user", {
+      authorization: token as string,
+   });
+   if (checkAdmin.roleName !== RoleSelect.ADMIN) {
+      return {
+         redirect: {
+            destination: "/",
+            permanent: false,
+         },
+      };
+   }
+
+   const data: Users = await useGet("/admin/editUser", {
+      authorization: token as string,
+      id: context.params?.id as string,
+   });
+
+   return {
+      props: {
+         data,
+      },
+   };
+};
 
 export function Profile(props: ProfileProps) {
    const { data: session, update } = useSession();
    const token = session?.user.accessToken;
-
+   
    registerLocale("id", id);
 
    const [file, setFile] = useState<File | null>(null);
@@ -49,10 +63,10 @@ export function Profile(props: ProfileProps) {
             formData.append("myImage", selectedFile);
 
             const upload = await usePost(
-               "profile/upload",
+               "admin/settings/user/upload",
                {
                   authorization: token as string,
-                  username : session?.user.username as string,
+                  id: props.data.id as string,
                },
                formData
             );
@@ -68,11 +82,11 @@ export function Profile(props: ProfileProps) {
       }
    };
 
-//    useEffect(() => {
-//       // Ambil URL foto profil dari database atau sumber penyimpanan file
-//       const existingProfilePicture = props.data.image;
-//       setPreview(existingProfilePicture);
-//    }, []);
+   useEffect(() => {
+      // Ambil URL foto profil dari database atau sumber penyimpanan file
+      const existingProfilePicture = props.data.image;
+      setPreview(existingProfilePicture);
+   }, []);
 
    const handleClick = () => {
       const fileInput = document.getElementById("profilePicture");
@@ -81,119 +95,95 @@ export function Profile(props: ProfileProps) {
       }
    };
 
-//    const [selectedCity, setSelectedCity] = useState(props.data.city);
-//    const [selectedGender, setSelectedGender] = useState<Gender>(
-//       props.data.gender
-//    );
-//    const [selectedRole, setSelectedRole] = useState<RoleSelect>(
-//       props.data.roleName
-//    );
-//    const [firstName, setFirstName] = useState(props.data.firstName);
-//    const [lastName, setLastName] = useState(props.data.lastName);
-//    const [selectedEmail, setSelectedEmail] = useState(props.data.email);
-//    const [selectedNumber, setSelectedNumber] = useState(props.data.phone);
-//    const [selectedWebsite, setSelectedWebsite] = useState(props.data.website);
-//    const [selectedSocialMedia, setSelectedSocialMedia] = useState(
-//       props.data.socialMedia
-//    );
-//    const [selectedReview, setSelectedReview] = useState(props.data.description);
+   const [selectedCity, setSelectedCity] = useState(props.data.city);
+   const [selectedGender, setSelectedGender] = useState<Gender>(
+      props.data.gender
+   );
+   const [selectedRole, setSelectedRole] = useState<RoleSelect>(
+      props.data.roleName
+   );
+   const [firstName, setFirstName] = useState(props.data.firstName);
+   const [lastName, setLastName] = useState(props.data.lastName);
+   const [selectedEmail, setSelectedEmail] = useState(props.data.email);
+   const [selectedNumber, setSelectedNumber] = useState(props.data.phone);
+   const [selectedWebsite, setSelectedWebsite] = useState(props.data.website);
+   const [selectedSocialMedia, setSelectedSocialMedia] = useState(
+      props.data.socialMedia
+   );
+   const [selectedReview, setSelectedReview] = useState(props.data.description);
 
-//    const [birthday, setBirthday] = useState<Date | null>(
-//       new Date(props.data.birthDay)
-//    );
+   const [birthday, setBirthday] = useState<Date | null>(
+      new Date(props.data.birthDay)
+   );
 
-//    const [sideJobs, setSideJobs] = useState<string[]>(props.data.job); // State untuk menyimpan daftar pekerjaan sampingan
+   const [sideJobs, setSideJobs] = useState<string[]>(props.data.job); // State untuk menyimpan daftar pekerjaan sampingan
 
-//    const handleSubmit = async (event: React.FormEvent) => {
-//       event.preventDefault();
-//       // Kirim data ke API
-//       const data = await usePost(
-//          "/user",
-//          {
-//             authorization: token as string,
-//          },
-//          {
-//             firstName: firstName,
-//             lastName: lastName,
-//             email: selectedEmail,
-//             phone: selectedNumber,
-//             website: selectedWebsite,
-//             socialMedia: selectedSocialMedia,
-//             description: selectedReview,
-//             birthDay: birthday,
-//             job: sideJobs,
-//             city: selectedCity,
-//             roleName: selectedRole,
-//             gender: selectedGender,
-//             image: "/assets/profile/private/" + props.data.id + "/avatar.jpg" 
-//          } as Users
-//       );
+   const handleSubmit = async (event: React.FormEvent) => {
+      event.preventDefault();
+      // Kirim data ke API
+      const data = await usePost(
+         "/admin/editUser",
+         {
+            authorization: token as string,
+            id: props.data.id as string,
+         },
+         {
+            firstName: firstName,
+            lastName: lastName,
+            email: selectedEmail,
+            phone: selectedNumber,
+            website: selectedWebsite,
+            socialMedia: selectedSocialMedia,
+            description: selectedReview,
+            birthDay: birthday,
+            job: sideJobs,
+            city: selectedCity,
+            roleName: selectedRole,
+            gender: selectedGender,
+            image: "/assets/profile/private/" + props.data.id + "/avatar.jpg",
+         } as Users
+      );
+   };
 
-//       const handleUpdateUser = async () => {
-//          const newSession = {
-//             ...session,
-//             user: {
-//                ...session?.user,
-//                firstName: firstName,
-//                lastName: lastName,
-//                email: selectedEmail,
-//                phone: selectedNumber,
-//                website: selectedWebsite,
-//                socialMedia: selectedSocialMedia,
-//                description: selectedReview,
-//                birthDay: birthday,
-//                job: sideJobs,
-//                city: selectedCity,
-//                roleName: selectedRole,
-//                gender: selectedGender,
-//                image: "/assets/profile/private/" + props.data.id + "/avatar.jpg" 
-//             },
-//          };
-//          await update(newSession);
-//          window.location.reload();
-//       };
-//       await handleUpdateUser();
-//    };
+   const handleGenderChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+      setSelectedGender(event.target.value as Gender);
+   };
 
-//    const handleGenderChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-//       setSelectedGender(event.target.value as Gender);
-//    };
+   const handleRoleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+      setSelectedRole(event.target.value as RoleSelect);
+   };
 
-//    const handleRoleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-//       setSelectedRole(event.target.value as RoleSelect);
-//    };
+   const handleAddSideJob = () => {
+      setSideJobs([...sideJobs, ""]); // Menambahkan input box baru ke dalam daftar pekerjaan sampingan
+   };
 
-//    const handleAddSideJob = () => {
-//       setSideJobs([...sideJobs, ""]); // Menambahkan input box baru ke dalam daftar pekerjaan sampingan
-//    };
+   const handleSideJobChange = (index: number, value: string) => {
+      const updatedSideJobs = [...sideJobs];
+      updatedSideJobs[index] = value;
+      setSideJobs(updatedSideJobs);
+   };
 
-//    const handleSideJobChange = (index: number, value: string) => {
-//       const updatedSideJobs = [...sideJobs];
-//       updatedSideJobs[index] = value;
-//       setSideJobs(updatedSideJobs);
-//    };
-
-  return (
-    <div>
-      <div className="left-0 top-0 w-[170px] rounded-full border-b-8 border-[#B17C3F]"></div>
-      <form  className="mt-10 w-full">
-        <div className="flex pr-[4rem]">
-          <div className="w-[18]rem">
-            <div className="ml-[0.3rem] h-[13rem] w-[13rem]">
-              {preview ? (
-                <img
-                  src={preview}
-                  alt="Preview"
-                  className="h-[13rem] w-[13rem] rounded-3xl object-cover"
-                />
-              ) : (
-                <div className="flex h-[13rem] w-[13rem] items-center justify-center rounded-3xl bg-gray-300">
-                  <span className="text-gray-500">
-                    Foto Profil Tidak Tersedia
-                  </span>
-                </div>
-              )}
-            </div>
+   return (
+      <div>
+         <div className="left-0 top-0 w-[170px] rounded-full border-b-8 border-[#B17C3F]"></div>
+         <form onSubmit={handleSubmit} className="mt-10 w-full">
+            <div className="flex pr-[4rem]">
+               <div className="w-[18]rem">
+                  <div className="ml-[0.3rem] h-[13rem] w-[13rem]">
+                     {preview ? (
+                        <img
+                           src={preview}
+                           alt="Preview"
+                           className="h-[13rem] w-[13rem] rounded-3xl object-cover"
+                        />
+                     ) : (
+                        <div className="flex h-[13rem] w-[13rem] items-center justify-center rounded-3xl bg-gray-300">
+                           <span className="text-gray-500">
+                              Foto Profil Tidak Tersedia
+                           </span>
+                        </div>
+                     )}
+                  </div>
 
                   <div className="mt-4 flex justify-center ">
                      <button
@@ -223,8 +213,8 @@ export function Profile(props: ProfileProps) {
                         name="firtsname"
                         className="ml-[5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
                         placeholder="Firstname"
-                        // value={firstName}
-                        // onChange={(e) => setFirstName(e.target.value)}
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
                      />
                   </label>
                   <label className="flex">
@@ -236,18 +226,18 @@ export function Profile(props: ProfileProps) {
                         name="lastname"
                         className="ml-[3.5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
                         placeholder="Lastname"
-                        // value={lastName}
-                        // onChange={(e) => setLastName(e.target.value)}
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
                      />
                   </label>
                   <label className="flex pr-[4.8rem]">
                      <span className="mt-3 w-[10.5rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
                         Birthday
                      </span>
-                     {/* <DatePicker
+                     <DatePicker
                         id="birthdate"
-                        // selected={birthday}
-                        // onChange={(date) => setBirthday(date)}
+                        selected={birthday}
+                        onChange={(date) => setBirthday(date)}
                         dateFormat="dd/MM/yyyy"
                         showYearDropdown
                         scrollableYearDropdown
@@ -255,7 +245,7 @@ export function Profile(props: ProfileProps) {
                         locale="id"
                         placeholderText="Birthday"
                         className="ml-[4.8rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
-                     /> */}
+                     />
                   </label>
                   <label className="flex">
                      <span className="mt-3 w-[11rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
@@ -263,8 +253,8 @@ export function Profile(props: ProfileProps) {
                      </span>
                      <select
                         id="gender"
-                        // value={selectedGender}
-                        // onChange={handleGenderChange}
+                        value={selectedGender}
+                        onChange={handleGenderChange}
                         placeholder="Choose Gender"
                         className="ml-[5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
                      >
@@ -281,8 +271,8 @@ export function Profile(props: ProfileProps) {
                      </span>
                      <select
                         id="role"
-                        // value={selectedRole}
-                        // onChange={handleRoleChange}
+                        value={selectedRole}
+                        onChange={handleRoleChange}
                         placeholder="Choose Role"
                         className="ml-[5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
                      >
@@ -304,8 +294,8 @@ export function Profile(props: ProfileProps) {
                         name="city"
                         className="ml-[5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
                         placeholder="City"
-                        // value={selectedCity}
-                        // onChange={(e) => setSelectedCity(e.target.value)}
+                        value={selectedCity}
+                        onChange={(e) => setSelectedCity(e.target.value)}
                         onKeyDown={(e) => {
                            if (e.key === "Enter") {
                               e.preventDefault();
@@ -318,7 +308,7 @@ export function Profile(props: ProfileProps) {
                         Job
                      </span>
                      <div className="w-full">
-                        {/* {sideJobs.map((sideJob, index) => (
+                        {sideJobs.map((sideJob, index) => (
                            <div key={index}>
                               <label className="flex">
                                  <input
@@ -340,10 +330,10 @@ export function Profile(props: ProfileProps) {
                                  />
                               </label>
                            </div>
-                        ))} */}
+                        ))}
                         <button
                            className="ml-[4rem] mt-2 text-base text-[#B17C3F]"
-                        //    onClick={handleAddSideJob}
+                           onClick={handleAddSideJob}
                         >
                            + Add Side Job (Optional)
                         </button>
@@ -359,8 +349,8 @@ export function Profile(props: ProfileProps) {
                         name="email"
                         className="ml-[5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
                         placeholder="Email"
-                        // value={selectedEmail}
-                        // onChange={(e) => setSelectedEmail(e.target.value)}
+                        value={selectedEmail}
+                        onChange={(e) => setSelectedEmail(e.target.value)}
                         onKeyDown={(e) => {
                            if (e.key === "Enter") {
                               e.preventDefault();
@@ -377,8 +367,8 @@ export function Profile(props: ProfileProps) {
                         name="phone"
                         className="ml-[5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
                         placeholder="Phone Number"
-                        // value={selectedNumber}
-                        // onChange={(e) => setSelectedNumber(e.target.value)}
+                        value={selectedNumber}
+                        onChange={(e) => setSelectedNumber(e.target.value)}
                         onKeyDown={(e) => {
                            if (e.key === "Enter") {
                               e.preventDefault();
@@ -395,8 +385,8 @@ export function Profile(props: ProfileProps) {
                         name="website"
                         className="ml-[5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
                         placeholder="www.example.com"
-                        // value={selectedWebsite}
-                        // onChange={(e) => setSelectedWebsite(e.target.value)}
+                        value={selectedWebsite}
+                        onChange={(e) => setSelectedWebsite(e.target.value)}
                         onKeyDown={(e) => {
                            if (e.key === "Enter") {
                               e.preventDefault();
@@ -413,8 +403,8 @@ export function Profile(props: ProfileProps) {
                         name="socialMedia"
                         className="ml-[5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
                         placeholder="@example"
-                        // value={selectedSocialMedia}
-                        // onChange={(e) => setSelectedSocialMedia(e.target.value)}
+                        value={selectedSocialMedia}
+                        onChange={(e) => setSelectedSocialMedia(e.target.value)}
                         onKeyDown={(e) => {
                            if (e.key === "Enter") {
                               e.preventDefault();
@@ -432,8 +422,8 @@ export function Profile(props: ProfileProps) {
                         placeholder="Description"
                         className="ml-[5rem] mt-1 block h-[15rem] w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
                         maxLength={500}
-                        // value={selectedReview}
-                        // onChange={(e) => setSelectedReview(e.target.value)}
+                        value={selectedReview}
+                        onChange={(e) => setSelectedReview(e.target.value)}
                         onKeyDown={(e) => {
                            if (e.key === "Enter") {
                               e.preventDefault();
@@ -458,73 +448,73 @@ export function Profile(props: ProfileProps) {
 }
 
 export function Account() {
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    // Lakukan pengiriman file ke server dan penyimpanan ke database menggunakan Prisma di sini
-  };
-  return (
-    <div>
-      <div className="top-0 ml-[10.35rem] w-[170px] rounded-full  border-b-8 border-[#B17C3F]"></div>
-      <div className="mt-10">
-        <form onSubmit={handleSubmit} className="pl-[10.4rem] pr-[4rem]">
-          <div className="flex flex-col gap-8">
-            <label className="flex w-full">
-              <span className="mt-3 w-[11rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
-                Username
-              </span>
-              <input
-                type="text"
-                name="username"
-                className="ml-[5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
-                placeholder="username"
-              />
-            </label>
-            <label className="flex w-full">
-              <span className="mt-3 w-[11rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
-                Old Password
-              </span>
-              <input
-                type="password"
-                name="password"
-                className="ml-[5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
-                placeholder="password"
-              />
-            </label>
-            <label className="flex w-full">
-              <span className="mt-3 w-[11rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
-                New Password
-              </span>
-              <input
-                type="pasword"
-                name="newPassword"
-                className="ml-[5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
-                placeholder="new password"
-              />
-            </label>
-            <label className="flex w-full">
-              <span className="mt-3 w-[13rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
-                Confirm Password
-              </span>
-              <input
-                type="password"
-                name="confirmPassword"
-                className="ml-[3.5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
-                placeholder="confirm password"
-              />
-            </label>
-          </div>
-          <div className="mt-[5rem] flex justify-end">
-            <button
-              type="submit"
-              className=" h-11 w-32 rounded-xl border-2 border-[#B17C3F] bg-[#B17C3F] text-base text-white duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white"
-            >
-              Simpan
-            </button>
-          </div>
-        </form>
+   const handleSubmit = (event: React.FormEvent) => {
+      event.preventDefault();
+      // Lakukan pengiriman file ke server dan penyimpanan ke database menggunakan Prisma di sini
+   };
+   return (
+      <div>
+         <div className="top-0 ml-[10.35rem] w-[170px] rounded-full  border-b-8 border-[#B17C3F]"></div>
+         <div className="mt-10">
+            <form onSubmit={handleSubmit} className="pl-[10.4rem] pr-[4rem]">
+               <div className="flex flex-col gap-8">
+                  <label className="flex w-full">
+                     <span className="mt-3 w-[11rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
+                        Username
+                     </span>
+                     <input
+                        type="text"
+                        name="username"
+                        className="ml-[5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
+                        placeholder="username"
+                     />
+                  </label>
+                  <label className="flex w-full">
+                     <span className="mt-3 w-[11rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
+                        Old Password
+                     </span>
+                     <input
+                        type="password"
+                        name="password"
+                        className="ml-[5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
+                        placeholder="password"
+                     />
+                  </label>
+                  <label className="flex w-full">
+                     <span className="mt-3 w-[11rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
+                        New Password
+                     </span>
+                     <input
+                        type="pasword"
+                        name="newPassword"
+                        className="ml-[5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
+                        placeholder="new password"
+                     />
+                  </label>
+                  <label className="flex w-full">
+                     <span className="mt-3 w-[13rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
+                        Confirm Password
+                     </span>
+                     <input
+                        type="password"
+                        name="confirmPassword"
+                        className="ml-[3.5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
+                        placeholder="confirm password"
+                     />
+                  </label>
+               </div>
+               <div className="mt-[5rem] flex justify-end">
+                  <button
+                     type="submit"
+                     className=" h-11 w-32 rounded-xl border-2 border-[#B17C3F] bg-[#B17C3F] text-base text-white duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white"
+                  >
+                     Simpan
+                  </button>
+               </div>
+            </form>
+         </div>
       </div>
-    </div>
-  );
+   );
 }
 
 export default function Settings({ data }: ProfileProps) {
@@ -542,7 +532,7 @@ export default function Settings({ data }: ProfileProps) {
    return (
       <div>
          <div className="ml-[12rem] mt-6 pr-[13rem]">
-            <h1 className="text-[1.7rem] font-medium">Admin Settings</h1>
+            <h1 className="text-[1.7rem] font-medium">Settings Admin</h1>
             <div className="relative">
                <div className="mt-10">
                   <button
