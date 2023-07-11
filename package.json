@@ -44,7 +44,8 @@
     "sequelize": "^6.32.1",
     "styled-components": "^5.3.11",
     "swr": "^2.1.5",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "watchpack": "^2.4.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
