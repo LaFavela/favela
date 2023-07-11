@@ -3,14 +3,14 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 const prisma = new PrismaClient();
 
-export async function GET(
-   req: NextApiRequest,
-   res: NextApiResponse
-) {
+export async function GET(req: NextApiRequest, res: NextApiResponse) {
    try {
       const response: Desain[] = await prisma.desain.findMany({
          include: {
             Detail: true,
+         },
+         orderBy: {
+            nama_desain: "asc",
          },
       });
 
