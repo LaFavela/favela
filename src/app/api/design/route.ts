@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 const prisma = new PrismaClient();
 
-export default async function GET(
+export async function GET(
    req: NextApiRequest,
    res: NextApiResponse
 ) {
