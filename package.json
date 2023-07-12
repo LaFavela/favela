@@ -43,7 +43,6 @@
     "react-scroll-parallax": "^3.4.2",
     "reactjs-popup": "^2.0.5",
     "sequelize": "^6.32.1",
-    "styled-components": "^6.0.3",
     "swr": "^2.2.0",
     "uuid": "^9.0.0",
     "watchpack": "^2.4.0"
