@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 export async function GET(
    req: NextApiRequest,
-   res: NextApiResponse
+   res: NextApiResponse<Desain[]>
 ) {
    try {
       const response: Desain[] = await prisma.desain.findMany({
@@ -17,6 +17,6 @@ export async function GET(
       res.status(200).json(response);
    } catch (error) {
       console.error(error);
-      res.status(500).json({ message: "Internal server error" });
+      res.status(500);
    }
 }
