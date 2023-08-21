@@ -1,6 +1,4 @@
 import Navbar from "@/components/navbar";
-import { Fragment } from "react";
-import { Listbox, Transition } from "@headlessui/react";
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Footer from "@/components/footer";
@@ -8,8 +6,7 @@ import React from "react";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 import Rating from "@mui/material/Rating";
-
-
+import { itemList } from "@/components/tagList";
 
 export const designerData = [
   {
@@ -199,30 +196,28 @@ interface MenuItem {
   value: string;
 }
 
-interface MenuStyle {
+interface SubMenuItem {
   label: string;
   value: string;
 }
 
-const menuItems: MenuItem[] = [
-  { label: "Type 1", value: "Type 1" },
-  { label: "Type 2", value: "Type 2" },
-  { label: "Type 3", value: "Type 3" },
-  { label: "Type 4", value: "Type 4" },
-  { label: "Type 5", value: "Type 5" },
-  { label: "Type 6", value: "Type 6" },
-];
+// const menuItems: MenuItem[] = [
+//   { label: "Type 1", value: "Type 1" },
+//   { label: "Type 2", value: "Type 2" },
+//   { label: "Type 3", value: "Type 3" },
+//   { label: "Type 4", value: "Type 4" },
+//   { label: "Type 5", value: "Type 5" },
+//   { label: "Type 6", value: "Type 6" },
+// ];
 
-const menuStyle: MenuStyle[] = [
-  { label: "Style 1", value: "Style 1" },
-  { label: "Style 2", value: "Style 2" },
-  { label: "Style 3", value: "Style 3" },
-  { label: "Style 4", value: "Style 4" },
-  { label: "Style 5", value: "Style 5" },
-  { label: "Style 6", value: "Style 6" },
-];
-
-export function menu() {}
+// const subMenuItem: SubMenuItem[] = [
+//   { label: "Style 1", value: "Style 1" },
+//   { label: "Style 2", value: "Style 2" },
+//   { label: "Style 3", value: "Style 3" },
+//   { label: "Style 4", value: "Style 4" },
+//   { label: "Style 5", value: "Style 5" },
+//   { label: "Style 6", value: "Style 6" },
+// ];
 
 export default function Designer() {
   const [hover, setHover] = useState(false);
@@ -239,6 +234,33 @@ export default function Designer() {
   };
 
   const [tags, setTags] = React.useState<string[]>([]);
+  const [tags2, setTags2] = React.useState<string[]>([]);
+
+  const combinedTags = tags.map(
+    (tag, index) => tag + (tags2[index] ? ` ${tags2[index]}` : "")
+  );
+  console.log(combinedTags);
+
+  const addTags = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const tagValue = event.target.value;
+
+    if (event.target.checked) {
+      setTags((prevTags) => [...prevTags, tagValue]);
+    } else {
+      setTags((prevTags) => prevTags.filter((tag) => tag !== tagValue));
+    }
+  };
+
+  const addTags2 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const tagValue = event.target.value;
+
+    if (event.target.checked) {
+      setTags2((prevTags) => [...prevTags, tagValue]);
+    } else {
+      setTags2((prevTags) => prevTags.filter((tag) => tag !== tagValue));
+    }
+  };
+
   const [activeLabel, setActiveLabel] = useState<string | null>(null);
   const submenuRef = useRef<HTMLDivElement>(null);
 
@@ -246,42 +268,21 @@ export default function Designer() {
     setActiveLabel(activeLabel === label ? null : label);
   };
 
-  const handleDocumentClick = (event: MouseEvent) => {
-    if (
-      submenuRef.current &&
-      !submenuRef.current.contains(event.target as Node)
-    ) {
-      setActiveLabel(null);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("click", handleDocumentClick);
-
-    return () => {
-      document.removeEventListener("click", handleDocumentClick);
-    };
-  }, []);
-
-  const addTags = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const tagValue = event.target.value;
-
-    if (event.target.checked) {
-      // Jika checkbox dicentang, tambahkan value ke dalam array tags
-      setTags((prevTags) => [...prevTags, tagValue]);
-    } else {
-      // Jika checkbox tidak dicentang, hapus value dari array tags
-      setTags((prevTags) => prevTags.filter((tag) => tag !== tagValue));
-    }
-  };
-
   const removeTag = (index: any) => {
     const newTags = tags.filter((_, i) => i !== index);
+    const newTags2 = tags2.filter((_, i) => i !== index);
     setTags(newTags);
+    setTags2(newTags2);
 
     const tagToDelete = tags[index];
+    const tagToDelete2 = tags2[index];
+
     setTags((prevSelectedTags) =>
       prevSelectedTags.filter((tag) => tag !== tagToDelete)
+    );
+
+    setTags2((prevSelectedTags) =>
+      prevSelectedTags.filter((tag2) => tag2 !== tagToDelete2)
     );
   };
 
@@ -317,13 +318,12 @@ export default function Designer() {
         <div className="relative">
           {/* <img src="assets/build/bg.jpg" alt="" className="rounded-2xl" /> */}
           <Image
-          src={"/assets/build/bg.jpg"}
-          alt={""}
-          width={1314}
-          height={466}
-          className="rounded-2xl"
-          >  
-          </Image>
+            src={"/assets/build/bg.jpg"}
+            alt={""}
+            width={1314}
+            height={466}
+            className="rounded-2xl"
+          ></Image>
           <div className="absolute bottom-[10rem] ml-28">
             <p className="w-[30rem] text-[33px] font-normal text-white">
               Find Your Dream Property Design by Consult With Designers
@@ -354,57 +354,62 @@ export default function Designer() {
                   </button>
                 }
                 contentStyle={{
-                  maxWidth : 'fit-content',
-                  borderRadius:"10px",
-                  paddingRight: "15px"
+                  maxWidth: "fit-content",
+                  borderRadius: "10px",
+                  paddingRight: "15px",
                 }}
               >
-                <div className="ml-3 flex flex-col gap-y-2 mb-3">
+                <div className="mb-3 ml-3 flex flex-col gap-y-2">
                   <span>Type</span>
                   <span className="-ml-3 border-b-2"></span>
-                  {menuItems.map((item) => (
-                    <span key={item.value} className="flex items-center w-max ">
+                  {itemList.map((item) => (
+                    <span key={item.value} className="flex w-max items-center ">
                       <input
                         type="checkbox"
                         value={item.value}
                         name="filter"
-                        id=""
+                        id={item.value}
                         onChange={addTags}
                         checked={tags.includes(item.value)}
                         className="h-3 w-3 appearance-none rounded-sm border-2 border-gold checked:bg-[#d9b285] "
                       />
                       <label
-                        htmlFor={item.label}
-                        className="ml-2 cursor-pointer text-[11px] mx-auto "
+                        htmlFor={item.value}
+                        className="mx-auto ml-2 cursor-pointer text-[11px] "
                         onClick={() => handleLabelClick(item.label)}
+                        onMouseEnter={() => handleLabelClick(item.label)}
+                        onChange={() => addTags}
                       >
                         {item.label}
                       </label>
                       {activeLabel === item.label && (
                         <div
                           ref={submenuRef}
-                          className="absolute left-full top-0  ml-1 w-[162px] rounded-[10px] bg-white p-2 shadow-md drop-shadow "
+                          className="absolute left-full top-0  ml-1 w-max rounded-[10px] bg-white p-2 shadow-md drop-shadow "
                         >
                           <div className="flex flex-col">
                             <p className="ml-3">{item.label}</p>
-                            <span className="border-b-2 mt-1 mb-2"></span>
-                            <div className="grid grid-rows-4 grid-flow-col gap-3">
-                              {menuStyle.map((style) => (
-                                <span key={style.value} className ="flex items-center">
+                            <span className="mb-2 mt-1 border-b-2"></span>
+                            <div className="ml-2 grid grid-flow-col grid-rows-6 gap-2 pb-2 pr-2">
+                              {item.subListItem.map((subMenu) => (
+                                <span
+                                  key={subMenu.value}
+                                  className="flex items-center"
+                                >
                                   <input
                                     type="checkbox"
-                                    value={style.value}
+                                    value={subMenu.value}
                                     name="filter"
-                                    id=""
-                                    onChange={addTags}
-                                    checked={tags.includes(style.value)}
+                                    id={subMenu.value}
+                                    onChange={addTags2}
+                                    checked={tags2.includes(subMenu.value)}
                                     className="h-3 w-3 appearance-none rounded-sm border-2 border-gold checked:bg-[#d9b285]"
                                   />
                                   <label
-                                    htmlFor={style.label}
+                                    htmlFor={subMenu.value}
                                     className="ml-2 cursor-pointer text-[11px]"
                                   >
-                                    {style.label}
+                                    {subMenu.label}
                                   </label>
                                 </span>
                               ))}
@@ -424,7 +429,7 @@ export default function Designer() {
                       key={index}
                     >
                       <span className="ml-2 mt-[7px] pr-2 text-[11px]">
-                        {tag}
+                        {tag} {tags2[index] && ` - ${tags2[index]}`}
                       </span>
                       <button
                         className="mr-2 mt-[3px] "
@@ -471,9 +476,9 @@ export default function Designer() {
                   </button>
                 }
                 contentStyle={{
-                  width: "250px",
+                  width: "280px",
                   paddingBottom: "20px",
-                  borderRadius:"10px"
+                  borderRadius: "10px",
                 }}
               >
                 <div className="mt-2">
@@ -501,7 +506,10 @@ export default function Designer() {
                         />
                       </svg>
                     </button>
-                    <button className="text-[10px]" onClick={handleSvgClick}>
+                    <button
+                      className={`text-[10px] ${isClicked ? "text-gold" : ""}`}
+                      onClick={handleSvgClick}
+                    >
                       Name
                     </button>
                   </div>
@@ -526,24 +534,26 @@ export default function Designer() {
                         />
                       </svg>
                     </button>
-                    <button className="text-[10px]" onClick={handleSvgClick2}>
+                    <button
+                      className={`text-[10px] ${isClicked2 ? "text-gold" : ""}`}
+                      onClick={handleSvgClick2}
+                    >
                       Popular
                     </button>
                   </div>
                   <div className="flex flex-col justify-center">
                     <button onClick={handleSvgClick3}>
                       <svg
-                        width="16"
+                        width="14"
                         height="14"
-                        viewBox="0 0 16 14"
+                        viewBox="0 0 14 14"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
-                        className="ml-4"
+                        className="ml-[6px]"
                       >
                         <path
-                          fill-rule="evenodd"
-                          clip-rule="evenodd"
-                          d="M13.3333 1.66659H2.66663C2.48981 1.66659 2.32025 1.73682 2.19522 1.86185C2.0702 1.98687 1.99996 2.15644 1.99996 2.33325V11.6666C1.99996 11.8434 2.0702 12.013 2.19522 12.138C2.32025 12.263 2.48981 12.3333 2.66663 12.3333H13.3333C13.5101 12.3333 13.6797 12.263 13.8047 12.138C13.9297 12.013 14 11.8434 14 11.6666V2.33325C14 2.15644 13.9297 1.98687 13.8047 1.86185C13.6797 1.73682 13.5101 1.66659 13.3333 1.66659ZM2.66663 0.333252C2.13619 0.333252 1.62749 0.543966 1.25241 0.919038C0.87734 1.29411 0.666626 1.80282 0.666626 2.33325V11.6666C0.666626 12.197 0.87734 12.7057 1.25241 13.0808C1.62749 13.4559 2.13619 13.6666 2.66663 13.6666H13.3333C13.8637 13.6666 14.3724 13.4559 14.7475 13.0808C15.1226 12.7057 15.3333 12.197 15.3333 11.6666V2.33325C15.3333 1.80282 15.1226 1.29411 14.7475 0.919038C14.3724 0.543966 13.8637 0.333252 13.3333 0.333252H2.66663ZM3.99996 3.66658H5.33329V4.99992H3.99996V3.66658ZM7.33329 3.66658C7.15648 3.66658 6.98691 3.73682 6.86189 3.86185C6.73686 3.98687 6.66663 4.15644 6.66663 4.33325C6.66663 4.51006 6.73686 4.67963 6.86189 4.80466C6.98691 4.92968 7.15648 4.99992 7.33329 4.99992H11.3333C11.5101 4.99992 11.6797 4.92968 11.8047 4.80466C11.9297 4.67963 12 4.51006 12 4.33325C12 4.15644 11.9297 3.98687 11.8047 3.86185C11.6797 3.73682 11.5101 3.66658 11.3333 3.66658H7.33329ZM5.33329 6.33325H3.99996V7.66658H5.33329V6.33325ZM6.66663 6.99992C6.66663 6.82311 6.73686 6.65354 6.86189 6.52851C6.98691 6.40349 7.15648 6.33325 7.33329 6.33325H11.3333C11.5101 6.33325 11.6797 6.40349 11.8047 6.52851C11.9297 6.65354 12 6.82311 12 6.99992C12 7.17673 11.9297 7.3463 11.8047 7.47132C11.6797 7.59635 11.5101 7.66658 11.3333 7.66658H7.33329C7.15648 7.66658 6.98691 7.59635 6.86189 7.47132C6.73686 7.3463 6.66663 7.17673 6.66663 6.99992ZM5.33329 8.99992H3.99996V10.3333H5.33329V8.99992ZM6.66663 9.66658C6.66663 9.48977 6.73686 9.3202 6.86189 9.19518C6.98691 9.07016 7.15648 8.99992 7.33329 8.99992H11.3333C11.5101 8.99992 11.6797 9.07016 11.8047 9.19518C11.9297 9.3202 12 9.48977 12 9.66658C12 9.8434 11.9297 10.013 11.8047 10.138C11.6797 10.263 11.5101 10.3333 11.3333 10.3333H7.33329C7.15648 10.3333 6.98691 10.263 6.86189 10.138C6.73686 10.013 6.66663 9.8434 6.66663 9.66658Z"
+                          d="M7.00004 0.333252C10.682 0.333252 13.6667 3.31792 13.6667 6.99992C13.6667 10.6819 10.682 13.6666 7.00004 13.6666C3.31804 13.6666 0.333374 10.6819 0.333374 6.99992C0.333374 3.31792 3.31804 0.333252 7.00004 0.333252ZM7.00004 1.66659C5.58555 1.66659 4.229 2.22849 3.2288 3.22868C2.22861 4.22888 1.66671 5.58543 1.66671 6.99992C1.66671 8.41441 2.22861 9.77096 3.2288 10.7712C4.229 11.7713 5.58555 12.3333 7.00004 12.3333C8.41453 12.3333 9.77108 11.7713 10.7713 10.7712C11.7715 9.77096 12.3334 8.41441 12.3334 6.99992C12.3334 5.58543 11.7715 4.22888 10.7713 3.22868C9.77108 2.22849 8.41453 1.66659 7.00004 1.66659ZM7.00004 2.99992C7.16333 2.99994 7.32093 3.05989 7.44296 3.1684C7.56498 3.2769 7.64294 3.42642 7.66204 3.58859L7.66671 3.66659V6.72392L9.47137 8.52859C9.59094 8.64856 9.66036 8.80954 9.66553 8.97884C9.6707 9.14814 9.61123 9.31306 9.49921 9.4401C9.38719 9.56715 9.23101 9.64679 9.06239 9.66285C8.89378 9.67891 8.72537 9.63019 8.59137 9.52659L8.52871 9.47125L6.52871 7.47125C6.42509 7.36755 6.35855 7.23259 6.33937 7.08725L6.33337 6.99992V3.66659C6.33337 3.48977 6.40361 3.32021 6.52864 3.19518C6.65366 3.07016 6.82323 2.99992 7.00004 2.99992Z"
+                          fill="#878787"
                           className={
                             isClicked3
                               ? "fill-[#B17C3F]"
@@ -552,15 +562,18 @@ export default function Designer() {
                         />
                       </svg>
                     </button>
-                    <button className="text-[10px]" onClick={handleSvgClick3}>
-                      Regitered
+                    <button
+                      className={`text-[10px] ${isClicked3 ? "text-gold" : ""}`}
+                      onClick={handleSvgClick3}
+                    >
+                      Time
                     </button>
                   </div>
                 </div>
                 <div className="mt-4 flex justify-between px-4">
                   <button
                     onClick={handleOldestClick}
-                    className={`flex w-[95px] justify-center rounded-sm border-2 ${
+                    className={`flex w-[115px] justify-center rounded-sm border-2 ${
                       isOldestClick
                         ? "border-gold bg-[#d9b285]"
                         : "hover:border-gold hover:bg-[#d9b285]"
@@ -581,11 +594,11 @@ export default function Designer() {
                         />
                       </svg>
                     </span>
-                    <p className="text-[14px] text-gold">Oldest</p>
+                    <p className="text-[14px] text-gold">Ascending</p>
                   </button>
                   <button
                     onClick={handleNewestClick}
-                    className={`flex w-[95px] justify-center rounded-sm border-2 ${
+                    className={`flex w-[115px] justify-center rounded-sm border-2 ${
                       isNewestClick
                         ? "border-gold bg-[#d9b285]"
                         : "hover:border-gold hover:bg-[#d9b285]"
@@ -593,20 +606,20 @@ export default function Designer() {
                   >
                     <span className="group">
                       <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 16 16"
+                        width="8"
+                        height="10"
+                        viewBox="0 0 8 10"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
-                        className="mt-[2px] "
+                        className="mr-1 mt-[5px]"
                       >
                         <path
-                          d="M6.68533 13.3333C6.88425 13.3333 7.07501 13.2536 7.21566 13.1117C7.35632 12.9697 7.43533 12.7772 7.43533 12.5765V6.58258L9.40533 8.57047C9.54751 8.70415 9.73555 8.77693 9.92986 8.77347C10.1242 8.77001 10.3095 8.69059 10.447 8.55193C10.5844 8.41327 10.6631 8.2262 10.6665 8.03013C10.6699 7.83407 10.5978 7.64431 10.4653 7.50084L7.21533 4.22133C7.07471 4.07961 6.88408 4 6.68533 4C6.48658 4 6.29596 4.07961 6.15533 4.22133L2.90533 7.50084C2.83165 7.57013 2.77255 7.65368 2.73155 7.74652C2.69056 7.83935 2.66852 7.93957 2.66674 8.04119C2.66497 8.1428 2.68349 8.24374 2.72121 8.33798C2.75893 8.43221 2.81508 8.51782 2.8863 8.58968C2.95751 8.66155 3.04235 8.7182 3.13574 8.75627C3.22912 8.79433 3.32915 8.81302 3.42986 8.81123C3.53056 8.80944 3.62987 8.78719 3.72187 8.74583C3.81387 8.70447 3.89667 8.64483 3.96533 8.57047L5.93533 6.58258V12.5765C5.93533 12.9943 6.27133 13.3333 6.68533 13.3333Z"
+                          d="M4.01871 -2.38418e-07C4.21762 -2.38418e-07 4.40839 0.0854307 4.54904 0.237498C4.68969 0.389565 4.76871 0.595812 4.76871 0.810868V7.23295L6.73871 5.10307C6.88088 4.95983 7.06893 4.88186 7.26323 4.88556C7.45753 4.88927 7.64292 4.97437 7.78033 5.12294C7.91774 5.2715 7.99646 5.47193 7.99988 5.682C8.00331 5.89207 7.93119 6.09538 7.79871 6.24909L4.54871 9.76286C4.40808 9.91471 4.21746 10 4.01871 10C3.81996 10 3.62933 9.91471 3.48871 9.76286L0.238708 6.24909C0.165021 6.17486 0.105919 6.08534 0.0649274 5.98587C0.0239354 5.88641 0.00189351 5.77903 0.000116722 5.67016C-0.00166006 5.56128 0.0168645 5.45313 0.0545855 5.35217C0.0923065 5.2512 0.148451 5.15948 0.21967 5.08248C0.290889 5.00548 0.375723 4.94478 0.469111 4.904C0.562499 4.86322 0.662528 4.84319 0.763231 4.84511C0.863934 4.84703 0.963247 4.87086 1.05525 4.91518C1.14725 4.9595 1.23005 5.0234 1.29871 5.10307L3.26871 7.23295V0.810868C3.26871 0.363269 3.60471 -2.38418e-07 4.01871 -2.38418e-07Z"
                           className="fill-gold"
                         />
                       </svg>
                     </span>
-                    <p className="text-[14px] text-gold">Newest</p>
+                    <p className="text-[14px] text-gold">Descending</p>
                   </button>
                 </div>
               </Popup>
@@ -614,7 +627,7 @@ export default function Designer() {
           </div>
         </div>
 
-        <div className="pt-5  max-w-max">
+        <div className="max-w-max  pt-5">
           <div className=" flex flex-grow flex-row flex-wrap justify-center gap-3">
             {designerData.slice(0, visibleItems).map((designerData, idx) => {
               return (
@@ -646,7 +659,7 @@ export default function Designer() {
                       className={`${
                         hover && index == idx
                           ? ""
-                          : "absolute top-3 ml-5 h-full w-full text-18px] font-medium text-white"
+                          : "text-18px] absolute top-3 ml-5 h-full w-full font-medium text-white"
                       }`}
                     >
                       {designerData.designerName}
@@ -680,24 +693,19 @@ export default function Designer() {
                             defaultValue={designerData.rating}
                             precision={0.5}
                             icon={
-                              // <img
-                              //   src={"assets/profile/fill.png"}
-                              //   alt="Custom Icon"
-                              // />
                               <Image
-                              src={"/assets/profile/fill.png"}
-                              alt={""}
-                              height={11.67}
-                              width={11.67}
+                                src={"/assets/profile/fill.png"}
+                                alt={""}
+                                height={11.67}
+                                width={11.67}
                               ></Image>
                             }
                             emptyIcon={
-                              // <img src="assets/profile/empty.png" alt="" />
                               <Image
-                              src={"/assets/profile/empty.png"}
-                              alt={""}
-                              height={11.67}
-                              width={11.67}
+                                src={"/assets/profile/empty.png"}
+                                alt={""}
+                                height={11.67}
+                                width={11.67}
                               ></Image>
                             }
                             readOnly

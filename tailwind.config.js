@@ -9,6 +9,7 @@ module.exports = {
       },
       colors: {
         'gold': '#B17C3F',
+        'goldhov' : '#d9b285',
         'grayhov': '#B9B9B9',
         'nila' : '#EDECE9'
         
