@@ -1,7 +1,6 @@
 import Providers from "@/components/Providers";
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
-import "@/styles/globals.css";
 import Navbar from "@/components/navbar";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
@@ -10,6 +9,15 @@ import {
   removeTransparentChangeListener,
 } from "../tools/transparent";
 import ChatButton from "@/components/chatButton";
+
+import { Poppins } from "next/font/google";
+
+const poppins = Poppins({
+   subsets: ["latin"],
+   display: "swap",
+   variable: "--font-poppins",
+   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+});
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -40,7 +48,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <Providers>
-      <main>
+      <main className={poppins.className}>
         <Navbar home={home} transparent={temp} about={about} login={true}></Navbar>
         <ChatButton></ChatButton>
         <Component {...pageProps} />
