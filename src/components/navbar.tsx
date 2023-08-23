@@ -125,7 +125,7 @@ export default function Navbar(
                 if (history.length > 5) {
                   setHistory(history.slice(1));
                 }}}
-              className="h-[2.625rem] w-[56.6875rem]"
+              className="h-[2.625rem] w-[50vw]"
               action=""
             >
               <div className="flex h-full w-full">
