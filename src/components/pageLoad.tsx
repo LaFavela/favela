@@ -22,10 +22,10 @@ export default function PageLoad() {
           <path
             d="M12.5 75C12.5 109.519 40.4813 137.5 75 137.5C109.519 137.5 137.5 109.519 137.5 75C137.5 40.4813 109.519 12.5 75 12.5"
             stroke="#B17C3F"
-            stroke-opacity="0.36"
-            stroke-width="12"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeOpacity="0.36"
+            strokeWidth="12"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
         </svg>
       </motion.div>

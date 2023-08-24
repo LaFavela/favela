@@ -70,7 +70,17 @@ export default function CarouselImage() {
             >
                {images.map((image, index) => (
                   <div key={index} className="" onClick={() => clickHandler(image, index)}>
-                     <img src={image} alt="" className={currImg === index ? " w-[90%] rounded-3xl border-4 border-gray-400 aspect-square object-cover" : " w-[90%] rounded-3xl border-4 border-transparent aspect-square object-cover"} />
+                     {/* <img src={image} alt="" className={currImg === index ? " w-[90%] rounded-3xl border-4 border-gray-400 aspect-square object-cover" : " w-[90%] rounded-3xl border-4 border-transparent aspect-square object-cover"} /> */}
+                     <Image
+                        className={currImg === index ? " w-[90%] rounded-3xl border-4 border-gray-400 aspect-square object-cover" : " w-[90%] rounded-3xl border-4 border-transparent aspect-square object-cover"}
+                        src={image}
+                        alt={''}
+                        quality={100}
+                        // fill={true}
+                        width={200}
+                        height={200}
+                        style={{ objectFit: "cover" }} 
+                        />
                   </div>
                ))}
             </Carousel>
@@ -111,7 +121,16 @@ export function CarouselDesign(){
             >
                {design.map((image, index) => (
                   <div key={index} className="" onClick={() => clickHandler(image, index)}>
-                     <img src={image} alt="" className={currImg === index ? " w-[90%] rounded-3xl border-4 border-gray-400 aspect-square object-cover" : " w-[90%] rounded-3xl border-4 border-transparent aspect-square object-cover"} />
+                     {/* <img src={image} alt="" className={currImg === index ? " w-[90%] rounded-3xl border-4 border-gray-400 aspect-square object-cover" : " w-[90%] rounded-3xl border-4 border-transparent aspect-square object-cover"} /> */}
+                     <Image
+                        className={currImg === index ? " w-[90%] rounded-3xl border-4 border-gray-400 aspect-square object-cover" : " w-[90%] rounded-3xl border-4 border-transparent aspect-square object-cover"}
+                        src={image}
+                        alt={''}
+                        // fill={true}
+                        width={70}
+                        height={70}
+                        style={{ objectFit: "cover" }} 
+                        />
                   </div>
                ))}
             </Carousel>
