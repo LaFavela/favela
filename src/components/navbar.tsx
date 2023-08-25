@@ -264,12 +264,12 @@ export default function Navbar(
             <NavItem label="Design" link="/design"></NavItem>
             <div className="h-[1.875rem] w-[0.1rem] bg-[#BEB8B8]"></div>
           </div>
-          <ProfileButton></ProfileButton>
-          {/* {session ? (
+          {/* <ProfileButton></ProfileButton> */}
+          {session ? (
             <ProfileButton></ProfileButton>
           ) : (
             <LoginButton></LoginButton>
-          )} */}
+          )}
         </div>
       </div>
       {/* mobile nav */}
