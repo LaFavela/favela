@@ -1,84 +1,80 @@
-export const itemList = [
+export const type = [
+  { label: "type 1", value: "type 1" },
+  { label: "type 2", value: "type 2" },
+  { label: "type 3", value: "type 3" },
+  { label: "type 4", value: "type 4" },
+];
+
+export const style = [
+  { label: "stye 1", value: "stye 1" },
+  { label: "stye 2", value: "stye 2" },
+  { label: "stye 3", value: "stye 3" },
+  { label: "stye 4", value: "stye 4" },
+  { label: "stye 5", value: "stye 5" },
+];
+
+export const province = [
   {
-    label: "type 1",
-    value: "type 1",
-    subListItem: [
-      
-      { label: "Style 1", value: "Style 1" },
-      { label: "Style 2", value: "Style 2" },
-      { label: "Style 3", value: "Style 3" },
-      { label: "Style 4", value: "Style 4" },
-      { label: "Style 5", value: "Style 5" },
-      { label: "Style 6", value: "Style 6" },
+    label: "Nusa Tenggara Barat",
+    value: "Nusa Tenggara Barat",
+    city: [
+      { label: "Dompu", value: "Dompu" },
+      { label: "Sumbawa", value: "Sumbawa" },
+      { label: "Mataram", value: "Mataram" },
+      { label: "Bima", value: "Bima" },
+      { label: "Lombok Tengah", value: "Lombok Tengah" },
     ],
   },
   {
-   label: "type 2",
-   value: "type 2",
-   subListItem: [
-     
-     { label: "Gaya 1", value: "Gaya 1" },
-     { label: "Gaya 2", value: "Gaya 2" },
-     { label: "Gaya 3", value: "Gaya 3" },
-     { label: "Gaya 4", value: "Gaya 4" },
-     { label: "Gaya 5", value: "Gaya 5" },
-     { label: "Gaya 6", value: "Style 6" },
-   ],
- },
- 
- {
-   label: "type 3",
-   value: "type 3",
-   subListItem: [
-     
-     { label: "Model 1", value: "Model 1" },
-     { label: "Model 2", value: "Model 2" },
-     { label: "Model 3", value: "Model 3" },
-     { label: "Model 4", value: "Model 4" },
-     { label: "Model 5", value: "Model 5" },
-     { label: "Model 6", value: "Model 6" },
-   ],
- },
- 
- {
-   label: "type 4",
-   value: "type 4",
-   subListItem: [
-     
-     { label: "Tone 1", value: "Tone 1" },
-     { label: "Tone 2", value: "Tone 2" },
-     { label: "Tone 3", value: "Tone 3" },
-     { label: "Tone 4", value: "Tone 4" },
-     { label: "Tone 5", value: "Tone 5" },
-     { label: "Tone 6", value: "Tone 6" },
-   ],
- },
- 
- {
-   label: "type 5",
-   value: "type 5",
-   subListItem: [
-     
-     { label: "Shape 1", value: "Shape 1" },
-     { label: "Shape 2", value: "Shape 2" },
-     { label: "Shape 3", value: "Shape 3" },
-     { label: "Shape 4", value: "Shape 4" },
-     { label: "Shape 5", value: "Shape 5" },
-     { label: "Shape 6", value: "Shape 6" },
-   ],
- },
- 
- {
-   label: "type 6",
-   value: "type 6",
-   subListItem: [
-     
-     { label: "Design 1", value: "Design 1" },
-     { label: "Design 2", value: "Design 2" },
-     { label: "Design 3", value: "Design 3" },
-     { label: "Design 4", value: "Design 4" },
-     { label: "Design 5", value: "Design 5" },
-     { label: "Design 6", value: "Design 6" },
-   ],
- },
+    label: "Jawa Timur",
+    value: "Jawa Timur",
+    city: [
+      { label: "Surabaya", value: "Surabaya" },
+      { label: "Malang", value: "Malang" },
+      { label: "Blitar", value: "Blitar" },
+      { label: "Madiun", value: "Madiun" },
+      { label: "Keidri", value: "Keidri"},
+    ],
+  },
+  {
+    label: "Jawa Barat",
+    value: "Jawa Barat",
+    city: [
+      { label: "Bandung",value: "Bandung" },
+      { label: "Banjar", value: "Banjar" },
+      { label: "Cimahi", value: "Cimahi" },
+      { label: "Sukabumi", value: "Sukabumi" },
+      { label: "Bogor", value: "Bogor" },
+    ],
+  },
+  {
+    label: "Jawa Tengah",
+    value: "Jawa Tengah",
+    city: [
+      { label: "Semarang", value: "Semarang" },
+      { label: "Magelang", value: "Magelang" },
+      { label: "Jepara", value: "Jepara" },
+      { label: "Demak", value: "Demak" },
+      { label: "Cilacap", value: "Cilacap" },
+    ],
+  },
+  {
+    label: "Nanggroe Aceh Darussalam",
+    value: "Nanggroe Aceh Darussalam",
+    city: [
+      { label: "Banda Aceh", value: "Banda Aceh" },
+      { label: "Sabang", value: "Sabang" },
+      { label: "Gampong", value: "Gampong" },
+      { label: "Sigli", value: "Sigli" },
+      { label: "Langsa", value: "Langsa" },
+    ],
+  },
+];
+
+export const city = [
+  { label: "city 1", value: "city 1" },
+  { label: "city 2", value: "city 2" },
+  { label: "city 3", value: "city 3" },
+  { label: "city 4", value: "city 4" },
+  { label: "city 5", value: "city 5" },
 ];
