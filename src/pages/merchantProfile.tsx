@@ -4,7 +4,7 @@ import Rating from "@mui/material/Rating";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import Image from "next/image";
-import { projectData, reviewData } from "@/components/formLisy";
+import { projectData, reviewData } from "@/data/formList";
 import IMGPreview from "@/components/imgPreview";
 const data = [
   {
@@ -82,10 +82,12 @@ const media = [
 ];
 
 export default function Profile() {
-  const [isLiked, setIsLiked] = useState(false);
+  const [reviewLikes, setReviewLikes] = useState(new Array(reviewData.length).fill(false));
 
-  const handleIconClick = () => {
-    setIsLiked(!isLiked);
+  const handleIconClick = (index:any) => {
+    const newReviewLikes = [...reviewLikes]; // Create a copy of the reviewLikes array
+    newReviewLikes[index] = !newReviewLikes[index]; // Toggle the like state for the clicked review
+    setReviewLikes(newReviewLikes); // Update the state
   };
 
   const [srcIMG, setSrcIMG] = useState<any>("" as any);
@@ -96,7 +98,7 @@ export default function Profile() {
     <div>
       <div className=" container mx-auto mt-20 flex h-10 max-w-[1320px] justify-between ">
         <div className="container max-w-[884px] gap-y-5 ">
-          <div className="relative h-[457px] w-full rounded-3xl bg-white drop-shadow-landingShado">
+          <div className="relative h-[457px] w-full rounded-3xl bg-white drop-shadow-lg">
             <Image
               src="/assets/profile/bgProfile.png"
               alt=""
@@ -223,7 +225,7 @@ export default function Profile() {
                   <p className="ml-3 text-[11px]">500k Followers</p>
                 </div>
                 <div>
-                  <p className="mt-1 text-[14px] text-[#9C9797]">
+                  <p className="mt-1 text-[13px] text-[#9C9797]">
                     Mataram, Nusa Tenggara Barat, Indonesia
                   </p>
                 </div>
@@ -332,10 +334,10 @@ export default function Profile() {
 
           {/* BATAS ABOUT */}
 
-          <div className=" mt-8 w-full rounded-3xl bg-white drop-shadow-landingShado">
+          <div className=" mt-8 w-full rounded-3xl bg-white drop-shadow-lg">
             <div className="flex flex-col gap-5 px-12 py-10">
               <p className="text-[25px] font-semibold">About</p>
-              <p className="text-justify">
+              <p className="text-justify text-[15px]">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                 Suspendisse semper nisl in varius pulvinar. Nulla sollicitudin
                 ultricies molestie. Nunc sit amet purus sodales, gravida risus
@@ -351,7 +353,7 @@ export default function Profile() {
           </div>
 
           {/* BATAS DESIGN */}
-          <div className=" mt-8 w-full rounded-3xl bg-white drop-shadow-landingShado">
+          <div className=" mt-8 w-full rounded-3xl bg-white drop-shadow-lg">
             <div className="flex flex-col gap-5 px-12 py-10">
               <p className="text-[25px] font-semibold">Design</p>
 
@@ -468,7 +470,7 @@ export default function Profile() {
 
           {/* BATAS EDUCATION */}
 
-          <div className=" mt-8 w-full rounded-3xl bg-white drop-shadow-landingShado">
+          <div className=" mt-8 w-full rounded-3xl bg-white drop-shadow-lg">
             <div className="flex flex-col gap-5 px-12 py-10">
               <p className="text-[25px] font-semibold">Education</p>
 
@@ -524,7 +526,7 @@ export default function Profile() {
 
           {/* BATAS EXPERIENCE */}
 
-          <div className=" mt-8 w-full rounded-3xl bg-white drop-shadow-landingShado">
+          <div className=" mt-8 w-full rounded-3xl bg-white drop-shadow-lg">
             <div className="flex flex-col gap-5 px-12 py-10">
               <p className="text-[25px] font-semibold">Experience</p>
 
@@ -580,7 +582,7 @@ export default function Profile() {
 
           {/* BATAS PROJECT */}
 
-          <div className=" mt-8 w-full rounded-3xl bg-white drop-shadow-landingShado">
+          <div className=" mt-8 w-full rounded-3xl bg-white drop-shadow-lg">
             <div className="flex flex-col gap-5 px-12 py-10">
               <p className="text-[25px] font-semibold">Project</p>
 
@@ -657,7 +659,7 @@ export default function Profile() {
 
           {/* REVIEW  */}
 
-          <div className=" mt-8 w-full rounded-3xl bg-white drop-shadow-landingShado">
+          <div className=" mt-8 w-full rounded-3xl bg-white drop-shadow-lg">
             <div className="flex flex-col gap-5 px-12 py-10">
               <p className="text-[25px] font-semibold">Review</p>
 
@@ -741,12 +743,12 @@ export default function Profile() {
                       <p className="mt-2 text-justify text-[12px] font-normal text-[#4B4B4B]  w-[710px]">
                         {review.content}
                       </p>
-                      <div className="mt-2 flex " onClick={handleIconClick}>
-                        {isLiked ? <ThumbUpAltIcon /> : <ThumbUpOffAltIcon />}
+                      <button className="mt-2 flex " onClick={() => handleIconClick(index)}>
+                        {reviewLikes[index] ? <ThumbUpAltIcon /> : <ThumbUpOffAltIcon />}
                         <span className="text-[15px] text-black/50 ml-3 my-auto">
-                          {isLiked ? `${review.likes + 1}` : `${review.likes}`}
+                          {reviewLikes[index] ? `${review.likes + 1}` : `${review.likes}`}
                         </span>
-                      </div>
+                      </button>
                     </div>
                   </div>
                 );
@@ -757,8 +759,8 @@ export default function Profile() {
 
         {/* BATAS CONTAINER */}
 
-        <div className=" container w-[400px]   drop-shadow-landingShado ">
-          <div className="w-full rounded-3xl bg-white pb-10 drop-shadow-landingShado">
+        <div className=" container w-[400px]   drop-shadow-lg ml-10 ">
+          <div className="w-full rounded-3xl bg-white pb-10 drop-shadow-lg">
             <p className="px-8  pt-8 text-[17px]">Recomended For You</p>
             {other.map((other, index) => (
               <div
