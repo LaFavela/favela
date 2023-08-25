@@ -1,8 +1,8 @@
-// "use client";
 
 import React, { useState, useRef } from "react";
 import { signIn } from "next-auth/react";
 import { set } from "react-hook-form";
+import Image from "next/image";
 
 // const username = "admin";
 // const email = "ramadhanialqadri12@gmail.com";
@@ -91,9 +91,11 @@ export default function Login() {
                   </p>
                   {/* Gambar */}
                   <div className="h-full">
-                     <img
+                     <Image
                         src="/assets/login/bg.jpg"
                         alt="bg-property"
+                        width={864}
+                        height={552}
                         className="h-full w-full rounded-l-[25px]"
                      />
                   </div>
@@ -183,7 +185,7 @@ export default function Login() {
                      </button>
                      <div className="flex justify-start space-x-1">
                         <p className="mt-[0.2rem] text-[0.6rem] font-normal ">
-                           Don't have account?
+                           {/* Don't have account?? */}
                         </p>
                         <button
                            onClick={() => setShowRegister(true)}
@@ -268,9 +270,11 @@ export default function Login() {
                   </p>
                   {/* Gambar */}
                   <div className="h-full">
-                     <img
+                     <Image
                         src="/assets/login/bg.jpg"
                         alt="bg-property"
+                        width={865}
+                        height={552}
                         className="h-full w-full rounded-l-[25px]"
                      />
                   </div>

@@ -3,6 +3,7 @@
 import React, { useState, useRef } from "react";
 import { signIn } from "next-auth/react";
 import { set } from "react-hook-form";
+import Image from "next/image";
 import {motion, AnimatePresence} from "framer-motion" 
 
 // const username = "admin";
@@ -112,7 +113,7 @@ export default function Login(props: { visible: any; onClose: any }) {
                   </p>
                   {/* Gambar */}
                   <div className="h-full">
-                     <img
+                     <Image
                         src="/assets/login/bg.jpg"
                         alt="bg-property"
                         className="h-full w-full rounded-l-[25px]"
@@ -217,7 +218,7 @@ export default function Login(props: { visible: any; onClose: any }) {
                      
                      <div className="flex justify-start space-x-1">
                         <p className="mt-[0.2rem] text-[0.6rem] font-normal ">
-                           Don't have account?
+                           
                         </p>
                         <button
                            onClick={() => setShowRegister(true)}
@@ -302,10 +303,12 @@ export default function Login(props: { visible: any; onClose: any }) {
                   </p>
                   {/* Gambar */}
                   <div className="h-full">
-                     <img
+                     <Image
                         src="/assets/login/bg.jpg"
                         alt="bg-property"
                         className="h-full w-full rounded-l-[25px]"
+                        height={864}
+                        width={552}
                      />
                   </div>
                </div>
