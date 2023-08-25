@@ -27,24 +27,34 @@ export default function IMGPreview(props: typeIMG) {
   useOutsideAlerter(wrapperRef);
   return (
     <div ref={wrapperRef}>
+      <AnimatePresence>
+
       {props.visible && (
-        <div className=" fixed left-1/2 top-1/2 flex h-[90vh] w-[80vw] -translate-x-1/2 -translate-y-1/2 transform items-center justify-center overflow-hidden rounded-[1rem] bg-[#0000009d]">
-          <div className="">
-            <Image
-              src={props.src}
-              // width={720}
-              // height={720}
-              //   width={100%}
-              //   height={100%}
-              //   layout="fill"
-              fill={true}
-              alt="preview image"
-              objectFit="contain"
-              className="rounded-[1rem] p-10"
-            ></Image>
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{  opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ ease: "easeIn", duration: 0.25 }}>
+
+          <div className=" fixed left-1/2 top-1/2 flex h-[90vh] w-[80vw] -translate-x-1/2 -translate-y-1/2 transform items-center justify-center overflow-hidden rounded-[1rem] bg-[#0000009d] z-50">
+            <div className="">
+              <Image
+                src={props.src}
+                // width={720}
+                // height={720}
+                //   width={100%}
+                //   height={100%}
+                //   layout="fill"
+                fill={true}
+                alt="preview image"
+                objectFit="contain"
+                className="rounded-[1rem] p-10"
+              ></Image>
+            </div>
           </div>
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
     </div>
   );
 }

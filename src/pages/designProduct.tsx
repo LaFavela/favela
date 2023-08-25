@@ -10,6 +10,7 @@ import Image from "next/image";
 import calculate from "@/tools/calculate";
 import IMGPreview from "@/components/imgPreview";
 import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
 
 const profile = [
   {
@@ -66,6 +67,47 @@ const review = [
     description:
       "Pada saat moment kebersamaan kita,kita pesan 1 es,pas saya lagi sendok es itu ke mulut,,cuttttttttttt itu ngilu nya,saya benar benar langsung kehilangan moment kebersamaan sama sahabat sahabat saya,Dokter sarankan coba deh ibu pakai sensodyne khusus untuk gigi yang sensitif,berkat sensodyne,waaahhhhhh,, saya malah mungkin paling banyak kali tuh kata temen temen,,... ehhh y'oll pelan pelan dong makannya kita belum kebagian nihh....,,mas es nya yang banyak ya..",
   },
+  {
+    name: "Raihan",
+    img: "/assets/profile/raihan.JPG",
+    posttime: "2 Days Ago",
+    tittle: "Momen Kebersamaan",
+    description:
+      "Pada saat moment kebersamaan kita,kita pesan 1 es,pas saya lagi sendok es itu ke mulut,,cuttttttttttt itu ngilu nya,saya benar benar langsung kehilangan moment kebersamaan sama sahabat sahabat saya,Dokter sarankan coba deh ibu pakai sensodyne khusus untuk gigi yang sensitif,berkat sensodyne,waaahhhhhh,, saya malah mungkin paling banyak kali tuh kata temen temen,,... ehhh y'oll pelan pelan dong makannya kita belum kebagian nihh....,,mas es nya yang banyak ya..",
+  },
+  {
+    name: "Raihan",
+    img: "/assets/profile/raihan.JPG",
+    posttime: "2 Days Ago",
+    tittle: "Momen Kebersamaan",
+    description:
+      "Pada saat moment kebersamaan kita,kita pesan 1 es,pas saya lagi sendok es itu ke mulut,,cuttttttttttt itu ngilu nya,saya benar benar langsung kehilangan moment kebersamaan sama sahabat sahabat saya,Dokter sarankan coba deh ibu pakai sensodyne khusus untuk gigi yang sensitif,berkat sensodyne,waaahhhhhh,, saya malah mungkin paling banyak kali tuh kata temen temen,,... ehhh y'oll pelan pelan dong makannya kita belum kebagian nihh....,,mas es nya yang banyak ya..",
+  },
+  {
+    name: "Raihan",
+    img: "/assets/profile/raihan.JPG",
+    posttime: "2 Days Ago",
+    tittle: "Momen Kebersamaan",
+    description:
+      "Pada saat moment kebersamaan kita,kita pesan 1 es,pas saya lagi sendok es itu ke mulut,,cuttttttttttt itu ngilu nya,saya benar benar langsung kehilangan moment kebersamaan sama sahabat sahabat saya,Dokter sarankan coba deh ibu pakai sensodyne khusus untuk gigi yang sensitif,berkat sensodyne,waaahhhhhh,, saya malah mungkin paling banyak kali tuh kata temen temen,,... ehhh y'oll pelan pelan dong makannya kita belum kebagian nihh....,,mas es nya yang banyak ya..",
+  },
+  {
+    name: "Raihan",
+    img: "/assets/profile/raihan.JPG",
+    posttime: "2 Days Ago",
+    tittle: "Momen Kebersamaan",
+    description:
+      "Pada saat moment kebersamaan kita,kita pesan 1 es,pas saya lagi sendok es itu ke mulut,,cuttttttttttt itu ngilu nya,saya benar benar langsung kehilangan moment kebersamaan sama sahabat sahabat saya,Dokter sarankan coba deh ibu pakai sensodyne khusus untuk gigi yang sensitif,berkat sensodyne,waaahhhhhh,, saya malah mungkin paling banyak kali tuh kata temen temen,,... ehhh y'oll pelan pelan dong makannya kita belum kebagian nihh....,,mas es nya yang banyak ya..",
+  },
+  {
+    name: "Raihan",
+    img: "/assets/profile/raihan.JPG",
+    posttime: "2 Days Ago",
+    tittle: "Momen Kebersamaan",
+    description:
+      "Pada saat moment kebersamaan kita,kita pesan 1 es,pas saya lagi sendok es itu ke mulut,,cuttttttttttt itu ngilu nya,saya benar benar langsung kehilangan moment kebersamaan sama sahabat sahabat saya,Dokter sarankan coba deh ibu pakai sensodyne khusus untuk gigi yang sensitif,berkat sensodyne,waaahhhhhh,, saya malah mungkin paling banyak kali tuh kata temen temen,,... ehhh y'oll pelan pelan dong makannya kita belum kebagian nihh....,,mas es nya yang banyak ya..",
+  },
+  
 ];
 
 const infrastructure = [
@@ -118,6 +160,7 @@ export default function DesignProduct() {
   const handleOnCloseIMG = () => setShowIMG(false);
 
   // Carousel Design
+  const [visibleItems, setVisibleItems] = useState(3);
   const [img, setImg] = useState(design[0]);
   const [currImg, setCurrImg] = useState(0);
   const clickHandler = (design: any, index: number) => {
@@ -132,62 +175,58 @@ export default function DesignProduct() {
     <div className="flex justify-center">
       <div className="mb-10">
         {/* The Product */}
-        <div className="mt-[2.6875rem]  flex justify-center space-x-[2.6875rem] rounded-[1.5625rem] bg-white p-[3.5625rem] drop-shadow-landingShado">
-          <div className="h-[34.4375rem] w-[33.625rem] ">
-            {/* Carousel  */}
-            <div className="">
-              <div className="flex h-full w-full flex-col space-y-5">
-                <div className="flex aspect-square h-[27.0625rem] w-[33.625rem] ">
-                  <div
-                    className="relative h-[27.0625rem] w-[33.625rem]  flex-auto"
-                    onClick={() => {
-                      setSrcIMG(img);
-                      setShowIMG(true);
-                    }}
-                  >
-                    <Image
-                      className="rounded-3xl"
-                      src={img}
-                      alt={""}
-                      fill={true}
-                      style={{ objectFit: "cover" }}
-                    />
-                  </div>
-                </div>
-                <div className="">
-                  <Carousel
-                    responsive={responsive}
-                    swipeable={true}
-                    draggable={false}
-                    containerClass="h-full w-full"
-                  >
-                    {design.map((image, index) => (
-                      <div
-                        key={index}
-                        className=""
-                        onClick={() => clickHandler(image, index)}
-                      >
-                        {/* <img src={image} alt="" className={currImg === index ? " w-[90%] rounded-3xl border-4 border-gray-400 aspect-square object-cover" : " w-[90%] rounded-3xl border-4 border-transparent aspect-square object-cover"} /> */}
-                        <Image
-                          className={
-                            currImg === index
-                              ? " aspect-square w-[90%] rounded-3xl border-4 border-[#b17c3f] object-cover"
-                              : " aspect-square w-[90%] rounded-3xl border-4 border-transparent object-cover"
-                          }
-                          src={image}
-                          alt={""}
-                          // fill={true}
-                          width={70}
-                          height={70}
-                          style={{ objectFit: "cover" }}
-                        />
-                      </div>
-                    ))}
-                  </Carousel>
+        <div className="z-50 mt-[2.6875rem]  flex justify-center space-x-[2.6875rem] rounded-[1.5625rem] bg-white p-[3.5625rem] drop-shadow-landingShado">
+          <div className="flex h-[34.4375rem] w-[33.625rem] ">
+            <div className="flex h-full w-full flex-col space-y-5">
+              <div className="flex aspect-square ">
+                <div
+                  className="relative h-full w-full flex-auto"
+                  onClick={() => {
+                    setSrcIMG(img);
+                    setShowIMG(true);
+                  }}
+                >
+                  <Image
+                    className="rounded-3xl"
+                    src={img}
+                    alt={""}
+                    fill={true}
+                    style={{ objectFit: "cover" }}
+                  />
                 </div>
               </div>
+              <div className="">
+                <Carousel
+                  responsive={responsive}
+                  swipeable={true}
+                  draggable={false}
+                  containerClass="h-full w-full"
+                >
+                  {design.map((image, index) => (
+                    <div
+                      key={index}
+                      className=""
+                      onClick={() => clickHandler(image, index)}
+                    >
+                      {/* <img src={image} alt="" className={currImg === index ? " w-[90%] rounded-3xl border-4 border-gray-400 aspect-square object-cover" : " w-[90%] rounded-3xl border-4 border-transparent aspect-square object-cover"} /> */}
+                      <Image
+                        className={
+                          currImg === index
+                            ? " aspect-square w-[90%] rounded-3xl border-4 border-[#b17c3f] object-cover"
+                            : " aspect-square w-[90%] rounded-3xl border-4 border-transparent object-cover"
+                        }
+                        src={image}
+                        alt={""}
+                        // fill={true}
+                        width={70}
+                        height={70}
+                        style={{ objectFit: "cover" }}
+                      />
+                    </div>
+                  ))}
+                </Carousel>
+              </div>
             </div>
-            {/* Carousel End */}
           </div>
           {/* Information Container */}
           <div className="grid  w-[37.75rem]">
@@ -394,7 +433,7 @@ export default function DesignProduct() {
           </div>
         </div>
         {/* Detail,Fasiliti, Review */}
-        <div className="mt-[1.75rem] flex justify-between">
+        <div className="-z-20 mt-[1.75rem] flex justify-between">
           {/* Left */}
           <div className="w-[54.7rem] space-y-7">
             {/* Detail */}
@@ -469,117 +508,143 @@ export default function DesignProduct() {
             {/* Review */}
             <div className="w-full space-y-3 rounded-[1.5625rem] bg-[#fff] p-[2.4375rem] drop-shadow-landingShado">
               <p className="text-[1.25rem] font-medium">Review</p>
-              <div className="space-y-2">
-                {review.map((data, idx) => (
-                  <div
-                    key={idx}
-                    className="mx-6 flex h-fit space-x-4  space-y-2 border-b-[0.005rem] border-[#D0D0D0] py-2"
-                  >
-                    <div className="mt-3 h-fit w-fit overflow-hidden rounded-full  ">
-                      <Image
-                        src={data.img}
-                        alt={"Review"}
-                        width={200}
-                        height={200}
-                        objectFit={"contain"}
-                      ></Image>
-                    </div>
-                    <div className="space-y-2">
-                      <div className="flex items-center space-x-2">
-                        <p className="inline-block align-bottom text-[0.9375rem] font-normal">
-                          {data.name}
-                        </p>
-                        <p className="text-[0.75rem] text-[#909090] ">
-                          {data.posttime}
-                        </p>
+              {review.length !=0 ? (
+                <div>
+                  <div className="space-y-2">
+                    {review.slice(0, visibleItems).map((data, idx) => (
+                      <div
+                        key={idx}
+                        className="mx-6 flex h-fit space-x-4  space-y-2 border-b-[0.005rem] border-[#D0D0D0] py-2"
+                      >
+                        <div className="mt-3 h-fit w-fit overflow-hidden rounded-full  ">
+                          <Image
+                            src={data.img}
+                            alt={"Review"}
+                            width={200}
+                            height={200}
+                            // objectFit={"contain"}
+                          ></Image>
+                        </div>
+                        <div className="space-y-2">
+                          <div className="flex items-center space-x-2">
+                            <p className="inline-block align-bottom text-[0.9375rem] font-normal">
+                              {data.name}
+                            </p>
+                            <p className="text-[0.75rem] text-[#909090] ">
+                              {data.posttime}
+                            </p>
+                          </div>
+                          <div>
+                            <svg
+                              width="74"
+                              height="11"
+                              viewBox="0 0 74 11"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg "
+                              className="ml-[2px]"
+                            >
+                              <g clipPath="url(#clip0_120_585)">
+                                <path
+                                  d="M5.00016 9.16671C4.42377 9.16671 3.88211 9.05726 3.37516 8.83837C2.86822 8.61948 2.42725 8.32268 2.05225 7.94796C1.67725 7.57296 1.38044 7.13198 1.16183 6.62504C0.943218 6.1181 0.833774 5.57643 0.833496 5.00004C0.833496 4.42365 0.942941 3.88199 1.16183 3.37504C1.38072 2.8681 1.67752 2.42712 2.05225 2.05212C2.42725 1.67712 2.86822 1.38032 3.37516 1.16171C3.88211 0.943096 4.42377 0.833652 5.00016 0.833374C5.57655 0.833374 6.11822 0.942819 6.62516 1.16171C7.13211 1.3806 7.57308 1.6774 7.94808 2.05212C8.32308 2.42712 8.62002 2.8681 8.83891 3.37504C9.0578 3.88199 9.16711 4.42365 9.16683 5.00004C9.16683 5.57643 9.05738 6.1181 8.8385 6.62504C8.61961 7.13198 8.3228 7.57296 7.94808 7.94796C7.57308 8.32296 7.13211 8.6199 6.62516 8.83879C6.11822 9.05768 5.57655 9.16698 5.00016 9.16671Z"
+                                  fill="black"
+                                />
+                              </g>
+                              <g clipPath="url(#clip1_120_585)">
+                                <path
+                                  d="M32.8579 5.01286C32.8595 4.43647 32.9705 3.89512 33.1909 3.38881C33.4112 2.88249 33.7093 2.44237 34.0851 2.06845C34.4611 1.69453 34.903 1.39899 35.4105 1.18183C35.9181 0.964676 36.4601 0.856786 37.0365 0.858162C37.6129 0.859816 38.1542 0.970814 38.6605 1.19116C39.1668 1.4115 39.607 1.70957 39.9809 2.08537C40.3548 2.46144 40.6503 2.90326 40.8675 3.41083C41.0847 3.9184 41.1925 4.46038 41.1912 5.03677C41.1895 5.61315 41.0785 6.1545 40.8582 6.66082C40.6378 7.16713 40.3398 7.60725 39.964 7.98117C39.5879 8.3551 39.1461 8.65077 38.6385 8.86821C38.1309 9.08564 37.589 9.19339 37.0126 9.19146C36.4362 9.18981 35.8948 9.07881 35.3885 8.85847C34.8822 8.63812 34.4421 8.34005 34.0682 7.96426C33.6942 7.58818 33.3986 7.14636 33.1811 6.63879C32.9637 6.13122 32.8559 5.58924 32.8579 5.01286Z"
+                                  fill="black"
+                                />
+                              </g>
+                              <g clipPath="url(#clip2_120_585)">
+                                <path
+                                  d="M21.0002 9.16671C20.4238 9.16671 19.8821 9.05726 19.3752 8.83837C18.8682 8.61949 18.4272 8.32268 18.0522 7.94796C17.6772 7.57296 17.3804 7.13198 17.1618 6.62504C16.9432 6.1181 16.8338 5.57643 16.8335 5.00004C16.8335 4.42365 16.9429 3.88199 17.1618 3.37504C17.3807 2.8681 17.6775 2.42712 18.0522 2.05212C18.4272 1.67712 18.8682 1.38032 19.3752 1.16171C19.8821 0.943096 20.4238 0.833652 21.0002 0.833374C21.5766 0.833374 22.1182 0.942819 22.6252 1.16171C23.1321 1.3806 23.5731 1.6774 23.9481 2.05212C24.3231 2.42712 24.62 2.8681 24.8389 3.37504C25.0578 3.88199 25.1671 4.42365 25.1668 5.00004C25.1668 5.57643 25.0574 6.1181 24.8385 6.62504C24.6196 7.13198 24.3228 7.57296 23.9481 7.94796C23.5731 8.32296 23.1321 8.6199 22.6252 8.83879C22.1182 9.05768 21.5766 9.16698 21.0002 9.16671Z"
+                                  fill="black"
+                                />
+                              </g>
+                              <g clipPath="url(#clip3_120_585)">
+                                <path
+                                  d="M53.0002 9.16671C52.4238 9.16671 51.8821 9.05726 51.3752 8.83837C50.8682 8.61948 50.4272 8.32268 50.0522 7.94796C49.6772 7.57296 49.3804 7.13198 49.1618 6.62504C48.9432 6.1181 48.8338 5.57643 48.8335 5.00004C48.8335 4.42365 48.9429 3.88199 49.1618 3.37504C49.3807 2.8681 49.6775 2.42712 50.0522 2.05212C50.4272 1.67712 50.8682 1.38032 51.3752 1.16171C51.8821 0.943096 52.4238 0.833652 53.0002 0.833374C53.5766 0.833374 54.1182 0.942819 54.6252 1.16171C55.1321 1.3806 55.5731 1.6774 55.9481 2.05212C56.3231 2.42712 56.62 2.8681 56.8389 3.37504C57.0578 3.88199 57.1671 4.42365 57.1668 5.00004C57.1668 5.57643 57.0574 6.1181 56.8385 6.62504C56.6196 7.13198 56.3228 7.57296 55.9481 7.94796C55.5731 8.32296 55.1321 8.6199 54.6252 8.83879C54.1182 9.05768 53.5766 9.16698 53.0002 9.16671Z"
+                                  fill="black"
+                                />
+                              </g>
+                              <g clipPath="url(#clip4_120_585)">
+                                <path
+                                  d="M69.0002 9.16671C68.4238 9.16671 67.8821 9.05726 67.3752 8.83837C66.8682 8.61948 66.4272 8.32268 66.0522 7.94796C65.6772 7.57296 65.3804 7.13198 65.1618 6.62504C64.9432 6.1181 64.8338 5.57643 64.8335 5.00004C64.8335 4.42365 64.9429 3.88199 65.1618 3.37504C65.3807 2.8681 65.6775 2.42712 66.0522 2.05212C66.4272 1.67712 66.8682 1.38032 67.3752 1.16171C67.8821 0.943096 68.4238 0.833652 69.0002 0.833374C69.5766 0.833374 70.1182 0.942819 70.6252 1.16171C71.1321 1.3806 71.5731 1.6774 71.9481 2.05212C72.3231 2.42712 72.62 2.8681 72.8389 3.37504C73.0578 3.88199 73.1671 4.42365 73.1668 5.00004C73.1668 5.57643 73.0574 6.1181 72.8385 6.62504C72.6196 7.13198 72.3228 7.57296 71.9481 7.94796C71.5731 8.32296 71.1321 8.6199 70.6252 8.83879C70.1182 9.05768 69.5766 9.16698 69.0002 9.16671Z"
+                                  fill="#BEB8B8"
+                                />
+                              </g>
+                              <defs>
+                                <clipPath id="clip0_120_585">
+                                  <rect width="10" height="10" fill="white" />
+                                </clipPath>
+                                <clipPath id="clip1_120_585">
+                                  <rect
+                                    width="10"
+                                    height="10"
+                                    fill="white"
+                                    transform="translate(42.0391 0.0391846) rotate(90.1644)"
+                                  />
+                                </clipPath>
+                                <clipPath id="clip2_120_585">
+                                  <rect
+                                    width="10"
+                                    height="10"
+                                    fill="white"
+                                    transform="translate(16)"
+                                  />
+                                </clipPath>
+                                <clipPath id="clip3_120_585">
+                                  <rect
+                                    width="10"
+                                    height="10"
+                                    fill="white"
+                                    transform="translate(48)"
+                                  />
+                                </clipPath>
+                                <clipPath id="clip4_120_585">
+                                  <rect
+                                    width="10"
+                                    height="10"
+                                    fill="white"
+                                    transform="translate(64)"
+                                  />
+                                </clipPath>
+                              </defs>
+                            </svg>
+                          </div>
+                          <div>
+                            <p className="text-[0.75rem] text-[#646464]">
+                              {data.description}
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                      <div>
-                        <svg
-                          width="74"
-                          height="11"
-                          viewBox="0 0 74 11"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg "
-                          className="ml-[2px]"
-                        >
-                          <g clipPath="url(#clip0_120_585)">
-                            <path
-                              d="M5.00016 9.16671C4.42377 9.16671 3.88211 9.05726 3.37516 8.83837C2.86822 8.61948 2.42725 8.32268 2.05225 7.94796C1.67725 7.57296 1.38044 7.13198 1.16183 6.62504C0.943218 6.1181 0.833774 5.57643 0.833496 5.00004C0.833496 4.42365 0.942941 3.88199 1.16183 3.37504C1.38072 2.8681 1.67752 2.42712 2.05225 2.05212C2.42725 1.67712 2.86822 1.38032 3.37516 1.16171C3.88211 0.943096 4.42377 0.833652 5.00016 0.833374C5.57655 0.833374 6.11822 0.942819 6.62516 1.16171C7.13211 1.3806 7.57308 1.6774 7.94808 2.05212C8.32308 2.42712 8.62002 2.8681 8.83891 3.37504C9.0578 3.88199 9.16711 4.42365 9.16683 5.00004C9.16683 5.57643 9.05738 6.1181 8.8385 6.62504C8.61961 7.13198 8.3228 7.57296 7.94808 7.94796C7.57308 8.32296 7.13211 8.6199 6.62516 8.83879C6.11822 9.05768 5.57655 9.16698 5.00016 9.16671Z"
-                              fill="black"
-                            />
-                          </g>
-                          <g clipPath="url(#clip1_120_585)">
-                            <path
-                              d="M32.8579 5.01286C32.8595 4.43647 32.9705 3.89512 33.1909 3.38881C33.4112 2.88249 33.7093 2.44237 34.0851 2.06845C34.4611 1.69453 34.903 1.39899 35.4105 1.18183C35.9181 0.964676 36.4601 0.856786 37.0365 0.858162C37.6129 0.859816 38.1542 0.970814 38.6605 1.19116C39.1668 1.4115 39.607 1.70957 39.9809 2.08537C40.3548 2.46144 40.6503 2.90326 40.8675 3.41083C41.0847 3.9184 41.1925 4.46038 41.1912 5.03677C41.1895 5.61315 41.0785 6.1545 40.8582 6.66082C40.6378 7.16713 40.3398 7.60725 39.964 7.98117C39.5879 8.3551 39.1461 8.65077 38.6385 8.86821C38.1309 9.08564 37.589 9.19339 37.0126 9.19146C36.4362 9.18981 35.8948 9.07881 35.3885 8.85847C34.8822 8.63812 34.4421 8.34005 34.0682 7.96426C33.6942 7.58818 33.3986 7.14636 33.1811 6.63879C32.9637 6.13122 32.8559 5.58924 32.8579 5.01286Z"
-                              fill="black"
-                            />
-                          </g>
-                          <g clipPath="url(#clip2_120_585)">
-                            <path
-                              d="M21.0002 9.16671C20.4238 9.16671 19.8821 9.05726 19.3752 8.83837C18.8682 8.61949 18.4272 8.32268 18.0522 7.94796C17.6772 7.57296 17.3804 7.13198 17.1618 6.62504C16.9432 6.1181 16.8338 5.57643 16.8335 5.00004C16.8335 4.42365 16.9429 3.88199 17.1618 3.37504C17.3807 2.8681 17.6775 2.42712 18.0522 2.05212C18.4272 1.67712 18.8682 1.38032 19.3752 1.16171C19.8821 0.943096 20.4238 0.833652 21.0002 0.833374C21.5766 0.833374 22.1182 0.942819 22.6252 1.16171C23.1321 1.3806 23.5731 1.6774 23.9481 2.05212C24.3231 2.42712 24.62 2.8681 24.8389 3.37504C25.0578 3.88199 25.1671 4.42365 25.1668 5.00004C25.1668 5.57643 25.0574 6.1181 24.8385 6.62504C24.6196 7.13198 24.3228 7.57296 23.9481 7.94796C23.5731 8.32296 23.1321 8.6199 22.6252 8.83879C22.1182 9.05768 21.5766 9.16698 21.0002 9.16671Z"
-                              fill="black"
-                            />
-                          </g>
-                          <g clipPath="url(#clip3_120_585)">
-                            <path
-                              d="M53.0002 9.16671C52.4238 9.16671 51.8821 9.05726 51.3752 8.83837C50.8682 8.61948 50.4272 8.32268 50.0522 7.94796C49.6772 7.57296 49.3804 7.13198 49.1618 6.62504C48.9432 6.1181 48.8338 5.57643 48.8335 5.00004C48.8335 4.42365 48.9429 3.88199 49.1618 3.37504C49.3807 2.8681 49.6775 2.42712 50.0522 2.05212C50.4272 1.67712 50.8682 1.38032 51.3752 1.16171C51.8821 0.943096 52.4238 0.833652 53.0002 0.833374C53.5766 0.833374 54.1182 0.942819 54.6252 1.16171C55.1321 1.3806 55.5731 1.6774 55.9481 2.05212C56.3231 2.42712 56.62 2.8681 56.8389 3.37504C57.0578 3.88199 57.1671 4.42365 57.1668 5.00004C57.1668 5.57643 57.0574 6.1181 56.8385 6.62504C56.6196 7.13198 56.3228 7.57296 55.9481 7.94796C55.5731 8.32296 55.1321 8.6199 54.6252 8.83879C54.1182 9.05768 53.5766 9.16698 53.0002 9.16671Z"
-                              fill="black"
-                            />
-                          </g>
-                          <g clipPath="url(#clip4_120_585)">
-                            <path
-                              d="M69.0002 9.16671C68.4238 9.16671 67.8821 9.05726 67.3752 8.83837C66.8682 8.61948 66.4272 8.32268 66.0522 7.94796C65.6772 7.57296 65.3804 7.13198 65.1618 6.62504C64.9432 6.1181 64.8338 5.57643 64.8335 5.00004C64.8335 4.42365 64.9429 3.88199 65.1618 3.37504C65.3807 2.8681 65.6775 2.42712 66.0522 2.05212C66.4272 1.67712 66.8682 1.38032 67.3752 1.16171C67.8821 0.943096 68.4238 0.833652 69.0002 0.833374C69.5766 0.833374 70.1182 0.942819 70.6252 1.16171C71.1321 1.3806 71.5731 1.6774 71.9481 2.05212C72.3231 2.42712 72.62 2.8681 72.8389 3.37504C73.0578 3.88199 73.1671 4.42365 73.1668 5.00004C73.1668 5.57643 73.0574 6.1181 72.8385 6.62504C72.6196 7.13198 72.3228 7.57296 71.9481 7.94796C71.5731 8.32296 71.1321 8.6199 70.6252 8.83879C70.1182 9.05768 69.5766 9.16698 69.0002 9.16671Z"
-                              fill="#BEB8B8"
-                            />
-                          </g>
-                          <defs>
-                            <clipPath id="clip0_120_585">
-                              <rect width="10" height="10" fill="white" />
-                            </clipPath>
-                            <clipPath id="clip1_120_585">
-                              <rect
-                                width="10"
-                                height="10"
-                                fill="white"
-                                transform="translate(42.0391 0.0391846) rotate(90.1644)"
-                              />
-                            </clipPath>
-                            <clipPath id="clip2_120_585">
-                              <rect
-                                width="10"
-                                height="10"
-                                fill="white"
-                                transform="translate(16)"
-                              />
-                            </clipPath>
-                            <clipPath id="clip3_120_585">
-                              <rect
-                                width="10"
-                                height="10"
-                                fill="white"
-                                transform="translate(48)"
-                              />
-                            </clipPath>
-                            <clipPath id="clip4_120_585">
-                              <rect
-                                width="10"
-                                height="10"
-                                fill="white"
-                                transform="translate(64)"
-                              />
-                            </clipPath>
-                          </defs>
-                        </svg>
-                      </div>
-                      <div>
-                        <p className="text-[0.75rem] text-[#646464]">
-                          {data.description}
-                        </p>
-                      </div>
-                    </div>
+                    ))}
                   </div>
-                ))}
-              </div>
+                  <div className="flex justify-center cursor-pointer">
+                    {visibleItems < review.length ? (
+
+                      <p className="text-[#B17C3F] text-[0.8rem] mt-4"
+                      onClick={()=>{
+                        setVisibleItems(visibleItems+3)
+                      }}
+                      >Show More</p>
+                      ):(
+                      <p className="text-[#B17C3F] text-[0.8rem] mt-4"
+                      onClick={()=>{
+                        setVisibleItems(3)
+                      }}
+                      >Show Fewer</p>
+
+                    )}
+
+                  </div>
+                </div>
+              ):(
+                <div className="flex justify-center">
+                  <p className="mt-4 mb-4 text-gray-500">There is no review</p>
+                </div>
+              )}
             </div>
           </div>
           {/* Right */}
