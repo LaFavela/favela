@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 
 export default function ProfileNav(
 	props: any = {
@@ -130,7 +130,11 @@ export default function ProfileNav(
 										try {
 											const { error } = await supabase.auth.signOut();
 											if (error) throw error;
-											router.push('/');
+											if (router.pathname == "/") {
+												router.reload();
+											} else {
+												router.push("/");	
+											}
 										} catch (error) {
 											console.log(error);
 										}
