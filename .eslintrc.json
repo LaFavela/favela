@@ -5,6 +5,6 @@
     "next/core-web-vitals"
   ],
   "ignorePatterns": [
-    "backup/*"
+    "./backup/*"
   ]
 }
