@@ -46,6 +46,7 @@
     "react-scroll-parallax": "^3.4.2",
     "reactjs-popup": "^2.0.5",
     "sequelize": "^6.32.1",
+    "sharp": "^0.32.5",
     "swr": "^2.2.1",
     "uuid": "^9.0.0",
     "watchpack": "^2.4.0"
@@ -67,5 +68,8 @@
     "prettier-plugin-tailwindcss": "^0.5.3",
     "tailwindcss": "^3.3.3",
     "typescript": "5.1.6"
+  },
+  "engines": {
+    "node": "18.x"
   }
 }

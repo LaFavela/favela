@@ -232,7 +232,6 @@ export default function DesignProduct() {
 	const [showIMG, setShowIMG] = useState(false);
 	const handleOnCloseIMG = () => setShowIMG(false);
 
-	const handleOnCloseStatus = () => setShowStatus(false);
 
 	// Carousel Design
 	const [visibleItems, setVisibleItems] = useState(3);
