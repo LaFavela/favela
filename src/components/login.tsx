@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 export default function Login(props: { visible: any; onClose: any }) {
@@ -89,7 +90,10 @@ export default function Login(props: { visible: any; onClose: any }) {
 							</p>
 							{/* Gambar */}
 							<div className="h-full">
-								<img
+								<Image
+									width={864}
+									height={552}
+									
 									src="/assets/login/bg.jpg"
 									alt="bg-property"
 									className="h-full w-full rounded-l-[25px]"
@@ -192,7 +196,7 @@ export default function Login(props: { visible: any; onClose: any }) {
 
 								<div className="flex justify-start space-x-1">
 									<p className="mt-[0.2rem] text-[0.6rem] font-normal ">
-										Don't have account?
+										Dont have account?
 									</p>
 									<button
 										onClick={() => setShowRegister(true)}
@@ -277,7 +281,9 @@ export default function Login(props: { visible: any; onClose: any }) {
 							</p>
 							{/* Gambar */}
 							<div className="h-full">
-								<img
+								<Image
+									width={864}
+									height={552}
 									src="/assets/login/bg.jpg"
 									alt="bg-property"
 									className="h-full w-full rounded-l-[25px]"
@@ -469,7 +475,7 @@ export default function Login(props: { visible: any; onClose: any }) {
 						</form>
 					</div>
 				)}
-				  
+				
 			</div>
 		</AnimatePresence>
 	);

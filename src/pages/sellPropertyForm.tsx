@@ -1,10 +1,11 @@
 import { useState } from "react";
 import Footer from "@/components/footer";
 import { MapSelect } from "@/components/maps";
+import Image from "next/image";
 import { usePost } from "@/lib/axios";
 import { type } from "os";
 import { useSession } from "next-auth/react";
-import { Properti } from "@prisma/client";
+// import { Properti } from "@prisma/client";
 
 type Marker = {
    lat: number;
@@ -116,56 +117,56 @@ export default function SellPropertyForm() {
 
    const handleSubmit = async (event: React.FormEvent) => {
       event.preventDefault();
-      const properti: Properti = await usePost(
-         "/property/upload",
-         {
-            authorization: token as string,
-         },
-         {
-            saranaLain: saranaLain,
-            name: name,
-            marker: marker,
-            description: description,
-            developer: developer,
-            certificate: certificate,
-            finished: finished,
-            listrik: listrik,
-            kamarMandi: kamarMandi,
-            kamarTidur: kamarTidur,
-            luas: luas,
-            type: selectedOption,
-            hargaJual: hargaJual,
-            hargaSewaBulan: hargaSewaBulan,
-            provinsi: provinsi,
-            kota: kota,
-            kecamatan: kecamatan,
-            kodePos: kodePos,
-            alamat: alamat,
-         }
-      );
-      const uploadImage = async () => {
-         try {
-            if (!infoImg) return;
-            infoImg.map(async (imageData, idx) => {
-               const formData = new FormData();
-               formData.append("myImage", imageData);
+      // const properti: Properti = await usePost(
+      //    "/property/upload",
+      //    {
+      //       authorization: token as string,
+      //    },
+      //    {
+      //       saranaLain: saranaLain,
+      //       name: name,
+      //       marker: marker,
+      //       description: description,
+      //       developer: developer,
+      //       certificate: certificate,
+      //       finished: finished,
+      //       listrik: listrik,
+      //       kamarMandi: kamarMandi,
+      //       kamarTidur: kamarTidur,
+      //       luas: luas,
+      //       type: selectedOption,
+      //       hargaJual: hargaJual,
+      //       hargaSewaBulan: hargaSewaBulan,
+      //       provinsi: provinsi,
+      //       kota: kota,
+      //       kecamatan: kecamatan,
+      //       kodePos: kodePos,
+      //       alamat: alamat,
+      //    }
+      // );
+      // const uploadImage = async () => {
+      //    try {
+      //       if (!infoImg) return;
+      //       infoImg.map(async (imageData, idx) => {
+      //          const formData = new FormData();
+      //          formData.append("myImage", imageData);
 
-               const upload = await usePost(
-                  "/properti/image/upload",
-                  {
-                     authorization: token as string,
-                     id: properti.id,
-                     index: idx.toString(),
-                  },
-                  formData
-               );
-               console.log(upload)
-            });
-         } catch (error: any) {
-            console.log(error);
-         }
-      };
-      uploadImage();
+      //          const upload = await usePost(
+      //             "/properti/image/upload",
+      //             {
+      //                authorization: token as string,
+      //                id: properti.id,
+      //                index: idx.toString(),
+      //             },
+      //             formData
+      //          );
+      //          console.log(upload)
+      //       });
+      //    } catch (error: any) {
+      //       console.log(error);
+      //    }
+      // };
+      // uploadImage();
    };
 
    return (
@@ -245,6 +246,7 @@ export default function SellPropertyForm() {
                            <div className="flex w-[53.875rem] justify-between">
                               {infoImg.map((imageData, idx) => (
                                  <div
+                                    key={idx}
                                     className="relative"
                                     onMouseEnter={() => {
                                        setHover(true);
@@ -257,7 +259,9 @@ export default function SellPropertyForm() {
                                  >
                                     <div className="relative">
                                        <div className="  absolute h-full w-full rounded-xl hover:bg-[#0000007c]"></div>
-                                       <img
+                                       <Image
+                                          height={150}
+                                          width={150}
                                           key={imageData.index}
                                           src={imageData.src}
                                           alt={"Foto ${imageData.index+1}"}
@@ -293,7 +297,7 @@ export default function SellPropertyForm() {
                                  </div>
                               ))}
                               {imageInfoList.map((index) => (
-                                 <div>
+                                 <div key={index}>
                                     <div>
                                        <label
                                           key={index}
@@ -414,6 +418,7 @@ export default function SellPropertyForm() {
                            <div className="flex w-[53.875rem] justify-between">
                               {detailImg.map((imageData, idx) => (
                                  <div
+                                    key={idx}
                                     className="relative"
                                     onMouseEnter={() => {
                                        setHover(true);
@@ -426,9 +431,11 @@ export default function SellPropertyForm() {
                                  >
                                     <div className="relative">
                                        <div className="  absolute h-full w-full rounded-xl hover:bg-[#0000007c]"></div>
-                                       <img
+                                       <Image
                                           key={imageData.index}
                                           src={imageData.src}
+                                          height={150}
+                                          width={150}
                                           alt={"Foto ${imageData.index+1}"}
                                           className=" h-[9.375rem] w-[9.375rem] rounded-lg"
                                        />
@@ -464,7 +471,7 @@ export default function SellPropertyForm() {
                                  </div>
                               ))}
                               {imageDetailList.map((index) => (
-                                 <div>
+                                 <div key={index}>
                                     <div>
                                        <label
                                           key={index}

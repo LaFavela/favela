@@ -9,6 +9,7 @@ import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 import Status from "@/components/status";
 import { GetServerSideProps } from "next";
+import Image from "next/image";
 import { Properti, Detail_product, Alamat } from "@prisma/client";
 import { useGet } from "@/lib/axios";
 import calculate from "@/tools/calculate";
@@ -297,7 +298,9 @@ export default function Product({ data }: StaticProps) {
                                     Only valid for credit/debit cards with a
                                     logo
                                  </p>
-                                 <img
+                                 <Image
+                                    height={48}
+                                    width={128}
                                     src="./assets/product/pngwing.png"
                                     alt=""
                                     className="mt-2 w-[8rem]"
@@ -375,7 +378,9 @@ export default function Product({ data }: StaticProps) {
                               Properti yang di beli
                            </span>
                            <div className="ml-9 mt-8 flex h-16 w-16 rounded-full">
-                              <img
+                              <Image
+                                 height={64}
+                                 width={64}
                                  src={seller[0].img}
                                  alt=""
                                  className="rounded-full"
@@ -390,7 +395,9 @@ export default function Product({ data }: StaticProps) {
                               </div>
                            </div>
                            <div className="ml-9 mt-6 flex">
-                              <img
+                              <Image
+                                 height={100.8}
+                                 width={126.4}
                                  src={data.foto[0]}
                                  alt=""
                                  className="h-[6.3rem] w-[7.9rem] rounded-lg object-cover"
@@ -507,9 +514,11 @@ export default function Product({ data }: StaticProps) {
                                     Only valid for credit/debit cards with a
                                     logo
                                  </p>
-                                 <img
+                                 <Image
                                     src="./assets/product/pngwing.png"
                                     alt=""
+                                    height={48}
+                                    width={128}
                                     className="mt-2 w-[8rem]"
                                  />
                               </div>
@@ -613,7 +622,9 @@ export default function Product({ data }: StaticProps) {
                               </div>
                            </div>
                            <div className="ml-9 mt-6 flex">
-                              <img
+                              <Image
+                                 width={126.4}
+                                 height={100.8}
                                  src={data.foto[0]}
                                  alt=""
                                  className="h-[6.3rem] w-[7.9rem] rounded-lg object-cover"
@@ -1012,10 +1023,12 @@ export function Review() {
             <div className="mt-8 flex flex-row">
                <div className="mt-3">
                   <div className="h-12 w-12 rounded-full">
-                     <img
+                     <Image
                         src="/assets/profile/dwimas.jpg"
                         alt=""
                         className="rounded-full"
+                        height={48}
+                        width={48}
                      />
                   </div>
                </div>
@@ -1157,7 +1170,9 @@ export function Review() {
             <div className="mt-8 flex flex-row">
                <div className="mt-3">
                   <div className="h-12 w-12 rounded-full">
-                     <img
+                     <Image
+                        height={48}
+                        width={48}
                         src="/assets/profile/raihan.jpg"
                         alt=""
                         className="rounded-full"

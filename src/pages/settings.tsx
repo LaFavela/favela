@@ -3,13 +3,15 @@ import "react-datepicker/dist/react-datepicker.css";
 import DatePicker, { registerLocale } from "react-datepicker";
 import id from "date-fns/locale/id";
 import Footer from "@/components/footer";
+import Image from "next/image";
 import { Transition } from "@headlessui/react";
 import { getSession, useSession } from "next-auth/react";
 import { Users, Gender, RoleSelect } from "@prisma/client";
 import { useGet, usePost } from "@/lib/axios";
 import { GetServerSideProps } from "next";
+
 interface ProfileProps {
-   data: Users;
+   data: "Users";
 }
 
 export const getServerSideProps: GetServerSideProps<{ data: Users }> = async (
@@ -31,7 +33,7 @@ export function Profile(props: ProfileProps) {
    const { data: session, update } = useSession();
    const token = session?.user.accessToken;
 
-   registerLocale("id", id);
+   // registerLocale("id", id);
 
    const [file, setFile] = useState<File | null>(null);
    const [preview, setPreview] = useState<string | null>(null);
@@ -181,9 +183,11 @@ export function Profile(props: ProfileProps) {
           <div className="w-[18]rem">
             <div className="ml-[0.3rem] h-[13rem] w-[13rem]">
               {preview ? (
-                <img
+                <Image
                   src={preview}
                   alt="Preview"
+                  height={208}
+                  width={208}
                   className="h-[13rem] w-[13rem] rounded-3xl object-cover"
                 />
               ) : (
@@ -223,8 +227,8 @@ export function Profile(props: ProfileProps) {
                         name="firtsname"
                         className="ml-[5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
                         placeholder="Firstname"
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
+                        // value={firstName}
+                        // onChange={(e) => setFirstName(e.target.value)}
                      />
                   </label>
                   <label className="flex">
@@ -236,11 +240,11 @@ export function Profile(props: ProfileProps) {
                         name="lastname"
                         className="ml-[3.5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
                         placeholder="Lastname"
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
+                        // value={lastName}
+                        // onChange={(e) => setLastName(e.target.value)}
                      />
                   </label>
-                  <label className="flex pr-[4.8rem]">
+                  {/* <label className="flex pr-[4.8rem]">
                      <span className="mt-3 w-[10.5rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
                         Birthday
                      </span>
@@ -256,12 +260,12 @@ export function Profile(props: ProfileProps) {
                         placeholderText="Birthday"
                         className="ml-[4.8rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
                      />
-                  </label>
+                  </label> */}
                   <label className="flex">
                      <span className="mt-3 w-[11rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
                         Gender
                      </span>
-                     <select
+                     {/* <select
                         id="gender"
                         value={selectedGender}
                         onChange={handleGenderChange}
@@ -273,13 +277,13 @@ export function Profile(props: ProfileProps) {
                         </option>
                         <option value={Gender.MALE}>Male</option>
                         <option value={Gender.FEMALE}>Female</option>
-                     </select>
+                     </select> */}
                   </label>
                   <label className="flex">
                      <span className="mt-3 w-[11rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
                         Role
                      </span>
-                     <select
+                     {/* <select
                         id="role"
                         value={selectedRole}
                         onChange={handleRoleChange}
@@ -293,7 +297,7 @@ export function Profile(props: ProfileProps) {
                         <option value={RoleSelect.PENJUAL}>Seller</option>
                         <option value={RoleSelect.TUKANG}>Tukang</option>
                         <option value={RoleSelect.DESAINER}>Designer</option>
-                     </select>
+                     </select> */}
                   </label>
                   <label className="flex">
                      <span className="mt-3 w-[11rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
@@ -304,8 +308,8 @@ export function Profile(props: ProfileProps) {
                         name="city"
                         className="ml-[5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
                         placeholder="City"
-                        value={selectedCity}
-                        onChange={(e) => setSelectedCity(e.target.value)}
+                        // value={selectedCity}
+                        // onChange={(e) => setSelectedCity(e.target.value)}
                         onKeyDown={(e) => {
                            if (e.key === "Enter") {
                               e.preventDefault();
@@ -313,7 +317,7 @@ export function Profile(props: ProfileProps) {
                         }}
                      />
                   </label>
-                  <div className="flex">
+                  {/* <div className="flex">
                      <span className="mt-3 w-[11.5rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
                         Job
                      </span>
@@ -348,7 +352,7 @@ export function Profile(props: ProfileProps) {
                            + Add Side Job (Optional)
                         </button>
                      </div>
-                  </div>
+                  </div> */}
                   {/* batas */}
                   <label className="flex">
                      <span className="mt-3 w-[11rem] text-base font-medium text-[#B17C3F] after:ml-0.5 after:text-red-500">
@@ -359,8 +363,8 @@ export function Profile(props: ProfileProps) {
                         name="email"
                         className="ml-[5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
                         placeholder="Email"
-                        value={selectedEmail}
-                        onChange={(e) => setSelectedEmail(e.target.value)}
+                        // value={selectedEmail}
+                        // onChange={(e) => setSelectedEmail(e.target.value)}
                         onKeyDown={(e) => {
                            if (e.key === "Enter") {
                               e.preventDefault();
@@ -377,8 +381,8 @@ export function Profile(props: ProfileProps) {
                         name="phone"
                         className="ml-[5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
                         placeholder="Phone Number"
-                        value={selectedNumber}
-                        onChange={(e) => setSelectedNumber(e.target.value)}
+                        // value={selectedNumber}
+                        // onChange={(e) => setSelectedNumber(e.target.value)}
                         onKeyDown={(e) => {
                            if (e.key === "Enter") {
                               e.preventDefault();
@@ -395,8 +399,8 @@ export function Profile(props: ProfileProps) {
                         name="website"
                         className="ml-[5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
                         placeholder="www.example.com"
-                        value={selectedWebsite}
-                        onChange={(e) => setSelectedWebsite(e.target.value)}
+                        // value={selectedWebsite}
+                        // onChange={(e) => setSelectedWebsite(e.target.value)}
                         onKeyDown={(e) => {
                            if (e.key === "Enter") {
                               e.preventDefault();
@@ -413,8 +417,8 @@ export function Profile(props: ProfileProps) {
                         name="socialMedia"
                         className="ml-[5rem] mt-1 block w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
                         placeholder="@example"
-                        value={selectedSocialMedia}
-                        onChange={(e) => setSelectedSocialMedia(e.target.value)}
+                        // value={selectedSocialMedia}
+                        // onChange={(e) => setSelectedSocialMedia(e.target.value)}
                         onKeyDown={(e) => {
                            if (e.key === "Enter") {
                               e.preventDefault();
@@ -432,8 +436,8 @@ export function Profile(props: ProfileProps) {
                         placeholder="Description"
                         className="ml-[5rem] mt-1 block h-[15rem] w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
                         maxLength={500}
-                        value={selectedReview}
-                        onChange={(e) => setSelectedReview(e.target.value)}
+                        // value={selectedReview}
+                        // onChange={(e) => setSelectedReview(e.target.value)}
                         onKeyDown={(e) => {
                            if (e.key === "Enter") {
                               e.preventDefault();

@@ -17,7 +17,7 @@ export function useFollowPointer(ref: RefObject<HTMLElement>) {
     window.addEventListener("pointermove", handlePointerMove);
 
     return () => window.removeEventListener("pointermove", handlePointerMove);
-  }, []);
+  },[]);
 
   return point;
 }

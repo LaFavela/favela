@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import Footer from "../components/footer";
+import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import {Map} from "@/components/maps";
 import Carousel from "@/components/carousel";
@@ -260,7 +261,9 @@ export default function Product() {
                       <p className="ml-1 mt-3 text-sm font-semibold text-gold">
                         Only valid for credit/debit cards with a logo
                       </p>
-                      <img
+                      <Image
+                        width={128}
+                        height={48}
                         src="./assets/product/pngwing.png"
                         alt=""
                         className="mt-2 w-[8rem]"
@@ -329,7 +332,7 @@ export default function Product() {
                     Properti yang di beli
                   </span>
                   <div className="ml-9 mt-8 flex h-16 w-16 rounded-full">
-                    <img src={data[0].img} alt="" className="rounded-full" />
+                    <Image width={64} height={64} src={data[0].img} alt="" className="rounded-full" />
                     <div className="ml-6 mt-2 flex flex-col">
                       <span className="font-semibold">{data[0].name}</span>
                       <span className="text-sm text-gray-300">
@@ -338,7 +341,9 @@ export default function Product() {
                     </div>
                   </div>
                   <div className="ml-9 mt-6 flex">
-                    <img
+                    <Image
+                      height={100.8}
+                      width={126.4}
                       src={properti[0].img}
                       alt=""
                       className="h-[6.3rem] w-[7.9rem] rounded-lg object-cover"
@@ -440,9 +445,11 @@ export default function Product() {
                       <p className="ml-1 mt-3 text-sm font-semibold text-gold">
                         Only valid for credit/debit cards with a logo
                       </p>
-                      <img
+                      <Image
                         src="./assets/product/pngwing.png"
                         alt=""
+                        width={128}
+                        height={48}
                         className="mt-2 w-[8rem]"
                       />
                     </div>
@@ -518,7 +525,7 @@ export default function Product() {
                     Properti yang di Sewa
                   </span>
                   <div className="ml-9 mt-8 flex h-16 w-16 rounded-full">
-                    <img src={data[0].img} alt="" className="rounded-full" />
+                    <Image height={64} width={64} src={data[0].img} alt="" className="rounded-full" />
                     <div className="ml-6 mt-2 flex flex-col">
                       <span className="font-semibold">{data[0].name}</span>
                       <span className="text-sm text-gray-300">
@@ -527,7 +534,9 @@ export default function Product() {
                     </div>
                   </div>
                   <div className="ml-9 mt-6 flex">
-                    <img
+                    <Image
+                      width={126.4}
+                      height={100.8}
                       src={properti[0].img}
                       alt=""
                       className="h-[6.3rem] w-[7.9rem] rounded-lg object-cover"
@@ -909,7 +918,9 @@ export function Review() {
         <div className="mt-8 flex flex-row">
           <div className="mt-3">
             <div className="h-12 w-12 rounded-full">
-              <img
+              <Image
+                height={48}
+                width={48}
                 src="/assets/profile/dwimas.jpg"
                 alt=""
                 className="rounded-full"
@@ -1049,7 +1060,9 @@ export function Review() {
         <div className="mt-8 flex flex-row">
           <div className="mt-3">
             <div className="h-12 w-12 rounded-full">
-              <img
+              <Image
+                width={48}
+                height={48}                
                 src="/assets/profile/raihan.jpg"
                 alt=""
                 className="rounded-full"
