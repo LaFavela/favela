@@ -1,17 +1,13 @@
-import Head from "next/head";
-import Footer from "../components/footer";
 import { useState, useRef, useEffect } from "react";
-import { CarouselDesign } from "@/components/carousel";
 import React from "react";
-import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
-import Status from "@/components/status";
 import Image from "next/image";
 import calculate from "@/tools/calculate";
 import IMGPreview from "@/components/imgPreview";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import ShowRating from "../components/rating";
+import Link from "next/link";
 
 const profile = [
   {
@@ -26,6 +22,7 @@ const properti = [
     name: "Rumah Minimalis",
     type: "Villa",
     price: 5000000000,
+    regisDate:"08 January 2022",
     img: "/assets/build/desain_1.jpg",
     bedroom: 3,
     bathroom: 2,
@@ -33,16 +30,12 @@ const properti = [
     review: 4,
     description:
       "Lorem ipsum dolor sit amet consectetur, adipisicing elit Incidunt sapiente veniam pariatur. Rerum molestias, vero tempore tempora inventore sint saepe reprehenderit? Obcaecati reprehenderit minima soluta ducimus omnis eius pariatur oloremque. Rerum molestias, vero tempore tempora inventore sint saepe reprehenderit?. Incidunt sapiente veniam pariatur. Rerum molestias Rerum molestias, vero tempore tempora inventore sint saepe. Rerum molestias, vero tempore tempora inventore sint saepe reprehenderit? Obcaecati reprehenderit minima soluta ducimus omnis eius pariatur oloremque. Rerum molestias, vero tempore tempora inventore sint saepe reprehenderit?. Incidunt sapiente veniam pariatur. Rerum molestias Rerum molestias, vero tempore tempora inventore sint saepe. Rerum molestias, vero tempore tempora inventore sint saepe reprehenderit? Obcaecati reprehenderit minima soluta ducimus omnis eius pariatur oloremque. Rerum molestias, vero tempore tempora inventore sint saepe reprehenderit?. Incidunt sapiente veniam pariatur.",
+    descriptionFeature:
+      "Lorem ipsum dolor sit amet consectetur, adipisicing elit Incidunt sapiente veniam pariatur. Rerum molestias, vero tempore tempora inventore sint saepe reprehenderit? Obcaecati reprehenderit minima soluta ducimus omnis eius pariatur oloremque. Rerum molestias, vero tempore tempora inventore sint saepe reprehenderit?. Incidunt sapiente veniam pariatur. Rerum molestias Rerum molestias, vero tempore tempora inventore sint saepe. Rerum molestias, vero tempore tempora inventore sint saepe reprehenderit? Obcaecati reprehenderit minima soluta ducimus omnis eius pariatur oloremque. Rerum molestias, vero tempore tempora inventore sint saepe reprehenderit?. Incidunt sapiente veniam pariatur. Rerum molestias Rerum molestias, vero tempore tempora inventore sint saepe. Rerum molestias, vero tempore tempora inventore sint saepe reprehenderit? Obcaecati reprehenderit minima soluta ducimus omnis eius pariatur oloremque. Rerum molestias, vero tempore tempora inventore sint saepe reprehenderit?. Incidunt sapiente veniam pariatur.",
   },
 ];
 
-const prices = [
-  {
-    id: 1,
-    month: "Rp. 20.000.000,00",
-    year: "Rp. 230.000.000,00",
-  },
-];
+
 const review = [
   {
     name: "Raihan",
@@ -167,7 +160,7 @@ export default function DesignProduct() {
     setCurrImg(index);
   };
 
-  const [avrRate , setAvrRate] = useState(0)
+  const [avrRate, setAvrRate] = useState(0);
   // const rateAverage = Math.floor(
   //   review.reduce((total, item) => total + item.rate, 0) / review.length
   // );
@@ -175,8 +168,8 @@ export default function DesignProduct() {
     const rateAverage = Math.floor(
       review.reduce((total, item) => total + item.rate, 0) / review.length
     );
-    setAvrRate(rateAverage)
-  },[]);
+    setAvrRate(rateAverage);
+  }, []);
 
   const refs = useRef([]);
   refs.current = [];
@@ -371,7 +364,9 @@ export default function DesignProduct() {
               </div>
             </div>
             <div className="flex place-items-end  justify-end">
-              <button className=" flex h-[2.066875rem] w-[6.319375rem] items-center justify-center space-x-1 rounded-full bg-[#B17C3F] text-white">
+              <Link
+              href={"#"}
+              className=" flex h-[2.066875rem] w-[6.319375rem] items-center justify-center space-x-1 rounded-full bg-[#B17C3F] text-white">
                 <svg
                   width="15"
                   height="11"
@@ -388,7 +383,7 @@ export default function DesignProduct() {
                 </svg>
 
                 <p className="text-[0.75rem]">Request</p>
-              </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -405,14 +400,14 @@ export default function DesignProduct() {
                   <p className="text-[0.9375rem] font-normal text-[#B17C3F]">
                     Property Type:
                   </p>
-                  <p className="text-[0.9375rem] font-medium ">Villa</p>
+                  <p className="text-[0.9375rem] font-medium ">{properti[0].type}</p>
                 </div>
                 {/* Hour */}
                 <div className="flex space-x-2">
                   <p className="text-[0.9375rem] font-normal text-[#B17C3F]">
                     Registered:
                   </p>
-                  <p className="text-[0.9375rem] font-medium ">1 Hour Ago</p>
+                  <p className="text-[0.9375rem] font-medium ">{properti[0].regisDate}</p>
                 </div>
                 {/* Hour */}
                 <div className="space-y-2">
@@ -420,17 +415,7 @@ export default function DesignProduct() {
                     Description Feature:
                   </p>
                   <p className="text-[0.9375rem] font-medium ">
-                    Morbi lectus magna, elementum quis egestas id, efficitur
-                    eget lacus. Nulla ullamcorper pharetra magna non posuere.
-                    Vivamus hendrerit eleifend risus, eu suscipit leo vulputate
-                    in. Etiam molestie, odio in sollicitudin rhoncus, urna enim
-                    tempor est, non condimentum arcu velit vitae purus. Sed eget
-                    placerat eros. Duis at aliquet eros. Praesent eu ipsum sit
-                    amet purus varius euismod at id ipsum. Vivamus elementum
-                    pulvinar mi eu vestibulum. Vestibulum in mollis magna. Proin
-                    bibendum sodales nibh, ac viverra orci molestie id. Ut
-                    maximus diam in tristique fringilla. Nullam rutrum turpis
-                    non tellus viverra ultricies.
+                    {properti[0].descriptionFeature}
                   </p>
                 </div>
                 <div className="space-y-2">
@@ -476,7 +461,10 @@ export default function DesignProduct() {
                         key={idx}
                         className="mx-6 flex h-fit space-x-4  space-y-2 border-b-[0.005rem] border-[#D0D0D0] py-2"
                       >
-                        <div className="mt-3 h-fit w-fit overflow-hidden rounded-full  ">
+                        <Link
+                          href={"#"}
+                          className="mt-3 h-fit w-fit overflow-hidden rounded-full  "
+                        >
                           <Image
                             src={data.img}
                             alt={"Review"}
@@ -484,7 +472,7 @@ export default function DesignProduct() {
                             height={200}
                             // objectFit={"contain"}
                           ></Image>
-                        </div>
+                        </Link>
                         <div className="space-y-2">
                           <div className="flex items-center space-x-2">
                             <p className="inline-block align-bottom text-[0.9375rem] font-normal">
