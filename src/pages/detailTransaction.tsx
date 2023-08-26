@@ -1,5 +1,6 @@
 import Footer from "@/components/footer"
 import React from "react";
+import Image from "next/image";
 import Router from "next/router";
 
 const data = [
@@ -26,10 +27,10 @@ const data = [
 
 
 export default function DetailTransaction(){
-    const handleDownload = (filePath) => {
+    const handleDownload = (filePath:any) => {
         const link = document.createElement('a');
         link.href = filePath;
-        link.download = true;
+        // link.download = true;
         link.click();
       };
     function clickHandler(link: string) {
@@ -44,11 +45,11 @@ export default function DetailTransaction(){
                         <div 
                         onClick={() => clickHandler("/merchantProfile")} 
                         className="flex items-center space-x-6 text-[1rem] w-fit rounded-xl font-normal hover:bg-[#cdcdcd]">
-                            <img src={data[0].toImg} alt="" className="w-[3rem] h-[3rem] rounded-full"/>
+                            <Image height={48} width={48} src={data[0].toImg} alt="" className="w-[3rem] h-[3rem] rounded-full"/>
                             <p>{data[0].toName}</p>
                         </div>
                         <div className="flex space-x-6 w-fit">
-                            <img src={data[0].productImg} alt="" className="w-[15rem] h-[11rem] rounded-[25px]" />
+                            <Image height={240} width={176} src={data[0].productImg} alt="" className="w-[15rem] h-[11rem] rounded-[25px]" />
                             <div className="grid align-middle">
                                 <p className="text-[2.5rem] font-light">{data[0].productName}</p>
                                 <p className="text-[1.6rem] text-gray-500">{data[0].productType}</p>

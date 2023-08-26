@@ -3,7 +3,7 @@ import { GoogleMap, useLoadScript, MarkerF } from "@react-google-maps/api";
 
 export function Map(props: { lat: number, lng: number }) {
    const { isLoaded } = useLoadScript({ googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string });
-   const center = useMemo(() => ({ lat: props.lat, lng: props.lng }), []);
+   const center = useMemo(() => ({ lat: props.lat, lng: props.lng }), [props.lat, props.lng]);
    if (!isLoaded) return <div>Loading ...</div>;
    return (
       <div>

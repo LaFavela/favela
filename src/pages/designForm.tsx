@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import Footer from "@/components/footer";
+import Image from "next/image";
+
 
 const sarana = ["Kolam Renang", "Lapangan Bulutangkis"];
 const data = [
@@ -221,6 +223,7 @@ export default function DesignForm() {
                   <div className="flex w-[53.875rem] justify-between">
                     {infoImg.map((imageData, idx) => (
                       <div
+                        key={idx}
                         className="relative"
                         onMouseEnter={() => {
                           setHover(true);
@@ -233,7 +236,9 @@ export default function DesignForm() {
                       >
                         <div className="relative">
                           <div className="  absolute h-full w-full rounded-xl hover:bg-[#0000007c]"></div>
-                            <img
+                            <Image
+                              height={150}
+                              width={150}
                               key={imageData.index}
                               src={imageData.src}
                               alt={"Foto ${imageData.index+1}"}
@@ -269,7 +274,7 @@ export default function DesignForm() {
                       </div>
                     ))}
                     {imageInfoList.map((index) => (
-                      <div>
+                      <div key={index}> 
                         <div>
                           <label
                             key={index}
@@ -393,6 +398,7 @@ export default function DesignForm() {
                   <div className="flex w-[53.875rem] justify-between">
                     {detailImg.map((imageData, idx) => (
                       <div
+                        key={idx}
                         className="relative"
                         onMouseEnter={() => {
                           setHover(true);
@@ -405,7 +411,9 @@ export default function DesignForm() {
                       >
                         <div className="relative">
                           <div className="  absolute h-full w-full rounded-xl hover:bg-[#0000007c]"></div>
-                          <img
+                          <Image
+                            width={150}
+                            height={150}
                             key={imageData.index}
                             src={imageData.src}
                             alt={"Foto ${imageData.index+1}"}
@@ -441,7 +449,7 @@ export default function DesignForm() {
                       </div>
                     ))}
                     {imageDetailList.map((index) => (
-                      <div>
+                      <div key={index}>
                         <div>
                           <label
                             key={index}
