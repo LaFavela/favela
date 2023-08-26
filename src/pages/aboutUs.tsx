@@ -363,7 +363,7 @@ export default function AboutUs() {
                   hidden: { opacity: 0}
                 }} 
                 
-                >Lets Meet</motion.p>
+                >Let&rsquo;s Meet</motion.p>
                 <motion.p
                 className="mt-[100vh]"
                 initial="hidden"
