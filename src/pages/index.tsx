@@ -26,9 +26,9 @@ export default function Landing() {
   });
 
   return (
-    <div className="mt-10 transition-all duration-300 ease-linear">
+    <div className=" transition-all duration-300 ease-linear">
       <div className="container mx-auto h-[10rem] max-w-md sm:max-w-xl xl:max-w-5xl 2xl:max-w-7xl">
-        <div className="relative ">
+        <div className="relative pt-[8rem] ">
           <Image
             src="/assets/landing/landingBG.jpg"
             alt=""
