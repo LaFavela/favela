@@ -1,61 +1,77 @@
-import { motion } from "framer-motion";
-export default function Status(
-  props: any = { status: "", statusChild:"", isSuccessful: false }
-) {
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center ">
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="flex h-[29.0625rem] w-[47.875rem] items-center justify-center rounded-[25px] bg-white drop-shadow"
-      >
-        <div className="space-y-2">
-          {props.isSuccessful ? (
-            <div className="grid">
-              <svg
-                className="place-self-center"
-                width="142"
-                height="118"
-                viewBox="0 0 142 118"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M117.032 0.0167236L142 24.9851L49.9367 117.167L0 67.1709L24.9683 42.2026L49.9367 67.1709L117.032 0.0167236ZM117.032 16.5834L49.9367 83.7967L24.9683 59.1242L16.6258 67.1709L49.9367 100.423L125.374 24.9851L117.032 16.5834Z"
-                  fill="#B17C3F"
-                />
-              </svg>
-              <p className="w-[45rem] text-center text-[2.6875rem] font-medium text-[#B17C3F] ">
-                {props.status}
-              </p>
-              <p className="w-[45rem] text-center text-2xl font-medium text-gold ">
-                {props.statusChild}
-              </p>
-            </div>
-          ) : (
-            <div className="grid">
-              <svg
-                className="place-self-center"
-                width="131"
-                height="131"
-                viewBox="0 0 131 131"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M65.625 45.8823L104.513 7L105.501 7.98825L106.35 9.26125C110.477 15.4551 115.791 20.7703 121.983 24.9002L123.267 25.7544L124.25 26.7427L85.3677 65.625L124.25 104.513L123.262 105.496L121.989 106.35C115.795 110.477 110.48 115.791 106.35 121.983L105.496 123.267L104.513 124.25L65.625 85.3677L26.7427 124.25L25.7544 123.262L24.9002 121.989C20.7724 115.795 15.4592 110.48 9.26683 106.35L7.98267 105.496L7 104.513L45.8879 65.625L7 26.7427L7.98825 25.7544L9.26683 24.9002C15.4586 20.7719 20.7719 15.4586 24.9002 9.26683L25.7544 7.98267L26.7427 7L65.625 45.8823Z"
-                  stroke="#EC7564"
-                  stroke-width="9"
-                />
-              </svg>
+import { useRef, useEffect } from "react";
 
-              <p className="w-[45rem] text-center text-[2.6875rem] font-medium text-[#EC7564] ">
-                {props.status}
-              </p>
-            </div>
-          )}
-        </div>
-      </motion.div>
-    </div>
-  );
+interface StatusProps {
+	visible: boolean;
+	onClose: (value: boolean) => void;
+	setShowStatus: (value: boolean) => void;
+	status:string,
+	tittle: string;
+	description: string;
+}
+export default function Status(props: StatusProps) {
+	function useOutsideAlerter(ref: any) {
+		useEffect(() => {
+			function handleClickOutside(event: any) {
+				if (ref.current && !ref.current.contains(event.target)) {
+					props.setShowStatus(false);
+				}
+			}
+			document.addEventListener("mousedown", handleClickOutside);
+			return () => {
+				document.removeEventListener("mousedown", handleClickOutside);
+			};
+		}, [ref]);
+	}
+
+	const wrapperRef = useRef(null);
+	useOutsideAlerter(wrapperRef);
+
+	let bgColor = "bg-[#FFFFFF]";
+	// let bgColor = "bg-[#FA7866]";
+	if (props.status==="error") {
+		bgColor = "bg-[#FA7866]";
+	} else if (props.status==="confirm") {
+		bgColor = "bg-[#FAB566]";
+	} else if (props.status==="success") {
+		bgColor = "bg-[#71BB65]";
+	}
+	return (
+		<div className="">
+			{props.visible && (
+				<div
+					ref={wrapperRef}
+					className={
+						"-translate-x-1/2 -translate-y-1/2 transform fixed left-1/2 top-1/2 flex flex-col justify-between w-[34.5625rem] h-[17.5rem] bg-white  rounded-[1.5625rem] overflow-hidden drop-shadow-landingShado"
+					}
+				>
+					<div className={"w-full flex items-center h-[3.25rem] " + bgColor}>
+						<p className="ml-10 text-[1.0625rem] font-medium text-white">
+							{props.tittle}
+						</p>
+					</div>
+					<div className="flex justify-center">
+						<p className="text-[0.9rem] font-normal text-black">
+							{props.description}
+						</p>
+					</div>
+					<div
+						className={
+							"w-full flex items-center h-[3.25rem] border-t-2 justify-end "
+						}
+					>
+						{props.status==="confirm" && (
+							<div className="space-x-2 mr-6">
+								<button className="w-[5.6875rem] h-[1.875rem] border-[#FAB566] border rounded-[1.5rem] text-[#FAB566] text-[0.75rem] hover:bg-[#f7f7f7]">
+									Cancel
+								</button>
+								<button className="w-[5.6875rem] h-[1.875rem] bg-[#FAB566] rounded-[1.5rem] text-white text-[0.75rem] hover:bg-[#d89a53]">
+									Confirm
+								</button>
+							</div>
+						)}
+					</div>
+				</div>
+			)}
+		</div>
+	);
 }

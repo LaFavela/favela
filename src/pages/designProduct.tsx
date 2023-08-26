@@ -8,6 +8,7 @@ import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import ShowRating from "../components/rating";
 import Link from "next/link";
+import Status from "@/components/status";
 
 const profile = [
 	{
@@ -160,6 +161,8 @@ const responsive = {
 };
 // Carousel End
 export default function DesignProduct() {
+	
+
 	const [review, setReview] = useState([
 		{
 			id: 0,
@@ -210,25 +213,26 @@ export default function DesignProduct() {
 				"Pada saat moment kebersamaan kita,kita pesan 1 es,pas saya lagi sendok es itu ke mulut,,cuttttttttttt itu ngilu nya,saya benar benar langsung kehilangan moment kebersamaan sama sahabat sahabat saya,Dokter sarankan coba deh ibu pakai sensodyne khusus untuk gigi yang sensitif,berkat sensodyne,waaahhhhhh,, saya malah mungkin paling banyak kali tuh kata temen temen,,... ehhh y'oll pelan pelan dong makannya kita belum kebagian nihh....,,mas es nya yang banyak ya..",
 		},
 	]);
-	function handleLike(id:number){
-    setReview(
-      
-      review.map((item) => {
-        if (item.id === id) {
-          // Jika sudah disukai, kurangi 1, jika belum, tambahkan 1
-          const newLike = item.liked ? item.like - 1 : item.like + 1;
-          
-          return { ...item, liked: !item.liked, like: newLike };
-        } else {
-          return { ...item };
-        }
-      })
-    )
-  }
+	function handleLike(id: number) {
+		setReview(
+			review.map((item) => {
+				if (item.id === id) {
+					// Jika sudah disukai, kurangi 1, jika belum, tambahkan 1
+					const newLike = item.liked ? item.like - 1 : item.like + 1;
+
+					return { ...item, liked: !item.liked, like: newLike };
+				} else {
+					return { ...item };
+				}
+			}),
+		);
+	}
 
 	const [srcIMG, setSrcIMG] = useState<any>("" as any);
 	const [showIMG, setShowIMG] = useState(false);
 	const handleOnCloseIMG = () => setShowIMG(false);
+
+	const handleOnCloseStatus = () => setShowStatus(false);
 
 	// Carousel Design
 	const [visibleItems, setVisibleItems] = useState(3);
@@ -464,6 +468,8 @@ export default function DesignProduct() {
 
 								<p className="text-[0.75rem]">Request</p>
 							</Link>
+							
+						
 						</div>
 					</div>
 				</div>
@@ -597,7 +603,7 @@ export default function DesignProduct() {
 															) : (
 																<div
 																	onClick={() => {
-																		handleLike(idx); 
+																		handleLike(idx);
 																	}}
 																	className="cursor-pointer"
 																>
@@ -624,30 +630,29 @@ export default function DesignProduct() {
 											</div>
 										))}
 									</div>
-                  {review.length>3&&(
-
-									<div className="flex justify-center cursor-pointer ">
-										{visibleItems < review.length ? (
-											<p
-												className="text-[#B17C3F] text-[0.8rem] mt-4"
-												onClick={() => {
-													setVisibleItems(visibleItems + 3);
-												}}
-											>
-												Show More
-											</p>
-										) : (
-											<p
-												className="text-[#B17C3F] text-[0.8rem] mt-4"
-												onClick={() => {
-													setVisibleItems(3);
-												}}
-											>
-												Show Fewer
-											</p>
-										)}
-									</div>
-                  )}
+									{review.length > 3 && (
+										<div className="flex justify-center cursor-pointer ">
+											{visibleItems < review.length ? (
+												<p
+													className="text-[#B17C3F] text-[0.8rem] mt-4"
+													onClick={() => {
+														setVisibleItems(visibleItems + 3);
+													}}
+												>
+													Show More
+												</p>
+											) : (
+												<p
+													className="text-[#B17C3F] text-[0.8rem] mt-4"
+													onClick={() => {
+														setVisibleItems(3);
+													}}
+												>
+													Show Fewer
+												</p>
+											)}
+										</div>
+									)}
 								</div>
 							) : (
 								<div className="flex justify-center">
