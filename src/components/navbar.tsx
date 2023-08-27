@@ -122,7 +122,9 @@ export default function Navbar(
 			}
 		>
 			<div className="flex w-full items-center justify-between px-12">
-				<div className="w-28">
+				<Link 
+				href={"/"}
+				className="w-28 cursor-pointer">
 					<svg
 						width="88"
 						height="30"
@@ -135,7 +137,7 @@ export default function Navbar(
 							fill="#B17C3F"
 						/>
 					</svg>
-				</div>
+				</Link>
 				<div className="flex items-center justify-center">
 					<div className="mr-4 flex items-center  justify-center space-x-4">
 						<form
@@ -278,7 +280,7 @@ export default function Navbar(
 							)}
 						</form>
 						<NavItem label="Home" link="/"></NavItem>
-						<NavItem label="Build" link="/build"></NavItem>
+						<NavItem label="Build" link="/designer"></NavItem>
 						<NavItem label="Design" link="/design"></NavItem>
 						<div className="h-[1.875rem] w-[0.1rem] bg-[#BEB8B8]"></div>
 					</div>
