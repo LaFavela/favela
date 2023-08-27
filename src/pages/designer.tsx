@@ -351,7 +351,7 @@ export default function Designer() {
 					</div>
 				</div>
 
-				<div className="mt-5 sticky top-[4.8rem]  z-50">
+				<div className="mt-5 sticky top-[4.8rem]  z-30">
 					<div className="relative">
 						<div className="flex h-[55px] w-full bg-white justify-between rounded-full border-2">
 							<div className=" flex">
