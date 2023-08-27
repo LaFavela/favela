@@ -335,7 +335,7 @@ export default function Designer() {
 	return (
 		<div>
 			<div className="container mx-auto mt-10 max-w-[1314px]">
-				<div className="relative">
+				<div className="relative ">
 					{/* <img src="assets/build/bg.jpg" alt="" className="rounded-2xl" /> */}
 					<Image
 						src={"/assets/build/bg.jpg"}
@@ -351,9 +351,9 @@ export default function Designer() {
 					</div>
 				</div>
 
-				<div className="mt-5">
+				<div className="mt-5 sticky top-[4.8rem]  z-50">
 					<div className="relative">
-						<div className="flex h-[55px] w-full justify-between rounded-full border-2">
+						<div className="flex h-[55px] w-full bg-white justify-between rounded-full border-2">
 							<div className=" flex">
 								<button
 									onClick={handleLabelClick}
@@ -771,13 +771,15 @@ export default function Designer() {
 											style={{ objectFit: "cover" }}
 										/>
 									</div>
-									<div
+									<motion.div
+										animate={{ opacity: hover && index == idx ? 1 : 0 }}
+                    transition={{ease: "easeIn", duration: 0.2}}
 										className={` ${
 											hover && index == idx
 												? "absolute top-0 h-full w-full bg-[#00000035]"
 												: ""
 										}`}
-									></div>
+									></motion.div>
 									<motion.div
 										layout
 										transition={{ duration: 0.2 }}
@@ -880,10 +882,10 @@ export default function Designer() {
 				</div>
 			</div>
 
-			<div className="ml-20 mt-10 flex items-center justify-center">
+			<div className=" mt-10 flex items-center justify-center">
 				{visibleItems < designerData.length && (
 					<button
-						className=" h-12 w-36 rounded-3xl border-2 border-[#B17C3F] bg-white text-xl text-[#B17C3F] duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white"
+						className=" py-1 px-4 rounded-3xl border-2 border-[#B17C3F] bg-white text-[0.8rem] text-[#B17C3F] duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white"
 						onClick={loadMore}
 					>
 						Load More
