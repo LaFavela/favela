@@ -273,7 +273,7 @@ export function Chat(props: ChatProps) {
             transition={{ ease: "easeIn", duration: 0.25 }}
             className="fixed bottom-0 right-0 mb-3 mr-3 "
           >
-            <div className="flex h-[38rem] w-[50rem] justify-center rounded-[1rem] bg-white drop-shadow-lg">
+            <div className="flex h-[38rem] w-[50rem] justify-center rounded-[1rem] bg-white drop-shadow-landingShado">
               <div className="space-y-2">
                 <div className="mt-3 flex w-[47.5rem] justify-between ">
                   <p className="bg-font-normal text-[1rem] text-[#B17C3F]">

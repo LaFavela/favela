@@ -15,7 +15,7 @@ module.exports = {
         
       },
       dropShadow: {
-        'landingShado' : '0 0 10px rgba(0, 0, 0, 0.2)'
+        'landingShado' : '0px 0px 4px rgba(0, 0, 0, 0.2)'
       }
     },
   },
