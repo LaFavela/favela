@@ -324,13 +324,15 @@ export default function Form() {
 											title="nama"
 											value={name}
 											onChange={handleNameChange}
-											// required
+											className="bg-white"
+											required
 										></InputPopUp>
 										<InputPopUp
 											title="Job"
 											type="text"
 											value={job}
-											// required
+											className="bg-white"
+											required
 											onChange={handleJobChange}
 										></InputPopUp>
 										<label className="mt-4 gap-24 pr-14">
@@ -388,13 +390,15 @@ export default function Form() {
 										title="nama"
 										value={name}
 										onChange={handleNameChange}
-										// required
+										required
+										className="bg-white"
 									></InputPopUp>
 									<InputPopUp
 										title="Job"
 										type="text"
 										value={job}
-										// required
+										required
+										className="bg-white"
 										onChange={handleJobChange}
 									></InputPopUp>
 									<label className="mt-4 gap-24 pr-14">
@@ -451,12 +455,14 @@ export default function Form() {
 											value={institution}
 											onChange={handleInstitutionChange}
 											required
+											className="bg-white"
 										></InputPopUp>
 										<InputPopUp
 											title="Title"
 											type="text"
 											value={title}
 											required
+											className="bg-white"
 											onChange={handleTitleChange}
 										></InputPopUp>
 										<InputPopUp
@@ -464,6 +470,7 @@ export default function Form() {
 											type="date"
 											value={dateFrom}
 											required
+											className="bg-white"
 											onChange={handleDateFromChange}
 										></InputPopUp>
 										<InputPopUp
@@ -471,6 +478,7 @@ export default function Form() {
 											type="date"
 											value={dateUntil}
 											required
+											className="bg-white"
 											onChange={handleDateUntilChange}
 										></InputPopUp>
 										<label className="mt-4 gap-24 pr-14">
@@ -512,12 +520,12 @@ export default function Form() {
 																			alt={`Selected Image ${index + 1}`}
 																			style={{
 																				maxWidth: "120px",
-																				maxHeight: "120px",
+																				maxHeight: "100px",
 																				width: "100%",
 																				height: "100%",
 																			}}
 																			width={120}
-																			height={120}
+																			height={100}
 																		/>
 																		<div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 opacity-0 transition-opacity duration-300 flex items-center justify-center group-hover:opacity-100">
 																			<CloseIcon
@@ -783,7 +791,7 @@ export default function Form() {
 				<div className="container relative mx-auto mt-20 flex h-10 max-w-[1320px] justify-between ">
 					<div className=" container relative max-w-[884px]  ">
 						<p className="text-[20px] font-medium ml-1">Profile</p>
-						<div className="mb-10 w-full rounded-3xl bg-white drop-shadow-lg mt-7">
+						<div className="mb-10 w-full rounded-3xl bg-white drop-shadow-landingShado mt-7">
 							<div className="ml-14 py-8">
 								<p className="text-[15px] font-semibold text-gold">Biodata</p>
 								<InputBox
@@ -916,7 +924,7 @@ export default function Form() {
 
 						{/* BATAS BIODATA */}
 
-						<div className="mb-10 w-full rounded-3xl bg-white drop-shadow-lg">
+						<div className="mb-10 w-full rounded-3xl bg-white drop-shadow-landingShado">
 							<div className="ml-14 mr-14 py-8 pb-14">
 								<div className="mb-8 flex w-full justify-between">
 									<p className="text-[15px] font-semibold text-gold">Member</p>
@@ -1005,7 +1013,7 @@ export default function Form() {
 
 						{/* BATAS MEMBER */}
 
-						<div className=" mb-10 w-full rounded-3xl bg-white drop-shadow-lg">
+						<div className=" mb-10 w-full rounded-3xl bg-white drop-shadow-landingShado">
 							<div className="ml-14 mr-14 py-8 pb-14">
 								<div className="mb-8 flex w-full justify-between">
 									<p className="text-[15px] font-semibold text-gold">Project</p>
@@ -1115,7 +1123,7 @@ export default function Form() {
 					</div>
 
 					<div className="container max-w-[400px]">
-						<div className="mb-10 w-full rounded-3xl bg-white drop-shadow-lg mt-14">
+						<div className="mb-10 w-full rounded-3xl bg-white drop-shadow-landingShado mt-14">
 							<div className="px-7 py-6">
 								<p className="text-[17px] font-medium">Lorem Ipsum</p>
 								<p className="text-[15px]">
