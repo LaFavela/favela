@@ -545,7 +545,7 @@ export default function Form() {
 															<input
 																id="image-input"
 																type="file"
-																ref={inputRef}
+																// ref={inputRef}
 																onChange={handleChangeImage}
 																multiple
 																accept="image/*"
@@ -571,7 +571,7 @@ export default function Form() {
 														<input
 															id="image-input"
 															type="file"
-															ref={inputRef}
+															// ref={inputRef}
 															onChange={handleChangeImage}
 															multiple
 															accept="image/*"
@@ -858,13 +858,9 @@ export default function Form() {
 													</div>
 												) : (
 													<button onClick={handleAddTag}>+ Add Tag</button>
-													// ""
+													
 												)}
-												{/* <div>
-													<button onClick={() => handleDeleteTag(index)}>
-														Delete Tag
-													</button>
-												</div> */}
+												
 											</div>
 										</div>
 									))}
