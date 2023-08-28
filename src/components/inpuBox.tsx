@@ -12,7 +12,7 @@ const InputBox = (props: Props) => {
         {props.title && <div className="text-[15px] text-gold w-[120px]">{props.title}</div>}
         <input
           {...props}
-          className="w-full rounded-[7px] border-2 border-gold pl-2 text-gold focus:border-gold  focus:outline-gold"
+          className=" bg-white w-full rounded-[7px] border-2 border-gold pl-2 text-gold focus:border-gold  focus:outline-gold"
         />
       </label>
     </div>
