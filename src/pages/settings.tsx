@@ -27,10 +27,13 @@ export default function Setting() {
 		}
 		setColor(temp);
 	};
-
+	const user = {
+		role: "Admin",
+	};
 	const navItem = [
 		{
 			name: "Profile",
+			role: ["Admin","","Designer", "Contractor"],
 			icon: (
 				<svg
 					width="18"
@@ -58,6 +61,7 @@ export default function Setting() {
 		},
 		{
 			name: "Project",
+			role: ["Admin","Designer", "Contractor"],
 			icon: (
 				<svg
 					width="22"
@@ -77,6 +81,7 @@ export default function Setting() {
 		},
 		{
 			name: "Member",
+			role: ["Admin","Contractor"],
 			icon: (
 				<svg
 					width="25"
@@ -95,6 +100,7 @@ export default function Setting() {
 		},
 		{
 			name: "Education",
+			role: ["Admin","Designer"],
 			icon: (
 				<svg
 					width="26"
@@ -114,6 +120,7 @@ export default function Setting() {
 		},
 		{
 			name: "Experience",
+			role: ["Admin","Designer"],
 			icon: (
 				<svg
 					width="21"
@@ -133,6 +140,7 @@ export default function Setting() {
 		},
 		{
 			name: "Design",
+			role: ["Admin","Designer"],
 			icon: (
 				<svg
 					width="26"
@@ -152,6 +160,7 @@ export default function Setting() {
 		},
 		{
 			name: "Account",
+			role: ["Admin","","Designer", "Contractor"],
 			icon: (
 				<svg
 					width="21"
@@ -171,6 +180,7 @@ export default function Setting() {
 		},
 		{
 			name: "Bank Account",
+			role: ["Admin","","Designer", "Contractor"],
 			icon: (
 				<svg
 					width="26"
@@ -189,6 +199,7 @@ export default function Setting() {
 		},
 		{
 			name: "Notification",
+			role: ["Admin","","Designer", "Contractor"],
 			icon: (
 				<svg
 					width="21"
@@ -218,42 +229,50 @@ export default function Setting() {
 				<div className="flex w-full bg-white drop-shadow-landingShado p-[2.3125rem] rounded-[1.5625rem] ">
 					{/* Nav Left */}
 					<div className="w-[20.5625rem] space-y-6">
-						{navItem.map((item, idx) => (
-							<div
-								key={idx}
-								onClick={() => {
-									setSelectedTab(item.name);
-									handleColor(idx);
-									setPrevItem(idx);
-								}}
-								className="cursor-pointer relative flex items-center space-x-[1.1rem]"
-							>
-								<div className="ml-6 flex z-10 justify-center items-center w-[1.5625rem] h-[1.5625rem]">
-									{item.icon}
-								</div>
-								<p
-									className={
-										"ml-6 z-10 " +
-										"text-[" +
-										color[idx] +
-										"] transition-all delay-75 "
-									}
-								>
-									{item.name}
-								</p>
-								{selectedTab === item.name && (
-									<motion.div
-										layoutId="underline"
-										className="-left-6 z-0 absolute w-[18.3125rem] h-[2.6875rem] bg-[#efe5d9] rounded-full"
-									></motion.div>
-								)}
-							</div>
-						))}
+						{navItem.map(
+							(item, idx) =>
+								item.role.includes(user.role) && (
+									<div
+										key={idx}
+										onClick={() => {
+											setSelectedTab(item.name);
+											handleColor(idx);
+											setPrevItem(idx);
+										}}
+										className="cursor-pointer relative flex items-center space-x-[1.1rem]"
+									>
+										<div className="ml-6 flex z-10 justify-center items-center w-[1.5625rem] h-[1.5625rem]">
+											{item.icon}
+										</div>
+										<p
+											className={
+												"ml-6 z-10 " +
+												"text-[" +
+												color[idx] +
+												"] transition-all delay-75 "
+											}
+										>
+											{item.name}
+										</p>
+										{selectedTab === item.name && (
+											<motion.div
+												layoutId="underline"
+												className="-left-6 z-0 absolute w-[18.3125rem] h-[2.6875rem] bg-[#efe5d9] rounded-full"
+											></motion.div>
+										)}
+									</div>
+								), // check role
+						)}
 					</div>
 					{/* content Right */}
-					<div className="w-[58.375rem]  border-l-2"></div>
+					<div className="w-[58.375rem]  border-l-2">
+						<p>
+						</p>
+					</div>
 				</div>
 			</div>
 		</div>
 	);
 }
+
+export function Content() {}

@@ -221,23 +221,6 @@ export function Chat(props: ChatProps) {
   const [selectedImage, setSelectedImage] = useState("");
   const [selectedFile, setSelectedFile] = useState<File>();
 
-  // const handleUpload = async () => {
-  //   setUploading(true);
-  //   try {
-  //     if (!selectedFile) return;
-  //     const formData = new FormData();
-  //     formData.append("myImage", selectedFile);
-  //     const { data } = await axios.post("/api/image", formData);
-  //     console.log(data);
-  //     console.log(selectedImage);
-  //     console.log(selectedFile);
-  //     console.log(formData);
-  //   } catch (error: any) {
-  //     console.log(error.response?.data);
-  //   }
-  //   setUploading(false);
-  // };
-
   function scrollToBottom() {
     lastMessage?.current?.scrollIntoView({ behavior: "smooth" });
   }
@@ -266,14 +249,14 @@ export function Chat(props: ChatProps) {
       <AnimatePresence>
         {props.visible && (
           <motion.div
-            drag
+          
             initial={{ x: 350, y: 250, scale: 0, opacity: 0 }}
             animate={{ x: 0, y: 0, scale: 1, opacity: 1 }}
             exit={{ y: 250, x: 350, scale: 0, opacity: 0 }}
             transition={{ ease: "easeIn", duration: 0.25 }}
             className="fixed bottom-0 right-0 mb-3 mr-3 "
           >
-            <div className="flex h-[38rem] w-[50rem] justify-center rounded-[1rem] bg-white drop-shadow-landingShado">
+            <div className="flex h-[38rem] w-[50rem] justify-center rounded-[1rem] bg-[white] drop-shadow-landingShado">
               <div className="space-y-2">
                 <div className="mt-3 flex w-[47.5rem] justify-between ">
                   <p className="bg-font-normal text-[1rem] text-[#B17C3F]">
@@ -383,7 +366,7 @@ export function Chat(props: ChatProps) {
                   {wasChat.length != 0 && (
                     <div className="h-[34rem] w-[30.4rem]  overflow-hidden rounded-[0.5rem] bg-[#f4f4f4] drop-shadow">
                       <div className="flex items-center border-b-[0.05rem] bg-white pb-2  pt-3">
-                        <div className="relative ml-4 h-[2.3125rem] w-[2.3125rem] bg-white">
+                        <div className="relative ml-4 h-[2.3125rem] w-[2.3125rem] bg-[white] rounded-full">
                           <Image
                             className="rounded-full"
                             src={wasChat.img}
@@ -398,7 +381,7 @@ export function Chat(props: ChatProps) {
                         </p>
                       </div>
 
-                      <div className="no-scrollbar mb-2 ml-5 mr-5 mt-2 h-[25.6rem] w-[27.8rem] snap-proximity space-y-4 overflow-hidden overflow-y-scroll">
+                      <div className="no-scrollbar  mb-2 ml-5 mr-5 mt-2 h-[25.6rem] w-[27.8rem] snap-proximity space-y-4 overflow-hidden overflow-y-scroll">
                         {wasChat.chat.map((data: any, idx: any) => (
                           <div
                             key={idx}
@@ -603,6 +586,7 @@ export default function ChatButton(props: any = { login: false }) {
   return (
     <div className="fixed bottom-0 right-0 z-40 flex">
       <div
+      
         onClick={() => {
           if (showChat) {
             setShowChat(false);

@@ -47,7 +47,7 @@ export default function Landing() {
               One Click
             </p>
             <Link
-              href={"./browse"}
+              href={"./designer"}
               className="ml-1 rounded-lg bg-gold px-3 py-1 text-[5px] hover:bg-[#d9b285] xl:rounded-2xl xl:px-4 xl:py-2 xl:text-[11px] 2xl:rounded-3xl 2xl:px-5 2xl:py-[10px] 2xl:text-[14px]"
             >
               Explore Now
@@ -74,9 +74,8 @@ export default function Landing() {
         {/* PEMBATAS 2 */}
 
         <div className="mt-8 flex justify-center gap-4 xl:gap-8">
-          <Link
-            href={"#"}
-            className=" container h-24 w-24 rounded-md bg-white drop-shadow-landingShado hover:bg-gray-100 xl:h-[215px] xl:w-[215px] xl:rounded-3xl 2xl:h-[281px] 2xl:w-[281px]"
+          <div
+            className=" container h-24 w-24 rounded-md bg-white drop-shadow-landingShado  xl:h-[215px] xl:w-[215px] xl:rounded-3xl 2xl:h-[281px] 2xl:w-[281px]"
           >
             <div className="mr-2 mt-2 flex justify-end gap-[9] xl:mr-4 xl:mt-4 xl:gap-[24px] 2xl:mr-6 2xl:mt-6 2xl:gap-[24px] ">
               <p className="mt-2 text-[7px] font-medium xl:mt-5 xl:text-[15px] 2xl:mt-6 2xl:text-[20px]">
@@ -98,11 +97,10 @@ export default function Landing() {
               enim ad minim veniam, quis nostrud exercitation ullamco laboris
               nisi ut aliquip ex ea commodo
             </p>
-          </Link>
+          </div>
 
-          <Link
-            href={"#"}
-            className=" container h-24 w-24 rounded-md bg-white drop-shadow-landingShado hover:bg-gray-100 xl:h-[215px] xl:w-[215px] xl:rounded-3xl 2xl:h-[281px] 2xl:w-[281px]"
+          <div
+            className=" container h-24 w-24 rounded-md bg-white drop-shadow-landingShado  xl:h-[215px] xl:w-[215px] xl:rounded-3xl 2xl:h-[281px] 2xl:w-[281px]"
           >
             <div className="mr-2 mt-2 flex justify-end gap-[9] xl:mr-4 xl:mt-4 xl:gap-[24px] 2xl:mr-6 2xl:mt-6 2xl:gap-[24px] ">
               <p className="mt-2 text-[7px] font-medium xl:mt-5 xl:text-[15px] 2xl:mt-6 2xl:text-[20px]">
@@ -124,11 +122,10 @@ export default function Landing() {
               enim ad minim veniam, quis nostrud exercitation ullamco laboris
               nisi ut aliquip ex ea commodo
             </p>
-          </Link>
+          </div>
 
-          <Link
-            href={"#"}
-            className=" container h-24 w-24 rounded-md bg-white drop-shadow-landingShado hover:bg-gray-100 xl:h-[215px] xl:w-[215px] xl:rounded-3xl 2xl:h-[281px] 2xl:w-[281px]"
+          <div
+            className=" container h-24 w-24 rounded-md bg-white drop-shadow-landingShado  xl:h-[215px] xl:w-[215px] xl:rounded-3xl 2xl:h-[281px] 2xl:w-[281px]"
           >
             <div className="mr-2 mt-2 flex justify-end gap-[9] xl:mr-4 xl:mt-4 xl:gap-[24px] 2xl:mr-6 2xl:mt-6 2xl:gap-[24px] ">
               <p className="mt-2 text-[7px] font-medium xl:mt-5 xl:text-[15px] 2xl:mt-6 2xl:text-[20px]">
@@ -150,11 +147,10 @@ export default function Landing() {
               enim ad minim veniam, quis nostrud exercitation ullamco laboris
               nisi ut aliquip ex ea commodo
             </p>
-          </Link>
+          </div>
 
-          <Link
-            href={"#"}
-            className=" container h-24 w-24 rounded-md bg-white drop-shadow-landingShado hover:bg-gray-100 xl:h-[215px] xl:w-[215px] xl:rounded-3xl 2xl:h-[281px] 2xl:w-[281px]"
+          <div
+            className=" container h-24 w-24 rounded-md bg-white drop-shadow-landingShado  xl:h-[215px] xl:w-[215px] xl:rounded-3xl 2xl:h-[281px] 2xl:w-[281px]"
           >
             <div className="mr-2 mt-2 flex justify-end gap-[9] xl:mr-4 xl:mt-4 xl:gap-[24px] 2xl:mr-6 2xl:mt-6 2xl:gap-[24px] ">
               <p className="mt-2 text-[7px] font-medium xl:mt-5 xl:text-[15px] 2xl:mt-6 2xl:text-[20px]">
@@ -176,7 +172,7 @@ export default function Landing() {
               enim ad minim veniam, quis nostrud exercitation ullamco laboris
               nisi ut aliquip ex ea commodo
             </p>
-          </Link>
+          </div>
         </div>
 
         {/* PEMBATAS 3 */}
@@ -216,29 +212,11 @@ export default function Landing() {
                           {designerData.nama}
                         </p>
                       </div>
-                      <div className="mr-5 mt-5">
-                        <button onClick={handleButtonClick}>
-                          <svg
-                            width="34"
-                            height="28"
-                            viewBox="0 0 38 32"
-                            fill={isPressed ? "white" : "none"}
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M19.0107 30L4.58209 17.1029C-3.25953 9.36467 8.26766 -5.49276 19.0107 6.52732C29.7537 -5.49276 41.2286 9.41626 33.4393 17.1029L19.0107 30Z"
-                              stroke="white"
-                              strokeWidth="3"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </button>
-                      </div>
+                      
                     </div>
                     <div className="flex items-end">
                       <Link
-                        href={"./build"}
+                        href={"./designer"}
                         className="absolute mb-5 ml-5 h-[2.5rem] w-[2.5rem]  rounded-full"
                       >
                         <svg
