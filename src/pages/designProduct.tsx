@@ -8,6 +8,7 @@ import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import ShowRating from "../components/rating";
 import Link from "next/link";
+import {motion} from "framer-motion";
 import Status from "@/components/status";
 
 const profile = [
@@ -540,7 +541,9 @@ export default function DesignProduct() {
 							</div>
 						</div>
 						{/* Review */}
-						<div className="w-full space-y-3 rounded-[1.5625rem] bg-[#fff] p-[2.4375rem] drop-shadow-landingShado">
+						<motion.div 
+						layout
+						className="w-full space-y-3 rounded-[1.5625rem] bg-[#fff] p-[2.4375rem] drop-shadow-landingShado">
 							<p className="text-[1.25rem] font-medium">Review</p>
 							{review.length != 0 ? (
 								<div>
@@ -658,7 +661,7 @@ export default function DesignProduct() {
 									<p className="mt-4 mb-4 text-gray-500">There is no review</p>
 								</div>
 							)}
-						</div>
+						</motion.div>
 					</div>
 					{/* Right */}
 					<div className="h-fit w-[25rem] space-y-5 rounded-[1.5625rem] bg-white p-[2.4375rem] drop-shadow-landingShado">

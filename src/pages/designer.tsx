@@ -4,7 +4,7 @@ import Image from "next/image";
 import Footer from "@/components/footer";
 import React from "react";
 import Popup from "reactjs-popup";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import "reactjs-popup/dist/index.css";
 import ShowRating from "../components/rating";
 import { type, style, province } from "@/components/tagList";
@@ -240,8 +240,8 @@ export default function Designer() {
 		setIsPressed(!isPressed);
 	};
 
-	const [visibleItems, setVisibleItems] = useState(8); // Jumlah item yang terlihat awalnya
-	const [loadCount] = useState(6); // Jumlah item yang ditambahkan setiap kali "load more" diklik
+	const [visibleItems, setVisibleItems] = useState(10); // Jumlah item yang terlihat awalnya
+	const [loadCount] = useState(5); // Jumlah item yang ditambahkan setiap kali "load more" diklik
 	const loadMore = () => {
 		setVisibleItems((prevVisibleItems) => prevVisibleItems + loadCount);
 	};
@@ -355,7 +355,8 @@ export default function Designer() {
 					<div className="relative">
 						<div className="flex h-[55px] w-full bg-white justify-between rounded-full border-2">
 							<div className=" flex">
-								<button
+								<motion.button
+									whileTap={{ scale: 0.85 }}
 									onClick={handleLabelClick}
 									className="my-auto ml-3 h-[30px] w-[30px] rounded-full bg-gold hover:bg-[#d9b285]"
 								>
@@ -373,66 +374,77 @@ export default function Designer() {
 											strokeWidth="2"
 										/>
 									</svg>
-								</button>
+								</motion.button>
 
 								<div className="tags-input mt-3 pl-3 flex gap-x-2">
 									<div className="flex flex-row gap-2">
-										{selectedTags.map((tag, index) => (
-											<li
-												className="flex h-[30px] max-w-fit flex-row justify-between rounded-full bg-[#E4D1BC]"
-												key={index}
-											>
-												<span className="ml-2 mt-[7px] pr-2 text-[11px]">
-													{tag}
-												</span>
-												<button
-													className="mr-2 mt-[3px] "
-													onClick={() => handleTagDelete(tag)}
+										<AnimatePresence>
+											{selectedTags.map((tag, index) => (
+												<motion.li
+													initial={{ scale: 0 }}
+													animate={{ scale: 1 }}
+													exit={{ scale: 0 }}
+													className="flex h-[30px]  max-w-fit flex-row justify-between rounded-full bg-[#E4D1BC]"
+													key={index}
 												>
-													<svg
-														width="15"
-														height="16"
-														viewBox="0 0 15 16"
-														fill="none"
-														xmlns="http://www.w3.org/2000/svg"
+													<span className="ml-2 mt-[0.45rem] pr-2 text-[11px] text-gold">
+														{tag}
+													</span>
+													<button
+														className="mr-2 mt-[3px] "
+														onClick={() => handleTagDelete(tag)}
 													>
-														<path
-															d="M2.18063 13.0492C1.49841 12.3903 0.954256 11.6021 0.579906 10.7306C0.205556 9.85919 0.00851124 8.9219 0.000269691 7.97348C-0.00797185 7.02505 0.172755 6.08449 0.531904 5.20666C0.891053 4.32882 1.42143 3.53131 2.09209 2.86065C2.76276 2.18999 3.56027 1.65961 4.4381 1.30046C5.31593 0.941309 6.2565 0.760583 7.20492 0.768824C8.15335 0.777066 9.09063 0.97411 9.96209 1.34846C10.8335 1.72281 11.6217 2.26697 12.2806 2.94918C13.5818 4.29634 14.3017 6.10064 14.2854 7.97348C14.2692 9.84631 13.518 11.6378 12.1936 12.9622C10.8693 14.2865 9.07776 15.0377 7.20492 15.054C5.33209 15.0703 3.52779 14.3503 2.18063 13.0492ZM3.18777 12.042C4.26 13.1143 5.71426 13.7166 7.23063 13.7166C8.74699 13.7166 10.2013 13.1143 11.2735 12.042C12.3457 10.9698 12.9481 9.51555 12.9481 7.99918C12.9481 6.48282 12.3457 5.02856 11.2735 3.95633C10.2013 2.88409 8.74699 2.28172 7.23063 2.28172C5.71426 2.28172 4.26 2.88409 3.18777 3.95633C2.11554 5.02856 1.51317 6.48282 1.51317 7.99918C1.51317 9.51555 2.11554 10.9698 3.18777 12.042ZM10.2592 5.97776L8.23777 7.99918L10.2592 10.0206L9.25206 11.0278L7.23063 9.00633L5.2092 11.0278L4.20206 10.0206L6.22349 7.99918L4.20206 5.97776L5.2092 4.97061L7.23063 6.99204L9.25206 4.97061L10.2592 5.97776Z"
-															fill="#B17C3F"
-														/>
-													</svg>
-												</button>
-											</li>
-										))}
+														<svg
+															width="15"
+															height="16"
+															viewBox="0 0 15 16"
+															fill="none"
+															xmlns="http://www.w3.org/2000/svg"
+														>
+															<path
+																d="M2.18063 13.0492C1.49841 12.3903 0.954256 11.6021 0.579906 10.7306C0.205556 9.85919 0.00851124 8.9219 0.000269691 7.97348C-0.00797185 7.02505 0.172755 6.08449 0.531904 5.20666C0.891053 4.32882 1.42143 3.53131 2.09209 2.86065C2.76276 2.18999 3.56027 1.65961 4.4381 1.30046C5.31593 0.941309 6.2565 0.760583 7.20492 0.768824C8.15335 0.777066 9.09063 0.97411 9.96209 1.34846C10.8335 1.72281 11.6217 2.26697 12.2806 2.94918C13.5818 4.29634 14.3017 6.10064 14.2854 7.97348C14.2692 9.84631 13.518 11.6378 12.1936 12.9622C10.8693 14.2865 9.07776 15.0377 7.20492 15.054C5.33209 15.0703 3.52779 14.3503 2.18063 13.0492ZM3.18777 12.042C4.26 13.1143 5.71426 13.7166 7.23063 13.7166C8.74699 13.7166 10.2013 13.1143 11.2735 12.042C12.3457 10.9698 12.9481 9.51555 12.9481 7.99918C12.9481 6.48282 12.3457 5.02856 11.2735 3.95633C10.2013 2.88409 8.74699 2.28172 7.23063 2.28172C5.71426 2.28172 4.26 2.88409 3.18777 3.95633C2.11554 5.02856 1.51317 6.48282 1.51317 7.99918C1.51317 9.51555 2.11554 10.9698 3.18777 12.042ZM10.2592 5.97776L8.23777 7.99918L10.2592 10.0206L9.25206 11.0278L7.23063 9.00633L5.2092 11.0278L4.20206 10.0206L6.22349 7.99918L4.20206 5.97776L5.2092 4.97061L7.23063 6.99204L9.25206 4.97061L10.2592 5.97776Z"
+																fill="#B17C3F"
+															/>
+														</svg>
+													</button>
+												</motion.li>
+											))}
+										</AnimatePresence>
 									</div>
 									<div className="flex flex-row gap-2">
-										{selectedProvinces.map((tag, index) => (
-											<li
-												className="flex h-[30px] max-w-fit flex-row justify-between rounded-full bg-[#E4D1BC]"
-												key={index}
-											>
-												<span className="ml-2 mt-[7px] pr-2 text-[11px]">
-													{tag}
-												</span>
-												<button
-													className="mr-2 mt-[3px] "
-													onClick={() => handleTagDelete2(tag)}
+										<AnimatePresence>
+											{selectedProvinces.map((tag, index) => (
+												<motion.li
+												initial={{ scale: 0 }}
+												animate={{ scale: 1 }}
+												exit={{ scale: 0 }}
+
+													className="flex h-[30px] max-w-fit flex-row justify-between rounded-full bg-[#E4D1BC]"
+													key={index}
 												>
-													<svg
-														width="15"
-														height="16"
-														viewBox="0 0 15 16"
-														fill="none"
-														xmlns="http://www.w3.org/2000/svg"
+													<span className="ml-2 mt-[7px] pr-2 text-[11px] text-gold">
+														{tag}
+													</span>
+													<button
+														className="mr-2 mt-[3px] "
+														onClick={() => handleTagDelete2(tag)}
 													>
-														<path
-															d="M2.18063 13.0492C1.49841 12.3903 0.954256 11.6021 0.579906 10.7306C0.205556 9.85919 0.00851124 8.9219 0.000269691 7.97348C-0.00797185 7.02505 0.172755 6.08449 0.531904 5.20666C0.891053 4.32882 1.42143 3.53131 2.09209 2.86065C2.76276 2.18999 3.56027 1.65961 4.4381 1.30046C5.31593 0.941309 6.2565 0.760583 7.20492 0.768824C8.15335 0.777066 9.09063 0.97411 9.96209 1.34846C10.8335 1.72281 11.6217 2.26697 12.2806 2.94918C13.5818 4.29634 14.3017 6.10064 14.2854 7.97348C14.2692 9.84631 13.518 11.6378 12.1936 12.9622C10.8693 14.2865 9.07776 15.0377 7.20492 15.054C5.33209 15.0703 3.52779 14.3503 2.18063 13.0492ZM3.18777 12.042C4.26 13.1143 5.71426 13.7166 7.23063 13.7166C8.74699 13.7166 10.2013 13.1143 11.2735 12.042C12.3457 10.9698 12.9481 9.51555 12.9481 7.99918C12.9481 6.48282 12.3457 5.02856 11.2735 3.95633C10.2013 2.88409 8.74699 2.28172 7.23063 2.28172C5.71426 2.28172 4.26 2.88409 3.18777 3.95633C2.11554 5.02856 1.51317 6.48282 1.51317 7.99918C1.51317 9.51555 2.11554 10.9698 3.18777 12.042ZM10.2592 5.97776L8.23777 7.99918L10.2592 10.0206L9.25206 11.0278L7.23063 9.00633L5.2092 11.0278L4.20206 10.0206L6.22349 7.99918L4.20206 5.97776L5.2092 4.97061L7.23063 6.99204L9.25206 4.97061L10.2592 5.97776Z"
-															fill="#B17C3F"
-														/>
-													</svg>
-												</button>
-											</li>
-										))}
+														<svg
+															width="15"
+															height="16"
+															viewBox="0 0 15 16"
+															fill="none"
+															xmlns="http://www.w3.org/2000/svg"
+														>
+															<path
+																d="M2.18063 13.0492C1.49841 12.3903 0.954256 11.6021 0.579906 10.7306C0.205556 9.85919 0.00851124 8.9219 0.000269691 7.97348C-0.00797185 7.02505 0.172755 6.08449 0.531904 5.20666C0.891053 4.32882 1.42143 3.53131 2.09209 2.86065C2.76276 2.18999 3.56027 1.65961 4.4381 1.30046C5.31593 0.941309 6.2565 0.760583 7.20492 0.768824C8.15335 0.777066 9.09063 0.97411 9.96209 1.34846C10.8335 1.72281 11.6217 2.26697 12.2806 2.94918C13.5818 4.29634 14.3017 6.10064 14.2854 7.97348C14.2692 9.84631 13.518 11.6378 12.1936 12.9622C10.8693 14.2865 9.07776 15.0377 7.20492 15.054C5.33209 15.0703 3.52779 14.3503 2.18063 13.0492ZM3.18777 12.042C4.26 13.1143 5.71426 13.7166 7.23063 13.7166C8.74699 13.7166 10.2013 13.1143 11.2735 12.042C12.3457 10.9698 12.9481 9.51555 12.9481 7.99918C12.9481 6.48282 12.3457 5.02856 11.2735 3.95633C10.2013 2.88409 8.74699 2.28172 7.23063 2.28172C5.71426 2.28172 4.26 2.88409 3.18777 3.95633C2.11554 5.02856 1.51317 6.48282 1.51317 7.99918C1.51317 9.51555 2.11554 10.9698 3.18777 12.042ZM10.2592 5.97776L8.23777 7.99918L10.2592 10.0206L9.25206 11.0278L7.23063 9.00633L5.2092 11.0278L4.20206 10.0206L6.22349 7.99918L4.20206 5.97776L5.2092 4.97061L7.23063 6.99204L9.25206 4.97061L10.2592 5.97776Z"
+																fill="#B17C3F"
+															/>
+														</svg>
+													</button>
+												</motion.li>
+											))}
+										</AnimatePresence>
 									</div>
 								</div>
 							</div>
@@ -440,7 +452,8 @@ export default function Designer() {
 							{/* BATAS SORT KIRI */}
 
 							<div className="mr-3 mt-2">
-								<button
+								<motion.button
+									whileTap={{ scale: 0.85 }}
 									onClick={handleLabelClick2}
 									className="my-auto ml-3 h-[30px] w-[30px] rounded-full border-2 border-gold bg-white hover:bg-[#d9b285]"
 								>
@@ -457,302 +470,328 @@ export default function Designer() {
 											fill="#B17C3F"
 										/>
 									</svg>
-								</button>
-
-								{activeLabel2 && (
-									<div className="right-0 transition ease-in-out delay-150 absolute mt-5 z-10 h-[150px] w-[300px] rounded-[10px] bg-white p-2 shadow-md drop-shadow">
-										<div className="mt-2">
-											<p className="ml-4">Sort</p>
-											<div className="border-b-2 pb-1"></div>
-										</div>
-										<div className="mt-3 flex flex-row justify-between px-4">
-											<div className="flex flex-col justify-center">
-												<button onClick={handleSvgClick}>
-													<svg
-														width="14"
-														height="14"
-														viewBox="0 0 14 14"
-														fill="none"
-														xmlns="http://www.w3.org/2000/svg"
-														className="ml-2"
+								</motion.button>
+								<AnimatePresence>
+									{activeLabel2 && (
+										<motion.div
+											initial={{ x: 120, y: -150, opacity: 0, scale: 0 }}
+											animate={{ x: 0, y: 0, opacity: 1, scale: 1 }}
+											exit={{ x: 120, y: -150, opacity: 0, scale: 0 }}
+											transition={{ linear: true, duration: 0.15 }}
+											className="right-0  absolute mt-6 z-10 h-[150px] w-[300px] rounded-[1.5rem] bg-[#ffffffec] p-3 shadow-md drop-shadow"
+										>
+											<div className="mt-2">
+												<p className="ml-4">Sort</p>
+												<div className="border-b-2 pb-1"></div>
+											</div>
+											<div className="mt-3 flex flex-row justify-between px-10">
+												<div className="flex flex-col justify-center">
+													<button onClick={handleSvgClick}>
+														<svg
+															width="14"
+															height="14"
+															viewBox="0 0 14 14"
+															fill="none"
+															xmlns="http://www.w3.org/2000/svg"
+															className="ml-2"
+														>
+															<path
+																d="M9.481 11.644H4.503L3.705 14H0.304L5.13 0.662H8.892L13.718 14H10.279L9.481 11.644ZM8.645 9.136L6.992 4.253L5.358 9.136H8.645Z"
+																className={
+																	isClicked
+																		? "fill-[#B17C3F]"
+																		: "fill-[#878787] hover:fill-gold"
+																}
+															/>
+														</svg>
+													</button>
+													<button
+														className={`text-[10px] mt-1 ${
+															isClicked ? "text-gold" : ""
+														}`}
+														onClick={handleSvgClick}
 													>
-														<path
-															d="M9.481 11.644H4.503L3.705 14H0.304L5.13 0.662H8.892L13.718 14H10.279L9.481 11.644ZM8.645 9.136L6.992 4.253L5.358 9.136H8.645Z"
-															className={
-																isClicked
-																	? "fill-[#B17C3F]"
-																	: "fill-[#878787] hover:fill-gold"
-															}
-														/>
-													</svg>
-												</button>
-												<button
-													className={`text-[10px] mt-1 ${
-														isClicked ? "text-gold" : ""
-													}`}
-													onClick={handleSvgClick}
-												>
-													Name
-												</button>
+														Name
+													</button>
+												</div>
+												<div className="flex flex-col justify-center">
+													<button onClick={handleSvgClick2}>
+														<svg
+															width="19"
+															height="18"
+															viewBox="0 0 19 18"
+															fill="none"
+															xmlns="http://www.w3.org/2000/svg"
+															className="ml-2"
+														>
+															<path
+																d="M9.5 0L11.6329 6.56434H18.535L12.9511 10.6213L15.084 17.1857L9.5 13.1287L3.91604 17.1857L6.04892 10.6213L0.464963 6.56434H7.36712L9.5 0Z"
+																className={
+																	isClicked2
+																		? "fill-[#B17C3F]"
+																		: "fill-[#878787] hover:fill-gold"
+																}
+															/>
+														</svg>
+													</button>
+													<button
+														className={`text-[10px] ${
+															isClicked2 ? "text-gold" : ""
+														}`}
+														onClick={handleSvgClick2}
+													>
+														Popular
+													</button>
+												</div>
+												<div className="flex flex-col justify-center">
+													<button onClick={handleSvgClick3}>
+														<svg
+															width="14"
+															height="14"
+															viewBox="0 0 14 14"
+															fill="none"
+															xmlns="http://www.w3.org/2000/svg"
+															className="ml-[6px]"
+														>
+															<path
+																d="M7.00004 0.333252C10.682 0.333252 13.6667 3.31792 13.6667 6.99992C13.6667 10.6819 10.682 13.6666 7.00004 13.6666C3.31804 13.6666 0.333374 10.6819 0.333374 6.99992C0.333374 3.31792 3.31804 0.333252 7.00004 0.333252ZM7.00004 1.66659C5.58555 1.66659 4.229 2.22849 3.2288 3.22868C2.22861 4.22888 1.66671 5.58543 1.66671 6.99992C1.66671 8.41441 2.22861 9.77096 3.2288 10.7712C4.229 11.7713 5.58555 12.3333 7.00004 12.3333C8.41453 12.3333 9.77108 11.7713 10.7713 10.7712C11.7715 9.77096 12.3334 8.41441 12.3334 6.99992C12.3334 5.58543 11.7715 4.22888 10.7713 3.22868C9.77108 2.22849 8.41453 1.66659 7.00004 1.66659ZM7.00004 2.99992C7.16333 2.99994 7.32093 3.05989 7.44296 3.1684C7.56498 3.2769 7.64294 3.42642 7.66204 3.58859L7.66671 3.66659V6.72392L9.47137 8.52859C9.59094 8.64856 9.66036 8.80954 9.66553 8.97884C9.6707 9.14814 9.61123 9.31306 9.49921 9.4401C9.38719 9.56715 9.23101 9.64679 9.06239 9.66285C8.89378 9.67891 8.72537 9.63019 8.59137 9.52659L8.52871 9.47125L6.52871 7.47125C6.42509 7.36755 6.35855 7.23259 6.33937 7.08725L6.33337 6.99992V3.66659C6.33337 3.48977 6.40361 3.32021 6.52864 3.19518C6.65366 3.07016 6.82323 2.99992 7.00004 2.99992Z"
+																fill="#878787"
+																className={
+																	isClicked3
+																		? "fill-[#B17C3F]"
+																		: "fill-[#878787] hover:fill-gold"
+																}
+															/>
+														</svg>
+													</button>
+													<button
+														className={`text-[10px] mt-1 ${
+															isClicked3 ? "text-gold" : ""
+														}`}
+														onClick={handleSvgClick3}
+													>
+														Time
+													</button>
+												</div>
 											</div>
 
-											<div className="flex flex-col justify-center">
-												<button onClick={handleSvgClick2}>
-													<svg
-														width="19"
-														height="18"
-														viewBox="0 0 19 18"
-														fill="none"
-														xmlns="http://www.w3.org/2000/svg"
-														className="ml-2"
-													>
-														<path
-															d="M9.5 0L11.6329 6.56434H18.535L12.9511 10.6213L15.084 17.1857L9.5 13.1287L3.91604 17.1857L6.04892 10.6213L0.464963 6.56434H7.36712L9.5 0Z"
-															className={
-																isClicked2
-																	? "fill-[#B17C3F]"
-																	: "fill-[#878787] hover:fill-gold"
-															}
-														/>
-													</svg>
+											<div className="mt-4 flex justify-between px-4">
+												<button
+													onClick={handleOldestClick}
+													className={`flex w-[115px] h-[1.5rem] justify-center items-center rounded-lg border-2 ${
+														isOldestClick
+															? "border-gold bg-[#d9b285]"
+															: "hover:border-gold hover:text-gold hover:bg-[#d9b285]"
+													}`}
+												>
+													<span className="mr-2">
+														<svg
+															width="9"
+															height="10"
+															viewBox="0 0 9 10"
+															fill="none"
+															xmlns="http://www.w3.org/2000/svg"
+														>
+															<path
+																d="M4.68533 9.33333C4.88425 9.33333 5.07501 9.2536 5.21566 9.11167C5.35632 8.96974 5.43533 8.77724 5.43533 8.57652V2.58258L7.40533 4.57047C7.54751 4.70415 7.73555 4.77693 7.92986 4.77347C8.12416 4.77001 8.30954 4.69059 8.44695 4.55193C8.58437 4.41327 8.66308 4.2262 8.66651 4.03013C8.66994 3.83407 8.59781 3.64431 8.46533 3.50084L5.21533 0.221332C5.07471 0.079606 4.88408 0 4.68533 0C4.48658 0 4.29596 0.079606 4.15533 0.221332L0.905334 3.50084C0.831647 3.57013 0.772545 3.65368 0.731553 3.74652C0.690561 3.83935 0.668519 3.93957 0.666743 4.04119C0.664966 4.1428 0.68349 4.24374 0.721211 4.33798C0.758932 4.43221 0.815077 4.51782 0.886296 4.58968C0.957515 4.66155 1.04235 4.7182 1.13574 4.75627C1.22912 4.79433 1.32915 4.81302 1.42986 4.81123C1.53056 4.80944 1.62987 4.78719 1.72187 4.74583C1.81387 4.70447 1.89667 4.64483 1.96533 4.57047L3.93533 2.58258V8.57652C3.93533 8.99428 4.27133 9.33333 4.68533 9.33333Z"
+																fill="#878787"
+															/>
+														</svg>
+													</span>
+													<p className="text-[10px] text-[#878787] ">
+														Ascending
+													</p>
 												</button>
 												<button
-													className={`text-[10px] ${
-														isClicked2 ? "text-gold" : ""
+													onClick={handleNewestClick}
+													className={`flex w-[115px] h-[1.5rem] justify-center items-center rounded-lg border-2 ${
+														isNewestClick
+															? "border-gold bg-[#d9b285]"
+															: "hover:border-gold hover:bg-[#d9b285]"
 													}`}
-													onClick={handleSvgClick2}
 												>
-													Popular
+													<span className="group mr-2">
+														<svg
+															width="8"
+															height="10"
+															viewBox="0 0 8 10"
+															fill="none"
+															xmlns="http://www.w3.org/2000/svg"
+														>
+															<path
+																d="M4.01871 0C4.21762 0 4.40839 0.0854311 4.54904 0.237498C4.68969 0.389565 4.76871 0.595813 4.76871 0.810868V7.23295L6.73871 5.10307C6.88088 4.95983 7.06893 4.88186 7.26323 4.88556C7.45753 4.88927 7.64292 4.97437 7.78033 5.12294C7.91774 5.2715 7.99646 5.47193 7.99988 5.682C8.00331 5.89207 7.93119 6.09538 7.79871 6.24909L4.54871 9.76286C4.40808 9.91471 4.21746 10 4.01871 10C3.81996 10 3.62933 9.91471 3.48871 9.76286L0.238708 6.24909C0.165021 6.17486 0.105919 6.08534 0.0649274 5.98587C0.0239354 5.88641 0.00189351 5.77903 0.000116722 5.67016C-0.00166006 5.56128 0.0168645 5.45314 0.0545855 5.35217C0.0923065 5.2512 0.148451 5.15948 0.21967 5.08248C0.290889 5.00548 0.375723 4.94478 0.469111 4.904C0.562499 4.86322 0.662528 4.84319 0.763231 4.84511C0.863934 4.84703 0.963247 4.87086 1.05525 4.91518C1.14725 4.9595 1.23005 5.0234 1.29871 5.10307L3.26871 7.23295V0.810868C3.26871 0.363269 3.60471 0 4.01871 0Z"
+																fill="#878787"
+															/>
+														</svg>
+													</span>
+													<p className="text-[10px] text-[#878787] ">
+														Descending
+													</p>
 												</button>
 											</div>
-											<div className="flex flex-col justify-center">
-												<button onClick={handleSvgClick3}>
-													<svg
-														width="14"
-														height="14"
-														viewBox="0 0 14 14"
-														fill="none"
-														xmlns="http://www.w3.org/2000/svg"
-														className="ml-[6px]"
-													>
-														<path
-															d="M7.00004 0.333252C10.682 0.333252 13.6667 3.31792 13.6667 6.99992C13.6667 10.6819 10.682 13.6666 7.00004 13.6666C3.31804 13.6666 0.333374 10.6819 0.333374 6.99992C0.333374 3.31792 3.31804 0.333252 7.00004 0.333252ZM7.00004 1.66659C5.58555 1.66659 4.229 2.22849 3.2288 3.22868C2.22861 4.22888 1.66671 5.58543 1.66671 6.99992C1.66671 8.41441 2.22861 9.77096 3.2288 10.7712C4.229 11.7713 5.58555 12.3333 7.00004 12.3333C8.41453 12.3333 9.77108 11.7713 10.7713 10.7712C11.7715 9.77096 12.3334 8.41441 12.3334 6.99992C12.3334 5.58543 11.7715 4.22888 10.7713 3.22868C9.77108 2.22849 8.41453 1.66659 7.00004 1.66659ZM7.00004 2.99992C7.16333 2.99994 7.32093 3.05989 7.44296 3.1684C7.56498 3.2769 7.64294 3.42642 7.66204 3.58859L7.66671 3.66659V6.72392L9.47137 8.52859C9.59094 8.64856 9.66036 8.80954 9.66553 8.97884C9.6707 9.14814 9.61123 9.31306 9.49921 9.4401C9.38719 9.56715 9.23101 9.64679 9.06239 9.66285C8.89378 9.67891 8.72537 9.63019 8.59137 9.52659L8.52871 9.47125L6.52871 7.47125C6.42509 7.36755 6.35855 7.23259 6.33937 7.08725L6.33337 6.99992V3.66659C6.33337 3.48977 6.40361 3.32021 6.52864 3.19518C6.65366 3.07016 6.82323 2.99992 7.00004 2.99992Z"
-															fill="#878787"
-															className={
-																isClicked3
-																	? "fill-[#B17C3F]"
-																	: "fill-[#878787] hover:fill-gold"
-															}
-														/>
-													</svg>
-												</button>
-												<button
-													className={`text-[10px] mt-1 ${
-														isClicked3 ? "text-gold" : ""
-													}`}
-													onClick={handleSvgClick3}
-												>
-													Time
-												</button>
-											</div>
-										</div>
-
-										<div className="mt-4 flex justify-between px-4">
-											<button
-												onClick={handleOldestClick}
-												className={`flex w-[115px] justify-center rounded-sm border-2 ${
-													isOldestClick
-														? "border-gold bg-[#d9b285]"
-														: "hover:border-gold hover:bg-[#d9b285]"
-												}`}
-											>
-												<span>
-													<svg
-														width="16"
-														height="16"
-														viewBox="0 0 16 16"
-														fill="none"
-														xmlns="http://www.w3.org/2000/svg"
-														className="mt-[2px] rounded-sm "
-													>
-														<path
-															d="M6.68533 13.3333C6.88425 13.3333 7.07501 13.2536 7.21566 13.1117C7.35632 12.9697 7.43533 12.7772 7.43533 12.5765V6.58258L9.40533 8.57047C9.54751 8.70415 9.73555 8.77693 9.92986 8.77347C10.1242 8.77001 10.3095 8.69059 10.447 8.55193C10.5844 8.41327 10.6631 8.2262 10.6665 8.03013C10.6699 7.83407 10.5978 7.64431 10.4653 7.50084L7.21533 4.22133C7.07471 4.07961 6.88408 4 6.68533 4C6.48658 4 6.29596 4.07961 6.15533 4.22133L2.90533 7.50084C2.83165 7.57013 2.77255 7.65368 2.73155 7.74652C2.69056 7.83935 2.66852 7.93957 2.66674 8.04119C2.66497 8.1428 2.68349 8.24374 2.72121 8.33798C2.75893 8.43221 2.81508 8.51782 2.8863 8.58968C2.95751 8.66155 3.04235 8.7182 3.13574 8.75627C3.22912 8.79433 3.32915 8.81302 3.42986 8.81123C3.53056 8.80944 3.62987 8.78719 3.72187 8.74583C3.81387 8.70447 3.89667 8.64483 3.96533 8.57047L5.93533 6.58258V12.5765C5.93533 12.9943 6.27133 13.3333 6.68533 13.3333Z"
-															className="fill-gold"
-														/>
-													</svg>
-												</span>
-												<p className="text-[14px] text-gold">Ascending</p>
-											</button>
-											<button
-												onClick={handleNewestClick}
-												className={`flex w-[115px] justify-center rounded-sm border-2 ${
-													isNewestClick
-														? "border-gold bg-[#d9b285]"
-														: "hover:border-gold hover:bg-[#d9b285]"
-												}`}
-											>
-												<span className="group">
-													<svg
-														width="8"
-														height="10"
-														viewBox="0 0 8 10"
-														fill="none"
-														xmlns="http://www.w3.org/2000/svg"
-														className="mr-1 mt-[5px]"
-													>
-														<path
-															d="M4.01871 -2.38418e-07C4.21762 -2.38418e-07 4.40839 0.0854307 4.54904 0.237498C4.68969 0.389565 4.76871 0.595812 4.76871 0.810868V7.23295L6.73871 5.10307C6.88088 4.95983 7.06893 4.88186 7.26323 4.88556C7.45753 4.88927 7.64292 4.97437 7.78033 5.12294C7.91774 5.2715 7.99646 5.47193 7.99988 5.682C8.00331 5.89207 7.93119 6.09538 7.79871 6.24909L4.54871 9.76286C4.40808 9.91471 4.21746 10 4.01871 10C3.81996 10 3.62933 9.91471 3.48871 9.76286L0.238708 6.24909C0.165021 6.17486 0.105919 6.08534 0.0649274 5.98587C0.0239354 5.88641 0.00189351 5.77903 0.000116722 5.67016C-0.00166006 5.56128 0.0168645 5.45313 0.0545855 5.35217C0.0923065 5.2512 0.148451 5.15948 0.21967 5.08248C0.290889 5.00548 0.375723 4.94478 0.469111 4.904C0.562499 4.86322 0.662528 4.84319 0.763231 4.84511C0.863934 4.84703 0.963247 4.87086 1.05525 4.91518C1.14725 4.9595 1.23005 5.0234 1.29871 5.10307L3.26871 7.23295V0.810868C3.26871 0.363269 3.60471 -2.38418e-07 4.01871 -2.38418e-07Z"
-															className="fill-gold"
-														/>
-													</svg>
-												</span>
-												<p className="text-[14px] text-gold">Descending</p>
-											</button>
-										</div>
-									</div>
-								)}
+										</motion.div>
+									)}
+								</AnimatePresence>
 							</div>
 						</div>
 					</div>
-					{activeLabel && (
-						<div className="transition ease-in-out delay-150 absolute mt-2 z-10 h-max w-max rounded-[10px] bg-white p-2 shadow-md drop-shadow">
-							<div className="flex gap-x-6">
-								<div className="">
-									<p className="text-[13px] font-semibold ml-2">Choose Type</p>
-									<div className="flec flex-col gap-x-2 gap-y-2">
-										{type.map((type, index) => (
-											<div key={index} className="">
-												<button
-													value={type.value}
-													onClick={() => handleTagClick(type.value)}
-													className={`text-[12px] hover:bg-[#E4D1BC] rounded-full py-1 pr-5 pl-2 hover:text-gold ${
-														selectedTags.includes(type.value)
-															? "bg-[#E4D1BC] text-gold"
-															: ""
-													}`}
-												>
-													{type.label}
-												</button>
-											</div>
-										))}
-									</div>
-								</div>
-								<div className="border-l-2 pl-1">
-									<p className="text-[13px] font-semibold ml-1">Choose Style</p>
-									<div className="flex flex-col gap-x-2 ">
-										{style.map((style, index) => (
-											<div key={index}>
-												<button
-													value={style.value}
-													onClick={() => handleTagClick(style.value)}
-													className={`text-[12px] hover:bg-[#E4D1BC] rounded-full py-1 pr-5 pl-2 hover:text-gold ${
-														selectedTags.includes(style.value)
-															? "bg-[#E4D1BC] text-gold"
-															: ""
-													}`}
-												>
-													{style.label}
-												</button>
-											</div>
-										))}
-									</div>
-								</div>
-								<div className="border-l-2 px-3 relative">
-									<p className="text-[13px] font-semibold ml-[5px] pb-1">
-										Location
-									</p>
-									<div className="flex flex-col justify-center items-center mt-[5px] bg-red-200">
-										<div>
-											<input
-												type="text"
-												value={value}
-												onChange={(e) => {
-													setValue(e.target.value);
-													setShowSuggestions(e.target.value !== ""); // Show suggestions only when there's a search term
-												}}
-												className="text-[13px] border-2 w-[234px] h-[29px] rounded-md pl-2 border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F]"
-											/>
+					<AnimatePresence>
+						{activeLabel && (
+							<motion.div
+								initial={{ x: -250, y: -150, opacity: 0, scale: 0 }}
+								animate={{ x: 0, y: 0, opacity: 1, scale: 1 }}
+								exit={{ x: -250, y: -150, opacity: 0, scale: 0 }}
+								transition={{ linear: true, duration: 0.15 }}
+								className=" absolute mt-2 z-10 h-max w-max rounded-[1.5rem] bg-[#ffffffec] p-6 shadow-md drop-shadow"
+							>
+								<div className="flex gap-x-6">
+									<div className="space-y-1">
+										<p className="text-[13px] font-semibold ml-2">
+											Choose Type
+										</p>
+										<div className="flex flex-col gap-x-2 space-y-1">
+											{type.map((type, index) => (
+												<div key={index} className="">
+													<button
+														value={type.value}
+														onClick={() => handleTagClick(type.value)}
+														className={`text-[12px] hover:bg-[#E4D1BC] font-medium text-start pl-2 w-full rounded-full py-1 pr-5  hover:text-gold ${
+															selectedTags.includes(type.value)
+																? "bg-[#E4D1BC] text-gold"
+																: ""
+														}`}
+													>
+														{type.label}
+													</button>
+												</div>
+											))}
 										</div>
-										<div className="">
-											{showSuggestions && value && (
-												<div className=" bg-white left-3 border-[1px] w-[234px] rounded-md  py-3 mt-1 absolute">
-													{province.map((item, index) => {
-														const provinceLabel = item.label.toLowerCase();
-														const matchingCities = item.city.filter((city) => {
-															const search = value.toLowerCase();
-															const cityLabel = city.label.toLowerCase();
+									</div>
+									<div className="border-l-2 pl-4 space-y-1">
+										<p className="text-[13px] font-semibold ml-1">
+											Choose Style
+										</p>
+										<div className="flex flex-col gap-x-2 space-y-1 ">
+											{style.map((style, index) => (
+												<div key={index} className="">
+													<button
+														value={style.value}
+														onClick={() => handleTagClick(style.value)}
+														className={`text-[12px] hover:bg-[#E4D1BC] text-start pl-1 font-medium w-full rounded-full py-1 pr-5  hover:text-gold ${
+															selectedTags.includes(style.value)
+																? "bg-[#E4D1BC] text-gold"
+																: ""
+														}`}
+													>
+														{style.label}
+													</button>
+												</div>
+											))}
+										</div>
+									</div>
+									<div className="border-l-2 pr-3 pl-4 relative">
+										<p className="text-[13px] font-semibold ml-[5px] pb-1">
+											Location
+										</p>
+										<div className="flex flex-col justify-center items-center mt-[5px] ">
+											<div>
+												<input
+													type="text"
+													value={value}
+													onChange={(e) => {
+														setValue(e.target.value);
+														setShowSuggestions(e.target.value !== ""); // Show suggestions only when there's a search term
+													}}
+													className="text-[13px] border-2 w-[234px] h-[29px] rounded-md pl-2 border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F]"
+												/>
+											</div>
+											<div className="">
+												{showSuggestions && value && (
+													<div className=" bg-white left-4 border-[1px] w-[234px] rounded-md  px-2 py-2 mt-1 absolute">
+														{province.map((item, index) => {
+															const provinceLabel = item.label.toLowerCase();
+															const matchingCities = item.city.filter(
+																(city) => {
+																	const search = value.toLowerCase();
+																	const cityLabel = city.label.toLowerCase();
 
-															return cityLabel.includes(search);
-														});
+																	return cityLabel.includes(search);
+																},
+															);
 
-														if (
-															provinceLabel.includes(value.toLowerCase()) ||
-															matchingCities.length > 0
-														) {
-															return (
-																<div key={index} className="text-[13px]">
-																	<div
-																		onClick={() => {
-																			onSearch(item.label);
-																			setSelectedProvinces((prevSelected) => [
-																				...prevSelected,
-																				item.label,
-																			]); // Add selected province to array
-																		}}
-																		className="flex justify-between py-1 hover:bg-[#F0F0F0]"
-																	>
-																		<div className="px-2 flex justify-between w-full">
-																			<p className="text-gold">{item.label}</p>
-																			<p className="text-[10px] text-black/50 my-auto">
-																				Province
-																			</p>
-																		</div>
-																	</div>
-																	{matchingCities.map((city, cityIndex) => (
+															if (
+																provinceLabel.includes(value.toLowerCase()) ||
+																matchingCities.length > 0
+															) {
+																return (
+																	<div key={index} className="text-[13px]">
 																		<div
 																			onClick={() => {
-																				onSearch(city.label);
+																				onSearch(item.label);
 																				setSelectedProvinces((prevSelected) => [
 																					...prevSelected,
-																					city.label,
+																					item.label,
 																				]); // Add selected province to array
 																			}}
-																			key={cityIndex}
 																			className="flex justify-between py-1 hover:bg-[#F0F0F0]"
 																		>
 																			<div className="px-2 flex justify-between w-full">
 																				<p className="text-gold">
-																					{city.label}
+																					{item.label}
 																				</p>
-																				<p className="text-[10px] text-black/50 my-auto ">
-																					City
+																				<p className="text-[10px] text-black/50 my-auto">
+																					Province
 																				</p>
 																			</div>
 																		</div>
-																	))}
-																</div>
-															);
-														}
+																		{matchingCities.map((city, cityIndex) => (
+																			<div
+																				onClick={() => {
+																					onSearch(city.label);
+																					setSelectedProvinces(
+																						(prevSelected) => [
+																							...prevSelected,
+																							city.label,
+																						],
+																					); // Add selected province to array
+																				}}
+																				key={cityIndex}
+																				className="flex cursor-pointer justify-between py-1 hover:bg-[#F0F0F0]"
+																			>
+																				<div className="px-2 cursor-pointer flex justify-between w-full">
+																					<p className="text-gold cursor-pointer">
+																						{city.label}
+																					</p>
+																					<p className="cursor-pointer text-[10px] text-black/50 my-auto ">
+																						City
+																					</p>
+																				</div>
+																			</div>
+																		))}
+																	</div>
+																);
+															}
 
-														return null;
-													})}
-												</div>
-											)}
+															return null;
+														})}
+													</div>
+												)}
+											</div>
 										</div>
 									</div>
 								</div>
-							</div>
-						</div>
-					)}
+							</motion.div>
+						)}
+					</AnimatePresence>
 				</div>
 
 				<div className="max-w-max  pt-5">
-					<div className=" flex flex-grow flex-row flex-wrap justify-center gap-3">
+					<div className=" flex flex-grow flex-row flex-wrap justify-center gap-[1.1rem]">
 						{designerData.slice(0, visibleItems).map((designerData, idx) => {
 							return (
 								<div
 									key={idx}
-									className={`relative   rounded-[1.5625rem] transition-all overflow-hidden duration-300 h-[20.625rem] w-[15.46875rem]`}
+									className={`relative   rounded-[1.5625rem] transition-all overflow-hidden duration-300 h-[21rem] w-[15.46875rem]`}
 									onMouseEnter={() => {
 										setHover(true);
 										setIndex(idx);
@@ -773,7 +812,7 @@ export default function Designer() {
 									</div>
 									<motion.div
 										animate={{ opacity: hover && index == idx ? 1 : 0 }}
-                    transition={{ease: "easeIn", duration: 0.2}}
+										transition={{ ease: "easeIn", duration: 0.2 }}
 										className={` ${
 											hover && index == idx
 												? "absolute top-0 h-full w-full bg-[#00000035]"
@@ -884,12 +923,13 @@ export default function Designer() {
 
 			<div className=" mt-10 flex items-center justify-center">
 				{visibleItems < designerData.length && (
-					<button
-						className=" py-1 px-4 rounded-3xl border-2 border-[#B17C3F] bg-white text-[0.8rem] text-[#B17C3F] duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white"
+					<motion.button
+						whileTap={{ scale: 0.9 }}
+						className=" py-1 px-4 rounded-3xl border-2 border-[#B17C3F] bg-white text-[0.8rem] text-[#B17C3F] duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] font-semibold hover:text-white"
 						onClick={loadMore}
 					>
 						Load More
-					</button>
+					</motion.button>
 				)}
 			</div>
 			<Footer></Footer>
