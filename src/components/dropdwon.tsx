@@ -10,6 +10,7 @@ export default function Dropdown(props: {
   placehoder: any;
   onChange: any;
   form: any;
+  styleText:any;
 }) {
   const {
     title,
@@ -20,6 +21,7 @@ export default function Dropdown(props: {
     styleClassTag,
     onChange,
     form,
+    styleText
   } = props;
   const handleChange = (event: any) => {
     const selectedValue = event.target.value;
@@ -29,7 +31,7 @@ export default function Dropdown(props: {
   return (
     <div className={styleClass}>
       <div className={styleClass}>
-        <p className="py-[2px]">{title}</p>
+        <p className={`py-[2px] ${styleText}`}>{title}</p>
         <select
           value={value}
           onChange={handleChange}
@@ -59,6 +61,7 @@ Dropdown.prototype = {
   styleClass: PropTypes.string,
   styleClassTag: PropTypes.string,
   onChange: PropTypes.func.isRequired,
+  styleText: PropTypes.string,
 };
 
 Dropdown.defaultProps = {
@@ -68,4 +71,5 @@ Dropdown.defaultProps = {
   placeholder: "",
   styleClass: "",
   styleClassTag: "",
+  styleText: "",
 };

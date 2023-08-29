@@ -6,7 +6,116 @@ import InputPopUp from "@/components/popUpInput";
 import CloseIcon from "@mui/icons-material/Close";
 import Dropdown from "@/components/dropdwon";
 
-export default function Form() {
+export default function FormDesainer() {
+	const [education, setEducation] = useState<
+		{
+			studyInstitution:string;
+			studyTitle:string;
+			studyDepartement:string;
+			StudyFrom:string;
+			StudyUntil:string;
+			studyDescription: string;
+		}[]
+	>([]);
+
+	const [studyInstitution, setStudyInstitution] = useState("");
+	const [studyTitle, setStudyTitle] = useState("");
+	const [studyDepartement, setStudyDepartement] = useState("");
+	const [StudyFrom, setStudyFrom] = useState("");
+	const [StudyUntil, setStudyUntil] = useState("");
+	const [studyDescription, setStudyDescription] = useState("");
+
+	const handleStudyIntitutionChange = (event: any) => {
+		setStudyInstitution(event.target.value);
+	};
+	const handleStudyTitleChange = (event: any) => {
+		setStudyTitle(event.target.value);
+	};
+	const handleStudyDepartementChange = (event: any) => {
+		setStudyDepartement(event.target.value);
+	};
+	const handleStudyFromChange = (event: any) => {
+		setStudyFrom(event.target.value);
+	};
+	const handleStudyUntilChange = (event: any) => {
+		setStudyUntil(event.target.value);
+	};
+	const handleStudyDescriptionChange = (event: any) => {
+		setStudyDescription(event.target.value);
+	};
+
+	const handleEducationSubmit = (event: any) => {
+		event.preventDefault();
+		const newEducation = {
+			studyInstitution,
+			studyTitle,
+			studyDepartement,
+			StudyFrom,
+			StudyUntil,
+			studyDescription,
+		};
+
+		setEducation([...education, newEducation]);
+		setStudyDescription("");
+		setStudyInstitution("");
+		setStudyTitle("");
+		setStudyDepartement("");
+		setStudyFrom("");
+		setStudyUntil("");
+	};
+
+	const [isEditEducationOpen, setIsEditEducationOpen] = useState(false);
+	const [editEducationIndex, setEditEducationIndex] = useState(-1);
+
+	const openEditEducation = (index: number) => {
+		const educationToEdit = education[index];
+		setEditEducationIndex(index);
+		setStudyInstitution(educationToEdit.studyInstitution);
+		setStudyTitle(educationToEdit.studyTitle);
+		setStudyDepartement(educationToEdit.studyDepartement);
+		setStudyFrom(educationToEdit.StudyFrom);
+		setStudyUntil(educationToEdit.StudyUntil);
+		setStudyDescription(educationToEdit.studyDescription);
+		setIsEditEducationOpen(true);
+	};
+
+	const handleEditEducationSave = (index: number) => {
+		const updateEducation = [...education];
+		updateEducation[index] = {
+			...updateEducation[index],
+			studyInstitution,
+			studyTitle,
+			studyDepartement,
+			StudyFrom,
+			StudyUntil,
+			studyDescription,
+		};
+		setEducation(updateEducation);
+		setStudyInstitution("");
+		setStudyTitle("");
+		setStudyDepartement("");
+		setStudyFrom("");
+		setStudyUntil("");
+		setDescription("");
+		setIsEditEducationOpen(false);
+	};
+
+	const closeEditEducation = () => {
+		setIsEditEducationOpen(false);
+	};
+
+	const handleEducationDelete = (index: number) => {
+		const updateEducation = education.filter((_, i) => i !== index);
+		setEducation(updateEducation);
+	};
+
+	const [isEducationOpen, setIsEducationOpen] = useState(false);
+	const openEducationPopUp = () => {
+		setIsEducationOpen(!isEducationOpen);
+	};
+	
+	// EDUCATION SETTING
+
 	const [members, setMembers] = useState<
 		{ name: string; job: string; description: string }[]
 	>([]);
@@ -76,6 +185,8 @@ export default function Form() {
 	const openPopUp = () => {
 		setModal(!modal);
 	};
+	
+	
 
 	// MEMBER SETTING
 
@@ -223,6 +334,8 @@ export default function Form() {
 		setProjectModal(!projectModal);
 		image.length = 0;
 	};
+	
+	console.log(image);
 	// DETAIL PROJECT
 	//BIODATA
 	const [biodata, setBiodata] = useState<
@@ -236,7 +349,6 @@ export default function Form() {
 		}[]
 	>([]);
 
-	
 	const [firstName, setFirstName] = useState("");
 	const [lastName, setLastName] = useState("");
 	const [province, setProvince] = useState("");
@@ -305,8 +417,6 @@ export default function Form() {
 		setConfirmModal(!confirmModal);
 	};
 
-	
-
 	return (
 		<div>
 			<div>
@@ -374,14 +484,183 @@ export default function Form() {
 					</div>
 				)}
 
+				{isEducationOpen && (
+					<div className="fixed inset-0 z-10 flex items-center justify-center">
+						<div className="absolute bottom-0 left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-black/40">
+							<div className="modal-content w-[553px] rounded-3xl bg-white">
+								<div className="border-b-2 border-gold/60">
+									<h2 className="mx-8 my-4  text-[18px]">Detail Education</h2>
+								</div>
+								<form id="EducationForm" onSubmit={handleEducationSubmit}>
+									<div className="ml-14 py-5">
+										<InputPopUp
+											type="text"
+											title="Institution"
+											value={studyInstitution}
+											onChange={handleStudyIntitutionChange}
+											className="bg-white"
+											required
+										></InputPopUp>
+										<InputPopUp
+											title="Title"
+											type="text"
+											value={studyTitle}
+											className="bg-white"
+											required
+											onChange={handleStudyTitleChange}
+										></InputPopUp>
+										<InputPopUp
+											title="Departement"
+											type="text"
+											value={studyDepartement}
+											className="bg-white"
+											required
+											onChange={handleStudyDepartementChange}
+										></InputPopUp>
+										<InputPopUp
+											title="From"
+											type="date"
+											value={StudyFrom}
+											className="bg-white"
+											onChange={handleStudyFromChange}
+										></InputPopUp>
+										<InputPopUp
+											title="Until"
+											type="date"
+											value={StudyUntil}
+											className="bg-white"
+											onChange={handleStudyUntilChange}
+										></InputPopUp>
+										<label className="mt-4 gap-24 pr-14">
+											<span className="mt-2 w-[120px] text-[10px]  text-[#B17C3F] ">
+												Additonal Information
+											</span>
+											<textarea
+												id="description"
+												value={studyDescription}
+												onChange={handleStudyDescriptionChange}
+												placeholder="Description"
+												className=" mt-1 block w-[440px] h-[127px] rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
+												maxLength={500}
+												onKeyDown={(e) => {
+													if (e.key === "Enter") {
+														e.preventDefault();
+													}
+												}}
+											></textarea>
+										</label>
+									</div>
+									<div className="flex justify-end border-t-2 border-gold/60">
+										<button
+											type="submit"
+											className="my-3 mr-3 rounded-full border-[1px] border-gold bg-gold px-8 py-1 text-[13px] text-white hover:border-goldhov hover:bg-goldhov"
+										>
+											Save
+										</button>
+										<button
+											className="my-3 mr-14 rounded-full border-[1px] border-gold px-5 py-1 text-[13px] hover:border-red-400 hover:bg-red-400 hover:text-white"
+											onClick={openEducationPopUp}
+										>
+											Close
+										</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				)}
+				
+				{isEditEducationOpen && editEducationIndex !== -1 && (
+					<div className="fixed inset-0 z-10 flex items-center justify-center">
+						<div className="absolute bottom-0 left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-black/40">
+							<div className="modal-content w-[553px] rounded-3xl bg-white">
+								<div className="border-b-2 border-gold/60">
+									<h2 className="mx-8 my-4  text-[18px]"> Edit Detail Education</h2>
+								</div>						
+									<div className="ml-14 py-5">
+										<InputPopUp
+											type="text"
+											title="Institution"
+											value={studyInstitution}
+											onChange={handleStudyIntitutionChange}
+											className="bg-white"
+											required
+										></InputPopUp>
+										<InputPopUp
+											title="Title"
+											type="text"
+											value={studyTitle}
+											className="bg-white"
+											required
+											onChange={handleStudyTitleChange}
+										></InputPopUp>
+										<InputPopUp
+											title="Departement"
+											type="text"
+											value={studyDepartement}
+											className="bg-white"
+											required
+											onChange={handleStudyDepartementChange}
+										></InputPopUp>
+										<InputPopUp
+											title="From"
+											type="date"
+											value={StudyFrom}
+											className="bg-white"
+											onChange={handleStudyFromChange}
+										></InputPopUp>
+										<InputPopUp
+											title="Until"
+											type="date"
+											value={StudyUntil}
+											className="bg-white"
+											onChange={handleStudyUntilChange}
+										></InputPopUp>
+										<label className="mt-4 gap-24 pr-14">
+											<span className="mt-2 w-[120px] text-[10px]  text-[#B17C3F] ">
+												Additonal Information
+											</span>
+											<textarea
+												id="description"
+												value={studyDescription}
+												onChange={handleStudyDescriptionChange}
+												placeholder="Description"
+												className=" mt-1 block w-[440px] h-[127px] rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
+												maxLength={500}
+												onKeyDown={(e) => {
+													if (e.key === "Enter") {
+														e.preventDefault();
+													}
+												}}
+											></textarea>
+										</label>
+									</div>
+									<div className="flex justify-end border-t-2 border-gold/60">
+										<button
+											onClick={()=> handleEditEducationSave(editEducationIndex)}
+											className="my-3 mr-3 rounded-full border-[1px] border-gold bg-gold px-8 py-1 text-[13px] text-white hover:border-goldhov hover:bg-goldhov"
+										>
+											Save
+										</button>
+										<button
+											className="my-3 mr-14 rounded-full border-[1px] border-gold px-5 py-1 text-[13px] hover:border-red-400 hover:bg-red-400 hover:text-white"
+											onClick={closeEditEducation}
+										>
+											Close
+										</button>
+									</div>
+								
+							</div>
+						</div>
+					</div>
+				)}
+
 				{isEditPopupOpen && editMemberIndex !== -1 && (
 					<div className="fixed inset-0 z-10 flex items-center justify-center">
 						<div className="absolute bottom-0 left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-black/40">
 							<div className="z-50 modal-content w-[553px] rounded-3xl bg-white">
 								<div className="border-b-2 border-gold/60">
-									<h2 className="mx-8 my-4  text-[18px]">
-										Edit Detail Member 
-									</h2>
+									<h2 className="mx-8 my-4  text-[18px]">Edit Detail Member</h2>
 								</div>
 
 								<div className="ml-14 py-5">
@@ -581,6 +860,7 @@ export default function Form() {
 												</div>
 											</div>
 										</div>
+									
 									</div>
 									<div className="flex justify-end border-t-2 border-gold/60">
 										<button
@@ -701,7 +981,7 @@ export default function Form() {
 														<input
 															id="image-input"
 															type="file"
-															ref={inputRef}
+															// ref={inputRef}
 															onChange={handleChangeImage}
 															multiple
 															accept="image/*"
@@ -727,7 +1007,7 @@ export default function Form() {
 													<input
 														id="image-input"
 														type="file"
-														ref={inputRef}
+														// ref={inputRef}
 														onChange={handleChangeImage}
 														multiple
 														accept="image/*"
@@ -850,7 +1130,6 @@ export default function Form() {
 
 											<div className="ml-[187px] mt-2 flex pr-[55px] text-gold text-[11px]">
 												{tag.length > index + 1 ? (
-													
 													<div className="w-full flex justify-end">
 														<button onClick={() => handleDeleteTag(index)}>
 															Delete Tag
@@ -858,9 +1137,9 @@ export default function Form() {
 													</div>
 												) : (
 													<button onClick={handleAddTag}>+ Add Tag</button>
-													
+													// ""
 												)}
-												
+			
 											</div>
 										</div>
 									))}
@@ -919,6 +1198,114 @@ export default function Form() {
 						</div>
 
 						{/* BATAS BIODATA */}
+
+						<div className="mb-10 w-full rounded-3xl bg-white drop-shadow-landingShado">
+							<div className="ml-14 mr-14 py-8 pb-14">
+								<div className="mb-8 flex w-full justify-between">
+									<p className="text-[15px] font-semibold text-gold">
+										Education
+									</p>
+									<button onClick={openEducationPopUp}>
+										<svg
+											width="21"
+											height="20"
+											viewBox="0 0 21 20"
+											fill="none"
+											xmlns="http://www.w3.org/2000/svg"
+										>
+											<path
+												fillRule="evenodd"
+												clipRule="evenodd"
+												d="M0.351807 10C0.351807 4.477 4.81366 0 10.318 0C15.8223 0 20.2842 4.477 20.2842 10C20.2842 15.523 15.8223 20 10.318 20C4.81366 20 0.351807 15.523 0.351807 10ZM10.318 2C8.20343 2 6.17548 2.84285 4.68026 4.34315C3.18505 5.84344 2.34504 7.87827 2.34504 10C2.34504 12.1217 3.18505 14.1566 4.68026 15.6569C6.17548 17.1571 8.20343 18 10.318 18C12.4325 18 14.4605 17.1571 15.9557 15.6569C17.4509 14.1566 18.2909 12.1217 18.2909 10C18.2909 7.87827 17.4509 5.84344 15.9557 4.34315C14.4605 2.84285 12.4325 2 10.318 2Z"
+												fill="#B17C3F"
+											/>
+											<path
+												fillRule="evenodd"
+												clipRule="evenodd"
+												d="M11.3146 5C11.3146 4.73478 11.2096 4.48043 11.0227 4.29289C10.8358 4.10536 10.5823 4 10.318 4C10.0536 4 9.80015 4.10536 9.61325 4.29289C9.42635 4.48043 9.32135 4.73478 9.32135 5V9H5.33487C5.07056 9 4.81706 9.10536 4.63016 9.29289C4.44326 9.48043 4.33826 9.73478 4.33826 10C4.33826 10.2652 4.44326 10.5196 4.63016 10.7071C4.81706 10.8946 5.07056 11 5.33487 11H9.32135V15C9.32135 15.2652 9.42635 15.5196 9.61325 15.7071C9.80015 15.8946 10.0536 16 10.318 16C10.5823 16 10.8358 15.8946 11.0227 15.7071C11.2096 15.5196 11.3146 15.2652 11.3146 15V11H15.3011C15.5654 11 15.8189 10.8946 16.0058 10.7071C16.1927 10.5196 16.2977 10.2652 16.2977 10C16.2977 9.73478 16.1927 9.48043 16.0058 9.29289C15.8189 9.10536 15.5654 9 15.3011 9H11.3146V5Z"
+												fill="#B17C3F"
+											/>
+										</svg>
+									</button>
+								</div>
+								{education.map((education, index) => (
+									<div className="flex pb-10" key={index}>
+										<span>
+											<svg
+												width="64"
+												height="64"
+												viewBox="0 0 64 64"
+												fill="none"
+												xmlns="http://www.w3.org/2000/svg"
+											>
+												<g clipPath="url(#clip0_1828_1997)">
+													<path
+														d="M10.656 25.6L32 38.4L64 19.2L32 0L0 19.2H32V25.6H10.656ZM0 25.6V51.2L6.4 44.096V29.44L0 25.6ZM32 64L16 54.4L9.6 50.56V31.36L32 44.8L54.4 31.36V50.56L32 64Z"
+														fill="#B17C3F"
+													/>
+												</g>
+												<defs>
+													<clipPath id="clip0_1828_1997">
+														<rect width="64" height="64" fill="white" />
+													</clipPath>
+												</defs>
+											</svg>
+										</span>
+										<span className="ml-8 w-full ">
+											<div className="flex w-full  justify-between">
+												<p className="text-[17px] font-medium">
+													{education.studyInstitution}
+												</p>
+
+												<div className="flex gap-2">
+													<button onClick={() => handleEducationDelete(index)}>
+														<svg
+															width="17"
+															height="16"
+															viewBox="0 0 17 16"
+															fill="none"
+															xmlns="http://www.w3.org/2000/svg"
+														>
+															<path
+																d="M8.49561 0C4.23961 0 0.776855 3.46275 0.776855 7.71875C0.776855 11.9748 4.23961 15.4375 8.49561 15.4375C12.7516 15.4375 16.2144 11.9748 16.2144 7.71875C16.2144 3.46275 12.7516 0 8.49561 0ZM8.49561 1.1875C12.1098 1.1875 15.0269 4.10459 15.0269 7.71875C15.0269 11.3329 12.1098 14.25 8.49561 14.25C4.88145 14.25 1.96436 11.3329 1.96436 7.71875C1.96436 4.10459 4.88145 1.1875 8.49561 1.1875ZM4.93311 7.125V8.3125H12.0581V7.125H4.93311Z"
+																fill="#B17C3F"
+															/>
+														</svg>
+													</button>
+
+													<button onClick={() => openEditEducation(index)}>
+														<svg
+															width="15"
+															height="16"
+															viewBox="0 0 15 16"
+															fill="none"
+															xmlns="http://www.w3.org/2000/svg"
+														>
+															<path
+																d="M10.5477 2.0001C10.7175 1.79946 10.9275 1.63614 11.1644 1.52055C11.4013 1.40497 11.6598 1.33966 11.9235 1.32878C12.1872 1.31789 12.4503 1.36169 12.696 1.45736C12.9417 1.55303 13.1646 1.69848 13.3506 1.88445C13.5366 2.07041 13.6815 2.29281 13.7761 2.53746C13.8707 2.78211 13.9129 3.04366 13.9001 3.30542C13.8873 3.56718 13.8197 3.82342 13.7017 4.05781C13.5836 4.2922 13.4176 4.49959 13.2144 4.66677L4.2144 13.6668L0.547729 14.6668L1.54773 11.0001L10.5477 2.0001Z"
+																stroke="#B17C3F"
+															/>
+														</svg>
+													</button>
+												</div>
+											</div>
+											<p>
+												{education.studyTitle} , {education.studyDepartement}
+											</p>
+											<p className="text-black/60">
+												{education.StudyFrom.substr(0, 0 + 4)} -
+												{education.StudyUntil.substr(0, 0 + 4) === "2023"
+													? " Now"
+													: education.StudyUntil.substr(0, 0 + 4)}
+													
+											</p>
+										</span>
+									</div>
+								))}
+							</div>
+						</div>
+
+						{/* BATAS EDUCATION */}
 
 						<div className="mb-10 w-full rounded-3xl bg-white drop-shadow-landingShado">
 							<div className="ml-14 mr-14 py-8 pb-14">
@@ -1099,6 +1486,16 @@ export default function Form() {
 													? " Now"
 													: projects.dateUntil.substr(0, 0 + 4)}
 											</p>
+											{projects.image.map((item,index) => (
+												<div key={index}>
+													<Image
+														src={item}
+														alt=""
+														height={120}
+														width={120}
+													></Image>
+												</div>
+											))}
 										</span>
 									</div>
 								))}
