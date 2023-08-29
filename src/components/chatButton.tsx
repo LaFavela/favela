@@ -8,84 +8,8 @@ import IMGPreview from "./imgPreview";
 // // import fs from "fs/promises";
 // import path from "path";
 // import { GetServerSideProps, NextPage } from "next";
-const user = [
-  { id: 1, firsName: "Ramadhani", img: "/assets/profile/avatar.jpg" },
-];
 
-// const wasChat = { id: 1, firstname: "Ali", img: "/assets/profile/ali.jpg" };
 
-// const chat = [
-//   {
-//     id: 1,
-//     chatAt: "12.00",
-//     receiver: true,
-//     chat: "m lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
-//     img: "/assets/profile/ali.jpg",
-//   },
-//   {
-//     id: 1,
-//     chatAt: "12.00",
-//     receiver: true,
-//     chat: "m lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
-//     img: "/assets/profile/ali.jpg",
-//   },
-//   {
-//     id: 1,
-//     chatAt: "12.00",
-//     receiver: true,
-//     chat: "m lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
-//     img: "/assets/profile/ali.jpg",
-//   },
-//   {
-//     id: 1,
-//     chatAt: "12.00",
-//     receiver: true,
-//     chat: "m lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
-//     img: "/assets/profile/ali.jpg",
-//   },
-//   {
-//     id: 1,
-//     chatAt: "12.00",
-//     receiver: true,
-//     chat: "m lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
-//     img: "/assets/profile/ali.jpg",
-//   },
-//   {
-//     id: 1,
-//     chatAt: "12.00",
-//     receiver: false,
-//     chat: "m lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
-//     img: "/assets/profile/ali.jpg",
-//   },
-//   {
-//     id: 1,
-//     chatAt: "12.00",
-//     receiver: true,
-//     chat: "m lorem ",
-//     img: "/assets/product/scandinavian/image 1.png",
-//   },
-//   {
-//     id: 1,
-//     chatAt: "12.00",
-//     receiver: true,
-//     chat: "m lorem ",
-//     img: "",
-//   },
-//   {
-//     id: 1,
-//     chatAt: "12.00",
-//     receiver: true,
-//     chat: "m lorem ",
-//     img: "/assets/profile/ali.jpg",
-//   },
-//   {
-//     id: 1,
-//     chatAt: "12.00",
-//     receiver: true,
-//     chat: "m lorem ",
-//     img: "/assets/profile/ali.jpg",
-//   },
-// ];
 interface ChatProps {
   visible: boolean;
   onClose: (value: boolean) => void;
@@ -93,122 +17,80 @@ interface ChatProps {
 }
 
 export function Chat(props: ChatProps) {
-  const [chat, setChat] = useState([
+  const [message, setMessage] = useState([
     {
-      id: "001",
-      firstName: "Rama",
-      chat: [
-        {
-          receiver: false,
-          content: "Jadi Gini",
-          time: "12.00",
-          img: "",
-        },
-        {
-          receiver: true,
-          content:
-            "Payu bro, aku mau tanya nih, kalo aku mau beli produk ini, aku bisa langsung ambil di toko kamu ga?",
-          time: "12.00",
-          img: "",
-        },
-      ],
-      img: "/assets/profile/rama.png",
+      id: 0,
+      createAt: "12.00",
+      content: "Halo",
+      img: "",
+      sentBy: 21084,
+      channel:1,
     },
     {
-      id: "002",
-      firstName: "Ali",
-      chat: [
-        {
-          receiver: false,
-          content: "Sumpret",
-          time: "12.00",
-          img: "",
-        },
-        {
-          receiver: false,
-          content: "Sumpret",
-          time: "12.00",
-          img: "",
-        },
-        {
-          receiver: true,
-          content:
-            "m lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
-          time: "12.00",
-          img: "/assets/profile/ali.jpg",
-        },
-        {
-          receiver: false,
-          content:
-            "aku mau tanya nih, kalo aku mau beli produk ini, aku bisa langsung ambil di toko kamu ga?",
-          time: "12.00",
-          img: "",
-        },
-        {
-          receiver: true,
-          content:
-            "m lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
-          time: "12.00",
-          img: "/assets/product/scandinavian/image 1.png",
-        },
-        {
-          receiver: false,
-          content:
-            "aku mau tanya nih, kalo aku mau beli produk ini, aku bisa langsung ambil di toko kamu ga?",
-          time: "12.00",
-          img: "",
-        },
-        {
-          receiver: false,
-          content:
-            "sakmfajngaengjsngjksrnghsbrghsbhgbshjbghbdghbfjbdbgfdbgjfdbgjfbgjfdbgfjdjfdbghbgdgbdfgbdbgfbdbgdfhbgdjfbgfdbgdf",
-          time: "12.00",
-          img: "",
-        },
-      ],
-      img: "/assets/profile/ali.jpg",
+      id: 1,
+      createAt: "12.00",
+      content: "Halo",
+      img: "",
+      sentBy: 21132,
+      channel:1,
     },
     {
-      id: "003",
-      firstName: "Yan",
-      chat: [
-        {
-          receiver: false,
-          content:
-            "m lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis quibusdam ullam vitae vero reprehenderit repellendus veniam corporis",
-          time: "12.00",
-          img: "",
-        },
-        {
-          receiver: true,
-          content:
-            "Sebenarnya aku mau tanya nih, kalo aku mau beli produk ini, aku bisa langsung ambil di toko kamu ga?",
-          time: "12.00",
-          img: "",
-        },
-      ],
-      img: "/assets/profile/yan.jpg",
+      id: 2,
+      createAt: "12.00",
+      content: "Halo",
+      img: "",
+      sentBy: 21084,
+      channel:1,
+    },
+    {
+      id: 3,
+      createAt: "12.00",
+      content: "Halo",
+      img: "",
+      sentBy: 21132,
+      channel:2,
     },
   ]);
-  const addChatMessage = (userId: any, messageContent: any) => {
+  const channel = [
+    {
+      id: 1,
+      createAt: "12.00",
+      serverId: 21084,
+      clientId: 21132,
+    },
+    {
+      id: 2,
+      createAt: "12.00",
+      serverId: 21015,
+      clientId: 21132,
+    },
+  ]
+  const user = [
+    { id: 21132, firsName: "Ramadhani", img: "/assets/profile/rama.png" },
+    { id: 21084, firsName: "Dhira", img: "/assets/profile/dhira.jpg" },
+    { id: 21015, firsName: "Raihan", img: "/assets/profile/raihan.png" },
+  ];
+  const [temp, setTemp] = useState<any>([]); //temp = [id,channel
+  const [activeChannel, setActiveChannel] = useState<number>();
+  const addChatMessage = (userId: any, messageContent: any,channel:any) => {
     // Buat salinan data chatData agar tidak mengubah data state langsung
-    const updatedChatData = [...chat];
+    const updatedMsgData = [...message];
 
-    // Cari pengguna berdasarkan ID
-    const userIndex = updatedChatData.findIndex((user) => user.id === userId);
 
     // Tambahkan pesan baru ke dalam array chat pengguna tersebut
-    updatedChatData[userIndex].chat.push({
-      receiver: false, // Pengirim pesan (false berarti pengguna sendiri)
+    updatedMsgData.push({
+      id:99, // Pengirim pesan (false berarti pengguna sendiri)
+      createAt: new Date().toLocaleTimeString(), // Waktu pesan
       content: messageContent,
-      time: new Date().toLocaleTimeString(), // Waktu pesan
+      sentBy: userId, // Pengirim pesan (false berarti pengguna sendiri)
+      channel:channel,
       img: "", // Gambar jika ada
     });
 
     // Perbarui state dengan data chat yang baru
-    setChat(updatedChatData);
+    setMessage(updatedMsgData);
   };
-  const [wasChat, setWasChat] = useState<any>([]);
+  
   const lastMessage = useRef<any>(null);
   const [value, setValue] = useState("");
   const onChange = (event: any) => setValue(event.target.value);
@@ -319,7 +201,9 @@ export function Chat(props: ChatProps) {
                   {/* partisipant chat */}
                   <div className="no-scrollbar h-[34rem] w-[16rem] overflow-y-scroll  rounded-[0.5rem] bg-white drop-shadow">
                     {/* looping */}
-                    {chat.map((data, idx) => (
+                    {channel.map((data, idx) => (
+                      
+
                       <motion.div
                         transition={{
                           ease: "easeIn",
@@ -329,17 +213,14 @@ export function Chat(props: ChatProps) {
                         key={idx}
                         className="flex h-[4rem] w-full cursor-pointer snap-proximity items-center  hover:bg-[#D9D9D9] "
                         onClick={() => {
-                          setWasChat(data);
-
-                          console.log(wasChat);
-                          if (wasChat.length != 0) {
-                          }
+                          setActiveChannel(data.id);
+                          
                         }}
                       >
                         <div className="relative ml-2 h-[2.7rem] w-[2.7rem]">
                           <Image
                             className="rounded-full"
-                            src={data.img}
+                            src={user.find((user) => {return user.id==data.serverId})?.img||"/asset/profile/avatar.jpg"}
                             alt={"user"}
                             fill={true}
                             style={{ objectFit: "fill" }}
@@ -348,14 +229,14 @@ export function Chat(props: ChatProps) {
                         <div className="ml-2 w-[11.4rem]">
                           <div className="flex w-full items-center justify-between ">
                             <p className="text-[0.9rem] font-light">
-                              {data.firstName}
+                              {user.find((user) => {return user.id==data.serverId})?.firsName||"fisrtname"}
                             </p>
                             <p className="text-[0.5rem] font-light">
-                              {data.chat[data.chat.length - 1].time}
+                              {message[message.filter((msg) => { return msg.channel == data.id })?.length - 1]?.createAt||"00.00"}
                             </p>
                           </div>
                           <p className="truncate text-[0.63rem] font-light ">
-                            {data.chat[data.chat.length - 1].content}
+                          {message[message.filter((msg) => { return msg.channel == data.id })?.length - 1]?.content||""}
                           </p>
                         </div>
                       </motion.div>
@@ -363,13 +244,13 @@ export function Chat(props: ChatProps) {
                   </div>
                   {/* isi chat */}
 
-                  {wasChat.length != 0 && (
+                  {activeChannel != null && (
                     <div className="h-[34rem] w-[30.4rem]  overflow-hidden rounded-[0.5rem] bg-[#f4f4f4] drop-shadow">
                       <div className="flex items-center border-b-[0.05rem] bg-white pb-2  pt-3">
                         <div className="relative ml-4 h-[2.3125rem] w-[2.3125rem] bg-[white] rounded-full">
                           <Image
                             className="rounded-full"
-                            src={wasChat.img}
+                            src={user.find((user) => {return user.id==channel.find((ch)=>{return ch.id==activeChannel})?.serverId})?.img||"/asset/profile/avatar.jpg"}
                             // src="/images/Profile.png"
                             alt={"user"}
                             fill={true}
@@ -377,22 +258,22 @@ export function Chat(props: ChatProps) {
                           />
                         </div>
                         <p className=" ml-3 text-[1rem] font-normal">
-                          {wasChat.firstName}
+                        {user.find((user) => {return user.id==channel.find((ch)=>{return ch.id==activeChannel})?.serverId})?.firsName||"firstname"}
                         </p>
                       </div>
 
                       <div className="no-scrollbar  mb-2 ml-5 mr-5 mt-2 h-[25.6rem] w-[27.8rem] snap-proximity space-y-4 overflow-hidden overflow-y-scroll">
-                        {wasChat.chat.map((data: any, idx: any) => (
+                        {message.filter((msg) => msg.channel == activeChannel).map((data,idx) => (
                           <div
                             key={idx}
                             ref={
-                              idx == wasChat.chat.length - 1
+                              idx == message.filter((msg) => msg.channel == activeChannel).length - 1
                                 ? lastMessage
                                 : null
                             }
                             className="grid w-full "
                           >
-                            {data.receiver ? (
+                            {data.sentBy != user[0].id ? (
                               <div className="w-auto max-w-[16rem] snap-end space-y-2 rounded-b-lg rounded-tr-lg bg-[#E6E6E6] pb-2 pl-2 pr-2 pt-2 drop-shadow ">
                                 <div className="flex justify-center ">
                                   {data.img != "" ? (
@@ -419,7 +300,7 @@ export function Chat(props: ChatProps) {
                                     {data.content}
                                   </p>
                                   <p className="ml-3 place-self-end text-[0.5rem]">
-                                    {data.time}
+                                    {data.createAt}
                                   </p>
                                 </div>
                               </div>
@@ -450,7 +331,7 @@ export function Chat(props: ChatProps) {
                                     {data.content}
                                   </p>
                                   <p className="ml-3 place-self-end text-[0.5rem]">
-                                    {data.time}
+                                    {data.createAt}
                                   </p>
                                 </div>
                               </div>
@@ -469,11 +350,8 @@ export function Chat(props: ChatProps) {
                           if (value != "" || selectedFile != undefined) {
                             
                             // handleUpload();
-                            addChatMessage(wasChat.id, value);
+                            addChatMessage(user[0].id, value,activeChannel);
                             setValue("");
-                            console.log("value", value);
-                            console.log("selectedFile", selectedFile);
-                            console.log("selectedImage", selectedImage);
 
                             setSelectedFile(undefined);
                             setSelectedImage("");
@@ -499,7 +377,7 @@ export function Chat(props: ChatProps) {
                               <path
                                 d="M1 12.5554L5.44444 8.11096C6.26933 7.31718 7.28622 7.31718 8.11111 8.11096L12.5556 12.5554"
                                 stroke="#B17C3F"
-                                stroke-linecap="round"
+                                strokeLinecap="round"
                                 stroke-linejoin="round"
                               />
                               <path
