@@ -5,15 +5,16 @@ import InputBox from "@/components/inpuBox";
 import InputPopUp from "@/components/popUpInput";
 import CloseIcon from "@mui/icons-material/Close";
 import Dropdown from "@/components/dropdwon";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function FormDesainer() {
 	const [education, setEducation] = useState<
 		{
-			studyInstitution:string;
-			studyTitle:string;
-			studyDepartement:string;
-			StudyFrom:string;
-			StudyUntil:string;
+			studyInstitution: string;
+			studyTitle: string;
+			studyDepartement: string;
+			StudyFrom: string;
+			StudyUntil: string;
 			studyDescription: string;
 		}[]
 	>([]);
@@ -113,7 +114,7 @@ export default function FormDesainer() {
 	const openEducationPopUp = () => {
 		setIsEducationOpen(!isEducationOpen);
 	};
-	
+
 	// EDUCATION SETTING
 
 	const [members, setMembers] = useState<
@@ -185,8 +186,6 @@ export default function FormDesainer() {
 	const openPopUp = () => {
 		setModal(!modal);
 	};
-	
-	
 
 	// MEMBER SETTING
 
@@ -334,7 +333,7 @@ export default function FormDesainer() {
 		setProjectModal(!projectModal);
 		image.length = 0;
 	};
-	
+
 	console.log(image);
 	// DETAIL PROJECT
 	//BIODATA
@@ -483,173 +482,185 @@ export default function FormDesainer() {
 						</div>
 					</div>
 				)}
-
-				{isEducationOpen && (
-					<div className="fixed inset-0 z-10 flex items-center justify-center">
-						<div className="absolute bottom-0 left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-black/40">
-							<div className="modal-content w-[553px] rounded-3xl bg-white">
-								<div className="border-b-2 border-gold/60">
-									<h2 className="mx-8 my-4  text-[18px]">Detail Education</h2>
-								</div>
-								<form id="EducationForm" onSubmit={handleEducationSubmit}>
-									<div className="ml-14 py-5">
-										<InputPopUp
-											type="text"
-											title="Institution"
-											value={studyInstitution}
-											onChange={handleStudyIntitutionChange}
-											className="bg-white"
-											required
-										></InputPopUp>
-										<InputPopUp
-											title="Title"
-											type="text"
-											value={studyTitle}
-											className="bg-white"
-											required
-											onChange={handleStudyTitleChange}
-										></InputPopUp>
-										<InputPopUp
-											title="Departement"
-											type="text"
-											value={studyDepartement}
-											className="bg-white"
-											required
-											onChange={handleStudyDepartementChange}
-										></InputPopUp>
-										<InputPopUp
-											title="From"
-											type="date"
-											value={StudyFrom}
-											className="bg-white"
-											onChange={handleStudyFromChange}
-										></InputPopUp>
-										<InputPopUp
-											title="Until"
-											type="date"
-											value={StudyUntil}
-											className="bg-white"
-											onChange={handleStudyUntilChange}
-										></InputPopUp>
-										<label className="mt-4 gap-24 pr-14">
-											<span className="mt-2 w-[120px] text-[10px]  text-[#B17C3F] ">
-												Additonal Information
-											</span>
-											<textarea
-												id="description"
-												value={studyDescription}
-												onChange={handleStudyDescriptionChange}
-												placeholder="Description"
-												className=" mt-1 block w-[440px] h-[127px] rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
-												maxLength={500}
-												onKeyDown={(e) => {
-													if (e.key === "Enter") {
-														e.preventDefault();
-													}
-												}}
-											></textarea>
-										</label>
+				<AnimatePresence>
+					{isEducationOpen && (
+						<motion.div 
+						initial={{ opacity: 0}}
+						animate={{ opacity: 1 }}
+						exit={{ opacity: 0}}
+						
+						className="fixed inset-0 z-10 flex items-center justify-center">
+							<div className="absolute bottom-0 left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-black/40">
+								<motion.div 
+								initial={{ scale: 0.8}}
+								animate={{ scale: 1 }}
+								exit={{ scale: 0.8}}
+								className="modal-content w-[553px] rounded-3xl bg-white">
+									<div className="border-b-2 border-gold/60">
+										<h2 className="mx-8 my-4  text-[18px]">Detail Education</h2>
 									</div>
-									<div className="flex justify-end border-t-2 border-gold/60">
-										<button
-											type="submit"
-											className="my-3 mr-3 rounded-full border-[1px] border-gold bg-gold px-8 py-1 text-[13px] text-white hover:border-goldhov hover:bg-goldhov"
-										>
-											Save
-										</button>
-										<button
-											className="my-3 mr-14 rounded-full border-[1px] border-gold px-5 py-1 text-[13px] hover:border-red-400 hover:bg-red-400 hover:text-white"
-											onClick={openEducationPopUp}
-										>
-											Close
-										</button>
-									</div>
-								</form>
+									<form id="EducationForm" onSubmit={handleEducationSubmit}>
+										<div className="ml-14 py-5">
+											<InputPopUp
+												type="text"
+												title="Institution"
+												value={studyInstitution}
+												onChange={handleStudyIntitutionChange}
+												className="bg-white"
+												required
+											></InputPopUp>
+											<InputPopUp
+												title="Title"
+												type="text"
+												value={studyTitle}
+												className="bg-white"
+												required
+												onChange={handleStudyTitleChange}
+											></InputPopUp>
+											<InputPopUp
+												title="Departement"
+												type="text"
+												value={studyDepartement}
+												className="bg-white"
+												required
+												onChange={handleStudyDepartementChange}
+											></InputPopUp>
+											<InputPopUp
+												title="From"
+												type="date"
+												value={StudyFrom}
+												className="bg-white"
+												onChange={handleStudyFromChange}
+											></InputPopUp>
+											<InputPopUp
+												title="Until"
+												type="date"
+												value={StudyUntil}
+												className="bg-white"
+												onChange={handleStudyUntilChange}
+											></InputPopUp>
+											<label className="mt-4 gap-24 pr-14">
+												<span className="mt-2 w-[120px] text-[10px]  text-[#B17C3F] ">
+													Additonal Information
+												</span>
+												<textarea
+													id="description"
+													value={studyDescription}
+													onChange={handleStudyDescriptionChange}
+													placeholder="Description"
+													className=" mt-1 block w-[440px] h-[127px] rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
+													maxLength={500}
+													onKeyDown={(e) => {
+														if (e.key === "Enter") {
+															e.preventDefault();
+														}
+													}}
+												></textarea>
+											</label>
+										</div>
+										<div className="flex justify-end border-t-2 border-gold/60">
+											<button
+												type="submit"
+												className="my-3 mr-3 rounded-full border-[1px] border-gold bg-gold px-8 py-1 text-[13px] text-white hover:border-goldhov hover:bg-goldhov"
+											>
+												Save
+											</button>
+											<button
+												className="my-3 mr-14 rounded-full border-[1px] border-gold px-5 py-1 text-[13px] hover:border-red-400 hover:bg-red-400 hover:text-white"
+												onClick={openEducationPopUp}
+											>
+												Close
+											</button>
+										</div>
+									</form>
+								</motion.div>
 							</div>
-						</div>
-					</div>
-				)}
-				
+						</motion.div>
+					)}
+				</AnimatePresence>
+
 				{isEditEducationOpen && editEducationIndex !== -1 && (
 					<div className="fixed inset-0 z-10 flex items-center justify-center">
 						<div className="absolute bottom-0 left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-black/40">
 							<div className="modal-content w-[553px] rounded-3xl bg-white">
 								<div className="border-b-2 border-gold/60">
-									<h2 className="mx-8 my-4  text-[18px]"> Edit Detail Education</h2>
-								</div>						
-									<div className="ml-14 py-5">
-										<InputPopUp
-											type="text"
-											title="Institution"
-											value={studyInstitution}
-											onChange={handleStudyIntitutionChange}
-											className="bg-white"
-											required
-										></InputPopUp>
-										<InputPopUp
-											title="Title"
-											type="text"
-											value={studyTitle}
-											className="bg-white"
-											required
-											onChange={handleStudyTitleChange}
-										></InputPopUp>
-										<InputPopUp
-											title="Departement"
-											type="text"
-											value={studyDepartement}
-											className="bg-white"
-											required
-											onChange={handleStudyDepartementChange}
-										></InputPopUp>
-										<InputPopUp
-											title="From"
-											type="date"
-											value={StudyFrom}
-											className="bg-white"
-											onChange={handleStudyFromChange}
-										></InputPopUp>
-										<InputPopUp
-											title="Until"
-											type="date"
-											value={StudyUntil}
-											className="bg-white"
-											onChange={handleStudyUntilChange}
-										></InputPopUp>
-										<label className="mt-4 gap-24 pr-14">
-											<span className="mt-2 w-[120px] text-[10px]  text-[#B17C3F] ">
-												Additonal Information
-											</span>
-											<textarea
-												id="description"
-												value={studyDescription}
-												onChange={handleStudyDescriptionChange}
-												placeholder="Description"
-												className=" mt-1 block w-[440px] h-[127px] rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
-												maxLength={500}
-												onKeyDown={(e) => {
-													if (e.key === "Enter") {
-														e.preventDefault();
-													}
-												}}
-											></textarea>
-										</label>
-									</div>
-									<div className="flex justify-end border-t-2 border-gold/60">
-										<button
-											onClick={()=> handleEditEducationSave(editEducationIndex)}
-											className="my-3 mr-3 rounded-full border-[1px] border-gold bg-gold px-8 py-1 text-[13px] text-white hover:border-goldhov hover:bg-goldhov"
-										>
-											Save
-										</button>
-										<button
-											className="my-3 mr-14 rounded-full border-[1px] border-gold px-5 py-1 text-[13px] hover:border-red-400 hover:bg-red-400 hover:text-white"
-											onClick={closeEditEducation}
-										>
-											Close
-										</button>
-									</div>
-								
+									<h2 className="mx-8 my-4  text-[18px]">
+										{" "}
+										Edit Detail Education
+									</h2>
+								</div>
+								<div className="ml-14 py-5">
+									<InputPopUp
+										type="text"
+										title="Institution"
+										value={studyInstitution}
+										onChange={handleStudyIntitutionChange}
+										className="bg-white"
+										required
+									></InputPopUp>
+									<InputPopUp
+										title="Title"
+										type="text"
+										value={studyTitle}
+										className="bg-white"
+										required
+										onChange={handleStudyTitleChange}
+									></InputPopUp>
+									<InputPopUp
+										title="Departement"
+										type="text"
+										value={studyDepartement}
+										className="bg-white"
+										required
+										onChange={handleStudyDepartementChange}
+									></InputPopUp>
+									<InputPopUp
+										title="From"
+										type="date"
+										value={StudyFrom}
+										className="bg-white"
+										onChange={handleStudyFromChange}
+									></InputPopUp>
+									<InputPopUp
+										title="Until"
+										type="date"
+										value={StudyUntil}
+										className="bg-white"
+										onChange={handleStudyUntilChange}
+									></InputPopUp>
+									<label className="mt-4 gap-24 pr-14">
+										<span className="mt-2 w-[120px] text-[10px]  text-[#B17C3F] ">
+											Additonal Information
+										</span>
+										<textarea
+											id="description"
+											value={studyDescription}
+											onChange={handleStudyDescriptionChange}
+											placeholder="Description"
+											className=" mt-1 block w-[440px] h-[127px] rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
+											maxLength={500}
+											onKeyDown={(e) => {
+												if (e.key === "Enter") {
+													e.preventDefault();
+												}
+											}}
+										></textarea>
+									</label>
+								</div>
+								<div className="flex justify-end border-t-2 border-gold/60">
+									<button
+										onClick={() => handleEditEducationSave(editEducationIndex)}
+										className="my-3 mr-3 rounded-full border-[1px] border-gold bg-gold px-8 py-1 text-[13px] text-white hover:border-goldhov hover:bg-goldhov"
+									>
+										Save
+									</button>
+									<button
+										className="my-3 mr-14 rounded-full border-[1px] border-gold px-5 py-1 text-[13px] hover:border-red-400 hover:bg-red-400 hover:text-white"
+										onClick={closeEditEducation}
+									>
+										Close
+									</button>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -860,7 +871,6 @@ export default function FormDesainer() {
 												</div>
 											</div>
 										</div>
-									
 									</div>
 									<div className="flex justify-end border-t-2 border-gold/60">
 										<button
@@ -1139,7 +1149,6 @@ export default function FormDesainer() {
 													<button onClick={handleAddTag}>+ Add Tag</button>
 													// ""
 												)}
-			
 											</div>
 										</div>
 									))}
@@ -1297,7 +1306,6 @@ export default function FormDesainer() {
 												{education.StudyUntil.substr(0, 0 + 4) === "2023"
 													? " Now"
 													: education.StudyUntil.substr(0, 0 + 4)}
-													
 											</p>
 										</span>
 									</div>
@@ -1486,7 +1494,7 @@ export default function FormDesainer() {
 													? " Now"
 													: projects.dateUntil.substr(0, 0 + 4)}
 											</p>
-											{projects.image.map((item,index) => (
+											{projects.image.map((item, index) => (
 												<div key={index}>
 													<Image
 														src={item}
