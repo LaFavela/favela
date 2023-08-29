@@ -53,13 +53,11 @@ export default function Login(props: { visible: any; onClose: any }) {
 				options: {
 					data: {
 						username: usernameRegister.current?.value,
-						first_name: usernameRegister.current?.value,
-						avatar_url:
-							"https://jexluficpazfxobksszu.supabase.co/storage/v1/object/public/avatars/default.png",
 					},
 					emailRedirectTo: `${location.origin}/auth/callback`,
 				},
 			});
+			if (error) throw error;
 			router.refresh();
 		} catch (error: any) {
 			alert(error.error_description || error.message);
