@@ -53,12 +53,11 @@ export default function Login(props: { visible: any; onClose: any }) {
 				options: {
 					data: {
 						username: usernameRegister.current?.value,
-						first_name: usernameRegister.current?.value,
-						avatar_url:
-							"https://jexluficpazfxobksszu.supabase.co/storage/v1/object/public/avatars/default.png",
 					},
+					emailRedirectTo: `${location.origin}/auth/callback`,
 				},
 			});
+			if (error) throw error;
 			router.refresh();
 		} catch (error: any) {
 			alert(error.error_description || error.message);
@@ -93,7 +92,6 @@ export default function Login(props: { visible: any; onClose: any }) {
 								<Image
 									width={864}
 									height={552}
-									
 									src="/assets/login/bg.jpg"
 									alt="bg-property"
 									className="h-full w-full rounded-l-[25px]"
@@ -101,7 +99,7 @@ export default function Login(props: { visible: any; onClose: any }) {
 							</div>
 						</div>
 						{/* Kontainer untuk form login */}
-						<form className="w-1/2" onSubmit={handleSubmitLogin}>
+						<form className="w-1/2">
 							{/* Login */}
 							<p className="ml-[2.3125rem] mt-[1.5625rem] text-[1.25rem] font-semibold text-[#B17C3F]">
 								Login
@@ -187,7 +185,7 @@ export default function Login(props: { visible: any; onClose: any }) {
 								) : null}
 
 								<button
-									onSubmit={handleSubmitLogin}
+									onClick={handleSubmitLogin}
 									type="submit"
 									className="h-[2.5rem] w-[22.375rem] rounded-[7px] bg-[#B17C3F] text-[0.8rem] font-normal text-white"
 								>
@@ -212,7 +210,24 @@ export default function Login(props: { visible: any; onClose: any }) {
 									Or sign in with
 								</p>
 								<div className="mt-[0.7rem] flex justify-between ">
-									<button className="flex h-[2rem] w-[7.375rem] items-center justify-center space-x-1 rounded-[7px] border border-[#B17C3F] bg-white">
+									<button
+										onClick={async (event:any) => {
+											event.preventDefault();
+											try {
+												const { data, error } =
+													await supabase.auth.signInWithOAuth({
+														provider: "google",
+														options: {
+															redirectTo: `${location.origin}auth/callback/`,
+														},
+													});
+												if (error) throw error;
+											} catch (error: any) {
+												alert(error.error_description || error.message);
+											}
+										}}
+										className="flex h-[2rem] w-[7.375rem] items-center justify-center space-x-1 rounded-[7px] border border-[#B17C3F] bg-white"
+									>
 										<svg
 											width="16"
 											height="16"
@@ -475,7 +490,6 @@ export default function Login(props: { visible: any; onClose: any }) {
 						</form>
 					</div>
 				)}
-				
 			</div>
 		</AnimatePresence>
 	);

@@ -7,8 +7,13 @@ const nextConfig = {
   eslint: {
     // dirs: ['utils'], // Only run ESLint on the 'pages' and 'utils' directories during production builds (next build)
   },
-  images:{
-    domains: ['jexluficpazfxobksszu.supabase.co'],
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**",
+      },
+    ],
   }
 }
 

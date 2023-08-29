@@ -28,7 +28,20 @@ export interface Database {
 					id?: string;
 					server_id?: string | null;
 				};
-				Relationships: [];
+				Relationships: [
+					{
+						foreignKeyName: "channel_client_id_fkey";
+						columns: ["client_id"];
+						referencedRelation: "profiles";
+						referencedColumns: ["id"];
+					},
+					{
+						foreignKeyName: "channel_server_id_fkey";
+						columns: ["server_id"];
+						referencedRelation: "profiles";
+						referencedColumns: ["id"];
+					},
+				];
 			};
 			kabupaten_kota: {
 				Row: {
@@ -90,6 +103,12 @@ export interface Database {
 						referencedRelation: "channel";
 						referencedColumns: ["id"];
 					},
+					{
+						foreignKeyName: "message_sent_by_fkey";
+						columns: ["sent_by"];
+						referencedRelation: "profiles";
+						referencedColumns: ["id"];
+					},
 				];
 			};
 			profile_detail: {
@@ -97,29 +116,26 @@ export interface Database {
 					about: string | null;
 					education: string | null;
 					id: string;
-					username: string;
 					work: string | null;
 				};
 				Insert: {
 					about?: string | null;
 					education?: string | null;
-					id?: string;
-					username: string;
+					id: string;
 					work?: string | null;
 				};
 				Update: {
 					about?: string | null;
 					education?: string | null;
 					id?: string;
-					username?: string;
 					work?: string | null;
 				};
 				Relationships: [
 					{
-						foreignKeyName: "profile_detail_username_fkey";
-						columns: ["username"];
+						foreignKeyName: "profile_detail_id_fkey";
+						columns: ["id"];
 						referencedRelation: "profiles";
-						referencedColumns: ["username"];
+						referencedColumns: ["id"];
 					},
 				];
 			};
@@ -130,6 +146,7 @@ export interface Database {
 					first_name: string | null;
 					id: string;
 					last_name: string | null;
+					role_id: number;
 					updated_at: string | null;
 					username: string | null;
 					website: string | null;
@@ -140,6 +157,7 @@ export interface Database {
 					first_name?: string | null;
 					id: string;
 					last_name?: string | null;
+					role_id?: number;
 					updated_at?: string | null;
 					username?: string | null;
 					website?: string | null;
@@ -150,6 +168,7 @@ export interface Database {
 					first_name?: string | null;
 					id?: string;
 					last_name?: string | null;
+					role_id?: number;
 					updated_at?: string | null;
 					username?: string | null;
 					website?: string | null;
@@ -159,6 +178,12 @@ export interface Database {
 						foreignKeyName: "profiles_id_fkey";
 						columns: ["id"];
 						referencedRelation: "users";
+						referencedColumns: ["id"];
+					},
+					{
+						foreignKeyName: "profiles_role_id_fkey";
+						columns: ["role_id"];
+						referencedRelation: "roles";
 						referencedColumns: ["id"];
 					},
 				];
@@ -175,6 +200,21 @@ export interface Database {
 				Update: {
 					id?: number;
 					provinsi?: string | null;
+				};
+				Relationships: [];
+			};
+			roles: {
+				Row: {
+					id: number;
+					role_name: string | null;
+				};
+				Insert: {
+					id?: number;
+					role_name?: string | null;
+				};
+				Update: {
+					id?: number;
+					role_name?: string | null;
 				};
 				Relationships: [];
 			};
