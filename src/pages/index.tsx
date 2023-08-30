@@ -4,6 +4,7 @@ import Footer from "@/components/footer";
 import { setTransparent } from "../tools/transparent";
 import Image from "next/image";
 import { designerData } from "./designer";
+import { Skeleton } from "@mui/material";
 
 export default function Landing() {
   const [isPressed, setIsPressed] = useState(false);
@@ -25,16 +26,33 @@ export default function Landing() {
     return () => window.removeEventListener("scroll", handleScroll);
   });
 
+
+  const [loading, setLoading] = useState(true)
+    useEffect(() => {
+        setTimeout(() => {
+            setLoading(false)
+        }, 3000)
+    }, [])
+
   return (
     <div className=" transition-all duration-300 ease-linear">
       <div className="container mx-auto h-[10rem] max-w-md sm:max-w-xl xl:max-w-5xl 2xl:max-w-7xl">
-        <div className="relative pt-[8rem] ">
+        {/* {loading? (
+          <div className="pt-[8rem]">
+            <Skeleton className="pt-[8rem] rounded-xl"  variant="rectangular" width="1314px" height="466px"/>
+          </div>
+        ):(
+
+        )} */}
+          <div className="relative pt-[8rem] ">
           <Image
             src="/assets/landing/landingBG.jpg"
             alt=""
             width={1314}
             height={466}
             className="rounded-2xl"
+            // onLoad={(image)=>image.classList.add('animate-fadeIn')}
+            // onLoadingComplete={}
           />
           <div className="absolute bottom-[2rem] left-6 text-[#E3E3E3]  sm:bottom-[2.5rem] xl:bottom-24 xl:left-16 2xl:bottom-[7rem] 2xl:left-20">
             <p className="text-center text-4xl font-medium text-[#FBC68A] sm:text-5xl xl:text-[5rem] 2xl:text-[6.5rem]">
@@ -54,6 +72,7 @@ export default function Landing() {
             </Link>
           </div>
         </div>
+        
 
         {/* PEMBATAS 1 */}
 

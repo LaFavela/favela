@@ -812,8 +812,8 @@ export default function Form() {
 											{index == 0 ? (
 												<Dropdown
 													form="biodata-Form"
-													styleClass="text-gold flex gap-[157px] mt-2 w-full pr-7"
-													styleClassTag="border-2 border-gold rounded-[7px] w-full"
+													styleClass=" bg-white text-gold flex gap-[157px] mt-2 w-full pr-7"
+													styleClassTag="bg-white border-2 border-gold rounded-[7px] w-full"
 													title="Tag"
 													data={[
 														{ value: "Tag1", label: "Tag1" },
@@ -830,8 +830,8 @@ export default function Form() {
 												<div className="relative">
 													<Dropdown
 														form="biodata-Form"
-														styleClass="text-gold flex gap-[187px] mt-1 w-full pr-7"
-														styleClassTag="border-2 border-gold rounded-[7px] w-full py-[2px]"
+														styleClass=" bg-white text-gold flex gap-[187px] mt-1 w-full pr-7"
+														styleClassTag="bg-white border-2 border-gold rounded-[7px] w-full py-[2px]"
 														title=""
 														data={[
 															{ value: "Tag1", label: "Tag1" },
@@ -867,8 +867,8 @@ export default function Form() {
 								</div>
 								<Dropdown
 									form="biodata-Form"
-									styleClass="text-gold flex gap-[120px] mt-2 w-full pr-7"
-									styleClassTag="border-2 border-gold rounded-[7px] w-full"
+									styleClass=" bg-white text-gold flex gap-[120px] mt-2 w-full pr-7"
+									styleClassTag="bg-white border-2 border-gold rounded-[7px] w-full"
 									title="Province"
 									data={[
 										{ value: "Lombok Timur", label: "Lombok Timur" },
@@ -883,8 +883,8 @@ export default function Form() {
 								></Dropdown>
 								<Dropdown
 									form="biodata-Form"
-									styleClass="text-gold flex gap-[157px] mt-2 w-full pr-7"
-									styleClassTag="border-2 border-gold rounded-[7px] w-full"
+									styleClass=" bg-white text-gold flex gap-[157px] mt-2 w-full pr-7"
+									styleClassTag="bg-white border-2 border-gold rounded-[7px] w-full"
 									title="City"
 									data={[
 										{ value: "Lombok Timur", label: "Lombok Timur" },
