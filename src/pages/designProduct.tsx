@@ -19,7 +19,7 @@ const profile = [
 	},
 ];
 
-const properti = [
+export const properti = [
 	{
 		name: "Rumah Minimalis",
 		type: "Villa",
@@ -448,7 +448,7 @@ export default function DesignProduct() {
 						</div>
 						<div className="flex place-items-end  justify-end">
 							<Link
-								href={"#"}
+								href={"./reqDesainForm"}
 								className=" flex h-[2.066875rem] w-[6.319375rem] items-center justify-center space-x-1 rounded-full bg-[#B17C3F] text-white"
 							>
 								<svg
