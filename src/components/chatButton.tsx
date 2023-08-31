@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, m } from "framer-motion";
 import { useRef, useEffect } from "react";
 import IMGPreview from "./imgPreview";
 import { convertTime } from "@/tools/time";
 import { supabase } from "@/lib/supabase";
 import { Database } from "@/types";
 import { User } from "@supabase/auth-helpers-nextjs";
+import { data } from "@/pages/browse";
 
 interface ChatProps {
 	visible: boolean;
@@ -15,26 +16,97 @@ interface ChatProps {
 	setShowChat: (value: boolean) => void;
 }
 
+interface Channel {
+	client_id: string & {
+		id: string;
+		avatar_url: string;
+		first_name: string;
+	};
+	created_at: string;
+	id: string;
+	server_id: string & {
+		id: string;
+		avatar_url: string;
+		first_name: string;
+	};
+}
+
 type Message = Database["public"]["Tables"]["message"]["Row"];
 
 export function Chat(props: ChatProps) {
 	const [session, setSession] = useState<User>();
-	const [channel, setChannel] = useState<
+	const [channel, setChannel] = useState<Channel[]>();
+
+	const [message, setMessage] = useState<Message[]>();
+	const [activeChannel, setActiveChannel] = useState<string>();
+	const listenMessage = supabase
+		.channel("custom-insert-channel")
+		.on(
+			"postgres_changes",
+			{ event: "INSERT", schema: "public", table: "message" },
+			(payload) => {
+				console.log("Change received!", payload);
+				fetchMessage(activeChannel!);
+				fetchLastMessage(channel!);
+			},
+		)
+		.subscribe();
+	const fetchMessage = async (channel: string) => {
+		try {
+			const { data: message, error } = await supabase
+				.from("message")
+				.select("*")
+				.eq("channel", channel);
+			setMessage(message!);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const [lastFetchMessage, setLastMessage] = useState<
 		{
-			client_id: string & {
-				id: string;
-				avatar_url: string;
-				first_name: string;
-			};
-			created_at: string;
-			id: string;
-			server_id: string & {
-				id: string;
-				avatar_url: string;
-				first_name: string;
-			};
+			channel: string;
+			text: string;
 		}[]
-	>();
+	>([]);
+	const addChatMessage = async (messageContent: string, channel_id: string) => {
+		try {
+			const { data, error } = await supabase
+				.from("message")
+				.insert([{ content: messageContent, channel: channel_id }])
+				.select();
+			if (error) throw error;
+			fetchMessage(channel_id);
+			fetchLastMessage(channel!);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	
+	const fetchLastMessage = (channel: Channel[]) => {
+		channel.map(async (channel) => {
+			try {
+				const { data: message, error } = await supabase
+					.from("message")
+					.select("*")
+					.order("created_at", { ascending: false })
+					.eq("channel", channel.id)
+					.limit(1);
+				if (error) throw error;
+				if (message && message[0]?.content) {
+					const temp = lastFetchMessage.filter(
+						(item) => item.channel !== channel.id,
+					);
+					setLastMessage([
+						...temp,
+						{ channel: channel.id, text: message[0].content },
+					]);
+				}
+			} catch (error) {
+				console.log(error);
+			}
+		});
+	};
 
 	useEffect(() => {
 		const fetchSession = async () => {
@@ -50,61 +122,13 @@ export function Chat(props: ChatProps) {
 				.from("channel")
 				.select(`*,client_id(*),server_id(*)`);
 			setChannel(data as any);
+			fetchLastMessage(data as any);
 		};
 		fetchChannel();
 		fetchSession();
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	const [message, setMessage] = useState<Message[]>();
-	const [temp, setTemp] = useState<any>([]); //temp = [id,channel
-	const [activeChannel, setActiveChannel] = useState<string>();
-	console.log(activeChannel);
-	const listenMessage = supabase
-		.channel("custom-insert-channel")
-		.on(
-			"postgres_changes",
-			{ event: "INSERT", schema: "public", table: "message" },
-			(payload) => {
-				console.log("Change received!", payload);
-				fetchMessage(activeChannel!);
-				fetchLastMessage(activeChannel!);	
-			},
-		)
-		.subscribe();
-	const fetchMessage = async (channel: string) => {
-		try {
-			const { data: message, error } = await supabase
-				.from("message")
-				.select("*")
-				.eq("channel", channel);
-			setMessage(message!);
-		} catch (error) {
-			console.log(error);
-		}
-	};
-	const fetchLastMessage = async (channel: string) => {
-		try {
-			const { data: message, error } = await supabase
-				.from("message")
-				.select("*")
-				.order("created_at", { ascending: false })
-				.eq("channel", channel);
-			return message![0];
-		} catch (error) {
-			console.log(error);
-		}
-	};
-	const addChatMessage = async (messageContent: string, channel: string) => {
-		try {
-			const { data, error } = await supabase
-				.from("message")
-				.insert([{ content: messageContent, channel: channel }])
-				.select();
-			if (error) throw error;
-		} catch (error) {
-			console.log(error);
-		}
-	};
 
 	const lastMessage = useRef<any>(null);
 	const [value, setValue] = useState("");
@@ -227,7 +251,6 @@ export function Chat(props: ChatProps) {
 												onClick={() => {
 													setActiveChannel(data.id);
 													fetchMessage(data.id);
-													fetchLastMessage(data.id);
 												}}
 											>
 												<div className="relative ml-2 h-[2.7rem] w-[2.7rem]">
@@ -259,9 +282,11 @@ export function Chat(props: ChatProps) {
 														<p className="text-[0.5rem] font-light">{}</p>
 													</div>
 													<p className="truncate text-[0.63rem] font-light ">
-														{message
-															? message[message.length - 1]?.content
-															: ""}
+														{
+															lastFetchMessage?.find((message) => {
+																return message.channel == data.id;
+															})?.text
+														}
 													</p>
 												</div>
 											</motion.div>
@@ -355,8 +380,7 @@ export function Chat(props: ChatProps) {
 																			{data.content}
 																		</p>
 																		<p className="ml-3 place-self-end text-[0.5rem]">
-																			{convertTime
-																			(data.created_at)}
+																			{convertTime(data.created_at)}
 																		</p>
 																	</div>
 																</div>
