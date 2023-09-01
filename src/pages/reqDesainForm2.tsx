@@ -6,6 +6,7 @@ import InputPopUp from "@/components/popUpInput";
 import CloseIcon from "@mui/icons-material/Close";
 import Dropdown from "@/components/dropdwon";
 import InputBoxForm from "@/components/inpuBoxForm";
+import Rating from "@mui/material/Rating";
 import { properti } from "./designProduct";
 
 export default function SellDesignForm() {
@@ -406,109 +407,56 @@ export default function SellDesignForm() {
 									<p className="text-[15px] font-semibold text-gold">
 										Architectural Style
 									</p>
-									<Dropdown
-										styleClass="text-gold flex gap-[42px] mt-2 w-full pr-7"
-										styleClassTag="border-2 border-gold rounded-[7px] w-full"
-										styleText="w-[193px]"
-										title="Property Type"
-										data={[
-											{ value: "Type 1", label: "Type 1" },
-											{ value: "Type 2", label: "Type 2" },
-											{ value: "Type 3", label: "Type 3" },
-											{ value: "Type 4", label: "Type 4" },
-											{ value: "Type 5", label: "Type 5" },
-										]}
-										value={propertyType}
-										placehoder="Select Property Type"
-										onChange={handleChangePropertyType}
-									></Dropdown>
-									<InputBoxForm
-										className=""
-										form="designForm"
-										type="text"
-										title="Style "
-										value={style}
-										// placeholder="Design Name"
-										onChange={handleChangeStyle}
-									></InputBoxForm>
-
-									<div className="mt-5 flex ">
-										<p className="text-gold">References</p>
-										<div className="flex gap-3">
-											<div
-												className="ml-[98px] gap-3 flex  rounded-sm border-dashed border-[#e3d0ba] stroke-[#e3d0ba] hover:border-[#B17C3F] hover:stroke-[#B17C3F]"
-												onClick={handleImageClick2}
-											>
-												{ReferenceImage.length > 0
-													? ReferenceImage.map((imageUrl, index) => (
-															<div key={index} className="flex relative group">
-																<div>
-																	<Image
-																		src={imageUrl}
-																		alt={`Selected Image ${index + 1}`}
-																		style={{
-																			maxWidth: "120px",
-																			maxHeight: "100px",
-																			width: "100%",
-																			height: "100%",
-																		}}
-																		width={120}
-																		height={100}
-																	/>
-																	<div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 opacity-0 transition-opacity duration-300 flex items-center justify-center group-hover:opacity-100">
-																		<CloseIcon
-																			className="text-white absolute top-2 right-2 cursor-pointer"
-																			onClick={() =>
-																				handleReferenceImageDelete(index)
-																			}
-																		/>
-																	</div>
-																</div>
-															</div>
-													  ))
-													: ""}
-												{ReferenceImage.length < 5 ? (
-													<label
-														htmlFor="references-input"
-														className=" flex justify-center items-center rounded-md border-[3px] w-[100px] h-[100px] border-dashed border-[#e3d0ba] stroke-[#e3d0ba] hover:border-[#B17C3F] hover:stroke-[#B17C3F]"
-													>
-														<input
-															id="references-input"
-															type="file"
-															// ref={inputRef}
-															onChange={handleReferenceImageChange}
-															multiple
-															accept="image/*"
-															className="hidden"
-														/>
+									<div className=" flex container max-w-[775px] border-gold/50 border-2 rounded-[7px] mt-7">
+										<div className="ml-5 py-4">
+											<Image
+												src={properti[0].img}
+												alt=""
+												width={97}
+												height={78}
+												className="rounded-[9px]"
+											></Image>
+										</div>
+										<div className="py-[26px] ml-5 ">
+											<p>{properti[0].name}</p>
+											<p>{properti[0].type}</p>
+											<span className="text-[11px]">
+												<Rating
+													className="gap-[2px]"
+													name="half-rating"
+													defaultValue={3}
+													precision={0.5}
+													icon={
 														<svg
-															width="44"
-															height="44"
-															viewBox="0 0 44 44"
+															width="10"
+															height="10"
+															viewBox="0 0 10 10"
 															fill="none"
 															xmlns="http://www.w3.org/2000/svg"
 														>
 															<path
-																d="M40.5 23.445V38.6117C40.5 39.7609 40.0435 40.8631 39.2308 41.6758C38.4181 42.4884 37.3159 42.945 36.1667 42.945H29.6667M40.5 23.445C26.5423 23.445 18.6058 27.7458 14.3808 32.6382M40.5 23.445V20.195M29.6667 42.945H5.83333C4.68406 42.945 3.58186 42.4884 2.7692 41.6758C1.95655 40.8631 1.5 39.7609 1.5 38.6117V32.1117M29.6667 42.945C25.9747 36.9477 20.0748 33.9577 14.3808 32.6382M14.3808 32.6382C9.38017 31.4768 4.53983 31.6047 1.5 32.1117M1.5 32.1117V8.27832C1.5 7.12905 1.95655 6.02685 2.7692 5.21419C3.58186 4.40153 4.68406 3.94499 5.83333 3.94499H23.1667M36.1667 1.77832V8.27832M36.1667 8.27832V14.7783M36.1667 8.27832H42.6667M36.1667 8.27832H29.6667M13.4167 12.6117C12.3333 12.6117 10.1667 13.2617 10.1667 15.8617C10.1667 18.4617 12.3333 19.1117 13.4167 19.1117C14.5 19.1117 16.6667 18.4617 16.6667 15.8617C16.6667 13.2617 14.5 12.6117 13.4167 12.6117Z"
-																// stroke="#B17C3F"
-																strokeWidth="2"
-																strokeLinecap="round"
-																strokeLinejoin="round"
+																d="M4.99967 9.16732C4.42329 9.16732 3.88162 9.05787 3.37467 8.83898C2.86773 8.6201 2.42676 8.32329 2.05176 7.94857C1.67676 7.57357 1.37995 7.1326 1.16134 6.62565C0.94273 6.11871 0.833286 5.57704 0.833008 5.00065C0.833008 4.42426 0.942452 3.8826 1.16134 3.37565C1.38023 2.86871 1.67704 2.42773 2.05176 2.05273C2.42676 1.67773 2.86773 1.38093 3.37467 1.16232C3.88162 0.943707 4.42329 0.834262 4.99967 0.833984C5.57606 0.833984 6.11773 0.943429 6.62467 1.16232C7.13162 1.38121 7.57259 1.67801 7.94759 2.05273C8.32259 2.42773 8.61953 2.86871 8.83842 3.37565C9.05731 3.8826 9.16662 4.42426 9.16634 5.00065C9.16634 5.57704 9.0569 6.11871 8.83801 6.62565C8.61912 7.1326 8.32231 7.57357 7.94759 7.94857C7.57259 8.32357 7.13162 8.62051 6.62467 8.8394C6.11773 9.05829 5.57606 9.1676 4.99967 9.16732Z"
+																fill="black"
 															/>
 														</svg>
-													</label>
-												) : (
-													<input
-														id="references-input"
-														type="file"
-														// ref={inputRef}
-														onChange={handleReferenceImageChange}
-														multiple
-														accept="image/*"
-														className="hidden"
-													/>
-												)}
-											</div>
+													}
+													emptyIcon={
+														<svg
+															width="10"
+															height="10"
+															viewBox="0 0 10 10"
+															fill="none"
+															xmlns="http://www.w3.org/2000/svg"
+														>
+															<path
+																d="M4.99967 9.16732C4.42329 9.16732 3.88162 9.05787 3.37467 8.83898C2.86773 8.6201 2.42676 8.32329 2.05176 7.94857C1.67676 7.57357 1.37995 7.1326 1.16134 6.62565C0.94273 6.11871 0.833286 5.57704 0.833008 5.00065C0.833008 4.42426 0.942452 3.8826 1.16134 3.37565C1.38023 2.86871 1.67704 2.42773 2.05176 2.05273C2.42676 1.67773 2.86773 1.38093 3.37467 1.16232C3.88162 0.943707 4.42329 0.834262 4.99967 0.833984C5.57606 0.833984 6.11773 0.943429 6.62467 1.16232C7.13162 1.38121 7.57259 1.67801 7.94759 2.05273C8.32259 2.42773 8.61953 2.86871 8.83842 3.37565C9.05731 3.8826 9.16662 4.42426 9.16634 5.00065C9.16634 5.57704 9.0569 6.11871 8.83801 6.62565C8.61912 7.1326 8.32231 7.57357 7.94759 7.94857C7.57259 8.32357 7.13162 8.62051 6.62467 8.8394C6.11773 9.05829 5.57606 9.16759 4.99967 9.16732Z"
+																fill="#BEB8B8"
+															/>
+														</svg>
+													}
+													readOnly
+												/>
+											</span>
 										</div>
 									</div>
 								</div>
@@ -655,16 +603,16 @@ export default function SellDesignForm() {
 									></InputBoxForm>
 								</div>
 							</div>
-						<Link href={"./merchantProfile"}>
-							<div className="pb-20 justify-end w-full flex">
-								<button
-									type="submit"
-									className="bg-gold rounded-full py-3 px-7 text-white text-[15px] hover:bg-goldhov "
-								>
-									Save
-								</button>
-							</div>
-						</Link>
+							<Link href={"./merchantProfile"}>
+								<div className="pb-20 justify-end w-full flex">
+									<button
+										type="submit"
+										className="bg-gold rounded-full py-3 px-7 text-white text-[15px] hover:bg-goldhov "
+									>
+										Save
+									</button>
+								</div>
+							</Link>
 						</form>
 					</div>
 

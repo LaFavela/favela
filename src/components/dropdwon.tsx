@@ -35,7 +35,7 @@ export default function Dropdown(props: {
         <select
           value={value}
           onChange={handleChange}
-          className={`${styleClassTag}`}
+          className={`pl-1 outline-gold ${styleClassTag}`}
           form={form}
         >
           <option value="" disabled hidden>

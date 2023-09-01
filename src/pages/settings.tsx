@@ -1,6 +1,465 @@
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
+import InputBoxSettings from "@/components/inputBoxSetting";
+import Dropdown from "@/components/dropdwon";
+
+function Profile() {
+	const [biodata, setBiodata] = useState<
+		{
+			username: string;
+			firstName: string;
+			lastName: string;
+			province: string;
+			about: string;
+			preview: string;
+			backgroundPreview: string;
+			selectedCity: string;
+			propertyType: string[];
+			propertyStyle: string[];
+		}[]
+	>([]);
+
+	const [username, setUsername] = useState("");
+	const [firstName, setFirstName] = useState("");
+	const [lastName, setLastName] = useState("");
+	const [province, setProvince] = useState("");
+	const [about, setAbout] = useState("");
+	const [selectedCity, setSelectedCity] = useState(""); // State to store the selected city
+	const [propertyType, setPropertyType] = useState<string[]>([""]);
+	const [propertyStyle, setPropertyStyle] = useState<string[]>([""]);
+	const [preview, setPreview] = useState("");
+	const [backgroundPreview, setBackgroundPreview] = useState("");
+
+	const handleChangeUsername = (event: any) => {
+		setUsername(event.target.value);
+	};
+
+	const handleChangeFirstname = (event: any) => {
+		setFirstName(event.target.value);
+	};
+
+	const handleChangeLastName = (event: any) => {
+		setLastName(event.target.value);
+	};
+
+	const handleChangeProvince = (event: any) => {
+		setProvince(event);
+	};
+
+	const handleChangeAbout = (event: any) => {
+		setAbout(event.target.value);
+	};
+
+	const handleLandImageChange = (
+		event: React.ChangeEvent<HTMLInputElement>,
+	) => {
+		const file = event.target.files?.[0]; // Get the selected file
+		if (file) {
+			const reader = new FileReader();
+			reader.onload = () => {
+				setPreview(reader.result as string);
+			};
+			reader.readAsDataURL(file); // Read the selected file as a data URL
+		} else {
+			setPreview(""); // Clear the preview if no file is selected
+		}
+	};
+	const handleClick = () => {
+		const fileInput = document.getElementById("profilePicture");
+		if (fileInput) {
+			fileInput.click();
+		}
+	};
+
+	const handleBackGroundChange = (
+		event: React.ChangeEvent<HTMLInputElement>,
+	) => {
+		const file = event.target.files?.[0]; // Get the selected file
+		if (file) {
+			const reader = new FileReader();
+			reader.onload = () => {
+				setBackgroundPreview(reader.result as string);
+			};
+			reader.readAsDataURL(file); // Read the selected file as a data URL
+		} else {
+			setBackgroundPreview(""); // Clear the preview if no file is selected
+		}
+	};
+	const handleClickBackground = () => {
+		const fileInput = document.getElementById("BackgroundPicture");
+		if (fileInput) {
+			fileInput.click();
+		}
+	};
+
+	const handleChangePropertyType = (index: number, value: string) => {
+		const updatedPropertyType = [...propertyType];
+		updatedPropertyType[index] = value;
+		setPropertyType(updatedPropertyType);
+	};
+
+	const handleAddPropertyType = () => {
+		setPropertyType([...propertyType, ""]);
+	};
+
+	const handleDeletePropertyType = (index: number) => {
+		const updatedPropertType = propertyType.filter((_, i) => i !== index);
+		setPropertyType(updatedPropertType);
+	};
+
+	const handleChangePropertyStyle = (index: number, value: string) => {
+		const updatedPropertyStyle = [...propertyStyle];
+		updatedPropertyStyle[index] = value;
+		setPropertyStyle(updatedPropertyStyle);
+	};
+
+	const handleAddPropertyStyle = () => {
+		setPropertyStyle([...propertyStyle, ""]);
+	};
+
+	const handleDeletePropertyStyle = (index: number) => {
+		const updatedPropertStyle = propertyStyle.filter((_, i) => i !== index);
+		setPropertyStyle(updatedPropertStyle);
+	};
+
+	const handleDropdown = (city: any) => {
+		setSelectedCity(city);
+	};
+	console.log(biodata)
+	const handleBiodataSubmit = (event: any) => {
+		event.preventDefault();
+		const newBiodata = {
+			username,
+			firstName,
+			lastName,
+			province,
+			preview,
+			backgroundPreview,
+			propertyType: [...propertyType],
+			propertyStyle: [...propertyStyle],
+			selectedCity,
+			about,
+		};
+
+		setBiodata([...biodata, newBiodata]);
+		setPreview("");
+		setBackgroundPreview("");
+		setUsername("");
+		setFirstName("");
+		setLastName("");
+		setProvince("");
+		setPropertyType([]);
+		setPropertyStyle([]);
+		setSelectedCity("");
+		setAbout("");
+	};
+
+	return (
+		<div>
+			<form action="" onSubmit={handleBiodataSubmit}>
+				<div className="flex px-20">
+					<div className="flex gap-8 ">
+						<div className="border-2 border-gold rounded-[8px]">
+							<div className="w-[18]rem">
+								<div className="h-[158px] w-[159px]">
+									{preview ? (
+										<Image
+											src={preview}
+											alt="Preview"
+											width={159}
+											height={158}
+											className="h-[158px] w-[159px] rounded-[7px] object-cover rounded-b-none"
+										/>
+									) : (
+										<div className="flex h-[158px] w-[159px] items-center justify-center rounded-[7px] rounded-b-none bg-gray-300">
+											<span className="text-gray-500 text-[10px]">
+												Foto Profil Tidak Tersedia
+											</span>
+										</div>
+									)}
+								</div>
+
+								<div className="flex justify-center ">
+									<button
+										type="button"
+										className="text-[12px] font-medium h-[28px] w-[159px] rounded-[7px] rounded-t-none border-2 border-[#B17C3F] bg-gold text-white duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white "
+										onClick={handleClick}
+									>
+										Change Profile Image
+									</button>
+									<input
+										type="file"
+										id="profilePicture"
+										accept="image/*"
+										onChange={handleLandImageChange}
+										className="hidden"
+									/>
+								</div>
+							</div>
+						</div>
+
+						<div className="border-gold border-2 rounded-[8px]">
+							<div className="w-[18]rem">
+								<div className="h-[158px] w-[549px]">
+									{backgroundPreview ? (
+										<Image
+											src={backgroundPreview}
+											alt="Preview"
+											width={549}
+											height={158}
+											className="h-[158px] w-[549px] rounded-[7px] object-cover rounded-b-none"
+										/>
+									) : (
+										<div className="flex h-[158px] w-[549px] items-center justify-center rounded-[7px] rounded-b-none bg-gray-300">
+											<span className="text-gray-500 text-[10px]">
+												Foto Profil Tidak Tersedia
+											</span>
+										</div>
+									)}
+								</div>
+
+								<div className="flex justify-center ">
+									<button
+										type="button"
+										className="text-[12px] font-medium h-[28px] w-[549px] rounded-[7px] rounded-t-none border-2 border-[#B17C3F] bg-gold text-white duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white "
+										onClick={handleClickBackground}
+									>
+										Change Background Image
+									</button>
+									<input
+										type="file"
+										id="BackgroundPicture"
+										accept="image/*"
+										onChange={handleBackGroundChange}
+										className="hidden"
+									/>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div className="px-20 mt-8">
+					<div className="">
+						<InputBoxSettings
+							form="biodata-Form"
+							type="text"
+							title="Username"
+							value={username}
+							placeholder={"Enter Username"}
+							onChange={handleChangeUsername}
+						></InputBoxSettings>
+						<InputBoxSettings
+							form="biodata-Form"
+							type="text"
+							title="Firstname"
+							value={firstName}
+							placeholder={"Enter Firstname"}
+							onChange={handleChangeFirstname}
+						></InputBoxSettings>
+						<InputBoxSettings
+							form="biodata-Form"
+							type="text"
+							title="Lastname"
+							value={lastName}
+							placeholder={"Enter Lastname"}
+							onChange={handleChangeLastName}
+						></InputBoxSettings>
+
+						<div>
+							{propertyType.map((item, index) => (
+								<div key={index}>
+									{index == 0 ? (
+										<Dropdown
+											form="biodata-Form"
+											styleClass="text-gold text-[13px] flex gap-[48px] mt-[10px] w-full pr-1"
+											styleClassTag="py-[4px] border-2 border-gold rounded-[7px] w-full"
+											styleText="w-[200px] text-[15px]"
+											title="Property Type"
+											data={[
+												{ value: "Type1", label: "Type1" },
+												{ value: "Type2", label: "Type2" },
+												{ value: "Type3", label: "Type3" },
+												{ value: "Type4", label: "Type4" },
+												{ value: "Type5", label: "Type5" },
+											]}
+											value={item}
+											placehoder="Select Property Type"
+											onChange={(e: any) => handleChangePropertyType(index, e)}
+										></Dropdown>
+									) : (
+										<div className="relative">
+											<Dropdown
+												form="biodata-Form"
+												styleClass="text-gold text-[13px] flex gap-[48px] mt-2 w-full pr-1"
+												styleClassTag="border-2 border-gold rounded-[7px] w-full py-[4px] ml-[147px]"
+												title=""
+												data={[
+													{ value: "Type1", label: "Type1" },
+													{ value: "Type2", label: "Type2" },
+													{ value: "Type3", label: "Type3" },
+													{ value: "Type4", label: "Type4" },
+													{ value: "Type5", label: "Type5" },
+												]}
+												value={item}
+												placehoder="Select Property Type"
+												onChange={(e: any) =>
+													handleChangePropertyType(index, e)
+												}
+											></Dropdown>
+											<div className="flex justify-end pr-[57px]"></div>
+										</div>
+									)}
+
+									<div className="ml-[187px] mt-2 flex pr-2 text-gold text-[11px]">
+										{propertyType.length > index + 1 ? (
+											<div className="w-full flex justify-end">
+												<button onClick={() => handleDeletePropertyType(index)}>
+													Delete Type
+												</button>
+											</div>
+										) : (
+											<button onClick={handleAddPropertyType} className="ml-2">
+												+ Add Type
+											</button>
+										)}
+									</div>
+								</div>
+							))}
+						</div>
+
+						<div>
+							{propertyStyle.map((item, index) => (
+								<div key={index}>
+									{index == 0 ? (
+										<Dropdown
+											form="biodata-Form"
+											styleClass="text-gold text-[13px] flex gap-[48px] mt-2 w-full pr-1"
+											styleClassTag="py-[4px] border-2 border-gold rounded-[7px] w-full"
+											styleText="w-[200px] text-[15px]"
+											title="Property Style"
+											data={[
+												{ value: "Style1", label: "Style1" },
+												{ value: "Style2", label: "Style2" },
+												{ value: "Style3", label: "Style3" },
+												{ value: "Style4", label: "Style4" },
+												{ value: "Style5", label: "Style5" },
+											]}
+											value={item}
+											placehoder="Select Property Style"
+											onChange={(e: any) => handleChangePropertyStyle(index, e)}
+										></Dropdown>
+									) : (
+										<div className="relative">
+											<Dropdown
+												form="biodata-Form"
+												styleClass="text-gold text-[13px] flex gap-[48px] mt-2 w-full pr-1"
+												styleClassTag="border-2 border-gold rounded-[7px] w-full py-[4px] ml-[147px]"
+												title=""
+												data={[
+													{ value: "Style1", label: "Style1" },
+													{ value: "Style2", label: "Style2" },
+													{ value: "Style3", label: "Style3" },
+													{ value: "Style4", label: "Style4" },
+													{ value: "Style5", label: "Style5" },
+												]}
+												value={item}
+												placehoder="Select Property Style"
+												onChange={(e: any) =>
+													handleChangePropertyStyle(index, e)
+												}
+											></Dropdown>
+											<div className="flex justify-end pr-[57px]"></div>
+										</div>
+									)}
+
+									<div className="ml-[187px] mt-2 flex pr-2 text-gold text-[11px]">
+										{propertyStyle.length > index + 1 ? (
+											<div className="w-full flex justify-end">
+												<button
+													onClick={() => handleDeletePropertyStyle(index)}
+												>
+													Delete Style
+												</button>
+											</div>
+										) : (
+											<button onClick={handleAddPropertyStyle} className="ml-2">
+												+ Add Style
+											</button>
+										)}
+									</div>
+								</div>
+							))}
+						</div>
+
+						<Dropdown
+							form="biodata-Form"
+							styleClass="text-gold text-[13px] flex gap-[131px] mt-2 w-full pr-1"
+							styleClassTag="border-2 py-[4px] border-gold rounded-[7px] w-full"
+							styleText="text-[15px]"
+							title="Province"
+							data={[
+								{ value: "Lombok Timur", label: "Lombok Timur" },
+								{ value: "Mataram", label: "Mataram" },
+								{ value: "Bima", label: "Bima" },
+								{ value: "Dompu", label: "Dompu" },
+								{ value: "Sumbawa", label: "Sumbawa" },
+							]}
+							value={province}
+							placehoder="Select Province"
+							onChange={handleChangeProvince}
+						></Dropdown>
+						<Dropdown
+							form="biodata-Form"
+							styleClass=" text-gold text-[13px] flex gap-[165px] mt-[10px] w-full pr-1"
+							styleClassTag="ml-[1px] py-[4px] border-2 border-gold rounded-[7px] w-full"
+							styleText="text-[15px]"
+							title="City"
+							data={[
+								{ value: "Lombok Timur", label: "Lombok Timur" },
+								{ value: "Mataram", label: "Mataram" },
+								{ value: "Bima", label: "Bima" },
+								{ value: "Dompu", label: "Dompu" },
+								{ value: "Sumbawa", label: "Sumbawa" },
+							]}
+							value={selectedCity}
+							placehoder="Select City"
+							onChange={handleDropdown}
+						></Dropdown>
+						<label className="mt-5 flex gap-[108px] pr-2">
+							<span className="mt-3 w-[120px] text-[15px] text-[#B17C3F] ">
+								About
+							</span>
+							<textarea
+								form="biodata-Form"
+								id="description"
+								placeholder="Enter About"
+								value={about}
+								onChange={handleChangeAbout}
+								className=" mt-1 block h-[95px] w-full rounded-md border border-[#B17C3F] bg-white px-2 py-1 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
+								maxLength={500}
+								onKeyDown={(e) => {
+									if (e.key === "Enter") {
+										e.preventDefault();
+									}
+								}}
+							></textarea>
+						</label>
+					</div>
+					<div className="pb-20 justify-end w-full flex mt-16">
+						<button
+							type="submit"
+							className="bg-gold rounded-full py-3 px-12 text-white text-[15px] hover:bg-goldhov "
+						>
+							Save
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	);
+}
 
 export default function Setting() {
 	const [selectedTab, setSelectedTab] = useState<string | null>("Profile");
@@ -33,7 +492,7 @@ export default function Setting() {
 	const navItem = [
 		{
 			name: "Profile",
-			role: ["Admin","","Designer", "Contractor"],
+			role: ["Admin", "", "Designer", "Contractor"],
 			icon: (
 				<svg
 					width="18"
@@ -61,7 +520,7 @@ export default function Setting() {
 		},
 		{
 			name: "Project",
-			role: ["Admin","Designer", "Contractor"],
+			role: ["Admin", "Designer", "Contractor"],
 			icon: (
 				<svg
 					width="22"
@@ -81,7 +540,7 @@ export default function Setting() {
 		},
 		{
 			name: "Member",
-			role: ["Admin","Contractor"],
+			role: ["Admin", "Contractor"],
 			icon: (
 				<svg
 					width="25"
@@ -100,7 +559,7 @@ export default function Setting() {
 		},
 		{
 			name: "Education",
-			role: ["Admin","Designer"],
+			role: ["Admin", "Designer"],
 			icon: (
 				<svg
 					width="26"
@@ -120,7 +579,7 @@ export default function Setting() {
 		},
 		{
 			name: "Experience",
-			role: ["Admin","Designer"],
+			role: ["Admin", "Designer"],
 			icon: (
 				<svg
 					width="21"
@@ -140,7 +599,7 @@ export default function Setting() {
 		},
 		{
 			name: "Design",
-			role: ["Admin","Designer"],
+			role: ["Admin", "Designer"],
 			icon: (
 				<svg
 					width="26"
@@ -160,7 +619,7 @@ export default function Setting() {
 		},
 		{
 			name: "Account",
-			role: ["Admin","","Designer", "Contractor"],
+			role: ["Admin", "", "Designer", "Contractor"],
 			icon: (
 				<svg
 					width="21"
@@ -180,7 +639,7 @@ export default function Setting() {
 		},
 		{
 			name: "Bank Account",
-			role: ["Admin","","Designer", "Contractor"],
+			role: ["Admin", "", "Designer", "Contractor"],
 			icon: (
 				<svg
 					width="26"
@@ -199,7 +658,7 @@ export default function Setting() {
 		},
 		{
 			name: "Notification",
-			role: ["Admin","","Designer", "Contractor"],
+			role: ["Admin", "", "Designer", "Contractor"],
 			icon: (
 				<svg
 					width="21"
@@ -266,8 +725,7 @@ export default function Setting() {
 					</div>
 					{/* content Right */}
 					<div className="w-[58.375rem]  border-l-2">
-						<p>
-						</p>
+						<Profile></Profile>
 					</div>
 				</div>
 			</div>
