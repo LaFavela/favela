@@ -338,77 +338,96 @@ export default function FormDesainer() {
 	// DETAIL PROJECT
 	//BIODATA
 	const [biodata, setBiodata] = useState<
-		{
-			firstName: string;
-			lastName: string;
-			province: string;
-			about: string;
-			selectedCity: string;
-			tag: string[];
-		}[]
-	>([]);
+	{
+		firstName: string;
+		lastName: string;
+		province: string;
+		about: string;
+		selectedCity: string;
+		propertyType: string[];
+		propertyStyle: string[];
+	}[]
+>([]);
 
-	const [firstName, setFirstName] = useState("");
-	const [lastName, setLastName] = useState("");
-	const [province, setProvince] = useState("");
-	const [about, setAbout] = useState("");
-	const [selectedCity, setSelectedCity] = useState(""); // State to store the selected city
-	const [tag, setTag] = useState<string[]>([""]);
+const [firstName, setFirstName] = useState("");
+const [lastName, setLastName] = useState("");
+const [province, setProvince] = useState("");
+const [about, setAbout] = useState("");
+const [selectedCity, setSelectedCity] = useState(""); // State to store the selected city
+const [propertyType, setPropertyType] = useState<string[]>([""]);
+const [propertyStyle, setPropertyStyle] = useState<string[]>([""]);
 
-	const handleChangeFirstname = (event: any) => {
-		setFirstName(event.target.value);
+const handleChangeFirstname = (event: any) => {
+	setFirstName(event.target.value);
+};
+
+const handleChangeLastName = (event: any) => {
+	setLastName(event.target.value);
+};
+
+const handleChangeProvince = (event: any) => {
+	setProvince(event);
+};
+
+const handleChangeAbout = (event: any) => {
+	setAbout(event.target.value);
+};
+
+const handleChangePropertyType = (index: number, value: string) => {
+	const updatedPropertyType = [...propertyType];
+	updatedPropertyType[index] = value;
+	setPropertyType(updatedPropertyType);
+};
+
+const handleAddPropertyType = () => {
+	setPropertyType([...propertyType, ""]);
+};
+
+const handleDeletePropertyType = (index: number) => {
+	const updatedPropertType = propertyType.filter((_, i) => i !== index);
+	setPropertyType(updatedPropertType);
+};
+
+const handleChangePropertyStyle = (index: number, value: string) => {
+	const updatedPropertyStyle = [...propertyStyle];
+	updatedPropertyStyle[index] = value;
+	setPropertyStyle(updatedPropertyStyle);
+};
+
+const handleAddPropertyStyle = () => {
+	setPropertyStyle([...propertyStyle, ""]);
+};
+
+const handleDeletePropertyStyle = (index: number) => {
+	const updatedPropertStyle = propertyStyle.filter((_, i) => i !== index);
+	setPropertyStyle(updatedPropertStyle);
+};
+
+const handleDropdown = (city: any) => {
+	setSelectedCity(city);
+};
+
+const handleBiodataSubmit = (event: any) => {
+	event.preventDefault();
+	const newBiodata = {
+		firstName,
+		lastName,
+		province,
+		propertyType: [...propertyType],
+		propertyStyle: [...propertyStyle],
+		selectedCity,
+		about,
 	};
 
-	const handleChangeLastName = (event: any) => {
-		setLastName(event.target.value);
-	};
-
-	const handleChangeProvince = (event: any) => {
-		setProvince(event);
-	};
-
-	const handleChangeAbout = (event: any) => {
-		setAbout(event.target.value);
-	};
-
-	const handleChangeTag = (index: number, value: string) => {
-		const updatedTags = [...tag];
-		updatedTags[index] = value;
-		setTag(updatedTags);
-	};
-
-	const handleDropdown = (city: any) => {
-		setSelectedCity(city);
-	};
-
-	const handleAddTag = () => {
-		setTag([...tag, ""]);
-	};
-
-	const handleDeleteTag = (index: number) => {
-		const updatedTag = tag.filter((_, i) => i !== index);
-		setTag(updatedTag);
-	};
-
-	const handleBiodataSubmit = (event: any) => {
-		event.preventDefault();
-		const newBiodata = {
-			firstName,
-			lastName,
-			province,
-			tag: [...tag],
-			selectedCity,
-			about,
-		};
-
-		setBiodata([...biodata, newBiodata]);
-		setFirstName("");
-		setLastName("");
-		setProvince("");
-		setTag([]);
-		setSelectedCity("");
-		setAbout("");
-	};
+	setBiodata([...biodata, newBiodata]);
+	setFirstName("");
+	setLastName("");
+	setProvince("");
+	setPropertyType([]);
+	setPropertyStyle([]);
+	setSelectedCity("");
+	setAbout("");
+};
 
 	const [confirmModal, setConfirmModal] = useState(false);
 
@@ -1097,66 +1116,141 @@ export default function FormDesainer() {
 									onChange={handleChangeLastName}
 								></InputBox>
 								<div>
-									{tag.map((item, index) => (
+									{propertyType.map((item, index) => (
 										<div key={index}>
 											{index == 0 ? (
 												<Dropdown
 													form="biodata-Form"
-													styleClass="text-gold flex gap-[157px] mt-2 w-full pr-7"
-													styleClassTag="border-2 border-gold rounded-[7px] w-full"
-													title="Tag"
+													styleClass="text-gold text-[15px] flex gap-[36px] mt-2 w-full pr-7"
+													styleClassTag="py-[3px] border-2 border-gold rounded-[7px] w-full"
+													styleText="w-[200px]"
+													title="Property Type"
 													data={[
-														{ value: "Tag1", label: "Tag1" },
-														{ value: "Tag2", label: "Tag2" },
-														{ value: "Tag3", label: "Tag3" },
-														{ value: "Tag4", label: "Tag4" },
-														{ value: "Tag5", label: "Tag5" },
+														{ value: "Type1", label: "Type1" },
+														{ value: "Type2", label: "Type2" },
+														{ value: "Type3", label: "Type3" },
+														{ value: "Type4", label: "Type4" },
+														{ value: "Type5", label: "Type5" },
 													]}
 													value={item}
-													placehoder="Select Tag"
-													onChange={(e: any) => handleChangeTag(index, e)}
+													placehoder="Select Property Type"
+													onChange={(e: any) =>
+														handleChangePropertyType(index, e)
+													}
 												></Dropdown>
 											) : (
 												<div className="relative">
 													<Dropdown
 														form="biodata-Form"
-														styleClass="text-gold flex gap-[187px] mt-1 w-full pr-7"
+														styleClass="text-gold text-[15px] flex gap-[187px] mt-1 w-full pr-7"
 														styleClassTag="border-2 border-gold rounded-[7px] w-full py-[2px]"
 														title=""
 														data={[
-															{ value: "Tag1", label: "Tag1" },
-															{ value: "Tag2", label: "Tag2" },
-															{ value: "Tag3", label: "Tag3" },
-															{ value: "Tag4", label: "Tag4" },
-															{ value: "Tag5", label: "Tag5" },
+															{ value: "Type1", label: "Type1" },
+															{ value: "Type2", label: "Type2" },
+															{ value: "Type3", label: "Type3" },
+															{ value: "Type4", label: "Type4" },
+															{ value: "Type5", label: "Type5" },
 														]}
 														value={item}
-														placehoder="Select Tag"
-														onChange={(e: any) => handleChangeTag(index, e)}
+														placehoder="Select Property Type"
+														onChange={(e: any) =>
+															handleChangePropertyType(index, e)
+														}
 													></Dropdown>
 													<div className="flex justify-end pr-[57px]"></div>
 												</div>
 											)}
 
 											<div className="ml-[187px] mt-2 flex pr-[55px] text-gold text-[11px]">
-												{tag.length > index + 1 ? (
+												{propertyType.length > index + 1 ? (
 													<div className="w-full flex justify-end">
-														<button onClick={() => handleDeleteTag(index)}>
-															Delete Tag
+														<button
+															onClick={() => handleDeletePropertyType(index)}
+														>
+															Delete Type
 														</button>
 													</div>
 												) : (
-													<button onClick={handleAddTag}>+ Add Tag</button>
-													// ""
+													<button onClick={handleAddPropertyType}>
+														+ Add Type
+													</button>
 												)}
 											</div>
 										</div>
 									))}
 								</div>
+								
+								<div>
+									{propertyStyle.map((item, index) => (
+										<div key={index}>
+											{index == 0 ? (
+												<Dropdown
+													form="biodata-Form"
+													styleClass="text-gold text-[15px] text-[15px] flex gap-[36px] mt-2 w-full pr-7"
+													styleClassTag="py-[3px] border-2 border-gold rounded-[7px] w-full"
+													styleText="w-[200px]"
+													title="Property Style"
+													data={[
+														{ value: "Style1", label: "Style1" },
+														{ value: "Style2", label: "Style2" },
+														{ value: "Style3", label: "Style3" },
+														{ value: "Style4", label: "Style4" },
+														{ value: "Style5", label: "Style5" },
+													]}
+													value={item}
+													placehoder="Select Property Style"
+													onChange={(e: any) =>
+														handleChangePropertyStyle(index, e)
+													}
+												></Dropdown>
+											) : (
+												<div className="relative">
+													<Dropdown
+														form="biodata-Form"
+														styleClass="text-gold text-[15px] flex gap-[187px] mt-1 w-full pr-7"
+														styleClassTag="border-2 border-gold rounded-[7px] w-full py-[2px]"
+														title=""
+														data={[
+															{ value: "Style1", label: "Style1" },
+															{ value: "Style2", label: "Style2" },
+															{ value: "Style3", label: "Style3" },
+															{ value: "Style4", label: "Style4" },
+															{ value: "Style5", label: "Style5" },
+														]}
+														value={item}
+														placehoder="Select Property Style"
+														onChange={(e: any) =>
+															handleChangePropertyStyle(index, e)
+														}
+													></Dropdown>
+													<div className="flex justify-end pr-[57px]"></div>
+												</div>
+											)}
+
+											<div className="ml-[187px] mt-2 flex pr-[55px] text-gold text-[11px]">
+												{propertyStyle.length > index + 1 ? (
+													<div className="w-full flex justify-end">
+														<button
+															onClick={() => handleDeletePropertyStyle(index)}
+														>
+															Delete Style
+														</button>
+													</div>
+												) : (
+													<button onClick={handleAddPropertyStyle}>
+														+ Add Style
+													</button>
+												)}
+											</div>
+										</div>
+									))}
+								</div>
+								
 								<Dropdown
 									form="biodata-Form"
-									styleClass="text-gold flex gap-[120px] mt-2 w-full pr-7"
-									styleClassTag="border-2 border-gold rounded-[7px] w-full"
+									styleClass="text-gold text-[15px] flex gap-[123px] mt-2 w-full pr-7"
+									styleClassTag="border-2 py-[4px] border-gold rounded-[7px] w-full"
 									title="Province"
 									data={[
 										{ value: "Lombok Timur", label: "Lombok Timur" },
@@ -1171,8 +1265,8 @@ export default function FormDesainer() {
 								></Dropdown>
 								<Dropdown
 									form="biodata-Form"
-									styleClass="text-gold flex gap-[157px] mt-2 w-full pr-7"
-									styleClassTag="border-2 border-gold rounded-[7px] w-full"
+									styleClass="text-gold text-[15px] flex gap-[158px] mt-2 w-full pr-7"
+									styleClassTag="py-[4px] border-2 border-gold rounded-[7px] w-full"
 									title="City"
 									data={[
 										{ value: "Lombok Timur", label: "Lombok Timur" },
