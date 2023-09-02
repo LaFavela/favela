@@ -5,14 +5,139 @@ import InputBox from "@/components/inpuBox";
 import InputPopUp from "@/components/popUpInput";
 import CloseIcon from "@mui/icons-material/Close";
 import Dropdown from "@/components/dropdwon";
+import IMGPreview from "@/components/imgPreview";
 
 export default function Form() {
+	// state pop up image
+	const [srcIMG, setSrcIMG] = useState<any>("" as any);
+	const [showIMG, setShowIMG] = useState(false);
+	const handleOnCloseIMG = () => setShowIMG(false);
+	// STATE UNTUK MEMBER
+
 	const [members, setMembers] = useState<
 		{ name: string; job: string; description: string }[]
 	>([]);
 	const [name, setName] = useState("");
 	const [job, setJob] = useState("");
 	const [description, setDescription] = useState("");
+
+	//BATAS STATE UNTUK MEMBER
+
+	//STATE UNTUK BIODATA
+
+	const [biodata, setBiodata] = useState<
+		{
+			companyName: string;
+			province: string;
+			about: string;
+			selectedCity: string;
+			propertyType: string[];
+			propertyStyle: string[];
+		}[]
+	>([]);
+
+	const [companyName, setCompanyName] = useState("");
+	const [province, setProvince] = useState("");
+	const [about, setAbout] = useState("");
+	const [selectedCity, setSelectedCity] = useState(""); // State to store the selected city
+	const [propertyType, setPropertyType] = useState<string[]>([""]);
+	const [propertyStyle, setPropertyStyle] = useState<string[]>([""]);
+
+	//BATAS STATE UNTUK BIODATA
+
+	//STATE UNTUK PROJECT
+
+	const [projects, setProjects] = useState<
+		{
+			institution: string;
+			title: string;
+			departement: string;
+			dateFrom: string;
+			dateUntil: string;
+			information: string;
+			image: string[];
+		}[]
+	>([]);
+	const [institution, setInstitution] = useState("");
+	const [title, setTitle] = useState("");
+	const [departement, setDepartement] = useState("");
+	const [information, setInformation] = useState("");
+	const [dateFrom, setDateFrom] = useState("");
+	const [dateUntil, setDateUntil] = useState("");
+	const [image, setImage] = useState<string[]>([]);
+
+	//BATAS STATE UNTUK PROJECT
+
+	//EVENT HANDLER BIODATA
+
+	const handleChangeCompanyName = (event: any) => {
+		setCompanyName(event.target.value);
+	};
+
+	const handleChangeProvince = (event: any) => {
+		setProvince(event);
+	};
+
+	const handleChangeAbout = (event: any) => {
+		setAbout(event.target.value);
+	};
+
+	const handleChangePropertyType = (index: number, value: string) => {
+		const updatedPropertyType = [...propertyType];
+		updatedPropertyType[index] = value;
+		setPropertyType(updatedPropertyType);
+	};
+
+	const handleAddPropertyType = () => {
+		setPropertyType([...propertyType, ""]);
+	};
+
+	const handleDeletePropertyType = (index: number) => {
+		const updatedPropertType = propertyType.filter((_, i) => i !== index);
+		setPropertyType(updatedPropertType);
+	};
+
+	const handleChangePropertyStyle = (index: number, value: string) => {
+		const updatedPropertyStyle = [...propertyStyle];
+		updatedPropertyStyle[index] = value;
+		setPropertyStyle(updatedPropertyStyle);
+	};
+
+	const handleAddPropertyStyle = () => {
+		setPropertyStyle([...propertyStyle, ""]);
+	};
+
+	const handleDeletePropertyStyle = (index: number) => {
+		const updatedPropertStyle = propertyStyle.filter((_, i) => i !== index);
+		setPropertyStyle(updatedPropertStyle);
+	};
+
+	const handleDropdown = (city: any) => {
+		setSelectedCity(city);
+	};
+
+	const handleBiodataSubmit = (event: any) => {
+		event.preventDefault();
+		const newBiodata = {
+			companyName,
+			province,
+			propertyType: [...propertyType],
+			propertyStyle: [...propertyStyle],
+			selectedCity,
+			about,
+		};
+
+		setBiodata([...biodata, newBiodata]);
+		setCompanyName(""), setProvince("");
+		setPropertyType([]);
+		setPropertyStyle([]);
+		setSelectedCity("");
+		setAbout("");
+	};
+
+	//BATAS EVENT HANDLER BIODATA
+
+	//EVENT HANDLE MEMBER
 
 	const handleNameChange = (event: any) => {
 		setName(event.target.value);
@@ -62,7 +187,6 @@ export default function Form() {
 	};
 
 	const closeEditPopup = () => {
-		// Close the pop-up without saving any changes
 		setIsEditPopupOpen(false);
 	};
 
@@ -77,27 +201,9 @@ export default function Form() {
 		setModal(!modal);
 	};
 
-	// MEMBER SETTING
+	// BATAS EVENT HANDLER MEMBER
 
-	// DETAIL PROJECT
-	const [projects, setProjects] = useState<
-		{
-			institution: string;
-			title: string;
-			departement: string;
-			dateFrom: string;
-			dateUntil: string;
-			information: string;
-			image: string[];
-		}[]
-	>([]);
-	const [institution, setInstitution] = useState("");
-	const [title, setTitle] = useState("");
-	const [departement, setDepartement] = useState("");
-	const [information, setInformation] = useState("");
-	const [dateFrom, setDateFrom] = useState("");
-	const [dateUntil, setDateUntil] = useState("");
-	const [image, setImage] = useState<string[]>([]);
+	//EVENT HANDLER PROJECT
 
 	const handleInstitutionChange = (event: any) => {
 		setInstitution(event.target.value);
@@ -217,104 +323,13 @@ export default function Form() {
 		setProjects(updatedProjects);
 	};
 
+	//BATAS EVENT HANDLER PROJECT
+
 	const [projectModal, setProjectModal] = useState(false);
 
 	const openProjectPopUp = () => {
 		setProjectModal(!projectModal);
 		image.length = 0;
-	};
-	// DETAIL PROJECT
-	//BIODATA
-	const [biodata, setBiodata] = useState<
-		{
-			firstName: string;
-			lastName: string;
-			province: string;
-			about: string;
-			selectedCity: string;
-			propertyType: string[];
-			propertyStyle: string[];
-		}[]
-	>([]);
-
-	const [firstName, setFirstName] = useState("");
-	const [lastName, setLastName] = useState("");
-	const [province, setProvince] = useState("");
-	const [about, setAbout] = useState("");
-	const [selectedCity, setSelectedCity] = useState(""); // State to store the selected city
-	const [propertyType, setPropertyType] = useState<string[]>([""]);
-	const [propertyStyle, setPropertyStyle] = useState<string[]>([""]);
-
-	const handleChangeFirstname = (event: any) => {
-		setFirstName(event.target.value);
-	};
-
-	const handleChangeLastName = (event: any) => {
-		setLastName(event.target.value);
-	};
-
-	const handleChangeProvince = (event: any) => {
-		setProvince(event);
-	};
-
-	const handleChangeAbout = (event: any) => {
-		setAbout(event.target.value);
-	};
-
-	const handleChangePropertyType = (index: number, value: string) => {
-		const updatedPropertyType = [...propertyType];
-		updatedPropertyType[index] = value;
-		setPropertyType(updatedPropertyType);
-	};
-
-	const handleAddPropertyType = () => {
-		setPropertyType([...propertyType, ""]);
-	};
-
-	const handleDeletePropertyType = (index: number) => {
-		const updatedPropertType = propertyType.filter((_, i) => i !== index);
-		setPropertyType(updatedPropertType);
-	};
-	
-	const handleChangePropertyStyle = (index: number, value: string) => {
-		const updatedPropertyStyle = [...propertyStyle];
-		updatedPropertyStyle[index] = value;
-		setPropertyStyle(updatedPropertyStyle);
-	};
-
-	const handleAddPropertyStyle = () => {
-		setPropertyStyle([...propertyStyle, ""]);
-	};
-
-	const handleDeletePropertyStyle = (index: number) => {
-		const updatedPropertStyle = propertyStyle.filter((_, i) => i !== index);
-		setPropertyStyle(updatedPropertStyle);
-	};
-	
-	const handleDropdown = (city: any) => {
-		setSelectedCity(city);
-	};
-
-	const handleBiodataSubmit = (event: any) => {
-		event.preventDefault();
-		const newBiodata = {
-			firstName,
-			lastName,
-			province,
-			propertyType: [...propertyType],
-			propertyStyle: [...propertyStyle],
-			selectedCity,
-			about,
-		};
-
-		setBiodata([...biodata, newBiodata]);
-		setFirstName("");
-		setLastName("");
-		setProvince("");
-		setPropertyType([]);
-		setPropertyStyle([]);
-		setSelectedCity("");
-		setAbout("");
 	};
 
 	const [confirmModal, setConfirmModal] = useState(false);
@@ -808,21 +823,15 @@ export default function Form() {
 						<div className="mb-10 w-full rounded-3xl bg-white drop-shadow-landingShado mt-7">
 							<div className="ml-14 py-8">
 								<p className="text-[15px] font-semibold text-gold">Biodata</p>
+
 								<InputBox
 									form="biodata-Form"
 									type="text"
-									title="Firstname"
-									placeholder={"Enter Firstname"}
-									onChange={handleChangeFirstname}
+									title="Name"
+									placeholder={"Enter Name"}
+									onChange={handleChangeCompanyName}
 								></InputBox>
-								<InputBox
-									form="biodata-Form"
-									type="text"
-									title="Lastname"
-									placeholder={"Enter Lastname"}
-									onChange={handleChangeLastName}
-								></InputBox>
-								
+
 								<div>
 									{propertyType.map((item, index) => (
 										<div key={index}>
@@ -888,7 +897,7 @@ export default function Form() {
 										</div>
 									))}
 								</div>
-								
+
 								<div>
 									{propertyStyle.map((item, index) => (
 										<div key={index}>
@@ -954,7 +963,7 @@ export default function Form() {
 										</div>
 									))}
 								</div>
-								
+
 								<Dropdown
 									form="biodata-Form"
 									styleClass="text-gold text-[15px] flex gap-[123px] mt-2 w-full pr-7"
@@ -1190,6 +1199,23 @@ export default function Form() {
 													? " Now"
 													: projects.dateUntil.substr(0, 0 + 4)}
 											</p>
+
+											<div className="flex gap-3 w-full mt-3">
+												{projects.image.map((item, index) => (
+													<div key={index}>
+														<Image
+															onClick={()=>{
+																setSrcIMG(item);
+																setShowIMG(true);
+															}}
+															src={item}
+															alt=""
+															width={60}
+															height={60}
+														></Image>
+													</div>
+												))}
+											</div>
 										</span>
 									</div>
 								))}
@@ -1212,22 +1238,24 @@ export default function Form() {
 					<div className="container max-w-[400px]">
 						<div className="mb-10 w-full rounded-3xl bg-white drop-shadow-landingShado mt-14">
 							<div className="px-7 py-6">
-								<p className="text-[17px] font-medium">Lorem Ipsum</p>
+								<p className="text-[17px] font-medium">Request As Contractor</p>
 								<p className="text-[15px]">
-									Morbi lobortis aliquet nisl. Lorem ipsum dolor sit amet,
-									consectetur adipiscing elit. Pellentesque maximus felis id
-									varius imperdiet. Donec condimentum bibendum tempus. Proin ac
-									massa non felis ultricies varius eget ut est. Aliquam
-									scelerisque velit in lorem pellentesque, a vulputate dolor
-									accumsan. Nulla tortor ipsum, placerat eget risus ut, sagittis
-									tincidunt lectus. Donec in dui erat. Duis eu risus tristique,
-									rhoncus erat et, iaculis elit. Mauris id suscipit libero, id
-									fringilla nisi. Duis a vestibulum est.
+									This page will help potential clients or project owners get a
+									clear understanding of your company, your team, and your
+									ability to complete previous projects.
 								</p>
 							</div>
 						</div>
 					</div>
 				</div>
+			</div>
+			<div>
+				<IMGPreview
+					src={srcIMG}
+					onClose={handleOnCloseIMG}
+					visible={showIMG}
+					setShowIMG={setShowIMG}
+				></IMGPreview>
 			</div>
 		</div>
 	);
