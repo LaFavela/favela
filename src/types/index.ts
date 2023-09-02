@@ -110,40 +110,37 @@ export interface Database {
       }
       profile_detail: {
         Row: {
+          about: string
           city: number | null
           created_at: string
-          first_name: string | null
           id: string
-          last_name: string | null
           property_style: number[] | null
           property_type: number[] | null
           province: number | null
           updated_at: string | null
-          user_id: string | null
+          user_id: string
         }
         Insert: {
+          about?: string
           city?: number | null
           created_at?: string
-          first_name?: string | null
           id?: string
-          last_name?: string | null
           property_style?: number[] | null
           property_type?: number[] | null
           province?: number | null
           updated_at?: string | null
-          user_id?: string | null
+          user_id: string
         }
         Update: {
+          about?: string
           city?: number | null
           created_at?: string
-          first_name?: string | null
           id?: string
-          last_name?: string | null
           property_style?: number[] | null
           property_type?: number[] | null
           province?: number | null
           updated_at?: string | null
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: [
           {
@@ -216,7 +213,6 @@ export interface Database {
           role_id: number
           updated_at: string | null
           username: string | null
-          website: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -227,7 +223,6 @@ export interface Database {
           role_id?: number
           updated_at?: string | null
           username?: string | null
-          website?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -238,7 +233,6 @@ export interface Database {
           role_id?: number
           updated_at?: string | null
           username?: string | null
-          website?: string | null
         }
         Relationships: [
           {
@@ -288,15 +282,15 @@ export interface Database {
       provinsi: {
         Row: {
           id: number
-          provinsi: string | null
+          provinsi: string
         }
         Insert: {
           id: number
-          provinsi?: string | null
+          provinsi: string
         }
         Update: {
           id?: number
-          provinsi?: string | null
+          provinsi?: string
         }
         Relationships: []
       }
