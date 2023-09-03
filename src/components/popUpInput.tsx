@@ -14,7 +14,7 @@ const InputPopUp = (props: Props) => {
         )}
         <input
           {...props}
-          className="w-full rounded-[7px] border-2 border-gold pl-2 text-gold focus:border-gold  focus:outline-gold"
+          className="w-full rounded-[7px] border-2 text-[13px] py-[2px] border-gold pl-2 text-gold focus:border-gold  focus:outline-gold"
         />
       </label>
     </div>
