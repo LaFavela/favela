@@ -43,6 +43,79 @@ export interface Database {
           }
         ]
       }
+      design: {
+        Row: {
+          bathroom_count: number
+          bedroom_count: number
+          created_at: string | null
+          created_by: string | null
+          description: string
+          feature: string
+          floor_plan_image: string[] | null
+          id: string
+          name: string
+          other: string[]
+          preview_image: string[] | null
+          price: number
+          property_size: number
+          property_style: number | null
+          property_type: number | null
+        }
+        Insert: {
+          bathroom_count: number
+          bedroom_count: number
+          created_at?: string | null
+          created_by?: string | null
+          description?: string
+          feature?: string
+          floor_plan_image?: string[] | null
+          id?: string
+          name?: string
+          other?: string[]
+          preview_image?: string[] | null
+          price: number
+          property_size: number
+          property_style?: number | null
+          property_type?: number | null
+        }
+        Update: {
+          bathroom_count?: number
+          bedroom_count?: number
+          created_at?: string | null
+          created_by?: string | null
+          description?: string
+          feature?: string
+          floor_plan_image?: string[] | null
+          id?: string
+          name?: string
+          other?: string[]
+          preview_image?: string[] | null
+          price?: number
+          property_size?: number
+          property_style?: number | null
+          property_type?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "design_created_by_fkey"
+            columns: ["created_by"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "design_property_style_fkey"
+            columns: ["property_style"]
+            referencedRelation: "property_style"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "design_property_type_fkey"
+            columns: ["property_type"]
+            referencedRelation: "property_type"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       kabupaten_kota: {
         Row: {
           id: number
@@ -64,6 +137,37 @@ export interface Database {
             foreignKeyName: "kabupaten_kota_id_provinsi_fkey"
             columns: ["id_provinsi"]
             referencedRelation: "provinsi"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      member_contractor: {
+        Row: {
+          description: string | null
+          id: string
+          job: string
+          name: string
+          user_id: string
+        }
+        Insert: {
+          description?: string | null
+          id?: string
+          job: string
+          name: string
+          user_id?: string
+        }
+        Update: {
+          description?: string | null
+          id?: string
+          job?: string
+          name?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_contractor_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           }
         ]
@@ -129,7 +233,7 @@ export interface Database {
           property_type?: number[] | null
           province?: number | null
           updated_at?: string | null
-          user_id: string
+          user_id?: string
         }
         Update: {
           about?: string
@@ -249,6 +353,46 @@ export interface Database {
           }
         ]
       }
+      project: {
+        Row: {
+          description: string
+          end_date: string
+          id: string
+          image: string[]
+          institution: string
+          start_date: string
+          title: string
+          user_id: string | null
+        }
+        Insert: {
+          description?: string
+          end_date?: string
+          id?: string
+          image?: string[]
+          institution?: string
+          start_date?: string
+          title?: string
+          user_id?: string | null
+        }
+        Update: {
+          description?: string
+          end_date?: string
+          id?: string
+          image?: string[]
+          institution?: string
+          start_date?: string
+          title?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       property_style: {
         Row: {
           id: number
@@ -314,7 +458,43 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      check_design_permission: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      fetch_and_find_property_types: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: number
+          name: string
+        }[]
+      }
+      get_current_user_id: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      get_role_name_by_id: {
+        Args: {
+          role_id: number
+        }
+        Returns: string
+      }
+      get_user_role_name: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      insert_member_contractors: {
+        Args: {
+          data_to_insert: Json
+        }
+        Returns: undefined
+      }
+      insert_projects: {
+        Args: {
+          data_to_insert: Json
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       app_permission: "channels.delete" | "messages.delete"
