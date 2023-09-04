@@ -28,8 +28,11 @@ export default function FormDesainer() {
 	const [selectedCity, setSelectedCity] = useState<number>(NaN); // State to store the selected city
 	const [propertyType, setPropertyType] = useState<number[]>([NaN]);
 	const [propertyStyle, setPropertyStyle] = useState<number[]>([NaN]);
-	const [provinsiData, setProvinsiData] = useState<Lokasi[]>([]);
-	const [kotaData, setKotaData] = useState<Lokasi[]>([]);
+
+	const [provinsiData, setProvinsiData] = useState<Dropdown[]>([]);
+	const [kotaData, setKotaData] = useState<Dropdown[]>([]);
+	const [propertyTypeData, setPropertyTypeData] = useState<Dropdown[]>([]);
+	const [propertyStyleData, setPropertyStyleData] = useState<Dropdown[]>([]);
 
 	useEffect(() => {
 		const init = async () => {
@@ -51,7 +54,7 @@ export default function FormDesainer() {
 			setSelectedCity(profile_detail?.city as number);
 			setAbout(profile_detail?.about as string);
 			const { data: provinsi } = await supabase.from("provinsi").select("*");
-			let provinsiData: Lokasi[] = [];
+			let provinsiData: Dropdown[] = [];
 			provinsi?.forEach((item) => {
 				provinsiData.push({
 					value: item.id,
@@ -59,6 +62,30 @@ export default function FormDesainer() {
 				});
 			});
 			setProvinsiData(provinsiData);
+
+			const { data: property_type } = await supabase
+				.from("property_type")
+				.select("*");
+			let propertyTypeData: Dropdown[] = [];
+			property_type?.forEach((item) => {
+				propertyTypeData.push({
+					value: item.id,
+					label: item.type_name as string,
+				});
+			});
+			setPropertyTypeData(propertyTypeData);
+
+			const { data: property_style } = await supabase
+				.from("property_style")
+				.select("*");
+			let propertyStyleData: Dropdown[] = [];
+			property_style?.forEach((item) => {
+				propertyStyleData.push({
+					value: item.id,
+					label: item.style_name as string,
+				});
+			});
+			setPropertyStyleData(propertyStyleData);
 		};
 		init();
 	}, []);
@@ -406,7 +433,7 @@ export default function FormDesainer() {
 			.from("kabupaten_kota")
 			.select("*")
 			.eq("id_provinsi", event);
-		let temp: Lokasi[] = [];
+		let temp: Dropdown[] = [];
 		kota?.forEach((item) => {
 			temp.push({
 				value: item.id,
@@ -1168,13 +1195,7 @@ export default function FormDesainer() {
 													styleClassTag="py-[3px] border-2 border-gold rounded-[7px] w-full"
 													styleText="w-[200px]"
 													title="Property Type"
-													data={[
-														{ value: "Type1", label: "Type1" },
-														{ value: "Type2", label: "Type2" },
-														{ value: "Type3", label: "Type3" },
-														{ value: "Type4", label: "Type4" },
-														{ value: "Type5", label: "Type5" },
-													]}
+													data={propertyTypeData}
 													value={item}
 													placehoder="Select Property Type"
 													onChange={(e: any) =>
@@ -1188,13 +1209,7 @@ export default function FormDesainer() {
 														styleClass="text-gold text-[15px] flex gap-[187px] mt-1 w-full pr-7"
 														styleClassTag="border-2 border-gold rounded-[7px] w-full py-[2px]"
 														title=""
-														data={[
-															{ value: "Type1", label: "Type1" },
-															{ value: "Type2", label: "Type2" },
-															{ value: "Type3", label: "Type3" },
-															{ value: "Type4", label: "Type4" },
-															{ value: "Type5", label: "Type5" },
-														]}
+														data={propertyTypeData}
 														value={item}
 														placehoder="Select Property Type"
 														onChange={(e: any) =>
@@ -1234,13 +1249,7 @@ export default function FormDesainer() {
 													styleClassTag="py-[3px] border-2 border-gold rounded-[7px] w-full"
 													styleText="w-[200px]"
 													title="Property Style"
-													data={[
-														{ value: "Style1", label: "Style1" },
-														{ value: "Style2", label: "Style2" },
-														{ value: "Style3", label: "Style3" },
-														{ value: "Style4", label: "Style4" },
-														{ value: "Style5", label: "Style5" },
-													]}
+													data={propertyStyleData}
 													value={item}
 													placehoder="Select Property Style"
 													onChange={(e: any) =>
@@ -1254,13 +1263,7 @@ export default function FormDesainer() {
 														styleClass="text-gold text-[15px] flex gap-[187px] mt-1 w-full pr-7"
 														styleClassTag="border-2 border-gold rounded-[7px] w-full py-[2px]"
 														title=""
-														data={[
-															{ value: "Style1", label: "Style1" },
-															{ value: "Style2", label: "Style2" },
-															{ value: "Style3", label: "Style3" },
-															{ value: "Style4", label: "Style4" },
-															{ value: "Style5", label: "Style5" },
-														]}
+														data={propertyStyleData}
 														value={item}
 														placehoder="Select Property Style"
 														onChange={(e: any) =>
@@ -1672,7 +1675,7 @@ export default function FormDesainer() {
 	);
 }
 
-interface Lokasi {
+interface Dropdown {
 	value: number;
 	label: string;
 }
