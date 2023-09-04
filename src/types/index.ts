@@ -116,6 +116,36 @@ export interface Database {
           }
         ]
       }
+      education: {
+        Row: {
+          created_at: string
+          description: string
+          end_date: string
+          id: string
+          institution: string
+          start_date: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          end_date?: string
+          id?: string
+          institution?: string
+          start_date?: string
+          title?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          end_date?: string
+          id?: string
+          institution?: string
+          start_date?: string
+          title?: string
+        }
+        Relationships: []
+      }
       kabupaten_kota: {
         Row: {
           id: number
