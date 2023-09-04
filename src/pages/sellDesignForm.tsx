@@ -195,22 +195,6 @@ export default function SellDesignForm() {
 
 	const handleSubmitDesign = async (event: any) => {
 		event.preventDefault();
-		const newDesign = {
-			designName,
-			designDescription,
-			previewImage: [...previewImage],
-			sellingPrice,
-			propertyType,
-			propertyStyle,
-			featureDescription,
-			floorPlanImage: [...floorPlanImage],
-			bedRoomsTotal,
-			bathRoomsTotal,
-			propertySize,
-			others: [...others],
-		};
-
-		setDesign([...design, newDesign]);
 
 		const user = (await supabase.auth.getSession()).data.session?.user;
 		const uuid = v4();
