@@ -7,6 +7,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import Dropdown from "@/components/dropdwon";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
+import { v4 } from "uuid";
+import { set } from "react-hook-form";
 
 export default function FormDesainer() {
 	const [biodata, setBiodata] = useState<
@@ -481,19 +483,68 @@ export default function FormDesainer() {
 		setSelectedCity(city);
 	};
 
-	const handleBiodataSubmit = (event: any) => {
+
+	const handleBiodataSubmit = async (event: any) => {
 		event.preventDefault();
-		const newBiodata = {
-			firstName,
-			lastName,
-			province,
-			propertyType: [...propertyType],
-			propertyStyle: [...propertyStyle],
-			selectedCity,
-			about,
+
+		const user = (await supabase.auth.getSession()).data.session?.user;
+		const { data: profile } = await supabase
+			.from("profiles")
+			.update({ first_name: firstName, last_name: lastName })
+			.eq("id", user?.id)
+			.select();
+
+		const { data: profile_detail } = await supabase
+			.from("profile_detail")
+			.update({
+				about: about,
+				province: province,
+				city: selectedCity,
+				property_type: propertyType,
+				property_style: propertyStyle,
+			})
+			.eq("user_id", user?.id)
+			.select();
+
+		const uploadProjectImages = async () => {
+			const projectUrls: string[] = []; // Declare a variable outside the function to store the URLs
+			for (const project of projects) {
+				// No need to setProjectUrl([]) here
+
+				for (const image of project.image) {
+					const uuid = v4();
+					let blob = await fetch(image).then((r) => r.blob());
+
+					const upload = await supabase.storage
+						.from("project")
+						.upload(`${user?.id}/${uuid}`, blob)
+						.then(async (r) => {
+							const { publicUrl } = supabase.storage
+								.from("project")
+								.getPublicUrl(`${user?.id}/${uuid}`).data;
+							return publicUrl;
+						});
+
+					projectUrls.push(upload); // Add each uploaded URL to the projectUrls array
+				}
+				project.image = projectUrls;
+			}
 		};
 
-		setBiodata([...biodata, newBiodata]);
+		uploadProjectImages();
+
+		projects.map(async (project) => {
+			const { data: project_data } = await supabase.from("project").insert([
+				{
+					title: project.title,
+					description: project.information,
+					image: project.image,
+					institution: project.institution,
+					start_date: project.dateFrom,
+					end_date: project.dateUntil,
+				},
+			]);
+		});
 	};
 
 	const [confirmModal, setConfirmModal] = useState(false);
