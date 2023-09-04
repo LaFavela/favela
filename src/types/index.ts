@@ -125,6 +125,7 @@ export interface Database {
           institution: string
           start_date: string
           title: string
+          user_id: string | null
         }
         Insert: {
           created_at?: string
@@ -134,6 +135,7 @@ export interface Database {
           institution?: string
           start_date?: string
           title?: string
+          user_id?: string | null
         }
         Update: {
           created_at?: string
@@ -143,8 +145,44 @@ export interface Database {
           institution?: string
           start_date?: string
           title?: string
+          user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "education_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      facilities_form_request: {
+        Row: {
+          amount: number
+          form_id: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          amount: number
+          form_id?: string | null
+          id?: string
+          name?: string
+        }
+        Update: {
+          amount?: number
+          form_id?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "facilities_form_request_form_id_fkey"
+            columns: ["form_id"]
+            referencedRelation: "request_form"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       kabupaten_kota: {
         Row: {
@@ -468,6 +506,85 @@ export interface Database {
         }
         Relationships: []
       }
+      request_form: {
+        Row: {
+          budget: number
+          city: number | null
+          created_at: string
+          created_by: string | null
+          deadline: string
+          id: string
+          information: string
+          land_image: string[]
+          land_size: number
+          property_type: number | null
+          province: number | null
+          reference_image: string[]
+          style: string
+          sun_orientation: string
+          wind_orientation: string
+        }
+        Insert: {
+          budget: number
+          city?: number | null
+          created_at?: string
+          created_by?: string | null
+          deadline?: string
+          id?: string
+          information?: string
+          land_image?: string[]
+          land_size: number
+          property_type?: number | null
+          province?: number | null
+          reference_image?: string[]
+          style?: string
+          sun_orientation?: string
+          wind_orientation?: string
+        }
+        Update: {
+          budget?: number
+          city?: number | null
+          created_at?: string
+          created_by?: string | null
+          deadline?: string
+          id?: string
+          information?: string
+          land_image?: string[]
+          land_size?: number
+          property_type?: number | null
+          province?: number | null
+          reference_image?: string[]
+          style?: string
+          sun_orientation?: string
+          wind_orientation?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "request_form_city_fkey"
+            columns: ["city"]
+            referencedRelation: "kabupaten_kota"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "request_form_created_by_fkey"
+            columns: ["created_by"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "request_form_property_type_fkey"
+            columns: ["property_type"]
+            referencedRelation: "property_type"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "request_form_province_fkey"
+            columns: ["province"]
+            referencedRelation: "provinsi"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       roles: {
         Row: {
           id: number
@@ -512,6 +629,12 @@ export interface Database {
       get_user_role_name: {
         Args: Record<PropertyKey, never>
         Returns: string
+      }
+      insert_education: {
+        Args: {
+          data_to_insert: Json
+        }
+        Returns: undefined
       }
       insert_member_contractors: {
         Args: {

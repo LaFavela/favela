@@ -91,6 +91,7 @@ export default function FormDesainer() {
 		};
 		init();
 	}, []);
+	
 	const [education, setEducation] = useState<
 		{
 			studyInstitution: string;

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import InputBox from "@/components/inpuBox";
@@ -7,6 +7,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import Dropdown from "@/components/dropdwon";
 import InputBoxForm from "@/components/inpuBoxForm";
 import { properti } from "./designProduct";
+import { supabase } from "@/lib/supabase";
 
 export default function SellDesignForm() {
 	const inputRef = useRef<HTMLInputElement>(null);
@@ -18,6 +19,63 @@ export default function SellDesignForm() {
 	const handleImageClick2 = () => {
 		inputRef2.current?.click();
 	};
+
+	const [provinsiData, setProvinsiData] = useState<Dropdown[]>([]);
+	const [kotaData, setKotaData] = useState<Dropdown[]>([]);
+	const [propertyTypeData, setPropertyTypeData] = useState<Dropdown[]>([]);
+	const [propertyStyleData, setPropertyStyleData] = useState<Dropdown[]>([]);
+
+	useEffect(() => {
+		const init = async () => {
+			const user = (await supabase.auth.getSession()).data.session?.user;
+			const { data: profile } = await supabase
+				.from("profiles")
+				.select("*")
+				.eq("id", user?.id)
+				.single();
+
+			const { data: profile_detail } = await supabase
+				.from("profile_detail")
+				.select("*")
+				.eq("user_id", user?.id)
+				.single();
+
+			const { data: provinsi } = await supabase.from("provinsi").select("*");
+			let provinsiData: Dropdown[] = [];
+			provinsi?.forEach((item) => {
+				provinsiData.push({
+					value: item.id,
+					label: item.provinsi,
+				});
+			});
+			setProvinsiData(provinsiData);
+
+			const { data: property_type } = await supabase
+				.from("property_type")
+				.select("*");
+			let propertyTypeData: Dropdown[] = [];
+			property_type?.forEach((item) => {
+				propertyTypeData.push({
+					value: item.id,
+					label: item.type_name as string,
+				});
+			});
+			setPropertyTypeData(propertyTypeData);
+
+			const { data: property_style } = await supabase
+				.from("property_style")
+				.select("*");
+			let propertyStyleData: Dropdown[] = [];
+			property_style?.forEach((item) => {
+				propertyStyleData.push({
+					value: item.id,
+					label: item.style_name as string,
+				});
+			});
+			setPropertyStyleData(propertyStyleData);
+		};
+		init();
+	}, []);
 
 	const [design, setDesign] = useState<
 		{
@@ -43,7 +101,6 @@ export default function SellDesignForm() {
 	>([{ facilitiesName: "", amount: 0 }]);
 	const [facilitiesName, setFacilitiesName] = useState("");
 	const [amount, setAmount] = useState(0);
-	console.log(design);
 	// console.log(facilities);
 
 	const handleFacilitiesNamesChange = (index: number, newValue: string) => {
@@ -88,8 +145,20 @@ export default function SellDesignForm() {
 
 	const [others, setOthers] = useState<string[]>([""]);
 
-	const handleChangeProvince = (event: any) => {
+	const handleChangeProvince = async (event: any) => {
 		setProvince(event);
+		const { data: kota } = await supabase
+			.from("kabupaten_kota")
+			.select("*")
+			.eq("id_provinsi", event);
+		let temp: Dropdown[] = [];
+		kota?.forEach((item) => {
+			temp.push({
+				value: item.id,
+				label: item.kabupaten as string,
+			});
+		});
+		setKotaData(temp);
 	};
 	const handleChangeCity = (event: any) => {
 		setCity(event);
@@ -147,19 +216,7 @@ export default function SellDesignForm() {
 
 		setDesign([...design, newDesign]);
 
-		setProvince("");
-		setCity("");
-		setLandSize(0);
-		setLandShape(0);
-		setLandImage([]);
-		setBudget(0);
-		setPropertyType("");
-		setStyle("");
-		setReferenceImage([]);
-		setFacilities([]);
-		setSunOrientation("");
-		setWindOrientation("");
-		setDeadline("");
+		
 	};
 
 	const handleAddFacilities = () => {
@@ -243,13 +300,7 @@ export default function SellDesignForm() {
 										styleClass="text-gold flex gap-[120px] mt-2 w-full pr-7"
 										styleClassTag="border-2 border-gold rounded-[7px] w-full"
 										title="Province"
-										data={[
-											{ value: "Lombok Timur", label: "Lombok Timur" },
-											{ value: "Mataram", label: "Mataram" },
-											{ value: "Bima", label: "Bima" },
-											{ value: "Dompu", label: "Dompu" },
-											{ value: "Sumbawa", label: "Sumbawa" },
-										]}
+										data={provinsiData}
 										value={province}
 										placehoder="Select Province"
 										onChange={handleChangeProvince}
@@ -259,13 +310,7 @@ export default function SellDesignForm() {
 										styleClass="text-gold flex gap-[157px] mt-2 w-full pr-7"
 										styleClassTag="border-2 border-gold rounded-[7px] w-full"
 										title="City"
-										data={[
-											{ value: "Lombok Timur", label: "Lombok Timur" },
-											{ value: "Mataram", label: "Mataram" },
-											{ value: "Bima", label: "Bima" },
-											{ value: "Dompu", label: "Dompu" },
-											{ value: "Sumbawa", label: "Sumbawa" },
-										]}
+										data={kotaData}
 										value={city}
 										placehoder="Select City"
 										onChange={handleChangeCity}
@@ -655,16 +700,16 @@ export default function SellDesignForm() {
 									></InputBoxForm>
 								</div>
 							</div>
-						<Link href={"./merchantProfile"}>
-							<div className="pb-20 justify-end w-full flex">
-								<button
-									type="submit"
-									className="bg-gold rounded-full py-3 px-7 text-white text-[15px] hover:bg-goldhov "
-								>
-									Save
-								</button>
-							</div>
-						</Link>
+							<Link href={"./merchantProfile"}>
+								<div className="pb-20 justify-end w-full flex">
+									<button
+										type="submit"
+										className="bg-gold rounded-full py-3 px-7 text-white text-[15px] hover:bg-goldhov "
+									>
+										Save
+									</button>
+								</div>
+							</Link>
 						</form>
 					</div>
 
@@ -690,4 +735,9 @@ export default function SellDesignForm() {
 			</div>
 		</div>
 	);
+}
+
+interface Dropdown {
+	value: number;
+	label: string;
 }
