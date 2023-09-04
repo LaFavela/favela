@@ -8,6 +8,8 @@ import Dropdown from "@/components/dropdwon";
 import InputBoxForm from "@/components/inpuBoxForm";
 import { properti } from "./designProduct";
 import { supabase } from "@/lib/supabase";
+import { v4 } from "uuid";
+import { set } from "react-hook-form";
 
 export default function SellDesignForm() {
 	const inputRef = useRef<HTMLInputElement>(null);
@@ -23,23 +25,9 @@ export default function SellDesignForm() {
 	const [provinsiData, setProvinsiData] = useState<Dropdown[]>([]);
 	const [kotaData, setKotaData] = useState<Dropdown[]>([]);
 	const [propertyTypeData, setPropertyTypeData] = useState<Dropdown[]>([]);
-	const [propertyStyleData, setPropertyStyleData] = useState<Dropdown[]>([]);
 
 	useEffect(() => {
 		const init = async () => {
-			const user = (await supabase.auth.getSession()).data.session?.user;
-			const { data: profile } = await supabase
-				.from("profiles")
-				.select("*")
-				.eq("id", user?.id)
-				.single();
-
-			const { data: profile_detail } = await supabase
-				.from("profile_detail")
-				.select("*")
-				.eq("user_id", user?.id)
-				.single();
-
 			const { data: provinsi } = await supabase.from("provinsi").select("*");
 			let provinsiData: Dropdown[] = [];
 			provinsi?.forEach((item) => {
@@ -61,31 +49,19 @@ export default function SellDesignForm() {
 				});
 			});
 			setPropertyTypeData(propertyTypeData);
-
-			const { data: property_style } = await supabase
-				.from("property_style")
-				.select("*");
-			let propertyStyleData: Dropdown[] = [];
-			property_style?.forEach((item) => {
-				propertyStyleData.push({
-					value: item.id,
-					label: item.style_name as string,
-				});
-			});
-			setPropertyStyleData(propertyStyleData);
 		};
 		init();
 	}, []);
 
 	const [design, setDesign] = useState<
 		{
-			province: string;
-			city: string;
+			province: number;
+			city: number;
 			landSize: number;
 			landShape: number;
 			LandImage: string[];
 			budget: number;
-			propertyType: string;
+			propertyType: number;
 			style: string;
 			ReferenceImage: string[];
 			facilities: { facilitiesName: string; amount: number }[];
@@ -129,12 +105,12 @@ export default function SellDesignForm() {
 		}
 	};
 
-	const [province, setProvince] = useState("");
-	const [city, setCity] = useState("");
+	const [province, setProvince] = useState<number>(NaN);
+	const [city, setCity] = useState<number>(NaN);
 	const [landSize, setLandSize] = useState(0);
 	const [landShape, setLandShape] = useState(0);
 	const [budget, setBudget] = useState(0);
-	const [propertyType, setPropertyType] = useState("");
+	const [propertyType, setPropertyType] = useState<number>(NaN);
 	const [style, setStyle] = useState("");
 	const [sunOrientation, setSunOrientation] = useState("");
 	const [windOrientation, setWindOrientation] = useState("");
@@ -191,32 +167,82 @@ export default function SellDesignForm() {
 		setDeadline(event.target.value);
 	};
 
-	const handleSubmit = (event: any) => {
+	const handleSubmit = async (event: any) => {
 		event.preventDefault();
-		const mappedFacilities = facilities.map((item) => ({
-			facilitiesName: item.facilitiesName,
-			amount: item.amount,
-		}));
-		const newDesign = {
-			province,
-			city,
-			landSize,
-			landShape,
-			LandImage: [...LandImage],
-			budget,
-			propertyType,
-			style,
-			ReferenceImage: [...ReferenceImage],
-			facilities: mappedFacilities,
-			sunOrientation,
-			windOrientation,
-			additionalInformation,
-			deadline,
-		};
 
-		setDesign([...design, newDesign]);
+		const uuid = v4();
+		const landData: string[] = [];
+		const awaitLand = await Promise.all(
+			LandImage.map(async (item) => {
+				const fileUuid = v4();
+				let blob = await fetch(item).then((r) => r.blob());
+				const { data: preview, error } = await supabase.storage
+					.from("request_design")
+					.upload(`${uuid}/land/${fileUuid}`, blob);
+				const { publicUrl } = supabase.storage
+					.from("request_design")
+					.getPublicUrl(`${uuid}/land/${fileUuid}`).data;
+				landData.push(publicUrl);
+			}),
+		).then(() => {
+			setLandImage(landData);
+		});
 
-		
+		const referenceData: string[] = [];
+		const awaitReference = await Promise.all(
+			ReferenceImage.map(async (item) => {
+				const fileUuid = v4();
+				let blob = await fetch(item).then((r) => r.blob());
+				const { data: preview, error } = await supabase.storage
+					.from("request_design")
+					.upload(`${uuid}/reference/${fileUuid}`, blob);
+				const { publicUrl } = supabase.storage
+					.from("request_design")
+					.getPublicUrl(`${uuid}/reference/${fileUuid}`).data;
+				referenceData.push(publicUrl);
+				console.log(preview, error);
+			}),
+		).then(() => {
+			setReferenceImage(referenceData);
+		});
+
+		console.log(ReferenceImage);
+
+		const { data: request } = await supabase
+			.from("request_form")
+			.insert([
+				{
+					budget: budget,
+					land_size: landSize,
+					city: city,
+					deadline: deadline,
+					land_image: LandImage,
+					information: additionalInformation,
+					property_type: propertyType,
+					province: province,
+					reference_image: ReferenceImage,
+					style: style,
+					sun_orientation: sunOrientation,
+					wind_orientation: windOrientation,
+				},
+			])
+			.select()
+			.single();
+
+		const mappedFacilities = await Promise.all(
+			facilities.map(async (item) => {
+				const { data: facilities } = await supabase
+					.from("facilities_form_request")
+					.insert([
+						{
+							name: item.facilitiesName,
+							amount: item.amount,
+							form_id: request?.id,
+						},
+					])
+					.select();
+			}),
+		);
 	};
 
 	const handleAddFacilities = () => {
@@ -456,13 +482,7 @@ export default function SellDesignForm() {
 										styleClassTag="border-2 border-gold rounded-[7px] w-full"
 										styleText="w-[193px]"
 										title="Property Type"
-										data={[
-											{ value: "Type 1", label: "Type 1" },
-											{ value: "Type 2", label: "Type 2" },
-											{ value: "Type 3", label: "Type 3" },
-											{ value: "Type 4", label: "Type 4" },
-											{ value: "Type 5", label: "Type 5" },
-										]}
+										data={propertyTypeData}
 										value={propertyType}
 										placehoder="Select Property Type"
 										onChange={handleChangePropertyType}
@@ -700,16 +720,16 @@ export default function SellDesignForm() {
 									></InputBoxForm>
 								</div>
 							</div>
-							<Link href={"./merchantProfile"}>
-								<div className="pb-20 justify-end w-full flex">
-									<button
-										type="submit"
-										className="bg-gold rounded-full py-3 px-7 text-white text-[15px] hover:bg-goldhov "
-									>
-										Save
-									</button>
-								</div>
-							</Link>
+							{/* <Link href={"./merchantProfile"}> */}
+							<div className="pb-20 justify-end w-full flex">
+								<button
+									type="submit"
+									className="bg-gold rounded-full py-3 px-7 text-white text-[15px] hover:bg-goldhov "
+								>
+									Save
+								</button>
+							</div>
+							{/* </Link> */}
 						</form>
 					</div>
 
