@@ -21,6 +21,16 @@ export const getServerSideProps = async (
 		.eq("username", params)
 		.single();
 
+	if (profile == null) {
+		return {
+			redirect: {
+				permanent: false,
+				destination: "/",
+			},
+			props: {},
+		};
+	}
+
 	const { data: profile_detail, error: errorProfile_detail } = await supabase
 		.from("profile_detail")
 		.select()
