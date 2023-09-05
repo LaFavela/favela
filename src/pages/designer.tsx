@@ -8,6 +8,21 @@ import { motion, AnimatePresence } from "framer-motion";
 import "reactjs-popup/dist/index.css";
 import ShowRating from "../components/rating";
 import { type, style, province } from "@/components/tagList";
+import { supabase } from "@/lib/supabase";
+
+const getServerSideProps = async () => {
+	const { data: designerData, error } = await supabase
+		.from("profile_detail")
+		.select(
+			"user_id(username, first_name, last_name, avatar_url), province(provinsi), city(kabupaten), property_type, property_style",
+		)
+		.range(0, 10)
+		.filter("role_id", "eq", 2);
+
+	return {
+		props: {},
+	};
+};
 
 export const designerData = [
 	{
@@ -232,7 +247,7 @@ export const designerData = [
 	},
 ];
 
-export default function Designer() {
+export default function Designer({  }) {
 	const [hover, setHover] = useState(false);
 	const [index, setIndex] = useState(-1);
 	const [isPressed, setIsPressed] = useState(false);
@@ -415,10 +430,9 @@ export default function Designer() {
 										<AnimatePresence>
 											{selectedProvinces.map((tag, index) => (
 												<motion.li
-												initial={{ scale: 0 }}
-												animate={{ scale: 1 }}
-												exit={{ scale: 0 }}
-
+													initial={{ scale: 0 }}
+													animate={{ scale: 1 }}
+													exit={{ scale: 0 }}
 													className="flex h-[30px] max-w-fit flex-row justify-between rounded-full bg-[#E4D1BC]"
 													key={index}
 												>
