@@ -6,13 +6,9 @@ import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import Image from "next/image";
 import { projectData, reviewData } from "@/data/formList";
 import IMGPreview from "@/components/imgPreview";
-import { calculate } from "@/tools/calculate";
+import calculate from "@/tools/calculate";
 import { supabase } from "@/lib/supabase";
-import {
-	GetServerSideProps,
-	InferGetServerSidePropsType,
-	GetServerSidePropsContext,
-} from "next";
+import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
 
 export const getServerSideProps = async (
 	context: GetServerSidePropsContext,
@@ -36,7 +32,8 @@ export const getServerSideProps = async (
 		.select()
 		.eq("created_by", profile?.id);
 
-	if (profile?.role_id == 2) {
+	console.log(profile?.role_id);
+	if (profile?.role_id.role_name == "designer") {
 		const { data: project, error: errorProject } = await supabase
 			.from("project")
 			.select()
@@ -45,10 +42,11 @@ export const getServerSideProps = async (
 			.from("experience")
 			.select()
 			.eq("user_id", profile?.id);
-		const { data: education } = await supabase
+		const { data: education, error } = await supabase
 			.from("education")
 			.select()
 			.eq("user_id", profile?.id);
+		console.log(education, error);
 		return {
 			props: {
 				profile,
@@ -59,7 +57,7 @@ export const getServerSideProps = async (
 				design,
 			},
 		};
-	} else if (profile?.role_id == 3) {
+	} else if (rofile?.role_id.role_name == "contractor") {
 		const { data: project, error: errorProject } = await supabase
 			.from("project")
 			.select()
@@ -316,7 +314,8 @@ export default function Profile({
 								</div>
 								<div>
 									<p className="mt-1 text-[13px] text-[#9C9797]">
-										Mataram, Nusa Tenggara Barat, Indonesia
+										{profile_detail?.city}, {profile_detail?.province},
+										Indonesia
 									</p>
 								</div>
 							</div>
@@ -463,7 +462,7 @@ export default function Profile({
 													{design.name}
 												</p>
 												<p className="text-[21px] font-semibold text-[#4B4B4B]">
-													Rp {calculate(design.price)}
+													Rp{calculate(design.price)}
 												</p>
 											</div>
 
@@ -533,14 +532,7 @@ export default function Profile({
 												</span>
 											</div>
 											<p className="mt-2 text-justify text-[12px] font-normal text-[#4B4B4B]">
-												Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-												Curabitur nulla arcu, viverra id scelerisque at,
-												molestie et nunc. Etiam efficitur elit in ipsum
-												dignissim, at maximus dui aliquet. Vivamus ut mattis
-												ligula. Aenean facilisis risus id lacinia consectetur.
-												Nam auctor pellentesque rutrum. Curabitur vitae est non
-												nisl. Aenean facilisis risus id lacinia consectetur. Nam
-												auctor pellentesque rutrum. Curabitur.
+												{design.description}
 											</p>
 										</div>
 									</div>
@@ -555,7 +547,7 @@ export default function Profile({
 						<div className="flex flex-col gap-5 px-12 py-10">
 							<p className="text-[25px] font-semibold">Education</p>
 
-							{designData.map((designData, index) => {
+							{education?.map((education, index) => {
 								return (
 									<div
 										className={`container flex  max-w-[791px] 
@@ -581,22 +573,19 @@ export default function Profile({
 										<div className="my-4 w-[605px]">
 											<div className="flex justify-between">
 												<p className="text-[17px] font-medium text-black">
-													Universitas Mataram
+													{education.institution}
 												</p>
 											</div>
 
 											<div className="gap-2">
-												<p className="text-[14px]">
-													Mahasiswa, Teknik Informatika
-												</p>
+												<p className="text-[14px]">{education.title}</p>
 												<p className="text-[14px] text-[#A1A1A1]">
-													2021 - Sekarang
+													{education.start_date} -
+													{education.end_date ? education.end_date : "Sekarang"}
 												</p>
 											</div>
 											<p className="mt-2 text-justify text-[12px] font-normal text-[#4B4B4B]">
-												Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-												Curabitur nulla arcu, viverra id scelerisque at,
-												molestie et nunc.
+												{education.description}
 											</p>
 										</div>
 									</div>
