@@ -41,7 +41,7 @@ export default function Status(props: StatusProps) {
 				<div
 					ref={wrapperRef}
 					className={
-						"-translate-x-1/2 -translate-y-1/2 transform fixed left-1/2 top-1/2 flex flex-col justify-between w-[34.5625rem] h-[17.5rem] bg-white  rounded-[1.5625rem] overflow-hidden drop-shadow-landingShado"
+						"z-50 -translate-x-1/2 -translate-y-1/2 transform fixed left-1/2 top-1/2 flex flex-col justify-between w-[34.5625rem] h-[17.5rem] bg-white  rounded-[1.5625rem] overflow-hidden drop-shadow-landingShado"
 					}
 				>
 					<div className={"w-full flex items-center h-[3.25rem] " + bgColor}>

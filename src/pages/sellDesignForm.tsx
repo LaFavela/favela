@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import InputBox from "@/components/inpuBox";
@@ -6,6 +6,8 @@ import InputPopUp from "@/components/popUpInput";
 import CloseIcon from "@mui/icons-material/Close";
 import Dropdown from "@/components/dropdwon";
 import InputBoxForm from "@/components/inpuBoxForm";
+import { supabase } from "@/lib/supabase";
+import { v4 } from "uuid";
 
 export default function SellDesignForm() {
 	const inputRef = useRef<HTMLInputElement>(null);
@@ -18,94 +20,20 @@ export default function SellDesignForm() {
 		inputRef2.current?.click();
 	};
 
-	//BIODATA
-	const [biodata, setBiodata] = useState<
-		{
-			firstName: string;
-			lastName: string;
-			province: string;
-			about: string;
-			selectedCity: string;
-			tag: string[];
-		}[]
-	>([]);
-
-	const [firstName, setFirstName] = useState("");
-	const [lastName, setLastName] = useState("");
-	const [province, setProvince] = useState("");
-	const [about, setAbout] = useState("");
-	const [selectedCity, setSelectedCity] = useState(""); // State to store the selected city
-	const [tag, setTag] = useState<string[]>([""]);
-
-	const handleChangeFirstname = (event: any) => {
-		setFirstName(event.target.value);
-	};
-
-	const handleChangeLastName = (event: any) => {
-		setLastName(event.target.value);
-	};
-
-	const handleChangeProvince = (event: any) => {
-		setProvince(event);
-	};
-
-	const handleChangeAbout = (event: any) => {
-		setAbout(event.target.value);
-	};
-
-	const handleChangeTag = (index: number, value: string) => {
-		const updatedTags = [...tag];
-		updatedTags[index] = value;
-		setTag(updatedTags);
-	};
-
-	const handleDropdown = (city: any) => {
-		setSelectedCity(city);
-	};
-
-	const handleAddTag = () => {
-		setTag([...tag, ""]);
-	};
-
-	const handleDeleteTag = (index: number) => {
-		const updatedTag = tag.filter((_, i) => i !== index);
-		setTag(updatedTag);
-	};
-
-	const handleBiodataSubmit = (event: any) => {
-		event.preventDefault();
-		const newBiodata = {
-			firstName,
-			lastName,
-			province,
-			tag: [...tag],
-			selectedCity,
-			about,
-		};
-
-		setBiodata([...biodata, newBiodata]);
-		setFirstName("");
-		setLastName("");
-		setProvince("");
-		setTag([]);
-		setSelectedCity("");
-		setAbout("");
-	};
-
 	const [design, setDesign] = useState<
 		{
-			designName:string;
-			designDescription:string;
-			previewImage:string[];
-			sellingPrice:number;
-			propertyType:string;
-			propertyStyle:string;
-			featureDescription:string;
-			floorPlanImage:string[];
-			bedRoomsTotal:number;
-			bathRoomsTotal:number;
-			propertySize:number;
-			others:string[];
+			designName: string;
+			designDescription: string;
+			previewImage: string[];
+			sellingPrice: number;
+			propertyType: number;
+			propertyStyle: number;
+			featureDescription: string;
+			floorPlanImage: string[];
+			bedRoomsTotal: number;
+			bathRoomsTotal: number;
+			propertySize: number;
+			others: string[];
 		}[]
 	>([]);
 
@@ -113,14 +41,71 @@ export default function SellDesignForm() {
 	const [designDescription, setDesignDescription] = useState("");
 	const [previewImage, setPreviewImage] = useState<string[]>([]);
 	const [sellingPrice, setSellingPrice] = useState(0);
-	const [propertyType, setPropertyType] = useState("");
-	const [propertyStyle, setPropertyStyle] = useState("");
+	const [propertyType, setPropertyType] = useState<number>(NaN);
+	const [propertyStyle, setPropertyStyle] = useState<number>(NaN);
 	const [featureDescription, setFeatureDescription] = useState("");
 	const [floorPlanImage, setFloorPlanImage] = useState<string[]>([]);
 	const [bedRoomsTotal, setBedRoomsTotal] = useState(0);
 	const [bathRoomsTotal, setBathRoomsTotal] = useState(0);
 	const [propertySize, setPropertySize] = useState(0);
 	const [others, setOthers] = useState<string[]>([""]);
+
+	const [provinsiData, setProvinsiData] = useState<Dropdown[]>([]);
+	const [kotaData, setKotaData] = useState<Dropdown[]>([]);
+	const [propertyTypeData, setPropertyTypeData] = useState<Dropdown[]>([]);
+	const [propertyStyleData, setPropertyStyleData] = useState<Dropdown[]>([]);
+
+	useEffect(() => {
+		const init = async () => {
+			const user = (await supabase.auth.getSession()).data.session?.user;
+			const { data: profile } = await supabase
+				.from("profiles")
+				.select("*")
+				.eq("id", user?.id)
+				.single();
+
+			const { data: profile_detail } = await supabase
+				.from("profile_detail")
+				.select("*")
+				.eq("user_id", user?.id)
+				.single();
+
+			const { data: property_type } = await supabase
+				.from("property_type")
+				.select("*");
+			let propertyTypeData: Dropdown[] = [];
+			property_type?.forEach((item) => {
+				propertyTypeData.push({
+					value: item.id,
+					label: item.type_name as string,
+				});
+			});
+			setPropertyTypeData(propertyTypeData);
+
+			const { data: property_style } = await supabase
+				.from("property_style")
+				.select("*");
+			let propertyStyleData: Dropdown[] = [];
+			property_style?.forEach((item) => {
+				propertyStyleData.push({
+					value: item.id,
+					label: item.style_name as string,
+				});
+			});
+			setPropertyStyleData(propertyStyleData);
+		};
+		init();
+	}, []);
+	const [education, setEducation] = useState<
+		{
+			studyInstitution: string;
+			studyTitle: string;
+			studyDepartement: string;
+			StudyFrom: string;
+			StudyUntil: string;
+			studyDescription: string;
+		}[]
+	>([]);
 
 	const handlePropertySzieChange = (event: any) => {
 		setPropertySize(event.target.value);
@@ -208,36 +193,62 @@ export default function SellDesignForm() {
 		setPreviewImage(updatedImages);
 	};
 
-	const handleSubmitDesign = (event: any) => {
+	const handleSubmitDesign = async (event: any) => {
 		event.preventDefault();
-		const newDesign = {
-			designName,
-			designDescription,
-			previewImage: [...previewImage],
-			sellingPrice,
-			propertyType,
-			propertyStyle,
-			featureDescription,
-			floorPlanImage: [...floorPlanImage],
-			bedRoomsTotal,
-			bathRoomsTotal,
-			propertySize,
-			others: [...others],
-		};
-		
-		setDesign([...design,newDesign])
-		setDesignDescription("");
-		setDesignDescription("");
-		setPreviewImage([]);
-		setSellingPrice(0),
-			setPropertyType(""),
-			setPropertyStyle(""),
-			setFeatureDescription("");
-		setFloorPlanImage([]);
-		setBedRoomsTotal(0);
-		setBathRoomsTotal(0);
-		setPropertySize(0);
-		setOthers([]);
+
+		const user = (await supabase.auth.getSession()).data.session?.user;
+		const uuid = v4();
+
+		const previewData: string[] = [];
+		const floorplanData: string[] = [];
+
+		const awaitPreview = await Promise.all(
+			previewImage.map(async (item) => {
+				const fileUuid = v4();
+				let blob = await fetch(item).then((r) => r.blob());
+				const { data: preview, error } = await supabase.storage
+					.from("design")
+					.upload(`${uuid}/preview/${fileUuid}`, blob);
+				const { publicUrl } = supabase.storage
+					.from("design")
+					.getPublicUrl(`${uuid}/preview/${fileUuid}`).data;
+				previewData.push(publicUrl);
+			}),
+		);
+
+		const awaitFloorplan = await Promise.all(
+			floorPlanImage.map(async (item) => {
+				const fileUuid = v4();
+				let blob = await fetch(item).then((r) => r.blob());
+				const { data: floorplan, error } = await supabase.storage
+					.from("design")
+					.upload(`${uuid}/floorplan/${fileUuid}`, blob);
+				const { publicUrl } = supabase.storage
+					.from("design")
+					.getPublicUrl(`${uuid}/floorplan/${fileUuid}`).data;
+				floorplanData.push(publicUrl);
+			}),
+		);
+
+		const { data, error } = await supabase
+			.from("design")
+			.insert([
+				{
+					name: designName,
+					bathroom_count: bathRoomsTotal,
+					bedroom_count: bedRoomsTotal,
+					price: sellingPrice,
+					property_size: propertySize,
+					description: designDescription,
+					feature: featureDescription,
+					property_type: propertyType,
+					property_style: propertyStyle,
+					other: others,
+					floor_plan_image: floorplanData,
+					preview_image: previewData,
+				},
+			])
+			.select();
 	};
 
 	const [isActive, setIsActive] = useState(false);
@@ -248,8 +259,6 @@ export default function SellDesignForm() {
 	const handleOutside = () => {
 		setIsActive(true);
 	};
-	
-	console.log(design)
 
 	return (
 		<div>
@@ -418,13 +427,7 @@ export default function SellDesignForm() {
 											styleClassTag="border-2 border-gold rounded-[7px] w-full"
 											styleText="w-[190px]"
 											title="Property Type"
-											data={[
-												{ value: "Type 1", label: "Type 1" },
-												{ value: "Type 2", label: "Type 2" },
-												{ value: "Type 3", label: "Type 3" },
-												{ value: "Type 4", label: "Type 4" },
-												{ value: "Type 5", label: "Type 5" },
-											]}
+											data={propertyTypeData}
 											value={propertyType}
 											placehoder="Select Property Type"
 											onChange={handlePropertyType}
@@ -434,13 +437,7 @@ export default function SellDesignForm() {
 											styleClassTag="border-2 border-gold rounded-[7px] w-full"
 											styleText="w-[190px]"
 											title="Property Style"
-											data={[
-												{ value: "Style 1", label: "Style 1" },
-												{ value: "Style 2", label: "Style 2" },
-												{ value: "Style 3", label: "Style 3" },
-												{ value: "Style 4", label: "Style 4" },
-												{ value: "Style 5", label: "Style 5" },
-											]}
+											data={propertyStyleData}
 											value={propertyStyle}
 											placehoder="Select Property Style"
 											onChange={handlePropertyStyle}
@@ -589,7 +586,9 @@ export default function SellDesignForm() {
 													<label className="flex">
 														<input
 															value={item}
-															onChange={(e: any) => handleChangeOther(index, e.target.value)}
+															onChange={(e: any) =>
+																handleChangeOther(index, e.target.value)
+															}
 															type="text"
 															className="bg-white text-[15px] py-[1px] rounded-[7px] border-2 border-gold pl-2 text-gold focus:border-gold  focus:outline-gold w-full "
 														/>
@@ -652,4 +651,9 @@ export default function SellDesignForm() {
 			</div>
 		</div>
 	);
+}
+
+interface Dropdown {
+	value: number;
+	label: string;
 }
