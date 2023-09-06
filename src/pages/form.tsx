@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import InputBox from "@/components/inpuBox";
@@ -6,6 +6,8 @@ import InputPopUp from "@/components/popUpInput";
 import CloseIcon from "@mui/icons-material/Close";
 import Dropdown from "@/components/dropdwon";
 import IMGPreview from "@/components/imgPreview";
+import { supabase } from "@/lib/supabase";
+import { v4 } from "uuid";
 
 export default function Form() {
 	// state pop up image
@@ -28,20 +30,20 @@ export default function Form() {
 	const [biodata, setBiodata] = useState<
 		{
 			companyName: string;
-			province: string;
+			province: number;
 			about: string;
-			selectedCity: string;
-			propertyType: string[];
-			propertyStyle: string[];
+			selectedCity: number;
+			propertyType: number[];
+			propertyStyle: number[];
 		}[]
 	>([]);
 
 	const [companyName, setCompanyName] = useState("");
-	const [province, setProvince] = useState("");
+	const [province, setProvince] = useState<number>(NaN);
 	const [about, setAbout] = useState("");
-	const [selectedCity, setSelectedCity] = useState(""); // State to store the selected city
-	const [propertyType, setPropertyType] = useState<string[]>([""]);
-	const [propertyStyle, setPropertyStyle] = useState<string[]>([""]);
+	const [selectedCity, setSelectedCity] = useState<number>(NaN); // State to store the selected city
+	const [propertyType, setPropertyType] = useState<number[]>([NaN]);
+	const [propertyStyle, setPropertyStyle] = useState<number[]>([NaN]);
 
 	//BATAS STATE UNTUK BIODATA
 
@@ -51,10 +53,9 @@ export default function Form() {
 		{
 			institution: string;
 			title: string;
-			departement: string;
-			dateFrom: string;
-			dateUntil: string;
-			information: string;
+			start_date: string;
+			end_date: string;
+			description: string;
 			image: string[];
 		}[]
 	>([]);
@@ -68,28 +69,100 @@ export default function Form() {
 
 	//BATAS STATE UNTUK PROJECT
 
+	const [provinsiData, setProvinsiData] = useState<Dropdown[]>([]);
+	const [kotaData, setKotaData] = useState<Dropdown[]>([]);
+	const [propertyTypeData, setPropertyTypeData] = useState<Dropdown[]>([]);
+	const [propertyStyleData, setPropertyStyleData] = useState<Dropdown[]>([]);
+
+	useEffect(() => {
+		const init = async () => {
+			const user = (await supabase.auth.getSession()).data.session?.user;
+			const { data: profile } = await supabase
+				.from("profiles")
+				.select("*")
+				.eq("id", user?.id)
+				.single();
+			setCompanyName(profile?.first_name as string);
+
+			const { data: profile_detail } = await supabase
+				.from("profile_detail")
+				.select("*")
+				.eq("user_id", user?.id)
+				.single();
+			setProvince(profile_detail?.province as number);
+			setSelectedCity(profile_detail?.city as number);
+			setAbout(profile_detail?.about as string);
+			const { data: provinsi } = await supabase.from("provinsi").select("*");
+			let provinsiData: Dropdown[] = [];
+			provinsi?.forEach((item) => {
+				provinsiData.push({
+					value: item.id,
+					label: item.provinsi,
+				});
+			});
+			setProvinsiData(provinsiData);
+
+			const { data: property_type } = await supabase
+				.from("property_type")
+				.select("*");
+			let propertyTypeData: Dropdown[] = [];
+			property_type?.forEach((item) => {
+				propertyTypeData.push({
+					value: item.id,
+					label: item.type_name as string,
+				});
+			});
+			setPropertyTypeData(propertyTypeData);
+
+			const { data: property_style } = await supabase
+				.from("property_style")
+				.select("*");
+			let propertyStyleData: Dropdown[] = [];
+			property_style?.forEach((item) => {
+				propertyStyleData.push({
+					value: item.id,
+					label: item.style_name as string,
+				});
+			});
+			setPropertyStyleData(propertyStyleData);
+		};
+		init();
+	}, []);
+
 	//EVENT HANDLER BIODATA
 
 	const handleChangeCompanyName = (event: any) => {
 		setCompanyName(event.target.value);
 	};
 
-	const handleChangeProvince = (event: any) => {
+	const handleChangeProvince = async (event: any) => {
 		setProvince(event);
+		const { data: kota } = await supabase
+			.from("kabupaten_kota")
+			.select("*")
+			.eq("id_provinsi", event);
+		let temp: Dropdown[] = [];
+		kota?.forEach((item) => {
+			temp.push({
+				value: item.id,
+				label: item.kabupaten as string,
+			});
+		});
+		setKotaData(temp);
 	};
 
 	const handleChangeAbout = (event: any) => {
 		setAbout(event.target.value);
 	};
 
-	const handleChangePropertyType = (index: number, value: string) => {
+	const handleChangePropertyType = (index: number, value: number) => {
 		const updatedPropertyType = [...propertyType];
 		updatedPropertyType[index] = value;
 		setPropertyType(updatedPropertyType);
 	};
 
 	const handleAddPropertyType = () => {
-		setPropertyType([...propertyType, ""]);
+		setPropertyType([...propertyType, NaN]);
 	};
 
 	const handleDeletePropertyType = (index: number) => {
@@ -97,14 +170,14 @@ export default function Form() {
 		setPropertyType(updatedPropertType);
 	};
 
-	const handleChangePropertyStyle = (index: number, value: string) => {
+	const handleChangePropertyStyle = (index: number, value: number) => {
 		const updatedPropertyStyle = [...propertyStyle];
 		updatedPropertyStyle[index] = value;
 		setPropertyStyle(updatedPropertyStyle);
 	};
 
 	const handleAddPropertyStyle = () => {
-		setPropertyStyle([...propertyStyle, ""]);
+		setPropertyStyle([...propertyStyle, NaN]);
 	};
 
 	const handleDeletePropertyStyle = (index: number) => {
@@ -116,23 +189,73 @@ export default function Form() {
 		setSelectedCity(city);
 	};
 
-	const handleBiodataSubmit = (event: any) => {
+	const [projectUrl, setProjectUrl] = useState<string[]>([]);
+
+	const handleBiodataSubmit = async (event: any) => {
 		event.preventDefault();
-		const newBiodata = {
-			companyName,
-			province,
-			propertyType: [...propertyType],
-			propertyStyle: [...propertyStyle],
-			selectedCity,
-			about,
+
+		const user = (await supabase.auth.getSession()).data.session?.user;
+		const { data: profile } = await supabase
+			.from("profiles")
+			.update({ first_name: companyName })
+			.eq("id", user?.id)
+			.select();
+
+		const { data: profile_detail } = await supabase
+			.from("profile_detail")
+			.update({
+				about: about,
+				province: province,
+				city: selectedCity,
+				property_type: propertyType,
+				property_style: propertyStyle,
+			})
+			.eq("user_id", user?.id)
+			.select();
+
+		let { data: member } = await supabase.rpc("insert_member_contractors", {
+			data_to_insert: members,
+		});
+
+		const uploadProjectImages = async () => {
+			const projectUrls: string[] = []; // Declare a variable outside the function to store the URLs
+			for (const project of projects) {
+				// No need to setProjectUrl([]) here
+
+				for (const image of project.image) {
+					const uuid = v4();
+					let blob = await fetch(image).then((r) => r.blob());
+
+					const upload = await supabase.storage
+						.from("project")
+						.upload(`${user?.id}/${uuid}`, blob)
+						.then(async (r) => {
+							const { publicUrl } = supabase.storage
+								.from("project")
+								.getPublicUrl(`${user?.id}/${uuid}`).data;
+							return publicUrl;
+						});
+
+					projectUrls.push(upload); // Add each uploaded URL to the projectUrls array
+				}
+				project.image = projectUrls;
+			}
 		};
 
-		setBiodata([...biodata, newBiodata]);
-		setCompanyName(""), setProvince("");
-		setPropertyType([]);
-		setPropertyStyle([]);
-		setSelectedCity("");
-		setAbout("");
+		uploadProjectImages();
+
+		projects.map(async (project) => {
+			const { data: project_data } = await supabase.from("project").insert([
+				{
+					title: project.title,
+					description: project.description,
+					image: project.image,
+					institution: project.institution,
+					start_date: project.start_date,
+					end_date: project.end_date,
+				},
+			]);
+		});
 	};
 
 	//BATAS EVENT HANDLER BIODATA
@@ -262,9 +385,9 @@ export default function Form() {
 			institution,
 			title,
 			departement,
-			dateFrom,
-			dateUntil,
-			information,
+			start_date: dateFrom,
+			end_date: dateUntil,
+			description: information,
 			image: [...image],
 		};
 		setProjects([...projects, newProjects]);
@@ -286,9 +409,9 @@ export default function Form() {
 		setEditProjectIndex(index);
 		setInstitution(projectToEdit.institution);
 		setTitle(projectToEdit.title);
-		setDateFrom(projectToEdit.dateFrom);
-		setDateUntil(projectToEdit.dateUntil);
-		setInformation(projectToEdit.information);
+		setDateFrom(projectToEdit.start_date);
+		setDateUntil(projectToEdit.end_date);
+		setInformation(projectToEdit.description);
 		setImage(projectToEdit.image);
 		setIsEditProject(true);
 	};
@@ -299,9 +422,9 @@ export default function Form() {
 			...updateProjects[index],
 			institution,
 			title,
-			dateFrom,
-			dateUntil,
-			information,
+			start_date: dateFrom,
+			end_date: dateUntil,
+			description: information,
 			image: [...image],
 		};
 		setProjects(updateProjects);
@@ -802,15 +925,17 @@ export default function Form() {
 									</p>
 								</div>
 								<div className="pr-5 flex justify-end border-t-2">
-									<Link href={"./merchantProfile"}>
-										<button
-											onClick={openConfirmPopUp}
-											type="submit"
-											className="my-3 mr-3 rounded-full border-[1px] border-[#FAB566] bg-[#FAB566] px-8 py-1 text-[13px] text-white hover:border-[#FFD5A6] hover:bg-[#FFD5A6]"
-										>
-											Confirm
-										</button>
-									</Link>
+									<button
+										onClick={(event: any) => {
+											handleBiodataSubmit(event);
+										}}
+										type="submit"
+										className="my-3 mr-3 rounded-full border-[1px] border-[#FAB566] bg-[#FAB566] px-8 py-1 text-[13px] text-white hover:border-[#FFD5A6] hover:bg-[#FFD5A6]"
+									>
+										{/* <Link href={"./merchantProfile"}> */}
+										Confirm
+										{/* </Link> */}
+									</button>
 								</div>
 							</div>
 						</div>
@@ -830,6 +955,7 @@ export default function Form() {
 									title="Name"
 									placeholder={"Enter Name"}
 									onChange={handleChangeCompanyName}
+									value={companyName}
 								></InputBox>
 
 								<div>
@@ -842,13 +968,7 @@ export default function Form() {
 													styleClassTag="py-[3px] border-2 border-gold rounded-[7px] w-full"
 													styleText="w-[200px]"
 													title="Property Type"
-													data={[
-														{ value: "Type1", label: "Type1" },
-														{ value: "Type2", label: "Type2" },
-														{ value: "Type3", label: "Type3" },
-														{ value: "Type4", label: "Type4" },
-														{ value: "Type5", label: "Type5" },
-													]}
+													data={propertyTypeData}
 													value={item}
 													placehoder="Select Property Type"
 													onChange={(e: any) =>
@@ -862,13 +982,7 @@ export default function Form() {
 														styleClass="text-gold text-[15px] flex gap-[187px] mt-1 w-full pr-7"
 														styleClassTag="border-2 border-gold rounded-[7px] w-full py-[2px]"
 														title=""
-														data={[
-															{ value: "Type1", label: "Type1" },
-															{ value: "Type2", label: "Type2" },
-															{ value: "Type3", label: "Type3" },
-															{ value: "Type4", label: "Type4" },
-															{ value: "Type5", label: "Type5" },
-														]}
+														data={propertyTypeData}
 														value={item}
 														placehoder="Select Property Type"
 														onChange={(e: any) =>
@@ -908,13 +1022,7 @@ export default function Form() {
 													styleClassTag="py-[3px] border-2 border-gold rounded-[7px] w-full"
 													styleText="w-[200px]"
 													title="Property Style"
-													data={[
-														{ value: "Style1", label: "Style1" },
-														{ value: "Style2", label: "Style2" },
-														{ value: "Style3", label: "Style3" },
-														{ value: "Style4", label: "Style4" },
-														{ value: "Style5", label: "Style5" },
-													]}
+													data={propertyStyleData}
 													value={item}
 													placehoder="Select Property Style"
 													onChange={(e: any) =>
@@ -928,13 +1036,7 @@ export default function Form() {
 														styleClass="text-gold text-[15px] flex gap-[187px] mt-1 w-full pr-7"
 														styleClassTag="border-2 border-gold rounded-[7px] w-full py-[2px]"
 														title=""
-														data={[
-															{ value: "Style1", label: "Style1" },
-															{ value: "Style2", label: "Style2" },
-															{ value: "Style3", label: "Style3" },
-															{ value: "Style4", label: "Style4" },
-															{ value: "Style5", label: "Style5" },
-														]}
+														data={propertyStyleData}
 														value={item}
 														placehoder="Select Property Style"
 														onChange={(e: any) =>
@@ -969,13 +1071,7 @@ export default function Form() {
 									styleClass="text-gold text-[15px] flex gap-[123px] mt-2 w-full pr-7"
 									styleClassTag="border-2 py-[4px] border-gold rounded-[7px] w-full"
 									title="Province"
-									data={[
-										{ value: "Lombok Timur", label: "Lombok Timur" },
-										{ value: "Mataram", label: "Mataram" },
-										{ value: "Bima", label: "Bima" },
-										{ value: "Dompu", label: "Dompu" },
-										{ value: "Sumbawa", label: "Sumbawa" },
-									]}
+									data={provinsiData}
 									value={province}
 									placehoder="Select Province"
 									onChange={handleChangeProvince}
@@ -985,13 +1081,7 @@ export default function Form() {
 									styleClass="text-gold text-[15px] flex gap-[158px] mt-2 w-full pr-7"
 									styleClassTag="py-[4px] border-2 border-gold rounded-[7px] w-full"
 									title="City"
-									data={[
-										{ value: "Lombok Timur", label: "Lombok Timur" },
-										{ value: "Mataram", label: "Mataram" },
-										{ value: "Bima", label: "Bima" },
-										{ value: "Dompu", label: "Dompu" },
-										{ value: "Sumbawa", label: "Sumbawa" },
-									]}
+									data={kotaData}
 									value={selectedCity}
 									placehoder="Select City"
 									onChange={handleDropdown}
@@ -1194,17 +1284,17 @@ export default function Form() {
 											</div>
 											<p>{projects.title}</p>
 											<p className="text-black/60">
-												{projects.dateFrom.substr(0, 0 + 4)} -
-												{projects.dateUntil.substr(0, 0 + 4) === "2023"
+												{projects.start_date.substr(0, 0 + 4)} -
+												{projects.end_date.substr(0, 0 + 4) === "2023"
 													? " Now"
-													: projects.dateUntil.substr(0, 0 + 4)}
+													: projects.end_date.substr(0, 0 + 4)}
 											</p>
 
 											<div className="flex gap-3 w-full mt-3">
 												{projects.image.map((item, index) => (
 													<div key={index}>
 														<Image
-															onClick={()=>{
+															onClick={() => {
 																setSrcIMG(item);
 																setShowIMG(true);
 															}}
@@ -1223,15 +1313,13 @@ export default function Form() {
 						</div>
 
 						<div className="pb-20 justify-end w-full flex">
-							<form id="biodata-Form" onSubmit={handleBiodataSubmit}>
-								<button
-									onClick={openConfirmPopUp}
-									type="submit"
-									className="bg-gold rounded-full py-3 px-7 text-white text-[15px] hover:bg-goldhov"
-								>
-									Request
-								</button>
-							</form>
+							<button
+								onClick={openConfirmPopUp}
+								type="submit"
+								className="bg-gold rounded-full py-3 px-7 text-white text-[15px] hover:bg-goldhov"
+							>
+								Request
+							</button>
 						</div>
 					</div>
 
@@ -1259,4 +1347,9 @@ export default function Form() {
 			</div>
 		</div>
 	);
+}
+
+interface Dropdown {
+	value: number;
+	label: string;
 }

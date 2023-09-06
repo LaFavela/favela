@@ -1,19 +1,104 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import InputBox from "@/components/inpuBox";
 import InputPopUp from "@/components/popUpInput";
 import CloseIcon from "@mui/icons-material/Close";
 import Dropdown from "@/components/dropdwon";
+import { motion, AnimatePresence } from "framer-motion";
+import { supabase } from "@/lib/supabase";
+import { v4 } from "uuid";
+import { set } from "react-hook-form";
 
 export default function FormDesainer() {
+	const [biodata, setBiodata] = useState<
+		{
+			firstName: string | null | undefined;
+			lastName: string | null | undefined;
+			province: number | null | undefined;
+			about: string | null | undefined;
+			selectedCity: number | null | undefined;
+			propertyType: number[];
+			propertyStyle: number[];
+		}[]
+	>([]);
+
+	const [firstName, setFirstName] = useState<string>("");
+	const [lastName, setLastName] = useState<string>("");
+	const [province, setProvince] = useState<number>(NaN);
+	const [about, setAbout] = useState<string>("");
+	const [selectedCity, setSelectedCity] = useState<number>(NaN); // State to store the selected city
+	const [propertyType, setPropertyType] = useState<number[]>([NaN]);
+	const [propertyStyle, setPropertyStyle] = useState<number[]>([NaN]);
+
+	const [provinsiData, setProvinsiData] = useState<Dropdown[]>([]);
+	const [kotaData, setKotaData] = useState<Dropdown[]>([]);
+	const [propertyTypeData, setPropertyTypeData] = useState<Dropdown[]>([]);
+	const [propertyStyleData, setPropertyStyleData] = useState<Dropdown[]>([]);
+
+	useEffect(() => {
+		const init = async () => {
+			const user = (await supabase.auth.getSession()).data.session?.user;
+			const { data: profile } = await supabase
+				.from("profiles")
+				.select("*")
+				.eq("id", user?.id)
+				.single();
+			setFirstName(profile?.first_name as string);
+			setLastName(profile?.last_name as string);
+
+			const { data: profile_detail } = await supabase
+				.from("profile_detail")
+				.select("*")
+				.eq("user_id", user?.id)
+				.single();
+			setProvince(profile_detail?.province as number);
+			setSelectedCity(profile_detail?.city as number);
+			setAbout(profile_detail?.about as string);
+			const { data: provinsi } = await supabase.from("provinsi").select("*");
+			let provinsiData: Dropdown[] = [];
+			provinsi?.forEach((item) => {
+				provinsiData.push({
+					value: item.id,
+					label: item.provinsi,
+				});
+			});
+			setProvinsiData(provinsiData);
+
+			const { data: property_type } = await supabase
+				.from("property_type")
+				.select("*");
+			let propertyTypeData: Dropdown[] = [];
+			property_type?.forEach((item) => {
+				propertyTypeData.push({
+					value: item.id,
+					label: item.type_name as string,
+				});
+			});
+			setPropertyTypeData(propertyTypeData);
+
+			const { data: property_style } = await supabase
+				.from("property_style")
+				.select("*");
+			let propertyStyleData: Dropdown[] = [];
+			property_style?.forEach((item) => {
+				propertyStyleData.push({
+					value: item.id,
+					label: item.style_name as string,
+				});
+			});
+			setPropertyStyleData(propertyStyleData);
+		};
+		init();
+	}, []);
+	
 	const [education, setEducation] = useState<
 		{
-			studyInstitution:string;
-			studyTitle:string;
-			studyDepartement:string;
-			StudyFrom:string;
-			StudyUntil:string;
+			studyInstitution: string;
+			studyTitle: string;
+			studyDepartement: string;
+			StudyFrom: string;
+			StudyUntil: string;
 			studyDescription: string;
 		}[]
 	>([]);
@@ -113,7 +198,7 @@ export default function FormDesainer() {
 	const openEducationPopUp = () => {
 		setIsEducationOpen(!isEducationOpen);
 	};
-	
+
 	// EDUCATION SETTING
 
 	const [members, setMembers] = useState<
@@ -185,8 +270,6 @@ export default function FormDesainer() {
 	const openPopUp = () => {
 		setModal(!modal);
 	};
-	
-	
 
 	// MEMBER SETTING
 
@@ -334,101 +417,136 @@ export default function FormDesainer() {
 		setProjectModal(!projectModal);
 		image.length = 0;
 	};
-	
+
 	console.log(image);
 	// DETAIL PROJECT
 	//BIODATA
-	const [biodata, setBiodata] = useState<
-	{
-		firstName: string;
-		lastName: string;
-		province: string;
-		about: string;
-		selectedCity: string;
-		propertyType: string[];
-		propertyStyle: string[];
-	}[]
->([]);
 
-const [firstName, setFirstName] = useState("");
-const [lastName, setLastName] = useState("");
-const [province, setProvince] = useState("");
-const [about, setAbout] = useState("");
-const [selectedCity, setSelectedCity] = useState(""); // State to store the selected city
-const [propertyType, setPropertyType] = useState<string[]>([""]);
-const [propertyStyle, setPropertyStyle] = useState<string[]>([""]);
-
-const handleChangeFirstname = (event: any) => {
-	setFirstName(event.target.value);
-};
-
-const handleChangeLastName = (event: any) => {
-	setLastName(event.target.value);
-};
-
-const handleChangeProvince = (event: any) => {
-	setProvince(event);
-};
-
-const handleChangeAbout = (event: any) => {
-	setAbout(event.target.value);
-};
-
-const handleChangePropertyType = (index: number, value: string) => {
-	const updatedPropertyType = [...propertyType];
-	updatedPropertyType[index] = value;
-	setPropertyType(updatedPropertyType);
-};
-
-const handleAddPropertyType = () => {
-	setPropertyType([...propertyType, ""]);
-};
-
-const handleDeletePropertyType = (index: number) => {
-	const updatedPropertType = propertyType.filter((_, i) => i !== index);
-	setPropertyType(updatedPropertType);
-};
-
-const handleChangePropertyStyle = (index: number, value: string) => {
-	const updatedPropertyStyle = [...propertyStyle];
-	updatedPropertyStyle[index] = value;
-	setPropertyStyle(updatedPropertyStyle);
-};
-
-const handleAddPropertyStyle = () => {
-	setPropertyStyle([...propertyStyle, ""]);
-};
-
-const handleDeletePropertyStyle = (index: number) => {
-	const updatedPropertStyle = propertyStyle.filter((_, i) => i !== index);
-	setPropertyStyle(updatedPropertStyle);
-};
-
-const handleDropdown = (city: any) => {
-	setSelectedCity(city);
-};
-
-const handleBiodataSubmit = (event: any) => {
-	event.preventDefault();
-	const newBiodata = {
-		firstName,
-		lastName,
-		province,
-		propertyType: [...propertyType],
-		propertyStyle: [...propertyStyle],
-		selectedCity,
-		about,
+	const handleChangeFirstname = (event: any) => {
+		setFirstName(event.target.value);
 	};
 
-	setBiodata([...biodata, newBiodata]);
-	setFirstName("");
-	setLastName("");
-	setProvince("");
-	setPropertyType([]);
-	setPropertyStyle([]);
-	setSelectedCity("");
-	setAbout("");
-};
+	const handleChangeLastName = (event: any) => {
+		setLastName(event.target.value);
+	};
+
+	const handleChangeProvince = async (event: any) => {
+		setProvince(event);
+		const { data: kota } = await supabase
+			.from("kabupaten_kota")
+			.select("*")
+			.eq("id_provinsi", event);
+		let temp: Dropdown[] = [];
+		kota?.forEach((item) => {
+			temp.push({
+				value: item.id,
+				label: item.kabupaten as string,
+			});
+		});
+		setKotaData(temp);
+	};
+
+	const handleChangeAbout = (event: any) => {
+		setAbout(event.target.value);
+	};
+
+	const handleChangePropertyType = (index: number, value: number) => {
+		const updatedPropertyType = [...propertyType];
+		updatedPropertyType[index] = value;
+		setPropertyType(updatedPropertyType);
+	};
+
+	const handleAddPropertyType = () => {
+		setPropertyType([...propertyType, NaN]);
+	};
+
+	const handleDeletePropertyType = (index: number) => {
+		const updatedPropertType = propertyType.filter((_, i) => i !== index);
+		setPropertyType(updatedPropertType);
+	};
+
+	const handleChangePropertyStyle = (index: number, value: number) => {
+		const updatedPropertyStyle = [...propertyStyle];
+		updatedPropertyStyle[index] = value;
+		setPropertyStyle(updatedPropertyStyle);
+	};
+
+	const handleAddPropertyStyle = () => {
+		setPropertyStyle([...propertyStyle, NaN]);
+	};
+
+	const handleDeletePropertyStyle = (index: number) => {
+		const updatedPropertStyle = propertyStyle.filter((_, i) => i !== index);
+		setPropertyStyle(updatedPropertStyle);
+	};
+
+	const handleDropdown = (city: any) => {
+		setSelectedCity(city);
+	};
+
+
+	const handleBiodataSubmit = async (event: any) => {
+		event.preventDefault();
+
+		const user = (await supabase.auth.getSession()).data.session?.user;
+		const { data: profile } = await supabase
+			.from("profiles")
+			.update({ first_name: firstName, last_name: lastName })
+			.eq("id", user?.id)
+			.select();
+
+		const { data: profile_detail } = await supabase
+			.from("profile_detail")
+			.update({
+				about: about,
+				province: province,
+				city: selectedCity,
+				property_type: propertyType,
+				property_style: propertyStyle,
+			})
+			.eq("user_id", user?.id)
+			.select();
+
+		const uploadProjectImages = async () => {
+			const projectUrls: string[] = []; // Declare a variable outside the function to store the URLs
+			for (const project of projects) {
+				// No need to setProjectUrl([]) here
+
+				for (const image of project.image) {
+					const uuid = v4();
+					let blob = await fetch(image).then((r) => r.blob());
+
+					const upload = await supabase.storage
+						.from("project")
+						.upload(`${user?.id}/${uuid}`, blob)
+						.then(async (r) => {
+							const { publicUrl } = supabase.storage
+								.from("project")
+								.getPublicUrl(`${user?.id}/${uuid}`).data;
+							return publicUrl;
+						});
+
+					projectUrls.push(upload); // Add each uploaded URL to the projectUrls array
+				}
+				project.image = projectUrls;
+			}
+		};
+
+		uploadProjectImages();
+
+		projects.map(async (project) => {
+			const { data: project_data } = await supabase.from("project").insert([
+				{
+					title: project.title,
+					description: project.information,
+					image: project.image,
+					institution: project.institution,
+					start_date: project.dateFrom,
+					end_date: project.dateUntil,
+				},
+			]);
+		});
+	};
 
 	const [confirmModal, setConfirmModal] = useState(false);
 
@@ -502,173 +620,185 @@ const handleBiodataSubmit = (event: any) => {
 						</div>
 					</div>
 				)}
-
-				{isEducationOpen && (
-					<div className="fixed inset-0 z-10 flex items-center justify-center">
-						<div className="absolute bottom-0 left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-black/40">
-							<div className="modal-content w-[553px] rounded-3xl bg-white">
-								<div className="border-b-2 border-gold/60">
-									<h2 className="mx-8 my-4  text-[18px]">Detail Education</h2>
-								</div>
-								<form id="EducationForm" onSubmit={handleEducationSubmit}>
-									<div className="ml-14 py-5">
-										<InputPopUp
-											type="text"
-											title="Institution"
-											value={studyInstitution}
-											onChange={handleStudyIntitutionChange}
-											className="bg-white"
-											required
-										></InputPopUp>
-										<InputPopUp
-											title="Title"
-											type="text"
-											value={studyTitle}
-											className="bg-white"
-											required
-											onChange={handleStudyTitleChange}
-										></InputPopUp>
-										<InputPopUp
-											title="Departement"
-											type="text"
-											value={studyDepartement}
-											className="bg-white"
-											required
-											onChange={handleStudyDepartementChange}
-										></InputPopUp>
-										<InputPopUp
-											title="From"
-											type="date"
-											value={StudyFrom}
-											className="bg-white"
-											onChange={handleStudyFromChange}
-										></InputPopUp>
-										<InputPopUp
-											title="Until"
-											type="date"
-											value={StudyUntil}
-											className="bg-white"
-											onChange={handleStudyUntilChange}
-										></InputPopUp>
-										<label className="mt-4 gap-24 pr-14">
-											<span className="mt-2 w-[120px] text-[10px]  text-[#B17C3F] ">
-												Additonal Information
-											</span>
-											<textarea
-												id="description"
-												value={studyDescription}
-												onChange={handleStudyDescriptionChange}
-												placeholder="Description"
-												className=" mt-1 block w-[440px] h-[127px] rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
-												maxLength={500}
-												onKeyDown={(e) => {
-													if (e.key === "Enter") {
-														e.preventDefault();
-													}
-												}}
-											></textarea>
-										</label>
+				<AnimatePresence>
+					{isEducationOpen && (
+						<motion.div 
+						initial={{ opacity: 0}}
+						animate={{ opacity: 1 }}
+						exit={{ opacity: 0}}
+						
+						className="fixed inset-0 z-10 flex items-center justify-center">
+							<div className="absolute bottom-0 left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-black/40">
+								<motion.div 
+								initial={{ scale: 0.8}}
+								animate={{ scale: 1 }}
+								exit={{ scale: 0.8}}
+								className="modal-content w-[553px] rounded-3xl bg-white">
+									<div className="border-b-2 border-gold/60">
+										<h2 className="mx-8 my-4  text-[18px]">Detail Education</h2>
 									</div>
-									<div className="flex justify-end border-t-2 border-gold/60">
-										<button
-											type="submit"
-											className="my-3 mr-3 rounded-full border-[1px] border-gold bg-gold px-8 py-1 text-[13px] text-white hover:border-goldhov hover:bg-goldhov"
-										>
-											Save
-										</button>
-										<button
-											className="my-3 mr-14 rounded-full border-[1px] border-gold px-5 py-1 text-[13px] hover:border-red-400 hover:bg-red-400 hover:text-white"
-											onClick={openEducationPopUp}
-										>
-											Close
-										</button>
-									</div>
-								</form>
+									<form id="EducationForm" onSubmit={handleEducationSubmit}>
+										<div className="ml-14 py-5">
+											<InputPopUp
+												type="text"
+												title="Institution"
+												value={studyInstitution}
+												onChange={handleStudyIntitutionChange}
+												className="bg-white"
+												required
+											></InputPopUp>
+											<InputPopUp
+												title="Title"
+												type="text"
+												value={studyTitle}
+												className="bg-white"
+												required
+												onChange={handleStudyTitleChange}
+											></InputPopUp>
+											<InputPopUp
+												title="Departement"
+												type="text"
+												value={studyDepartement}
+												className="bg-white"
+												required
+												onChange={handleStudyDepartementChange}
+											></InputPopUp>
+											<InputPopUp
+												title="From"
+												type="date"
+												value={StudyFrom}
+												className="bg-white"
+												onChange={handleStudyFromChange}
+											></InputPopUp>
+											<InputPopUp
+												title="Until"
+												type="date"
+												value={StudyUntil}
+												className="bg-white"
+												onChange={handleStudyUntilChange}
+											></InputPopUp>
+											<label className="mt-4 gap-24 pr-14">
+												<span className="mt-2 w-[120px] text-[10px]  text-[#B17C3F] ">
+													Additonal Information
+												</span>
+												<textarea
+													id="description"
+													value={studyDescription}
+													onChange={handleStudyDescriptionChange}
+													placeholder="Description"
+													className=" mt-1 block w-[440px] h-[127px] rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
+													maxLength={500}
+													onKeyDown={(e) => {
+														if (e.key === "Enter") {
+															e.preventDefault();
+														}
+													}}
+												></textarea>
+											</label>
+										</div>
+										<div className="flex justify-end border-t-2 border-gold/60">
+											<button
+												type="submit"
+												className="my-3 mr-3 rounded-full border-[1px] border-gold bg-gold px-8 py-1 text-[13px] text-white hover:border-goldhov hover:bg-goldhov"
+											>
+												Save
+											</button>
+											<button
+												className="my-3 mr-14 rounded-full border-[1px] border-gold px-5 py-1 text-[13px] hover:border-red-400 hover:bg-red-400 hover:text-white"
+												onClick={openEducationPopUp}
+											>
+												Close
+											</button>
+										</div>
+									</form>
+								</motion.div>
 							</div>
-						</div>
-					</div>
-				)}
-				
+						</motion.div>
+					)}
+				</AnimatePresence>
+
 				{isEditEducationOpen && editEducationIndex !== -1 && (
 					<div className="fixed inset-0 z-10 flex items-center justify-center">
 						<div className="absolute bottom-0 left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-black/40">
 							<div className="modal-content w-[553px] rounded-3xl bg-white">
 								<div className="border-b-2 border-gold/60">
-									<h2 className="mx-8 my-4  text-[18px]"> Edit Detail Education</h2>
-								</div>						
-									<div className="ml-14 py-5">
-										<InputPopUp
-											type="text"
-											title="Institution"
-											value={studyInstitution}
-											onChange={handleStudyIntitutionChange}
-											className="bg-white"
-											required
-										></InputPopUp>
-										<InputPopUp
-											title="Title"
-											type="text"
-											value={studyTitle}
-											className="bg-white"
-											required
-											onChange={handleStudyTitleChange}
-										></InputPopUp>
-										<InputPopUp
-											title="Departement"
-											type="text"
-											value={studyDepartement}
-											className="bg-white"
-											required
-											onChange={handleStudyDepartementChange}
-										></InputPopUp>
-										<InputPopUp
-											title="From"
-											type="date"
-											value={StudyFrom}
-											className="bg-white"
-											onChange={handleStudyFromChange}
-										></InputPopUp>
-										<InputPopUp
-											title="Until"
-											type="date"
-											value={StudyUntil}
-											className="bg-white"
-											onChange={handleStudyUntilChange}
-										></InputPopUp>
-										<label className="mt-4 gap-24 pr-14">
-											<span className="mt-2 w-[120px] text-[10px]  text-[#B17C3F] ">
-												Additonal Information
-											</span>
-											<textarea
-												id="description"
-												value={studyDescription}
-												onChange={handleStudyDescriptionChange}
-												placeholder="Description"
-												className=" mt-1 block w-[440px] h-[127px] rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
-												maxLength={500}
-												onKeyDown={(e) => {
-													if (e.key === "Enter") {
-														e.preventDefault();
-													}
-												}}
-											></textarea>
-										</label>
-									</div>
-									<div className="flex justify-end border-t-2 border-gold/60">
-										<button
-											onClick={()=> handleEditEducationSave(editEducationIndex)}
-											className="my-3 mr-3 rounded-full border-[1px] border-gold bg-gold px-8 py-1 text-[13px] text-white hover:border-goldhov hover:bg-goldhov"
-										>
-											Save
-										</button>
-										<button
-											className="my-3 mr-14 rounded-full border-[1px] border-gold px-5 py-1 text-[13px] hover:border-red-400 hover:bg-red-400 hover:text-white"
-											onClick={closeEditEducation}
-										>
-											Close
-										</button>
-									</div>
-								
+									<h2 className="mx-8 my-4  text-[18px]">
+										{" "}
+										Edit Detail Education
+									</h2>
+								</div>
+								<div className="ml-14 py-5">
+									<InputPopUp
+										type="text"
+										title="Institution"
+										value={studyInstitution}
+										onChange={handleStudyIntitutionChange}
+										className="bg-white"
+										required
+									></InputPopUp>
+									<InputPopUp
+										title="Title"
+										type="text"
+										value={studyTitle}
+										className="bg-white"
+										required
+										onChange={handleStudyTitleChange}
+									></InputPopUp>
+									<InputPopUp
+										title="Departement"
+										type="text"
+										value={studyDepartement}
+										className="bg-white"
+										required
+										onChange={handleStudyDepartementChange}
+									></InputPopUp>
+									<InputPopUp
+										title="From"
+										type="date"
+										value={StudyFrom}
+										className="bg-white"
+										onChange={handleStudyFromChange}
+									></InputPopUp>
+									<InputPopUp
+										title="Until"
+										type="date"
+										value={StudyUntil}
+										className="bg-white"
+										onChange={handleStudyUntilChange}
+									></InputPopUp>
+									<label className="mt-4 gap-24 pr-14">
+										<span className="mt-2 w-[120px] text-[10px]  text-[#B17C3F] ">
+											Additonal Information
+										</span>
+										<textarea
+											id="description"
+											value={studyDescription}
+											onChange={handleStudyDescriptionChange}
+											placeholder="Description"
+											className=" mt-1 block w-[440px] h-[127px] rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
+											maxLength={500}
+											onKeyDown={(e) => {
+												if (e.key === "Enter") {
+													e.preventDefault();
+												}
+											}}
+										></textarea>
+									</label>
+								</div>
+								<div className="flex justify-end border-t-2 border-gold/60">
+									<button
+										onClick={() => handleEditEducationSave(editEducationIndex)}
+										className="my-3 mr-3 rounded-full border-[1px] border-gold bg-gold px-8 py-1 text-[13px] text-white hover:border-goldhov hover:bg-goldhov"
+									>
+										Save
+									</button>
+									<button
+										className="my-3 mr-14 rounded-full border-[1px] border-gold px-5 py-1 text-[13px] hover:border-red-400 hover:bg-red-400 hover:text-white"
+										onClick={closeEditEducation}
+									>
+										Close
+									</button>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -879,7 +1009,6 @@ const handleBiodataSubmit = (event: any) => {
 												</div>
 											</div>
 										</div>
-									
 									</div>
 									<div className="flex justify-end border-t-2 border-gold/60">
 										<button
@@ -1098,12 +1227,14 @@ const handleBiodataSubmit = (event: any) => {
 									type="text"
 									title="Firstname"
 									onChange={handleChangeFirstname}
+									value={firstName}
 								></InputBox>
 								<InputBox
 									form="biodata-Form"
 									type="text"
 									title="Lastname"
 									onChange={handleChangeLastName}
+									value={lastName}
 								></InputBox>
 								<div>
 									{propertyType.map((item, index) => (
@@ -1115,13 +1246,7 @@ const handleBiodataSubmit = (event: any) => {
 													styleClassTag="py-[3px] border-2 border-gold rounded-[7px] w-full"
 													styleText="w-[200px]"
 													title="Property Type"
-													data={[
-														{ value: "Type1", label: "Type1" },
-														{ value: "Type2", label: "Type2" },
-														{ value: "Type3", label: "Type3" },
-														{ value: "Type4", label: "Type4" },
-														{ value: "Type5", label: "Type5" },
-													]}
+													data={propertyTypeData}
 													value={item}
 													placehoder="Select Property Type"
 													onChange={(e: any) =>
@@ -1135,13 +1260,7 @@ const handleBiodataSubmit = (event: any) => {
 														styleClass="text-gold text-[15px] flex gap-[187px] mt-1 w-full pr-7"
 														styleClassTag="border-2 border-gold rounded-[7px] w-full py-[2px]"
 														title=""
-														data={[
-															{ value: "Type1", label: "Type1" },
-															{ value: "Type2", label: "Type2" },
-															{ value: "Type3", label: "Type3" },
-															{ value: "Type4", label: "Type4" },
-															{ value: "Type5", label: "Type5" },
-														]}
+														data={propertyTypeData}
 														value={item}
 														placehoder="Select Property Type"
 														onChange={(e: any) =>
@@ -1170,7 +1289,7 @@ const handleBiodataSubmit = (event: any) => {
 										</div>
 									))}
 								</div>
-								
+
 								<div>
 									{propertyStyle.map((item, index) => (
 										<div key={index}>
@@ -1181,13 +1300,7 @@ const handleBiodataSubmit = (event: any) => {
 													styleClassTag="py-[3px] border-2 border-gold rounded-[7px] w-full"
 													styleText="w-[200px]"
 													title="Property Style"
-													data={[
-														{ value: "Style1", label: "Style1" },
-														{ value: "Style2", label: "Style2" },
-														{ value: "Style3", label: "Style3" },
-														{ value: "Style4", label: "Style4" },
-														{ value: "Style5", label: "Style5" },
-													]}
+													data={propertyStyleData}
 													value={item}
 													placehoder="Select Property Style"
 													onChange={(e: any) =>
@@ -1201,13 +1314,7 @@ const handleBiodataSubmit = (event: any) => {
 														styleClass="text-gold text-[15px] flex gap-[187px] mt-1 w-full pr-7"
 														styleClassTag="border-2 border-gold rounded-[7px] w-full py-[2px]"
 														title=""
-														data={[
-															{ value: "Style1", label: "Style1" },
-															{ value: "Style2", label: "Style2" },
-															{ value: "Style3", label: "Style3" },
-															{ value: "Style4", label: "Style4" },
-															{ value: "Style5", label: "Style5" },
-														]}
+														data={propertyStyleData}
 														value={item}
 														placehoder="Select Property Style"
 														onChange={(e: any) =>
@@ -1236,19 +1343,13 @@ const handleBiodataSubmit = (event: any) => {
 										</div>
 									))}
 								</div>
-								
+
 								<Dropdown
 									form="biodata-Form"
 									styleClass="text-gold text-[15px] flex gap-[123px] mt-2 w-full pr-7"
 									styleClassTag="border-2 py-[4px] border-gold rounded-[7px] w-full"
 									title="Province"
-									data={[
-										{ value: "Lombok Timur", label: "Lombok Timur" },
-										{ value: "Mataram", label: "Mataram" },
-										{ value: "Bima", label: "Bima" },
-										{ value: "Dompu", label: "Dompu" },
-										{ value: "Sumbawa", label: "Sumbawa" },
-									]}
+									data={provinsiData}
 									value={province}
 									placehoder="Select Province"
 									onChange={handleChangeProvince}
@@ -1258,13 +1359,7 @@ const handleBiodataSubmit = (event: any) => {
 									styleClass="text-gold text-[15px] flex gap-[158px] mt-2 w-full pr-7"
 									styleClassTag="py-[4px] border-2 border-gold rounded-[7px] w-full"
 									title="City"
-									data={[
-										{ value: "Lombok Timur", label: "Lombok Timur" },
-										{ value: "Mataram", label: "Mataram" },
-										{ value: "Bima", label: "Bima" },
-										{ value: "Dompu", label: "Dompu" },
-										{ value: "Sumbawa", label: "Sumbawa" },
-									]}
+									data={kotaData}
 									value={selectedCity}
 									placehoder="Select City"
 									onChange={handleDropdown}
@@ -1390,7 +1485,6 @@ const handleBiodataSubmit = (event: any) => {
 												{education.StudyUntil.substr(0, 0 + 4) === "2023"
 													? " Now"
 													: education.StudyUntil.substr(0, 0 + 4)}
-													
 											</p>
 										</span>
 									</div>
@@ -1579,7 +1673,7 @@ const handleBiodataSubmit = (event: any) => {
 													? " Now"
 													: projects.dateUntil.substr(0, 0 + 4)}
 											</p>
-											{projects.image.map((item,index) => (
+											{projects.image.map((item, index) => (
 												<div key={index}>
 													<Image
 														src={item}
@@ -1630,4 +1724,9 @@ const handleBiodataSubmit = (event: any) => {
 			</div>
 		</div>
 	);
+}
+
+interface Dropdown {
+	value: number;
+	label: string;
 }
