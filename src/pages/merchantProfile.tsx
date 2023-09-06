@@ -242,7 +242,7 @@ export default function Profile({
 								// }}
 								priority={true}
 								fill={true}
-								objectFit="cover"
+								style={{ objectFit: "cover" }}
 								className="rounded-t-3xl "
 							/>
 						</div>
