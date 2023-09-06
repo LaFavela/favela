@@ -9,15 +9,18 @@ import IMGPreview from "@/components/imgPreview";
 import calculate from "@/tools/calculate";
 import { supabase } from "@/lib/supabase";
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
+import { toCapitalize } from "@/tools/uppercase";
+import { useRouter } from "next/router";
 
 export const getServerSideProps = async (
 	context: GetServerSidePropsContext,
 ) => {
 	context.res.setHeader("Cache-Control", "s-maxage=20, stale-while-revalidate");
 	const params = context.query.username;
-	const { data: profile, error: errorProfile } = await supabase
+
+	const { data: profile } = await supabase
 		.from("profiles")
-		.select("*, role_id(role_name)")
+		.select("*")
 		.eq("username", params)
 		.single();
 
@@ -31,19 +34,46 @@ export const getServerSideProps = async (
 		};
 	}
 
+	const { data: role } = await supabase
+		.from("roles")
+		.select("role_name")
+		.eq("id", profile?.role_id)
+		.single();
+
 	const { data: profile_detail, error: errorProfile_detail } = await supabase
 		.from("profile_detail")
-		.select()
+		.select("*")
 		.eq("user_id", profile?.id)
 		.single();
+
+	const { data: property_style } = await supabase
+		.from("property_style")
+		.select("style_name")
+		.in("id", profile_detail?.property_style!);
+
+	const { data: property_type } = await supabase
+		.from("property_type")
+		.select("type_name")
+		.in("id", profile_detail?.property_type!);
 
 	const { data: design } = await supabase
 		.from("design")
 		.select()
 		.eq("created_by", profile?.id);
 
-	console.log(profile?.role_id);
-	if (profile?.role_id.role_name == "designer") {
+	const { data: provinsi } = await supabase
+		.from("provinsi")
+		.select("*")
+		.eq("id", profile_detail?.province)
+		.single();
+
+	const { data: kota, error } = await supabase
+		.from("kabupaten_kota")
+		.select("*")
+		.eq("id", profile_detail?.city)
+		.single();
+
+	if (role?.role_name == "designer") {
 		const { data: project, error: errorProject } = await supabase
 			.from("project")
 			.select()
@@ -56,7 +86,6 @@ export const getServerSideProps = async (
 			.from("education")
 			.select()
 			.eq("user_id", profile?.id);
-		console.log(education, error);
 		return {
 			props: {
 				profile,
@@ -65,9 +94,14 @@ export const getServerSideProps = async (
 				experience,
 				education,
 				design,
+				property_type,
+				property_style,
+				role,
+				provinsi,
+				kota,
 			},
 		};
-	} else if (rofile?.role_id.role_name == "contractor") {
+	} else if (role?.role_name == "contractor") {
 		const { data: project, error: errorProject } = await supabase
 			.from("project")
 			.select()
@@ -77,11 +111,21 @@ export const getServerSideProps = async (
 			.select()
 			.eq("user_id", profile?.id);
 		return {
-			props: { profile, profile_detail, project, members },
+			props: {
+				profile,
+				profile_detail,
+				project,
+				members,
+				property_type,
+				property_style,
+				role,
+				provinsi,
+				kota,
+			},
 		};
 	} else {
 		return {
-			props: { profile, profile_detail },
+			props: { profile, profile_detail, role, provinsi, kota },
 		};
 	}
 };
@@ -169,7 +213,14 @@ export default function Profile({
 	education,
 	members,
 	design,
+	property_type,
+	property_style,
+	role,
+	provinsi,
+	kota,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+	const Router = useRouter();
+
 	const [reviewLikes, setReviewLikes] = useState(
 		new Array(reviewData.length).fill(false),
 	);
@@ -183,10 +234,6 @@ export default function Profile({
 	const [srcIMG, setSrcIMG] = useState<any>("" as any);
 	const [showIMG, setShowIMG] = useState(false);
 	const handleOnCloseIMG = () => setShowIMG(false);
-
-	const toCapitalize = (str: string) => {
-		return str.charAt(0).toUpperCase() + str.slice(1);
-	};
 
 	return (
 		<div>
@@ -242,16 +289,34 @@ export default function Profile({
 										</svg>
 									</span>
 									<p className="text-[14px]">
-										{toCapitalize(profile?.role_id.role_name)}
+										{toCapitalize(role?.role_name!)}
 									</p>
-								</div>
-								<div className="mt-1 flex">
-									<span className="flex items-center rounded-full bg-[#E4D1BC] px-3 py-[2px]">
-										<p className="text-[11px] text-gold">Villa</p>
-									</span>
-									<span className="ml-2 flex items-center rounded-full bg-[#E4D1BC] px-3 py-[2px]">
-										<p className="text-[11px] text-gold">Kondomonium</p>
-									</span>
+									<div className="mt-1 flex">
+										{property_type?.map((item, index) => {
+											return (
+												<span
+													key={index}
+													className="flex items-center rounded-full bg-[#E4D1BC] px-3 py-[2px]"
+												>
+													<p className="text-[11px] text-gold">
+														{item.type_name}
+													</p>
+												</span>
+											);
+										})}
+										{property_style?.map((item, index) => {
+											return (
+												<span
+													key={index}
+													className="flex items-center rounded-full bg-[#E4D1BC] px-3 py-[2px]"
+												>
+													<p className="text-[11px] text-gold">
+														{item.style_name}
+													</p>
+												</span>
+											);
+										})}
+									</div>
 								</div>
 								<div className="mt-3 flex">
 									<span className="text-[11px]">
@@ -324,25 +389,31 @@ export default function Profile({
 								</div>
 								<div>
 									<p className="mt-1 text-[13px] text-[#9C9797]">
-										{profile_detail?.city}, {profile_detail?.province},
-										Indonesia
+										{kota?.kabupaten!}, {provinsi?.provinsi!}, Indonesia
 									</p>
 								</div>
 							</div>
 							<div className="ml-5 ">
 								<span className="mb-7 mt-10 flex justify-end">
-									<svg
-										width="11"
-										height="12"
-										viewBox="0 0 11 12"
-										fill="none"
-										xmlns="http://www.w3.org/2000/svg"
-									>
-										<path
-											d="M9.16667 8.48193C8.70222 8.48193 8.28667 8.66265 7.96889 8.94578L3.61167 6.44578C3.64222 6.30723 3.66667 6.16867 3.66667 6.0241C3.66667 5.87952 3.64222 5.74096 3.61167 5.60241L7.92 3.12651C8.25 3.42771 8.68389 3.61446 9.16667 3.61446C10.1811 3.61446 11 2.80723 11 1.80723C11 0.807229 10.1811 0 9.16667 0C8.15222 0 7.33333 0.807229 7.33333 1.80723C7.33333 1.95181 7.35778 2.09036 7.38833 2.22892L3.08 4.70482C2.75 4.40361 2.31611 4.21687 1.83333 4.21687C0.818889 4.21687 0 5.0241 0 6.0241C0 7.0241 0.818889 7.83133 1.83333 7.83133C2.31611 7.83133 2.75 7.64458 3.08 7.34337L7.43111 9.8494C7.40056 9.9759 7.38222 10.1084 7.38222 10.241C7.38222 11.2108 8.18278 12 9.16667 12C10.1506 12 10.9511 11.2108 10.9511 10.241C10.9511 9.27108 10.1506 8.48193 9.16667 8.48193Z"
-											fill="black"
-										/>
-									</svg>
+									<button>
+										<svg
+											width="11"
+											height="12"
+											viewBox="0 0 11 12"
+											fill="none"
+											xmlns="http://www.w3.org/2000/svg"
+											onClick={() =>
+												navigator.clipboard.writeText(
+													`${window.location.origin}${Router.asPath}`,
+												)
+											}
+										>
+											<path
+												d="M9.16667 8.48193C8.70222 8.48193 8.28667 8.66265 7.96889 8.94578L3.61167 6.44578C3.64222 6.30723 3.66667 6.16867 3.66667 6.0241C3.66667 5.87952 3.64222 5.74096 3.61167 5.60241L7.92 3.12651C8.25 3.42771 8.68389 3.61446 9.16667 3.61446C10.1811 3.61446 11 2.80723 11 1.80723C11 0.807229 10.1811 0 9.16667 0C8.15222 0 7.33333 0.807229 7.33333 1.80723C7.33333 1.95181 7.35778 2.09036 7.38833 2.22892L3.08 4.70482C2.75 4.40361 2.31611 4.21687 1.83333 4.21687C0.818889 4.21687 0 5.0241 0 6.0241C0 7.0241 0.818889 7.83133 1.83333 7.83133C2.31611 7.83133 2.75 7.64458 3.08 7.34337L7.43111 9.8494C7.40056 9.9759 7.38222 10.1084 7.38222 10.241C7.38222 11.2108 8.18278 12 9.16667 12C10.1506 12 10.9511 11.2108 10.9511 10.241C10.9511 9.27108 10.1506 8.48193 9.16667 8.48193Z"
+												fill="black"
+											/>
+										</svg>
+									</button>
 								</span>
 								<div>
 									<div className="flex gap-2">
@@ -363,7 +434,7 @@ export default function Profile({
 											</svg>
 										</span>
 										<p className="ml-[2px] text-[11px]">
-											Software Engineering Tokopedia
+											{/* {experience?.[0].title} {experience?.[0].title} */}
 										</p>
 									</div>
 									<div className="mt-2 flex gap-2">
@@ -381,7 +452,7 @@ export default function Profile({
 												/>
 											</svg>
 										</span>
-										<p className="text-[11px]">Universitas Mataram</p>
+										<p className="text-[11px]">{education?.[0].institution}</p>
 									</div>
 									<div className="mt-3 flex gap-3">
 										<button className=" flex gap-2 rounded-full bg-gold px-3 py-1 hover:bg-goldhov ">
@@ -538,7 +609,9 @@ export default function Profile({
 															strokeLinejoin="round"
 														/>
 													</svg>
-													<p className="text-[#4B4B4B]">323 m2</p>
+													<p className="text-[#4B4B4B]">
+														{design.property_size} m2
+													</p>
 												</span>
 											</div>
 											<p className="mt-2 text-justify text-[12px] font-normal text-[#4B4B4B]">
@@ -610,7 +683,7 @@ export default function Profile({
 						<div className="flex flex-col gap-5 px-12 py-10">
 							<p className="text-[25px] font-semibold">Experience</p>
 
-							{designData.map((designData, index) => {
+							{experience?.map((item, index) => {
 								return (
 									<div
 										className={`container flex  max-w-[791px] 
@@ -636,22 +709,19 @@ export default function Profile({
 										<div className="my-4 w-[605px]">
 											<div className="flex justify-between">
 												<p className="text-[17px] font-medium text-black">
-													Universitas Mataram
+													{item.institution}
 												</p>
 											</div>
 
 											<div className="gap-2">
-												<p className="text-[14px]">
-													Mahasiswa, Teknik Informatika
-												</p>
+												<p className="text-[14px]"></p>
 												<p className="text-[14px] text-[#A1A1A1]">
-													2021 - Sekarang
+													{item.start_date} -{" "}
+													{item.end_date ? item.end_date : "Sekarang"}
 												</p>
 											</div>
 											<p className="mt-2 text-justify text-[12px] font-normal text-[#4B4B4B]">
-												Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-												Curabitur nulla arcu, viverra id scelerisque at,
-												molestie et nunc.
+												{item.description}
 											</p>
 										</div>
 									</div>
@@ -666,7 +736,7 @@ export default function Profile({
 						<div className="flex flex-col gap-5 px-12 py-10">
 							<p className="text-[25px] font-semibold">Project</p>
 
-							{projectData.map((project, index) => {
+							{project?.map((project, index) => {
 								return (
 									<div
 										className={`container flex  max-w-[791px] 
@@ -697,9 +767,10 @@ export default function Profile({
 											</div>
 
 											<div className="gap-2">
-												<p className="text-[14px]">{project.departemment}</p>
+												<p className="text-[14px]">{project.title}</p>
 												<p className="text-[14px] text-[#A1A1A1]">
-													{project.dateFrom} - {project.dateUntil}
+													{project.start_date} -{" "}
+													{project.end_date ? project.end_date : "Sekarang"}
 												</p>
 											</div>
 											<p className="mt-2 text-justify text-[12px] font-normal text-[#4B4B4B]">
@@ -707,7 +778,7 @@ export default function Profile({
 											</p>
 											{/* isi gambar */}
 											<div className="mt-3 flex gap-4" key={index}>
-												{project.image.map((mediaItem, index) => (
+												{project.image?.map((mediaItem, index) => (
 													<div
 														className=""
 														key={index}
