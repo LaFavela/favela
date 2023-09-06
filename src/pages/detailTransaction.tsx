@@ -5,9 +5,13 @@ import DragAndDropInput from "@/components/inputDrop";
 import { useState, useRef, useEffect } from "react";
 import Status from "@/components/status";
 import Dropdown from "@/components/dropdwon";
+import { motion, AnimatePresence } from "framer-motion";
+import Footer from "@/components/footer";
+import Rating from '@mui/material/Rating';
+import CircleIcon from '@mui/icons-material/Circle';
 
 const user = {
-	id: "210swsss",
+	id: "20ssH",
 	name: "Ramadhani Al-Qadri",
 	img: "/assets/landing/Designer3.jpg",
 	role: "Designer",
@@ -29,7 +33,7 @@ const Contributor = [
 		id: "21132",
 		name: "Ramadhani Al-Qadri",
 		img: "/assets/landing/Designer3.jpg",
-		role: "",
+		role: "Client",
 	},
 	{
 		id: "21053",
@@ -85,8 +89,8 @@ export default function DetailTransaction() {
 			tittle: "Momen Kebersamaan",
 			description:
 				"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eget risus porta, tincidunt turpis at, interdum tortor. Sed id pretium elit. Sed eget risus porta, tincidunt turpis at, interdum tortor. Sed id pretium elit.",
-			media: "",
-			contract: "",
+			media: "wertyuiop",
+			contract: "wertyuiop",
 			extraInfo:
 				"Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dolor, saepe esse. Laborum, vel velit aperiam illo sit ipsa qui sint fugiat. Harum, explicabo. Magni fuga exercitationem totam omnis distinctio quibusdam.",
 			payment: 0,
@@ -118,233 +122,257 @@ export default function DetailTransaction() {
 	}
 
 	return (
-		<div className="flex justify-center">
-			<div className="mt-[2.1875rem] w-[81.875rem] space-y-[1.3125rem]">
-				<div>
-					<p className="text-[1.25rem] font-medium">Detail Transaction</p>
-				</div>
-				<div className="flex justify-between">
-					<div className="w-[44.3125rem] space-y-[1.125rem] ">
-						{/* Indormation */}
-						<div className="flex  justify-between w-full p-[1.4375rem] bg-white drop-shadow-landingShado  rounded-[1.5625rem]">
-							<div className="flex space-x-[1.25rem]">
-								<div className="relative w-[7.3125rem] h-[7.3125rem] rounded-[0.625rem] overflow-hidden">
-									<Image src={transaction.img} alt="property" fill={true} />
-								</div>
-								<div className="  flex flex-col justify-between">
-									<div className="flex ">
-										<p className="text-[0.9375rem] font-light mr-1">Name : </p>
-										<p className="text-[0.9375rem] font-medium">
-											{transaction.propertyName}
-										</p>
+		<div>
+			<div className="flex justify-center">
+				<div className="mt-[2.1875rem] w-[81.875rem] space-y-[1.3125rem]">
+					<div>
+						<p className="text-[1.25rem] font-medium">Detail Transaction</p>
+					</div>
+					<div className="flex justify-between">
+						<div className="w-[44.3125rem] space-y-[1.125rem] ">
+							{/* Indormation */}
+							<div className="flex  justify-between w-full p-[1.4375rem] bg-white drop-shadow-landingShado  rounded-[1.5625rem]">
+								<div className="flex space-x-[1.25rem]">
+									<div className="relative w-[7.3125rem] h-[7.3125rem] rounded-[0.625rem] overflow-hidden">
+										<Image src={transaction.img} alt="property" fill={true} />
 									</div>
-									<div className="flex">
-										<p className="text-[0.9375rem] font-light mr-1">Type : </p>
-										<p className="text-[0.9375rem] font-medium">
-											{transaction.propertyType}
-										</p>
-									</div>
-									<div className="flex">
-										<p className="text-[0.9375rem] font-light mr-1">
-											ID Transaction :{" "}
-										</p>
-										<p className="text-[0.9375rem] font-medium">
-											{transaction.id}
-										</p>
-									</div>
-									<div className="flex">
-										<p className="text-[0.9375rem] font-light mr-1">
-											Request Date :{" "}
-										</p>
-										<p className="text-[0.9375rem] font-medium">
-											{transaction.propertyDate}
-										</p>
-									</div>
-								</div>
-							</div>
-							<div className="flex flex-col justify-between">
-								<button
-									onClick={() => {
-										setShowComplain(true);
-									}}
-									className="flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]"
-								>
-									Complain
-								</button>
-								<button className="flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]">
-									Download Contract
-								</button>
-								<button className="flex justify-center items-center text-white text-[0.75rem] font-medium  w-[10.25rem] bg-[#B17C3F] hover:bg-[#8d6333] rounded-full h-[1.8125rem]">
-									Cancel Project
-								</button>
-							</div>
-						</div>
-						{/* Contributor */}
-						<div className="space-y-[0.375rem] w-full p-[1.4375rem] bg-white drop-shadow-landingShado  rounded-[1.5625rem]">
-							<p className="text-[0.875rem] font-medium">Contributor</p>
-							<div className="flex ">
-								{Contributor.map((item, idx) => (
-									<div key={idx} className="flex space-x-2">
-										<div className="relative w-[1.875rem] h-[1.875rem] rounded-full overflow-hidden">
-											<Image
-												src={item.img}
-												alt="contributor"
-												fill={true}
-												objectFit="cover"
-											/>
-										</div>
-										<div className="-space-y-1">
-											<p className="text-[0.75rem] font-normal ">{item.name}</p>
-											<p className="text-[0.625rem] text-[#BEB8B8]">
-												{item.role}
+									<div className="  flex flex-col justify-between">
+										<div className="flex ">
+											<p className="text-[0.9375rem] font-light mr-1">
+												Name :{" "}
+											</p>
+											<p className="text-[0.9375rem] font-medium">
+												{transaction.propertyName}
 											</p>
 										</div>
-										{idx !== Contributor.length - 1 && (
-											<div className="  w-[0.5rem]">
-												<div className="h-[2rem] bg-gray-300 w-[0.01rem]"></div>
-											</div>
-										)}
+										<div className="flex">
+											<p className="text-[0.9375rem] font-light mr-1">
+												Type :{" "}
+											</p>
+											<p className="text-[0.9375rem] font-medium">
+												{transaction.propertyType}
+											</p>
+										</div>
+										<div className="flex">
+											<p className="text-[0.9375rem] font-light mr-1">
+												ID Transaction :{" "}
+											</p>
+											<p className="text-[0.9375rem] font-medium">
+												{transaction.id}
+											</p>
+										</div>
+										<div className="flex">
+											<p className="text-[0.9375rem] font-light mr-1">
+												Request Date :{" "}
+											</p>
+											<p className="text-[0.9375rem] font-medium">
+												{transaction.propertyDate}
+											</p>
+										</div>
 									</div>
-								))}
+								</div>
+								<div className="flex flex-col justify-between">
+									<motion.button
+										whileTap={{ scale: 0.85 }}
+										onClick={() => {
+											setShowComplain(true);
+										}}
+										className="flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]"
+									>
+										Complain
+									</motion.button>
+									<motion.button
+										whileTap={{ scale: 0.85 }}
+										className="flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]"
+									>
+										Download Contract
+									</motion.button>
+									<motion.button
+										whileTap={{ scale: 0.85 }}
+										className="flex justify-center items-center text-white text-[0.75rem] font-medium  w-[10.25rem] bg-[#B17C3F] hover:bg-[#8d6333] rounded-full h-[1.8125rem]"
+									>
+										Cancel Project
+									</motion.button>
+								</div>
+							</div>
+							{/* Contributor */}
+							<div className="space-y-[0.375rem] w-full p-[1.4375rem] bg-white drop-shadow-landingShado  rounded-[1.5625rem]">
+								<p className="text-[0.875rem] font-medium">Contributor</p>
+								<div className="flex justify-center py-1 space-x-2">
+									{Contributor.map((item, idx) => (
+										<div key={idx} className="flex space-x-4">
+											<Link
+												href={"/merchantProfile"}
+												className="flex space-x-2  h-fit p-1 rounded-full pr-3 hover:bg-[#e6e6e6]"
+											>
+												<div className="relative w-[1.875rem] h-[1.875rem] rounded-full overflow-hidden">
+													<Image
+														src={item.img}
+														alt="contributor"
+														fill={true}
+														objectFit="cover"
+													/>
+												</div>
+												<div className="-space-y-1 ">
+													<p className="text-[0.75rem] font-normal ">
+														{item.name}
+													</p>
+													<p className="text-[0.625rem] text-gold">
+														{item.role}
+													</p>
+												</div>
+											</Link>
+											{idx !== Contributor.length - 1 && (
+												<div className="  w-[0.5rem] ">
+													<div className="h-[2.4rem]  bg-gray-300 w-[0.01rem]"></div>
+												</div>
+											)}
+										</div>
+									))}
+								</div>
+							</div>
+							{/* Update */}
+							{user.role == "Designer" && (
+								<div className=" w-full p-[1.4375rem] bg-white drop-shadow-landingShado  rounded-[1.5625rem]">
+									<p className="text-[0.875rem] font-medium">Update</p>
+									<div className="flex flex-col items-center space-y-2 justify-center">
+										<motion.div
+											whileTap={{ scale: 0.85 }}
+											className="flex flex-col items-center space-y-1 rounded-xl p-2 hover:bg-[#f7efe7] cursor-pointer"
+											onClick={() => {
+												setShowUpdate(true);
+												// handlePaymentTrack();
+											}}
+										>
+											<div>
+												<svg
+													width="20"
+													height="20"
+													viewBox="0 0 20 20"
+													fill="none"
+													xmlns="http://www.w3.org/2000/svg"
+												>
+													<g clipPath="url(#clip0_1999_2583)">
+														<path
+															d="M11 9H15V11H11V15H9V11H5V9H9V5H11V9ZM10 20C7.34784 20 4.8043 18.9464 2.92893 17.0711C1.05357 15.1957 0 12.6522 0 10C0 7.34784 1.05357 4.8043 2.92893 2.92893C4.8043 1.05357 7.34784 0 10 0C12.6522 0 15.1957 1.05357 17.0711 2.92893C18.9464 4.8043 20 7.34784 20 10C20 12.6522 18.9464 15.1957 17.0711 17.0711C15.1957 18.9464 12.6522 20 10 20ZM10 18C12.1217 18 14.1566 17.1571 15.6569 15.6569C17.1571 14.1566 18 12.1217 18 10C18 7.87827 17.1571 5.84344 15.6569 4.34315C14.1566 2.84285 12.1217 2 10 2C7.87827 2 5.84344 2.84285 4.34315 4.34315C2.84285 5.84344 2 7.87827 2 10C2 12.1217 2.84285 14.1566 4.34315 15.6569C5.84344 17.1571 7.87827 18 10 18Z"
+															fill="#B17C3F"
+														/>
+													</g>
+													<defs>
+														<clipPath id="clip0_1999_2583">
+															<rect width="20" height="20" fill="white" />
+														</clipPath>
+													</defs>
+												</svg>
+											</div>
+											<p className="text-[0.625rem] text-[#B17C3F]">
+												Make Update
+											</p>
+										</motion.div>
+									</div>
+								</div>
+							)}
+							{/* Action */}
+							<Action status={status} setStatus={setStatus}></Action>
+							{/* Detail of Payment */}
+							<div className="space-y-[0.375rem] w-full p-[1.4375rem] bg-white drop-shadow-landingShado  rounded-[1.5625rem]">
+								<p className="text-[0.875rem] font-medium">Detail of Payment</p>
+								{payment.length > 0 ? (
+									<div className="w-full">
+										<div className="w-[40.3125rem] py-[0.8rem] px-[2rem] border-b-2">
+											{payment.map((item: any, idx: any) => (
+												<div key={idx} className="flex w-full justify-between">
+													<p className="font-light text-[0.75rem]">
+														{item.phase}
+													</p>
+													<p className="font-light text-[0.75rem]">
+														Rp. {item.price.toLocaleString("en-US")}.00
+													</p>
+												</div>
+											))}
+										</div>
+										<div className="w-[40.3125rem] px-[2rem] py-[0.8rem] flex justify-between">
+											<p className="text-[0.75rem] font-medium">
+												Total Payment
+											</p>
+											<p className="text-[0.75rem] font-medium">
+												{"Rp. " +
+													payment
+														.reduce((a: number, b: any) => a + b.price, 0)
+														.toLocaleString("en-US") +
+													".00"}
+											</p>
+										</div>
+									</div>
+								) : (
+									<p className="text-[0.8rem] text-center py-10 text-[#4B4B4B]">
+										There is no payment track
+									</p>
+								)}
 							</div>
 						</div>
-						{/* Update */}
-						{user.role == "Designer" && (
-							<div className="space-y-[0.375rem] w-full p-[1.4375rem] bg-white drop-shadow-landingShado  rounded-[1.5625rem]">
-								<p className="text-[0.875rem] font-medium">Update</p>
-								<div className="flex flex-col items-center space-y-2 justify-center">
-									<div
-										className="flex flex-col items-center space-y-2"
-										onClick={() => {
-											setShowUpdate(true);
-											// handlePaymentTrack();
-										}}
-									>
-										<div>
-											<svg
-												width="20"
-												height="20"
-												viewBox="0 0 20 20"
-												fill="none"
-												xmlns="http://www.w3.org/2000/svg"
-											>
-												<g clipPath="url(#clip0_1999_2583)">
-													<path
-														d="M11 9H15V11H11V15H9V11H5V9H9V5H11V9ZM10 20C7.34784 20 4.8043 18.9464 2.92893 17.0711C1.05357 15.1957 0 12.6522 0 10C0 7.34784 1.05357 4.8043 2.92893 2.92893C4.8043 1.05357 7.34784 0 10 0C12.6522 0 15.1957 1.05357 17.0711 2.92893C18.9464 4.8043 20 7.34784 20 10C20 12.6522 18.9464 15.1957 17.0711 17.0711C15.1957 18.9464 12.6522 20 10 20ZM10 18C12.1217 18 14.1566 17.1571 15.6569 15.6569C17.1571 14.1566 18 12.1217 18 10C18 7.87827 17.1571 5.84344 15.6569 4.34315C14.1566 2.84285 12.1217 2 10 2C7.87827 2 5.84344 2.84285 4.34315 4.34315C2.84285 5.84344 2 7.87827 2 10C2 12.1217 2.84285 14.1566 4.34315 15.6569C5.84344 17.1571 7.87827 18 10 18Z"
-														fill="#B17C3F"
-													/>
-												</g>
-												<defs>
-													<clipPath id="clip0_1999_2583">
-														<rect width="20" height="20" fill="white" />
-													</clipPath>
-												</defs>
-											</svg>
-										</div>
-										<p className="text-[0.625rem] text-[#B17C3F]">
-											Make Update
-										</p>
+						<div className="p-[1.4375rem]  w-[36.5625rem] h-fit space-y-[1.125rem] bg-white drop-shadow-landingShado  rounded-[1.5625rem]">
+							<p className="text-[0.875rem] font-medium">Status</p>
+							{status.length > 0 ? (
+								status.map((item, idx) => (
+									<div key={idx}>
+										<Progress
+											status={item}
+											length={status.length}
+											id={idx}
+											srcMedia={srcMedia}
+											srcContract={srcContract}
+											extraInfo={extraInfo}
+											setSrcMedia={setSrcMedia}
+											setSrcContract={setSrcContract}
+											setExtraInfo={setExtraInfo}
+											setShowDocument={setShowDocument}
+										></Progress>
 									</div>
-								</div>
-							</div>
-						)}
-						{/* Action */}
-						<Action status={status} setStatus={setStatus}></Action>
-						{/* Detail of Payment */}
-						<div className="space-y-[0.375rem] w-full p-[1.4375rem] bg-white drop-shadow-landingShado  rounded-[1.5625rem]">
-							<p className="text-[0.875rem] font-medium">Detail of Payment</p>
-							{payment.length > 0 ? (
-								<div className="w-full">
-									<div className="w-[40.3125rem] py-[0.8rem] px-[2rem] border-b-2">
-										{payment.map((item: any, idx: any) => (
-											<div key={idx} className="flex w-full justify-between">
-												<p className="font-light text-[0.75rem]">
-													{item.phase}
-												</p>
-												<p className="font-light text-[0.75rem]">
-													Rp. {item.price.toLocaleString("en-US")}.00
-												</p>
-											</div>
-										))}
-									</div>
-									<div className="w-[40.3125rem] px-[2rem] py-[0.8rem] flex justify-between">
-										<p className="text-[0.75rem] font-medium">Total Payment</p>
-										<p className="text-[0.75rem] font-medium">
-											{"Rp. " +
-												payment
-													.reduce((a: number, b: any) => a + b.price, 0)
-													.toLocaleString("en-US") +
-												".00"}
-										</p>
-									</div>
-								</div>
+								))
 							) : (
-								<p className="text-[0.875] text-center py-10 text-[#4B4B4B]">
-									There is no payment track
-								</p>
+								<div className="flex justify-center pb-10 pt-8">
+									<p className="text-[0.875] text-[#4B4B4B]">
+										There is no progress here
+									</p>
+								</div>
 							)}
 						</div>
 					</div>
-					<div className="p-[1.4375rem]  w-[36.5625rem] h-fit space-y-[1.125rem] bg-white drop-shadow-landingShado  rounded-[1.5625rem]">
-						<p className="text-[0.875rem] font-medium">Status</p>
-						{status.length > 0 ? (
-							status.map((item, idx) => (
-								<div key={idx}>
-									<Progress
-										status={item}
-										length={status.length}
-										id={idx}
-										srcMedia={srcMedia}
-										srcContract={srcContract}
-										extraInfo={extraInfo}
-										setSrcMedia={setSrcMedia}
-										setSrcContract={setSrcContract}
-										setExtraInfo={setExtraInfo}
-										setShowDocument={setShowDocument}
-									></Progress>
-								</div>
-							))
-						) : (
-							<div className="flex justify-center pb-10 pt-8">
-								<p className="text-[0.875] text-[#4B4B4B]">
-									There is no progress here
-								</p>
-							</div>
-						)}
-					</div>
+				</div>
+				<div className=" ">
+					<Update
+						selectedMedia={selectedMedia}
+						setMedia={setSelectedMedia}
+						selectedContract={selectedContract}
+						setContract={setSelectedContract}
+						handleMedia={handleMedia}
+						handleContract={handleContract}
+						status={status}
+						setStatus={setStatus}
+						visible={showUpdate}
+						onClose={handleOnCloseUpdate}
+						setShowUpdate={setShowUpdate}
+					/>
+					<ShowDocument
+						visible={showDocument}
+						onClose={handleOnCloseDocument}
+						setShowDocument={setShowDocument}
+						srcMedia={srcMedia}
+						srcContract={srcContract}
+						extraInfo={extraInfo}
+						setSrcMedia={setSrcMedia}
+						setSrcContract={setSrcContract}
+						setExtraInfo={setExtraInfo}
+					/>
+					<Complain
+						visible={complain}
+						setShowComplain={setShowComplain}
+						onClose={handleOnCloseComplain}
+					/>
 				</div>
 			</div>
-			<div className=" ">
-				<Update
-					selectedMedia={selectedMedia}
-					setMedia={setSelectedMedia}
-					selectedContract={selectedContract}
-					setContract={setSelectedContract}
-					handleMedia={handleMedia}
-					handleContract={handleContract}
-					status={status}
-					setStatus={setStatus}
-					visible={showUpdate}
-					onClose={handleOnCloseUpdate}
-					setShowUpdate={setShowUpdate}
-				/>
-				<ShowDocument
-					visible={showDocument}
-					onClose={handleOnCloseDocument}
-					setShowDocument={setShowDocument}
-					srcMedia={srcMedia}
-					srcContract={srcContract}
-					extraInfo={extraInfo}
-					setSrcMedia={setSrcMedia}
-					setSrcContract={setSrcContract}
-					setExtraInfo={setExtraInfo}
-				/>
-				<Complain
-					visible={complain}
-					setShowComplain={setShowComplain}
-					onClose={handleOnCloseComplain}
-				/>
-			</div>
+			<Footer></Footer>
 		</div>
 	);
 }
@@ -409,18 +437,21 @@ export function Progress(props: progressProps) {
 				{(props.status.media != "" ||
 					props.status.contract != "" ||
 					props.status.extraInfo != "") && (
-					<div className="mt-2 ">
+					<motion.div
+						whileTap={{ scale: 0.85 }}
+						onClick={() => {
+							props.setSrcMedia(props.status.media);
+							props.setSrcContract(props.status.contract);
+							props.setExtraInfo(props.status.extraInfo);
+							props.setShowDocument(true);
+						}}
+						className="mt-2 h-fit w-fit  p-1 rounded-md hover:bg-gray-200"
+					>
 						<svg
 							width="11"
 							height="14"
 							viewBox="0 0 11 14"
 							fill="none"
-							onClick={() => {
-								props.setSrcMedia(props.status.media);
-								props.setSrcContract(props.status.contract);
-								props.setExtraInfo(props.status.extraInfo);
-								props.setShowDocument(true);
-							}}
 							xmlns="http://www.w3.org/2000/svg"
 						>
 							<path
@@ -428,7 +459,7 @@ export function Progress(props: progressProps) {
 								fill="#B17C3F"
 							/>
 						</svg>
-					</div>
+					</motion.div>
 				)}
 			</div>
 		</div>
@@ -440,6 +471,11 @@ interface actionProps {
 	setStatus: (value: StatusItem[]) => void;
 }
 export function Action(props: actionProps) {
+	const [showReview, setShowReview] = useState(false);
+	const handleOnCloseReview = () => {
+		setShowReview(false);
+	};
+
 	const [statuspop, setShowStatus] = useState(false);
 	const handleOnCloseStatus = () => {
 		setShowStatus(false);
@@ -460,7 +496,7 @@ export function Action(props: actionProps) {
 	}
 
 	return (
-		<div>
+		<div className="">
 			<div className="space-y-[0.375rem] w-full p-[1.4375rem] bg-white drop-shadow-landingShado  rounded-[1.5625rem]">
 				<p className="text-[0.875rem] font-medium">Action</p>
 				<div className="flex ">
@@ -480,13 +516,19 @@ export function Action(props: actionProps) {
 						(item) => item == "Contract",
 					) && (
 						<div className="flex ">
-							<button className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]">
+							<motion.button
+								whileTap={{ scale: 0.85 }}
+								className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]"
+							>
 								Download Contract
-							</button>
+							</motion.button>
 							{user.id != props.status[props.status.length - 1].updaterId && (
-								<button className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]">
+								<motion.button
+									whileTap={{ scale: 0.85 }}
+									className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]"
+								>
 									Upload Contract
-								</button>
+								</motion.button>
 							)}
 						</div>
 					)}
@@ -495,28 +537,29 @@ export function Action(props: actionProps) {
 					) &&
 						(user.id != props.status[props.status.length - 1].updaterId ? (
 							props.status[props.status.length - 1].isConfirmed ? (
-								<p className="text-[0.875] text-[#4B4B4B]">Confirmed</p>
+								<p className="text-[0.8rem] text-[#4B4B4B]">Confirmed</p>
 							) : (
 								<div className="flex">
-									<button
+									<motion.button
+										whileTap={{ scale: 0.85 }}
 										type="button"
 										id="confirmButton"
 										onClick={() => {
 											handleConfirm();
 											setShowStatus(true);
-											setStatus("success");
+											setStatus("confirm");
 											setDescription("lorem");
 										}}
 										className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]"
 									>
 										Confirm
-									</button>
+									</motion.button>
 								</div>
 							)
 						) : props.status[props.status.length - 1].isConfirmed ? (
-							<p className="text-[0.875] text-[#4B4B4B]">Confirmed</p>
+							<p className="text-[0.8rem] text-[#4B4B4B]">Confirmed</p>
 						) : (
-							<p className="text-[0.875] text-[#4B4B4B]">
+							<p className="text-[0.8rem] text-[#4B4B4B]">
 								Waiting Confirmation
 							</p>
 						))}
@@ -524,9 +567,12 @@ export function Action(props: actionProps) {
 						(item) => item == "Media",
 					) && (
 						<div className="flex   ">
-							<button className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]">
+							<motion.button
+								whileTap={{ scale: 0.85 }}
+								className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]"
+							>
 								Download Media
-							</button>
+							</motion.button>
 						</div>
 					)}
 					{props.status[props.status.length - 1].actionType.find(
@@ -534,10 +580,11 @@ export function Action(props: actionProps) {
 					) &&
 						(user.id != props.status[props.status.length - 1].updaterId ? (
 							props.status[props.status.length - 1].isPayed ? (
-								<p className="text-[0.875] text-[#4B4B4B]">Paid</p>
+								<p className="text-[0.8rem] text-[#4B4B4B]">Paid</p>
 							) : (
 								<div className="flex   ">
-									<button
+									<motion.button
+										whileTap={{ scale: 0.85 }}
 										onClick={() => {
 											handlePay();
 											setShowStatus(true);
@@ -547,14 +594,30 @@ export function Action(props: actionProps) {
 										className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]"
 									>
 										Pay
-									</button>
+									</motion.button>
 								</div>
 							)
 						) : props.status[props.status.length - 1].isPayed ? (
-							<p className="text-[0.875] text-[#4B4B4B]">Paid</p>
+							<p className="text-[0.8rem] text-[#4B4B4B]">Paid</p>
 						) : (
-							<p className="text-[0.875] text-[#4B4B4B]">Waiting For Paid</p>
+							<p className="text-[0.8rem] text-[#4B4B4B]">Waiting For Paid</p>
 						))}
+					{props.status[props.status.length - 1].actionType.find(
+						(item) => item == "Finish Project",
+					) &&
+						user.id != props.status[props.status.length - 1].updaterId && (
+							<div className="flex   ">
+								<motion.button
+									whileTap={{ scale: 0.85 }}
+									onClick={() => {
+										setShowReview(true);
+									}}
+									className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]"
+								>
+									Review
+								</motion.button>
+							</div>
+						)}
 					{props.status[props.status.length - 1].actionType.find(
 						(item) => item == "Contractor",
 					) && (
@@ -589,31 +652,36 @@ export function Action(props: actionProps) {
 							)}
 							{user.id != props.status[props.status.length - 1].updaterId ? (
 								<div className="flex flex-col items-center">
-									<Link href={"/constractor"} target="_blank">
-										<p className="w-[35.625rem] text-[0.75rem] text-[#B17C3F]">
-											Let me pick by my self
-										</p>
-									</Link>
 									{props.status[props.status.length - 1].isConfirmed ? (
-										<p className="text-[0.875] text-[#4B4B4B]">Confirmed</p>
+										<p className="text-[0.8rem] text-[#4B4B4B]">Confirmed</p>
 									) : (
-										<button
-											onClick={() => {
-												handleConfirm();
-												setShowStatus(true);
-												setStatus("success");
-												setDescription("lorem");
-											}}
-											className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]"
-										>
-											Confirm
-										</button>
+										<div>
+											<Link href={"/constractor"} target="_blank">
+												<p className="w-[35.625rem] text-[0.75rem] text-gray-400   hover:text-[#B17C3F]">
+													Let me pick by my self
+												</p>
+											</Link>
+											<div className="flex justify-center">
+												<motion.button
+													whileTap={{ scale: 0.85 }}
+													onClick={() => {
+														handleConfirm();
+														setShowStatus(true);
+														setStatus("confirm");
+														setDescription("lorem");
+													}}
+													className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]"
+												>
+													Confirm
+												</motion.button>
+											</div>
+										</div>
 									)}
 								</div>
 							) : props.status[props.status.length - 1].isConfirmed ? (
-								<p className="text-[0.875] text-[#4B4B4B]">Confirmed</p>
+								<p className="text-[0.8rem] text-[#4B4B4B]">Confirmed</p>
 							) : (
-								<p className="text-[0.875] text-[#4B4B4B]">
+								<p className="text-[0.8rem] text-[#4B4B4B]">
 									Waiting Confirmation
 								</p>
 							)}
@@ -621,14 +689,21 @@ export function Action(props: actionProps) {
 					)}
 				</div>
 			</div>
-			<Status
-				visible={statuspop}
-				onClose={handleOnCloseStatus}
-				setShowStatus={setShowStatus}
-				status={status}
-				tittle={title}
-				description={description}
-			/>
+			<div className="">
+				<Status
+					visible={statuspop}
+					onClose={handleOnCloseStatus}
+					setShowStatus={setShowStatus}
+					status={status}
+					tittle={title}
+					description={description}
+				/>
+				<Review
+					visible={showReview}
+					onClose={handleOnCloseReview}
+					setShowReview={setShowReview}
+				/>
+			</div>
 		</div>
 	);
 }
@@ -749,6 +824,66 @@ export function Update(props: updateProps) {
 	const [constractorId, setConstractorId] = useState("");
 	const [updaterId, setUpdaterId] = useState(user.id);
 
+	function manageCheck(checkboxId: string) {
+		const checkbox = document.getElementById(checkboxId) as HTMLInputElement;
+
+		const confirmCheck = document.getElementById(
+			"ConfirmCheck",
+		) as HTMLInputElement;
+		const finishProjectCheck = document.getElementById(
+			"FinishProjectCheck",
+		) as HTMLInputElement;
+
+		const mediaCheck = document.getElementById(
+			"MediaCheck",
+		) as HTMLInputElement;
+		const contractCheck = document.getElementById(
+			"ContractCheck",
+		) as HTMLInputElement;
+		const contractorCheck = document.getElementById(
+			"ContractorCheck",
+		) as HTMLInputElement;
+		const paymentCheck = document.getElementById(
+			"PaymentCheck",
+		) as HTMLInputElement;
+
+		if (checkbox.checked) {
+			if (checkboxId === "ContractorCheck") {
+				paymentCheck.checked = false;
+				finishProjectCheck.checked = false;
+				confirmCheck.checked = false;
+				mediaCheck.checked = false;
+				contractCheck.checked = false;
+			} else if (checkboxId === "PaymentCheck") {
+				contractorCheck.checked = false;
+				finishProjectCheck.checked = false;
+				confirmCheck.checked = false;
+				contractCheck.checked = false;
+			} else if (checkboxId === "ContractCheck") {
+				contractorCheck.checked = false;
+				finishProjectCheck.checked = false;
+				confirmCheck.checked = false;
+				paymentCheck.checked = false;
+			} else if (checkboxId === "MediaCheck") {
+				contractorCheck.checked = false;
+				finishProjectCheck.checked = false;
+				confirmCheck.checked = false;
+			} else if (checkboxId === "FinishProjectCheck") {
+				contractorCheck.checked = false;
+				mediaCheck.checked = false;
+				confirmCheck.checked = false;
+				paymentCheck.checked = false;
+				contractCheck.checked = false;
+			} else if (checkboxId === "ConfirmCheck") {
+				contractorCheck.checked = false;
+				finishProjectCheck.checked = false;
+				mediaCheck.checked = false;
+				paymentCheck.checked = false;
+				contractCheck.checked = false;
+			}
+		}
+	}
+
 	function handleCheck() {
 		const confirmCheck = document.getElementById(
 			"ConfirmCheck",
@@ -778,7 +913,6 @@ export function Update(props: updateProps) {
 		if (finishProjectCheck.checked) {
 			updatedActionTypes.push("Finish Project");
 		}
-
 		if (mediaCheck.checked) {
 			updatedActionTypes.push("Media");
 		}
@@ -794,6 +928,28 @@ export function Update(props: updateProps) {
 
 		setActionType(updatedActionTypes);
 	}
+
+	useEffect(() => {
+		const confirmCheck = document.getElementById(
+			"ConfirmCheck",
+		) as HTMLInputElement;
+		const finishProjectCheck = document.getElementById(
+			"FinishProjectCheck",
+		) as HTMLInputElement;
+
+		const mediaCheck = document.getElementById(
+			"MediaCheck",
+		) as HTMLInputElement;
+		const contractCheck = document.getElementById(
+			"ContractCheck",
+		) as HTMLInputElement;
+		const contractorCheck = document.getElementById(
+			"ContractorCheck",
+		) as HTMLInputElement;
+		const paymentCheck = document.getElementById(
+			"PaymentCheck",
+		) as HTMLInputElement;
+	}, []);
 
 	function handleStatus() {
 		const newStatus = {
@@ -844,207 +1000,238 @@ export function Update(props: updateProps) {
 	return (
 		<div>
 			{props.visible && (
-				<div
-					ref={wrapperRef}
-					className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform bg-white rounded-[1.5625rem] w-[34.5625rem] overflow-hidden h-[38rem] drop-shadow-landingShado"
-				>
-					<div className="w-full flex items-center py-3 border-b-2 ">
-						<p className="ml-[1.8rem] text-[1.0625rem]">Update Progress</p>
-					</div>
-					<form
-						action=""
-						className="flex pb-2 overflow-scroll no-scrollbar flex-col items-center w-[34.5625rem]  h-[35rem] bg-white drop-shadow-landingShado "
-						// onSubmit={}
-						onSubmit={handleSubmit}
+				<div className="flex justify-center items-center  h-screen w-screen fixed left-0">
+					<motion.div
+						initial={{ scale: 0.9, opacity: 0 }}
+						animate={{ scale: 1, opacity: 1 }}
+						ref={wrapperRef}
+						className="absolute bg-white rounded-[1.5625rem] w-[34.5625rem] overflow-hidden h-[38rem] drop-shadow-landingShado"
 					>
-						<div className="w-full space-y-2 ">
-							{/* tittle */}
-							<div className="mt-4 ml-7 space-x-2  w-fit flex flex-start items-center ">
-								<input
-									type={"checkbox"}
-									id={"ConfirmCheck"}
-									className={checBoxClass}
-								></input>
-								<p className="text-[10px]  text-[#B17C3F]">
-									Confirmation Request
-								</p>
-							</div>
-
-							<div className="ml-7 space-x-2 mt-3 w-fit flex flex-start items-center ">
-								<input
-									type={"checkbox"}
-									id={"FinishProjectCheck"}
-									className={checBoxClass}
-								></input>
-								<p className="text-[10px]  text-[#B17C3F]">Finish Project</p>
-							</div>
-							<div className="ml-7 w-full mt-2 ">
-								<InputPopUp
-									required
-									type="text"
-									title="Title"
-									value={tittle}
-									onChange={handleTitleChange}
-									className="bg-white"
-									onKeyDown={(e) => {
-										if (e.key === "Enter") {
-											e.preventDefault();
-										}
-									}}
-								></InputPopUp>
-							</div>
-							<div className="ml-7 w-full ">
-								<p className="w-[120px] text-[10px]  text-[#B17C3F] ">
-									Description
-								</p>
-								<textarea
-									required
-									id="description"
-									value={description}
-									onChange={handleDescriptionChange}
-									className=" mt-1 block w-[31.2rem] h-[127px] rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
-									maxLength={500}
-									onKeyDown={(e) => {
-										if (e.key === "Enter") {
-											e.preventDefault();
-										}
-									}}
-								></textarea>
-							</div>
-							<div className="ml-7  mt-3 w-fit  items-center ">
-								<div className="flex space-x-2">
-									<p className="text-[10px]  text-[#B17C3F]">
-										Additional information
-									</p>
-								</div>
-								<textarea
-									id="description"
-									value={extraInfo}
-									onChange={handleExtraInfoChange}
-									className=" mt-1 block w-[31.2rem] h-[127px] rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
-									maxLength={500}
-									onKeyDown={(e) => {
-										if (e.key === "Enter") {
-											e.preventDefault();
-										}
-									}}
-								></textarea>
-							</div>
-
-							<div className="ml-7  mt-3 w-fit  items-center ">
-								<div className="flex space-x-2">
-									<input
-										type={"checkbox"}
-										id={"MediaCheck"}
-										className={checBoxClass}
-									></input>
-									<p className="text-[10px]  text-[#B17C3F]">Upload Media</p>
-								</div>
-								<div className="mt-2">
-									<DragAndDropInput
-										htmlId="mediaInput"
-										onFileSelected={props.handleMedia}
-									/>
-								</div>
-							</div>
-							<div className="ml-7  mt-3 w-fit  items-center ">
-								<div className="flex space-x-2">
-									<input
-										type={"checkbox"}
-										id={"ContractCheck"}
-										className={checBoxClass}
-									></input>
-									<p className="text-[10px]  text-[#B17C3F]">Contract</p>
-								</div>
-								<div className="mt-2">
-									<DragAndDropInput
-										htmlId="contractId"
-										onFileSelected={props.handleContract}
-									/>
-								</div>
-							</div>
-							<div className="ml-7  mt-3 w-fit  items-center ">
-								<div className="flex space-x-2 mb-2">
-									<input
-										type={"checkbox"}
-										id={"ContractorCheck"}
-										className={checBoxClass}
-									></input>
-									<p className="text-[10px]  text-[#B17C3F]">
-										Contractor Recommendation
-									</p>
-								</div>
-								{constractor != null && (
-									<Link href={"/merchantProfile"}>
-										<div className="w-[31.2rem]  flex space-x-3 p-[1rem] rounded-[0.625rem] border-[#e3d0ba] border-[0.1rem]">
-											<div className="relative w-[3.625rem] h-[3.625rem] rounded-[0.375rem] overflow-hidden">
-												<Image
-													src={constractor.img}
-													alt="constractor"
-													fill={true}
-													objectFit="cover"
-												></Image>
-											</div>
-											<div className="flex flex-col justify-between">
-												<p className="text-[0.875rem] font-medium">
-													{constractor.name}
-												</p>
-												<p className="text-[0.75rem] font-light">
-													{constractor.role}
-												</p>
-												<p className="text-[0.625rem] font-light">
-													{constractor.city}, {constractor.province}
-												</p>
-											</div>
-										</div>
-									</Link>
-								)}
-								<Link href={"/constractor"} target="_blank">
-									<div className="w-[31.2rem] py-1 mt-2 rounded-[8px] border border-gold flex justify-center">
-										<p className="text-gold text-[0.7rem] ">Pick Contractor</p>
-									</div>
-								</Link>
-							</div>
-							<div className="ml-7  mt-3 w-full  items-center ">
-								<div className="flex space-x-2">
-									<input
-										type={"checkbox"}
-										id={"PaymentCheck"}
-										className={checBoxClass}
-									></input>
-									<p className="text-[10px]  text-[#B17C3F]">Payment</p>
-								</div>
-								<div className="mt-2">
-									<p className="absolute mt-1 text-[0.8rem] text-gold font-semibold ml-2">
-										Rp
-									</p>
-									<input
-										type={"number"}
-										value={payment}
-										onKeyDown={(e) => {
-											if (e.key === "Enter") {
-												e.preventDefault();
-											}
-										}}
-										onChange={handlePaymentChange}
-										className="w-[31.2rem] placeholder mt-2 rounded-[7px] border-2 border-gold pl-7 text-gold focus:border-gold focus:text-[1rem] focus:outline-gold"
-									/>
-								</div>
-							</div>
-
-							<div className="flex w-full justify-end ">
-								<button
-									type="submit"
-									onClick={() => {
-										handleCheck();
-									}}
-									className="my-3 mr-6 rounded-full border-[1px] border-gold bg-gold px-8 py-1 text-[13px] text-white hover:border-goldhov hover:bg-goldhov"
-								>
-									Save
-								</button>
-							</div>
+						<div className="w-full flex items-center py-3 border-b-2 ">
+							<p className="ml-[1.8rem] text-[1.0625rem]">Update Progress</p>
 						</div>
-					</form>
+						<form
+							action=""
+							className="flex pb-2 overflow-y-scroll thin-scrollbar  flex-col items-center   h-[35rem]  "
+							// onSubmit={}
+							onSubmit={handleSubmit}
+						>
+							<div className=" flex justify-center space-y-2 ">
+								<div>
+									{/* tittle */}
+									<div className="mt-4  space-x-2  w-fit flex flex-start items-center ">
+										<input
+											type={"checkbox"}
+											id={"ConfirmCheck"}
+											onClick={() => {
+												manageCheck("ConfirmCheck");
+											}}
+											className={checBoxClass}
+										></input>
+										<p className="text-[10px]  text-[#B17C3F]">
+											Confirmation Request
+										</p>
+									</div>
+									<div className=" space-x-2 mt-3 w-fit  flex flex-start items-center ">
+										<input
+											type={"checkbox"}
+											id={"FinishProjectCheck"}
+											onClick={() => {
+												manageCheck("FinishProjectCheck");
+											}}
+											className={checBoxClass}
+										></input>
+										<p className="text-[10px]  text-[#B17C3F]">
+											Finish Project
+										</p>
+									</div>
+									<div className=" w-[31.2rem]   justify-center mt-2 ">
+										<div>
+											<InputPopUp
+												isWmax
+												required
+												type="text"
+												title="Title"
+												value={tittle}
+												onChange={handleTitleChange}
+												className="bg-white "
+												onKeyDown={(e) => {
+													if (e.key === "Enter") {
+														e.preventDefault();
+													}
+												}}
+											></InputPopUp>
+										</div>
+									</div>
+									<div className=" w-[31.2rem] ">
+										<p className="w-[120px] text-[10px]  text-[#B17C3F] ">
+											Description
+										</p>
+										<textarea
+											required
+											id="description"
+											value={description}
+											onChange={handleDescriptionChange}
+											className=" mt-1 block w-[31.2rem] h-[127px] rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
+											maxLength={500}
+											onKeyDown={(e) => {
+												if (e.key === "Enter") {
+													e.preventDefault();
+												}
+											}}
+										></textarea>
+									</div>
+									<div className="  mt-3 w-fit  items-center ">
+										<div className="flex space-x-2">
+											<p className="text-[10px]  text-[#B17C3F]">
+												Additional information
+											</p>
+										</div>
+										<textarea
+											id="description"
+											value={extraInfo}
+											onChange={handleExtraInfoChange}
+											className=" mt-1 block w-[31.2rem] h-[127px] rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
+											maxLength={500}
+											onKeyDown={(e) => {
+												if (e.key === "Enter") {
+													e.preventDefault();
+												}
+											}}
+										></textarea>
+									</div>
+									<div className="  mt-3 w-fit  items-center ">
+										<div className="flex space-x-2">
+											<input
+												type={"checkbox"}
+												id={"MediaCheck"}
+												className={checBoxClass}
+												onClick={() => {
+													manageCheck("MediaCheck");
+												}}
+											></input>
+											<p className="text-[10px]  text-[#B17C3F]">
+												Upload Media
+											</p>
+										</div>
+										<div className="mt-2">
+											<DragAndDropInput
+												htmlId="mediaInput"
+												onFileSelected={props.handleMedia}
+											/>
+										</div>
+									</div>
+									<div className="  mt-3 w-fit  items-center ">
+										<div className="flex space-x-2">
+											<input
+												type={"checkbox"}
+												id={"ContractCheck"}
+												onClick={() => {
+													manageCheck("ContractCheck");
+												}}
+												className={checBoxClass}
+											></input>
+											<p className="text-[10px]  text-[#B17C3F]">Contract</p>
+										</div>
+										<div className="mt-2">
+											<DragAndDropInput
+												htmlId="contractId"
+												onFileSelected={props.handleContract}
+											/>
+										</div>
+									</div>
+									<div className="  mt-3 w-fit  items-center ">
+										<div className="flex space-x-2 mb-2">
+											<input
+												type={"checkbox"}
+												id={"ContractorCheck"}
+												onClick={() => {
+													manageCheck("ContractorCheck");
+												}}
+												className={checBoxClass}
+											></input>
+											<p className="text-[10px]  text-[#B17C3F]">
+												Contractor Recommendation
+											</p>
+										</div>
+										{constractor != null && (
+											<Link href={"/merchantProfile"}>
+												<div className="w-[31.2rem]  flex space-x-3 p-[1rem] rounded-[0.625rem] border-[#e3d0ba] border-[0.1rem]  hover:bg-[#e4d1bc] ">
+													<div className="relative w-[3.625rem] h-[3.625rem] rounded-[0.375rem] overflow-hidden">
+														<Image
+															src={constractor.img}
+															alt="constractor"
+															fill={true}
+															objectFit="cover"
+														></Image>
+													</div>
+													<div className="flex flex-col justify-between">
+														<p className="text-[0.875rem] font-medium">
+															{constractor.name}
+														</p>
+														<p className="text-[0.75rem] font-light">
+															{constractor.role}
+														</p>
+														<p className="text-[0.625rem] font-light">
+															{constractor.city}, {constractor.province}
+														</p>
+													</div>
+												</div>
+											</Link>
+										)}
+										<Link href={"/constractor"} target="_blank">
+											<div className="w-[31.2rem] py-1 mt-2 rounded-[8px] border border-gold hover:bg-[#e4d1bc] flex justify-center">
+												<p className="text-gold text-[0.7rem] font-medium ">
+													Pick Contractor
+												</p>
+											</div>
+										</Link>
+									</div>
+									<div className="  mt-3 w-min items-center ">
+										<div className="flex space-x-2 w-[31.2rem]">
+											<input
+												type={"checkbox"}
+												id={"PaymentCheck"}
+												className={checBoxClass}
+												onClick={() => {
+													manageCheck("PaymentCheck");
+												}}
+											></input>
+											<p className="text-[10px]  text-[#B17C3F]">Payment</p>
+										</div>
+										<div className="mt-2 w-[31.2rem]">
+											<input
+												type={"number"}
+												value={payment}
+												onKeyDown={(e) => {
+													if (e.key === "Enter") {
+														e.preventDefault();
+													}
+												}}
+												onChange={handlePaymentChange}
+												className="w-[31.2rem] placeholder mt-2 rounded-[7px] border border-gold pl-7 text-gold focus:border-gold focus:text-[1rem] focus:outline-gold"
+											/>
+
+											<p className="-mt-6 bottom-0 text-[0.8rem] text-gold font-semibold ml-2">
+												Rp
+											</p>
+										</div>
+									</div>
+									<div className="flex w-[31.2rem]   justify-end ">
+										<button
+											type="submit"
+											onClick={() => {
+												handleCheck();
+											}}
+											className="my-3  rounded-full border-[1px] border-gold bg-gold px-8 py-1 text-[13px] text-white hover:border-goldhov hover:bg-goldhov"
+										>
+											Save
+										</button>
+									</div>
+								</div>
+							</div>
+						</form>
+					</motion.div>
 				</div>
 			)}
 		</div>
@@ -1099,31 +1286,38 @@ export function ShowDocument(props: documentProps) {
 	return (
 		<div>
 			{props.visible && (
-				<div
-					ref={wrapperRef}
-					className="flex space-y-6 flex-col items-center justify-center py-12 fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform bg-white rounded-[1.5625rem] w-[34.5625rem] overflow-hidden  drop-shadow-landingShado"
-				>
-					<div></div>
+				<div className="fixed h-screen w-screen left-0 flex justify-center items-center">
+					<motion.div
+						initial={{ scale: 0.9, opacity: 0 }}
+						animate={{ scale: 1, opacity: 1 }}
+						ref={wrapperRef}
+						className="flex space-y-6 flex-col items-center justify-center py-12  bg-white rounded-[1.5625rem] w-[34.5625rem] overflow-hidden  drop-shadow-landingShado"
+					>
+						<div className="h-10px w-full border-b"></div>
 
-					<p className="text-[0.75rem] w-[29.9375rem]">{props.extraInfo}</p>
-					<div className="flex space-x-4">
-						{props.srcMedia && (
-							<button
-								onClick={handleDownloadMedia}
-								className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]"
-							>
-								Download Media
-							</button>
-						)}
-						{props.srcContract && (
-							<button
-								onClick={handleDownloadContract}
-								className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]"
-							>
-								Download Contract
-							</button>
-						)}
-					</div>
+						<p className="text-[0.75rem] w-[29.9375rem] break-all">
+							{props.extraInfo}
+						</p>
+						<div className="flex space-x-4">
+							{props.srcMedia != "" && (
+								<button
+									onClick={handleDownloadMedia}
+									className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]"
+								>
+									Download Media
+								</button>
+							)}
+							{props.srcContract != "" && (
+								<button
+									onClick={handleDownloadContract}
+									className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]"
+								>
+									Download Contract
+								</button>
+							)}
+						</div>
+						<div className="h-10px w-full border-t"></div>
+					</motion.div>
 				</div>
 			)}
 		</div>
@@ -1168,71 +1362,191 @@ export function Complain(props: complainProps) {
 	};
 
 	return (
-		<div>
+		<div className="">
 			{props.visible && (
-				<div
-					ref={wrapperRef}
-					className=" fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform bg-white rounded-[1.5625rem] h-[26.625rem] w-[34.5625rem] overflow-hidden  drop-shadow-landingShado"
-				>
-					<div className="h-[3.3125rem] flex items-center border-b">
-						<p className="text-[1.0625rem] ml-6">Complain</p>
-					</div>
-					<div className="flex justify-center">
-						<form className="mt-2">
-							<p className="text-[0.625rem] text-gold">Category</p>
-							<Dropdown
-								styleClass="text-gold text-[15px] flex gap-[36px] mt-1 w-full "
-								styleClassTag="py-[3px] border-2 border-gold rounded-[7px] w-full"
-								styleText="w-[200px]"
-								data={[
-									{ value: "Type1", label: "Type1" },
-									{ value: "Type2", label: "Type2" },
-									{ value: "Type3", label: "Type3" },
-									{ value: "Type4", label: "Type4" },
-									{ value: "Type5", label: "Type5" },
-								]}
-								value={category}
-								placehoder=""
-								onChange={(e: any) => {
-									handleChangeCategory(e);
-								}}
-							></Dropdown>
-							<p className="mt-2 text-[0.625rem] text-gold ">Description</p>
-							<textarea
-								form="biodata-Form"
-								id="description"
-								placeholder=""
-								value={description}
-								onChange={handleChangeDescription}
-								className=" mt-1 block h-[95px] w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
-								maxLength={500}
-								onKeyDown={(e) => {
-									if (e.key === "Enter") {
-										e.preventDefault();
-									}
-								}}
-							></textarea>
-							<p className="mt-2 text-[0.625rem] text-gold ">Attachment</p>
-
-							<div className="mt-2">
-								<DragAndDropInput
-									htmlId="attInput"
-									onFileSelected={handleAtt}
-								/>
-							</div>
-							<div className="mt-4 flex w-full justify-end ">
-								<button
-									type="submit"
-									onClick={() => {
-										// handleCheck();
+				<div className="flex justify-center items-center  h-screen w-screen fixed left-0">
+					<motion.div
+						initial={{ scale: 0.9, opacity: 0 }}
+						animate={{ scale: 1, opacity: 1 }}
+						ref={wrapperRef}
+						className=" absolute bg-white rounded-[1.5625rem] h-[26.625rem] w-[34.5625rem] overflow-hidden  drop-shadow-landingShado"
+					>
+						<div className="h-[3.3125rem] flex items-center border-b">
+							<p className="text-[1.0625rem] ml-6">Complain</p>
+						</div>
+						<div className="flex justify-center">
+							<form className="mt-2">
+								<p className="text-[0.625rem] text-gold">Category</p>
+								<Dropdown
+									styleClass="text-gold text-[15px] flex gap-[36px] mt-1 w-full "
+									styleClassTag="py-[3px] border-2 border-gold rounded-[7px] w-full"
+									styleText="w-[200px]"
+									data={[
+										{ value: "Type1", label: "Type1" },
+										{ value: "Type2", label: "Type2" },
+										{ value: "Type3", label: "Type3" },
+										{ value: "Type4", label: "Type4" },
+										{ value: "Type5", label: "Type5" },
+									]}
+									value={category}
+									placehoder=""
+									onChange={(e: any) => {
+										handleChangeCategory(e);
 									}}
-									className="my-3  rounded-full border-[1px] border-gold bg-gold px-8 py-1 text-[13px] text-white hover:border-goldhov hover:bg-goldhov"
-								>
-									Save
-								</button>
-							</div>
-						</form>
-					</div>
+								></Dropdown>
+								<p className="mt-2 text-[0.625rem] text-gold ">Description</p>
+								<textarea
+									form="biodata-Form"
+									id="description"
+									placeholder=""
+									value={description}
+									onChange={handleChangeDescription}
+									className=" mt-1 block h-[95px] w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
+									maxLength={500}
+									onKeyDown={(e) => {
+										if (e.key === "Enter") {
+											e.preventDefault();
+										}
+									}}
+								></textarea>
+								<p className="mt-2 text-[0.625rem] text-gold ">Attachment</p>
+
+								<div className="mt-2">
+									<DragAndDropInput
+										htmlId="attInput"
+										onFileSelected={handleAtt}
+									/>
+								</div>
+								<div className="mt-4 flex w-full justify-end ">
+									<button
+										type="submit"
+										onClick={() => {
+											// handleCheck();
+										}}
+										className="my-3  rounded-full border-[1px] border-gold bg-gold px-8 py-1 text-[13px] text-white hover:border-goldhov hover:bg-goldhov"
+									>
+										Save
+									</button>
+								</div>
+							</form>
+						</div>
+					</motion.div>
+				</div>
+			)}
+		</div>
+	);
+}
+
+interface reviewProps {
+	visible: boolean;
+	onClose: (value: boolean) => void;
+	setShowReview: (value: boolean) => void;
+}
+export function Review(props: reviewProps) {
+	function useOutsideAlerter(ref: any) {
+		useEffect(() => {
+			function handleClickOutside(event: any) {
+				if (ref.current && !ref.current.contains(event.target)) {
+					props.setShowReview(false);
+				}
+			}
+			document.addEventListener("mousedown", handleClickOutside);
+			return () => {
+				document.removeEventListener("mousedown", handleClickOutside);
+			};
+		}, [ref]);
+	}
+	const wrapperRef = useRef(null);
+	useOutsideAlerter(wrapperRef);
+
+	const [tittle, setTittle] = useState("");
+	const handleChangeTittle = (event: any) => {
+		setTittle(event.target.value);
+	};
+
+	const [description, setDescription] = useState("");
+	const handleChangeDescription = (event: any) => {
+		setDescription(event.target.value);
+	};
+	const [hover, setHover] = useState(-1);
+
+	const [rating, setRating] = useState(0);
+
+	return (
+		<div className="">
+			{props.visible && (
+				<div className="flex z-20 justify-center items-center  h-screen w-screen fixed left-0 top-20">
+					<motion.div
+						initial={{ scale: 0.9, opacity: 0 }}
+						animate={{ scale: 1, opacity: 1 }}
+						ref={wrapperRef}
+						className=" absolute bg-white rounded-[1.5625rem] h-[26.625rem] w-[34.5625rem] overflow-hidden  drop-shadow-landingShado"
+					>
+						<div className="h-[3.3125rem] flex items-center border-b">
+							<p className="text-[1.0625rem] ml-6">Review</p>
+						</div>
+						<div className="flex justify-center">
+							<form className="mt-2 w-[31.2rem]">
+								<InputPopUp
+								isWmax
+									value={tittle}
+									required
+									type={"text"}
+									title={"Title"}
+									onChange={handleChangeTittle}
+									className="bg-white"
+									onKeyDown={(e) => {
+										if (e.key === "Enter") {
+											e.preventDefault();
+										}
+									}}
+								></InputPopUp>
+								<p className="mt-2 text-[0.625rem] text-gold ">Description</p>
+								<textarea
+									form="biodata-Form"
+									id="description"
+									placeholder=""
+									value={description}
+									onChange={handleChangeDescription}
+									className=" mt-1 block h-[95px] w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
+									maxLength={500}
+									onKeyDown={(e) => {
+										if (e.key === "Enter") {
+											e.preventDefault();
+										}
+									}}
+								></textarea>
+								<p className="mt-2 text-[0.625rem] text-gold ">Rating</p>
+								<Rating
+									name="hover-feedback"
+									value={rating}
+									precision={0.5}
+									onChange={(event, newValue:any) => {
+										setRating(newValue);
+									}}
+									onChangeActive={(event, newHover) => {
+										setHover(newHover);
+									}}
+									icon={<CircleIcon fontSize="inherit" sx={{ color: "black" }} />}
+									emptyIcon={
+										<CircleIcon style={{ opacity: 0.55 }} fontSize="inherit" />
+									}
+								/>
+
+								<div className="mt-[5rem] flex w-full justify-end ">
+									<button
+										type="submit"
+										onClick={() => {
+											// handleCheck();
+										}}
+										className="my-3  rounded-full border-[1px] border-gold bg-gold px-8 py-1 text-[13px] text-white hover:border-goldhov hover:bg-goldhov"
+									>
+										Save
+									</button>
+								</div>
+							</form>
+						</div>
+					</motion.div>
 				</div>
 			)}
 		</div>

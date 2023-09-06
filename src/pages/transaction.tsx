@@ -19,37 +19,36 @@ const data = [
 		propertyType: "Villa",
 		price: 476000000,
 		status: "PENDING",
+		link: "/detailTransaction",
 	},
 	{
 		id: "HNF29125367",
-
 		transactionType: "Build",
 		transactionDate: "16 January 2023",
-
 		propertyName: "Perumahan Bumi Asri",
 		img: "/assets/browse/Build13.png",
 		propertyType: "Villa",
 		price: 476000000,
 		status: "FINISHED",
+		link: "/detailTransaction",
 	},
 	{
 		id: "HNF29125367",
-
 		transactionType: "Build",
 		transactionDate: "16 January 2023",
-
 		propertyName: "BTN Ali",
 		img: "/assets/browse/Build9.png",
 		propertyType: "Rumah",
 		price: 476000000,
 		status: "PENDING",
+		link: "/detailTransaction",
 	},
 ];
 export default function Transaction() {
-  const router = useRouter();
-  const [loading, setLoading] = useState(true);
-  
-  return (
+	const router = useRouter();
+	const [loading, setLoading] = useState(true);
+
+	return (
 		<div className="flex justify-center">
 			<div className="mt-[2.1875rem] w-[81.875rem] space-y-[1.3125rem]">
 				<div>
@@ -60,40 +59,43 @@ export default function Transaction() {
 						data.map((item, idx) => (
 							<div
 								key={idx}
-								className="w-full h-fit p-[1.375rem] border border-[#e3d0ba] bg-white space-y-[0.875rem] rounded-[0.9375rem]"
+								className="w-full h-fit p-[1.375rem] border border-[#f7e6d4] bg-white cursor-pointer hover:bg-[#f7e6d4] space-y-[0.875rem] rounded-[0.9375rem]"
 							>
-								<div className="flex space-x-3 items-center">
-									<p className="text-[0.875rem] font-semibold">
-										{item.transactionType}
-									</p>
-									<p className="text-[0.75rem]">{item.transactionDate}</p>
-									<p className="text-[0.75rem]">{item.id}</p>
-								</div>
-								<div className="flex space-x-3">
-									<div className="relative w-[4.4375rem] h-[4.4375rem] rounded-[0.625rem] overflow-hidden">
-										<Image src={item.img} alt="property" fill={true} />
+								<Link href={item.link} className=" space-y-[0.875rem]">
+									<div className="flex space-x-3 items-center">
+										<p className="text-[0.875rem] font-semibold text-gold">
+											{item.transactionType}
+										</p>
+										<p className="text-[0.75rem]">{item.transactionDate}</p>
+										<p className="font-extralight text-gold">|</p>
+										<p className="text-[0.75rem]">{item.id}</p>
 									</div>
-									<div className="flex-col justify-between flex w-[21.5625rem]">
-										<p className="text-[0.875rem] font-light">
-											{item.propertyName}
-										</p>
-										<p className="text-[0.875rem] font-light text-[#BEB8B8]">
-											{item.propertyType}
-										</p>
-										<p className="text-[1rem] font-medium">
-											Rp. {item.price.toLocaleString("en-US")}.00
-										</p>
-									</div>
-									<div className="flex-col justify-between flex w-[21.5625rem]">
-										<p className="text-[0.875rem] font-semibold">Status:</p>
-										<p className="text-[0.75rem] font-light ">{item.status}</p>
-										<Link href={"/transaction"}>
-											<p className="text-[0.875rem] font-medium text-[#B17C3F]">
-												Detail Transaction
+									<div className="flex space-x-3">
+										<div className="relative w-[4.4375rem] h-[4.4375rem] rounded-[0.625rem] overflow-hidden">
+											<Image src={item.img} alt="property" fill={true} />
+										</div>
+										<div className="flex-col justify-between flex w-[21.5625rem]">
+											<p className="text-[0.875rem] font-light">
+												{item.propertyName}
 											</p>
-										</Link>
+											
+											<p className="text-[0.875rem] font-light text-[#BEB8B8]">
+												{item.propertyType}
+											</p>
+											<p className="text-[1rem] font-semibold ">
+												Rp. {item.price.toLocaleString("en-US")}.00
+											</p>
+										</div>
+										<div className="flex-col flex w-[21.5625rem]">
+											<p className="text-[0.875rem] font-semibold text-gold">
+												Status:
+											</p>
+											<p className="text-[0.75rem] font-light ">
+												{item.status}
+											</p>
+										</div>
 									</div>
-								</div>
+								</Link>
 							</div>
 						))
 					) : (
