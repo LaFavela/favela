@@ -10,9 +10,11 @@ export default function Login(props: { visible: any; onClose: any }) {
 	const [confirmForgotPass, setConfirmForgotPass] = useState(false);
 
 	const emailReset = useRef<any>(null);
+	const [isSentReset, setIsSentReset] = useState(false);
 
 	const handleSubmitReset = async (event: any) => {
 		// Ndk Tahu Mau Taro APa MAS!!!!!
+		setIsSentReset(true);
 	};
 
 	const emailLogin = useRef<any>(null);
@@ -78,13 +80,12 @@ export default function Login(props: { visible: any; onClose: any }) {
 		} catch (error: any) {
 			setIsErrorRegister(true);
 			setErrorRegisterContext(error.error_description || error.message);
-			
 		}
 	};
 
 	const [showRegister, setShowRegister] = useState(false);
 	const [showLogin, setShowLogin] = useState(true);
-	
+
 	if (!props.visible) return null;
 	return (
 		// blur Background
@@ -99,8 +100,7 @@ export default function Login(props: { visible: any; onClose: any }) {
 						setIsErrorLogin(false);
 						setShowLogin(true);
 						setShowRegister(false);
-						setConfirmForgotPass(false),
-						props.onClose();
+						setConfirmForgotPass(false), props.onClose();
 					}}
 					className="absolute left-0 top-0 h-full w-full bg-[#0000007c]"
 				></motion.div>
@@ -180,7 +180,7 @@ export default function Login(props: { visible: any; onClose: any }) {
 											/>
 											<p
 												onClick={() => {
-													setShowLogin(false)
+													setShowLogin(false);
 												}}
 												className="mt-[0.8rem] cursor-pointer flex justify-end text-[0.6rem] font-semibold underline underline-offset-1"
 											>
@@ -482,8 +482,8 @@ export default function Login(props: { visible: any; onClose: any }) {
 														Already have account?
 													</p>
 													<button
-														onClick={() =>{ setShowRegister(false),
-															setShowLogin(true)
+														onClick={() => {
+															setShowRegister(false), setShowLogin(true);
 														}}
 														className="mt-[0.2rem] text-[0.6rem] font-semibold underline underline-offset-1 "
 													>
@@ -589,70 +589,80 @@ export default function Login(props: { visible: any; onClose: any }) {
 											<p className="ml-[2.3125rem] mt-[1.5625rem] text-[1.25rem] font-semibold text-[#B17C3F]">
 												Forgot your password
 											</p>
-											{confirmForgotPass?(
-												<motion.div 
-												initial={{ opacity: 0 }}
-												animate={{ opacity: 1 }}
-												exit={{ opacity: 0 }}
-												className="ml-[2.3125rem] mt-[1.8rem] ">
+											{confirmForgotPass ? (
+												<motion.div
+													initial={{ opacity: 0 }}
+													animate={{ opacity: 1 }}
+													exit={{ opacity: 0 }}
+													className="ml-[2.3125rem] mt-[1.8rem] "
+												>
 													<p className=" text-[0.8rem] w-[22.375rem] font-semibold mb-[1rem]  text-black">
 														We sent you a verification e-mail.
 													</p>
 													<p className=" text-[0.8rem] w-[22.375rem] font-medium mb-[1rem]  text-[#929191]">
-														Please verify your account via the link in the e-mail an reset your password.
+														Please verify your account via the link in the
+														e-mail an reset your password.
 													</p>
-												</motion.div>	
-											):(
-											<div>
-												<div className="ml-[2.3125rem] mt-[1.8rem] ">
-													<p className=" text-[0.8rem] w-[22.375rem] font-medium mb-[1rem]  text-[#929191]">
-														Enter your email address and we will send you a link
-														to reset your password.
-													</p>
-													<p className="w-full text-[0.625rem] font-normal leading-3 text-[#B17C3F]">
-														Email
-													</p>
+												</motion.div>
+											) : (
+												<div>
+													<div className="ml-[2.3125rem] mt-[1.8rem] ">
 
-													<input
-														required={true}
-														type="email"
-														className="mt-[0.2rem] h-[2.5rem] w-[22.375rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-[0.9rem] text-[#B17C3F] placeholder:text-[0.8rem] placeholder:font-light focus:outline-none focus:border-[#B17C3F] focus:ring-2 focus:ring-[#B17C3F]"
-														placeholder="Email"
-														id="emailReset"
-														ref={emailReset}
-													/>
-												</div>
+														{/* Error  */}
+														{isSentReset ? (
+															<motion.p
+																className="text-[#e82d2dfb] -mt-3 mb-3 text-[0.8rem] font-light"
+																initial={{ opacity: 0 }}
+																animate={{ opacity: 1 }}
+															>
+																{"Email not found"}
+															</motion.p>
+														) : null}
+														{/* Error */}
+														<p className=" text-[0.8rem] w-[22.375rem] font-medium mb-[1rem]  text-[#929191]">
+															Enter your email address and we will send you a
+															link to reset your password.
+														</p>
+														<p className="w-full text-[0.625rem] font-normal leading-3 text-[#B17C3F]">
+															Email
+														</p>
 
-												{/* button login now */}
-												<div className="ml-[2.3125rem] mt-[1.2rem] w-[22.375rem]">
-													<button
-														onClick={()=>{
-															setConfirmForgotPass(true),
-															handleSubmitReset
-														}}
-														type="submit"
-														className="h-[2.5rem] w-[22.375rem] rounded-[7px] bg-[#B17C3F] hover:bg-[#c48d4e]  text-[0.8rem] font-normal text-white"
-													>
-														Reset Password
-													</button>
+														<input
+															required={true}
+															type="email"
+															className="mt-[0.2rem] h-[2.5rem] w-[22.375rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-[0.9rem] text-[#B17C3F] placeholder:text-[0.8rem] placeholder:font-light focus:outline-none focus:border-[#B17C3F] focus:ring-2 focus:ring-[#B17C3F]"
+															placeholder="Email"
+															id="emailReset"
+															ref={emailReset}
+														/>
+													</div>
 
-													
-												</div>
-											</div>
-											)}
-											<div className="flex justify-center space-x-1">
+													{/* button login now */}
+													<div className="ml-[2.3125rem] mt-[1.2rem] w-[22.375rem]">
 														<button
 															onClick={() => {
-																setShowLogin(true),
-																setConfirmForgotPass(false)
-																
-																
+																// setConfirmForgotPass(true), 
+																// handleSubmitReset();
+																setIsSentReset(true);
 															}}
-															className="mt-[0.6rem] text-[0.8rem] font-medium underline underline-offset-1 "
+															type="submit"
+															className="h-[2.5rem] w-[22.375rem] rounded-[7px] bg-[#B17C3F] hover:bg-[#c48d4e]  text-[0.8rem] font-normal text-white"
 														>
-															Back
+															Reset Password
 														</button>
 													</div>
+												</div>
+											)}
+											<div className="flex justify-center space-x-1">
+												<button
+													onClick={() => {
+														setShowLogin(true), setConfirmForgotPass(false);
+													}}
+													className="mt-[0.6rem] text-[0.8rem] font-medium underline underline-offset-1 "
+												>
+													Back
+												</button>
+											</div>
 										</motion.form>
 									</AnimatePresence>
 								</div>
