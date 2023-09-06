@@ -37,7 +37,7 @@ export default function Landing() {
 	return (
 		<div className=" transition-all duration-300 ease-linear">
 			<Head>
-				<title>Hunify "Your Property at 1 Click!"</title>
+				<title>{`Hunify "Your Property at 1 Click!"`}</title>
 			</Head>
 			<div className="container mx-auto h-[10rem] max-w-md sm:max-w-xl xl:max-w-5xl 2xl:max-w-7xl">
 				{/* {loading? (
