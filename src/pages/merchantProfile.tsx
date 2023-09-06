@@ -16,7 +16,7 @@ export const getServerSideProps = async (
 	context: GetServerSidePropsContext,
 ) => {
 	context.res.setHeader("Cache-Control", "s-maxage=20, stale-while-revalidate");
-	const params = context.query.username;
+	const params = context.query.u;
 
 	const { data: profile } = await supabase
 		.from("profiles")
