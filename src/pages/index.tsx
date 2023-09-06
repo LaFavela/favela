@@ -221,9 +221,9 @@ export default function Landing() {
 									<Image
 										src={designerData.img}
 										alt=""
-										height={330}
+										height={315}
 										width={283}
-										className="h-[330px] w-[283px] rounded-3xl object-cover"
+										className="h-[315px] w-[283px] rounded-3xl object-cover"
 									/>
 									<div className="absolute inset-0 flex rounded-[1.5625rem] bg-black bg-opacity-25 opacity-0 transition-opacity duration-500 ease-in-out hover:opacity-100">
 										<div className="absolute inset-0 flex justify-between">
