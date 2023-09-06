@@ -5,6 +5,16 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 export default function Login(props: { visible: any; onClose: any }) {
+	// Forgot Password State
+
+	const [confirmForgotPass, setConfirmForgotPass] = useState(false);
+
+	const emailReset = useRef<any>(null);
+
+	const handleSubmitReset = async (event: any) => {
+		// Ndk Tahu Mau Taro APa MAS!!!!!
+	};
+
 	const emailLogin = useRef<any>(null);
 	const passwordLogin = useRef<any>(null);
 	const rememberMe = useRef<any>(null);
@@ -67,13 +77,14 @@ export default function Login(props: { visible: any; onClose: any }) {
 			router.refresh();
 		} catch (error: any) {
 			setIsErrorRegister(true);
-			setErrorRegisterContext("Error Registering");
-
-			alert(error.error_description || error.message);
+			setErrorRegisterContext(error.error_description || error.message);
+			
 		}
 	};
 
 	const [showRegister, setShowRegister] = useState(false);
+	const [showLogin, setShowLogin] = useState(true);
+	
 	if (!props.visible) return null;
 	return (
 		// blur Background
@@ -86,6 +97,9 @@ export default function Login(props: { visible: any; onClose: any }) {
 					onClick={() => {
 						setIsErrorRegister(false);
 						setIsErrorLogin(false);
+						setShowLogin(true);
+						setShowRegister(false);
+						setConfirmForgotPass(false),
 						props.onClose();
 					}}
 					className="absolute left-0 top-0 h-full w-full bg-[#0000007c]"
@@ -99,8 +113,7 @@ export default function Login(props: { visible: any; onClose: any }) {
 							animate={{ scale: 1 }}
 							exit={{ scale: 0.9 }}
 						>
-							{!showRegister ? (
-								// {/* Kotak Login */}
+							{showLogin ? (
 								<div className=" flex h-full w-full justify-center">
 									{/* Kontainer untuk welcome dan foto */}
 									<div className="h-full w-1/2">
@@ -165,7 +178,12 @@ export default function Login(props: { visible: any; onClose: any }) {
 												id="password"
 												ref={passwordLogin}
 											/>
-											<p className="mt-[0.8rem] flex justify-end text-[0.6rem] font-semibold underline underline-offset-1">
+											<p
+												onClick={() => {
+													setShowLogin(false)
+												}}
+												className="mt-[0.8rem] cursor-pointer flex justify-end text-[0.6rem] font-semibold underline underline-offset-1"
+											>
 												Forgot your password?
 											</p>
 										</div>
@@ -203,7 +221,7 @@ export default function Login(props: { visible: any; onClose: any }) {
 											/>
 											<label
 												htmlFor="checkbox1"
-												className="ml-[0.5rem] w-full cursor-pointer text-[0.625rem] font-normal text-[#B17C3F]"
+												className="ml-[0.5rem] cursor-pointer text-[0.625rem] font-normal text-[#B17C3F]"
 											>
 												Keep me logged in
 											</label>
@@ -223,7 +241,9 @@ export default function Login(props: { visible: any; onClose: any }) {
 													Dont have account?
 												</p>
 												<button
-													onClick={() => setShowRegister(true)}
+													onClick={() => {
+														setShowLogin(false), setShowRegister(true);
+													}}
 													className="mt-[0.2rem] text-[0.6rem] font-semibold underline underline-offset-1 "
 												>
 													Register now
@@ -310,8 +330,7 @@ export default function Login(props: { visible: any; onClose: any }) {
 										</div>
 									</motion.form>
 								</div>
-							) : (
-								// {/* Kotak Register */}
+							) : showRegister ? (
 								<div className=" flex h-full w-full justify-center">
 									{/* Kontainer untuk welcome dan foto */}
 
@@ -405,7 +424,7 @@ export default function Login(props: { visible: any; onClose: any }) {
 											</div>
 											<div className="ml-[2.3125rem] mt-[1rem] mb-[1rem] w-[22.375rem]">
 												<p className="w-full text-[0.625rem] font-normal leading-3 text-[#B17C3F]">
-													Favela may keep me informated with personalized emails
+													Hunify may keep me informated with personalized emails
 													about product and serveices. See our{" "}
 													<a className="font-bold">Privacy Policy</a> for more
 													details
@@ -445,7 +464,7 @@ export default function Login(props: { visible: any; onClose: any }) {
 												/>
 												<label
 													htmlFor="checkbox1"
-													className="ml-[0.5rem] w-full cursor-pointer text-[0.625rem] font-normal text-[#B17C3F]"
+													className="ml-[0.5rem]  cursor-pointer text-[0.625rem] font-normal text-[#B17C3F]"
 												>
 													I have read and accept the Terms and Condition
 												</label>
@@ -463,7 +482,9 @@ export default function Login(props: { visible: any; onClose: any }) {
 														Already have account?
 													</p>
 													<button
-														onClick={() => setShowRegister(false)}
+														onClick={() =>{ setShowRegister(false),
+															setShowLogin(true)
+														}}
 														className="mt-[0.2rem] text-[0.6rem] font-semibold underline underline-offset-1 "
 													>
 														Login now
@@ -531,6 +552,107 @@ export default function Login(props: { visible: any; onClose: any }) {
 													</button>
 												</div>
 											</div>
+										</motion.form>
+									</AnimatePresence>
+								</div>
+							) : (
+								<div className=" flex h-full w-full justify-center">
+									{/* Kontainer untuk welcome dan foto */}
+									<div className="h-full w-1/2">
+										{/* welcome */}
+										<p className="absolute ml-[2.3125rem] mt-[1.5625rem] text-[1.25rem] font-semibold text-[#B17C3F]">
+											Welcome!
+										</p>
+										{/* Gambar */}
+										<div className="h-full">
+											<Image
+												width={864}
+												height={552}
+												src="/assets/login/bg.jpg"
+												alt="bg-property"
+												className="h-full w-full rounded-l-[25px]"
+											/>
+										</div>
+									</div>
+									{/* Kontainer untuk form login */}
+									<AnimatePresence>
+										<motion.form
+											initial={{ opacity: 0 }}
+											animate={{ opacity: 1 }}
+											exit={{ opacity: 0 }}
+											className="w-1/2"
+											onSubmit={(e) => {
+												e.preventDefault();
+											}}
+										>
+											{/* Login */}
+											<p className="ml-[2.3125rem] mt-[1.5625rem] text-[1.25rem] font-semibold text-[#B17C3F]">
+												Forgot your password
+											</p>
+											{confirmForgotPass?(
+												<motion.div 
+												initial={{ opacity: 0 }}
+												animate={{ opacity: 1 }}
+												exit={{ opacity: 0 }}
+												className="ml-[2.3125rem] mt-[1.8rem] ">
+													<p className=" text-[0.8rem] w-[22.375rem] font-semibold mb-[1rem]  text-black">
+														We sent you a verification e-mail.
+													</p>
+													<p className=" text-[0.8rem] w-[22.375rem] font-medium mb-[1rem]  text-[#929191]">
+														Please verify your account via the link in the e-mail an reset your password.
+													</p>
+												</motion.div>	
+											):(
+											<div>
+												<div className="ml-[2.3125rem] mt-[1.8rem] ">
+													<p className=" text-[0.8rem] w-[22.375rem] font-medium mb-[1rem]  text-[#929191]">
+														Enter your email address and we will send you a link
+														to reset your password.
+													</p>
+													<p className="w-full text-[0.625rem] font-normal leading-3 text-[#B17C3F]">
+														Email
+													</p>
+
+													<input
+														required={true}
+														type="email"
+														className="mt-[0.2rem] h-[2.5rem] w-[22.375rem] rounded-[7px] border-[1px] border-[#b17c3f] bg-white pl-[1.25rem] text-[0.9rem] text-[#B17C3F] placeholder:text-[0.8rem] placeholder:font-light focus:outline-none focus:border-[#B17C3F] focus:ring-2 focus:ring-[#B17C3F]"
+														placeholder="Email"
+														id="emailReset"
+														ref={emailReset}
+													/>
+												</div>
+
+												{/* button login now */}
+												<div className="ml-[2.3125rem] mt-[1.2rem] w-[22.375rem]">
+													<button
+														onClick={()=>{
+															setConfirmForgotPass(true),
+															handleSubmitReset
+														}}
+														type="submit"
+														className="h-[2.5rem] w-[22.375rem] rounded-[7px] bg-[#B17C3F] hover:bg-[#c48d4e]  text-[0.8rem] font-normal text-white"
+													>
+														Reset Password
+													</button>
+
+													
+												</div>
+											</div>
+											)}
+											<div className="flex justify-center space-x-1">
+														<button
+															onClick={() => {
+																setShowLogin(true),
+																setConfirmForgotPass(false)
+																
+																
+															}}
+															className="mt-[0.6rem] text-[0.8rem] font-medium underline underline-offset-1 "
+														>
+															Back
+														</button>
+													</div>
 										</motion.form>
 									</AnimatePresence>
 								</div>
