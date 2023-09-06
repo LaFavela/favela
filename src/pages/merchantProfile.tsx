@@ -1,4 +1,4 @@
-import React from "react";
+import React, { use, useEffect } from "react";
 import { useState } from "react";
 import Rating from "@mui/material/Rating";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
@@ -11,6 +11,8 @@ import { supabase } from "@/lib/supabase";
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
 import { toCapitalize } from "@/tools/uppercase";
 import { useRouter } from "next/router";
+import { Database } from "@/types";
+import { type } from "os";
 
 export const getServerSideProps = async (
 	context: GetServerSidePropsContext,
@@ -42,21 +44,6 @@ export const getServerSideProps = async (
 		.eq("user_id", profile?.id)
 		.single();
 
-	const { data: property_style } = await supabase
-		.from("property_style")
-		.select("style_name")
-		.in("id", profile_detail?.property_style!);
-
-	const { data: property_type } = await supabase
-		.from("property_type")
-		.select("type_name")
-		.in("id", profile_detail?.property_type!);
-
-	const { data: design } = await supabase
-		.from("design")
-		.select()
-		.eq("created_by", profile?.id);
-
 	const { data: provinsi } = await supabase
 		.from("provinsi")
 		.select("*")
@@ -69,61 +56,9 @@ export const getServerSideProps = async (
 		.eq("id", profile_detail?.city)
 		.single();
 
-	if (role?.role_name == "designer") {
-		const { data: project, error: errorProject } = await supabase
-			.from("project")
-			.select()
-			.eq("user_id", profile?.id);
-		const { data: experience } = await supabase
-			.from("experience")
-			.select()
-			.eq("user_id", profile?.id);
-		const { data: education, error } = await supabase
-			.from("education")
-			.select()
-			.eq("user_id", profile?.id);
-		return {
-			props: {
-				profile,
-				profile_detail,
-				project,
-				experience,
-				education,
-				design,
-				property_type,
-				property_style,
-				role,
-				provinsi,
-				kota,
-			},
-		};
-	} else if (role?.role_name == "contractor") {
-		const { data: project, error: errorProject } = await supabase
-			.from("project")
-			.select()
-			.eq("user_id", profile?.id);
-		const { data: members } = await supabase
-			.from("member_contractor")
-			.select()
-			.eq("user_id", profile?.id);
-		return {
-			props: {
-				profile,
-				profile_detail,
-				project,
-				members,
-				property_type,
-				property_style,
-				role,
-				provinsi,
-				kota,
-			},
-		};
-	} else {
-		return {
-			props: { profile, profile_detail, role, provinsi, kota },
-		};
-	}
+	return {
+		props: { profile, profile_detail, role, provinsi, kota },
+	};
 };
 
 const data = [
@@ -201,20 +136,79 @@ const media = [
 	},
 ];
 
+type Design = Database["public"]["Tables"]["design"]["Row"];
+type Project = Database["public"]["Tables"]["project"]["Row"];
+type Experience = Database["public"]["Tables"]["experience"]["Row"];
+type Members = Database["public"]["Tables"]["member_contractor"]["Row"];
+type Education = Database["public"]["Tables"]["education"]["Row"];
+type Property_type = Database["public"]["Tables"]["property_type"]["Row"];
+type Property_style = Database["public"]["Tables"]["property_style"]["Row"];
+
 export default function Profile({
 	profile,
 	profile_detail,
-	project,
-	experience,
-	education,
-	members,
-	design,
-	property_type,
-	property_style,
 	role,
 	provinsi,
 	kota,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+	const [design, setDesign] = useState<Design[]>([]);
+	const [project, setProject] = useState<Project[]>([]);
+	const [experience, setExperience] = useState<Experience[]>([]);
+	const [members, setMembers] = useState<Members[]>([]);
+	const [education, setEducation] = useState<Education[]>([]);
+	const [property_type, setProperty_type] = useState<Property_type[]>([]);
+	const [property_style, setProperty_style] = useState<Property_style[]>([]);
+
+	useEffect(() => {
+		const fetch = async () => {
+			const { data: property_style } = await supabase
+				.from("property_style")
+				.select("*")
+				.in("id", profile_detail?.property_style!);
+			if (property_style) setProperty_style(property_style);
+
+			const { data: property_type } = await supabase
+				.from("property_type")
+				.select("*")
+				.in("id", profile_detail?.property_type!);
+			if (property_type) setProperty_type(property_type);
+
+			const { data: project, error: errorProject } = await supabase
+				.from("project")
+				.select("*")
+				.eq("user_id", profile?.id);
+			if (project) setProject(project);
+
+			if (role?.role_name == "designer") {
+				const { data: design } = await supabase
+					.from("design")
+					.select("*")
+					.eq("created_by", profile?.id);
+				if (design) setDesign(design);
+
+				const { data: experience } = await supabase
+					.from("experience")
+					.select("*")
+					.eq("user_id", profile?.id);
+				if (experience) setExperience(experience);
+
+				const { data: education } = await supabase
+					.from("education")
+					.select("*")
+					.eq("user_id", profile?.id);
+				if (education) setEducation(education);
+			} else if (role?.role_name == "contractor") {
+				const { data: members } = await supabase
+					.from("member_contractor")
+					.select("*")
+					.eq("user_id", profile?.id);
+				if (members) setMembers(members);
+			}
+		};
+		if (role?.role_name === "contractor" || role?.role_name === "designer") {
+			fetch();
+		}
+	}, [profile, profile_detail, role]);
 	const Router = useRouter();
 
 	const [reviewLikes, setReviewLikes] = useState(
@@ -448,7 +442,9 @@ export default function Profile({
 												/>
 											</svg>
 										</span>
-										<p className="text-[11px]">{education?.[0].institution}</p>
+										<p className="text-[11px]">
+											{education[0] ? education?.[0].institution : ""}
+										</p>
 									</div>
 									<div className="mt-3 flex gap-3">
 										<button className=" flex gap-2 rounded-full bg-gold px-3 py-1 hover:bg-goldhov ">
