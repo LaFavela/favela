@@ -26,11 +26,7 @@ export const getServerSideProps = async (
 
 	if (profile == null) {
 		return {
-			redirect: {
-				permanent: false,
-				destination: "/",
-			},
-			props: {},
+			notFound: true,
 		};
 	}
 
