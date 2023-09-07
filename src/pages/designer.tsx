@@ -301,9 +301,6 @@ export default function Designer() {
 		}
 	};
 
-	const [selectedRegion, setSelectedRegion] = useState<string[]>([]);
-	console.log(selectedRegion);
-
 	const handleTagDelete = (value: string) => {
 		const updatedTags = selectedTags.filter((tag) => tag !== value);
 		setSelectedTags(updatedTags);
@@ -312,16 +309,29 @@ export default function Designer() {
 		const updatedTags = selectedStyleTag.filter((tag) => tag !== value);
 		setSelectedStyleTag(updatedTags);
 	};
-	const handleTagDelete2 = (value: string) => {
-		const updatedTags = selectedRegion.filter((tag) => tag !== value);
-		setSelectedRegion(updatedTags);
+
+	const [selectedRegion, setSelectedRegion] = useState<{ [key: string]: any }>(
+		{},
+	);
+	console.log(selectedRegion);
+
+	const handleTagDelete2 = (key: string) => {
+		// Create a copy of the selectedRegion object
+		const updatedRegion = { ...selectedRegion };
+
+		// Delete the property with the specified key
+		delete updatedRegion[key];
+
+		// Update the state with the modified object
+		setSelectedRegion(updatedRegion);
 	};
 
 	const [value, setValue] = useState("");
-	const onSearch = (searchTerm: any) => {
-		setValue(searchTerm);
+	const [selectedObject, setSelectedObject] = useState<any>(null); // Initialize with null
+
+	const onSearch = (selectedItem: any) => {
+		setSelectedObject(selectedItem); // Set the selected object
 		setShowSuggestions(false);
-		console.log("search", searchTerm);
 	};
 
 	const [showSuggestions, setShowSuggestions] = useState(false);
@@ -439,7 +449,7 @@ export default function Designer() {
 									</div>
 									<div className="flex flex-row gap-2">
 										<AnimatePresence>
-											{selectedRegion.map((tag, index) => (
+											{Object.keys(selectedRegion).map((tag, index) => (
 												<motion.li
 													initial={{ scale: 0 }}
 													animate={{ scale: 1 }}
@@ -722,95 +732,54 @@ export default function Designer() {
 											<div>
 												<input
 													type="text"
-													value={value}
+													value={selectedObject ? selectedObject.name : ""}
 													onChange={(e) => {
-														setValue(e.target.value);
-														setShowSuggestions(e.target.value !== ""); // Show suggestions only when there's a search term
+														const newValue = e.target.value;
+														setSelectedObject({ name: newValue }); // Assuming you want to store it in an object with a 'name' property
+														setShowSuggestions(newValue !== ""); // Show suggestions only when there's a search term
 													}}
 													className="text-[13px] border-2 w-[234px] h-[29px] rounded-md pl-2 border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F]"
 												/>
 											</div>
 											<div className="">
-												{showSuggestions && value && (
+												{showSuggestions && (
 													<div className="bg-white left-4 border-[1px] w-[234px] rounded-md px-2 py-2 mt-1 absolute">
-														{region.map((item, index) => {
-															const matchingCities = item.city[0].label.filter(
-																(city) =>
-																	city
-																		.toLowerCase()
-																		.includes(value.toLowerCase()),
-															);
-															const matchingProvinces =
-																item.province[0].label.filter((province) =>
-																	province
-																		.toLowerCase()
-																		.includes(value.toLowerCase()),
-																);
-
-															if (
-																matchingCities.length > 0 ||
-																matchingProvinces.length > 0
-															) {
-																return (
-																	<div key={index} className="text-[13px]">
-																		{matchingCities.map(
-																			(cityLabel, cityIndex) => (
-																				<div
-																					key={`city-${cityIndex}`}
-																					onClick={() => {
-																						onSearch(cityLabel);
-																						setSelectedRegion(
-																							(prevSelected) => [
-																								...prevSelected,
-																								cityLabel,
-																							],
-																						);
-																					}}
-																					className="flex justify-between py-1 hover:bg-[#F0F0F0]"
-																				>
-																					<div className="px-2 flex justify-between w-full">
-																						<p className="text-gold">
-																							{cityLabel}
-																						</p>
-																						<p className="text-[10px] text-black/50 my-auto">
-																							City
-																						</p>
-																					</div>
-																				</div>
-																			),
-																		)}
-																		{matchingProvinces.map(
-																			(provinceLabel, provinceIndex) => (
-																				<div
-																					key={`province-${provinceIndex}`}
-																					onClick={() => {
-																						onSearch(provinceLabel);
-																						setSelectedRegion(
-																							(prevSelected) => [
-																								...prevSelected,
-																								provinceLabel,
-																							],
-																						);
-																					}}
-																					className="flex cursor-pointer justify-between py-1 hover:bg-[#F0F0F0]"
-																				>
-																					<div className="px-2 cursor-pointer flex justify-between w-full">
-																						<p className="text-gold">
-																							{provinceLabel}
-																						</p>
-																						<p className="cursor-pointer text-[10px] text-black/50 my-auto">
-																							Province
-																						</p>
-																					</div>
-																				</div>
-																			),
-																		)}
+														{Object.values(region)
+															.flatMap((items) => items)
+															.filter(
+																(item) =>
+																	(item.name &&
+																		item.name
+																			.toLowerCase()
+																			.includes(value.toLowerCase())) ||
+																	(item.name &&
+																		item.name
+																			.toLowerCase()
+																			.includes(value.toLowerCase())),
+															)
+															.map((item, index) => (
+																<div key={index} className="text-[13px]">
+																	<div
+																		onClick={() => {
+																			onSearch(item);
+																			setSelectedRegion((prevSelected) => ({
+																				...prevSelected,
+																				[item.name || item.name]: item,
+																			}));
+																		}}
+																		className="flex justify-between py-1 hover:bg-[#F0F0F0]"
+																	>
+																		<div className="px-2 flex justify-between w-full">
+																			<p className="text-gold">
+																				{item.name || item.name || ""}
+																			</p>
+																			<p className="text-[10px] text-black/50 my-auto">
+																				{item.name ? "City" : "Province"}
+																			</p>
+																		</div>
 																	</div>
-																);
-															}
-
-															return null;
-														})}
+																</div>
+															))}
 													</div>
 												)}
 											</div>
