@@ -94,7 +94,7 @@ export default function DetailTransaction() {
 
 	// isProjectCancel?
 	const [isProjectCancel, setProjectCancel] = useState(false);
-	const handleProjectCancel = () => {
+	const handleProjectCancel : any = () => {
 		setProjectCancel(!isProjectCancel);
 	};
 
@@ -220,7 +220,8 @@ export default function DetailTransaction() {
 										</div>
 									</div>
 								</div>
-								<div className="flex flex-col justify-between">
+								<div className="flex flex-col justify-start space-y-2">
+									
 									<button
 										onClick={() => {
 											setShowComplain(true);
@@ -232,33 +233,36 @@ export default function DetailTransaction() {
 									<button className="flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]">
 										Download Contract
 									</button>
-									{isProjectCancel ? (
-										<button
-											onClick={() => {
-												setShowStatus(true);
-												setStatustype("confirm");
-												setDescription(
-													"Are You Sure Want To Open This Project?",
-												);
-											}}
-											className="flex justify-center items-center text-white text-[0.75rem] font-medium  w-[10.25rem] bg-[#B17C3F] hover:bg-[#8d6333] rounded-full h-[1.8125rem]"
-										>
-											Reopen Project
-										</button>
-									) : (
-										<button
-											onClick={() => {
-												setShowStatus(true);
-												setStatustype("confirm");
-												setDescription(
-													"Are You Sure Want To Cancel This Project?",
-												);
-											}}
-											className="flex justify-center items-center text-white text-[0.75rem] font-medium  w-[10.25rem] bg-[#B17C3F] hover:bg-[#8d6333] rounded-full h-[1.8125rem]"
-										>
-											Cancel Project
-										</button>
-									)}
+									{!status[status.length - 1].actionType.find(
+										(item: any) => item === "Finish Project",
+									) &&
+										(isProjectCancel ? (
+											<button
+												onClick={() => {
+													setShowStatus(true);
+													setStatustype("confirm");
+													setDescription(
+														"Are You Sure Want To Open This Project?",
+													);
+												}}
+												className="flex justify-center items-center text-white text-[0.75rem] font-medium  w-[10.25rem] bg-[#B17C3F] hover:bg-[#8d6333] rounded-full h-[1.8125rem]"
+											>
+												Reopen Project
+											</button>
+										) : (
+											<button
+												onClick={() => {
+													setShowStatus(true);
+													setStatustype("confirm");
+													setDescription(
+														"Are You Sure Want To Cancel This Project?",
+													);
+												}}
+												className="flex justify-center items-center text-white text-[0.75rem] font-medium  w-[10.25rem] bg-[#B17C3F] hover:bg-[#8d6333] rounded-full h-[1.8125rem]"
+											>
+												Cancel Project
+											</button>
+										))}
 								</div>
 							</div>
 							{/* Contributor */}
