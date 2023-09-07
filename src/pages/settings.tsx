@@ -13,6 +13,7 @@ import { Database } from "@/types";
 import { set } from "react-hook-form";
 import { profile } from "console";
 import { style } from "@/components/tagList";
+import { v4 } from "uuid";
 
 // export const getServerSideProps = async (
 // 	context: GetServerSidePropsContext,
@@ -57,8 +58,7 @@ function Profile() {
 	const [kabupaten, setKabupaten] = useState<number>(0);
 	const [style_name, setStyle_name] = useState<number[]>([0]);
 	const [type_name, setType_name] = useState<number[]>([0]);
-	
-	
+
 	const [provinsiData, setProvinsiData] = useState<Dropdown[]>([]);
 	const [kotaData, setKotaData] = useState<Dropdown[]>([]);
 	const [propertyTypeData, setPropertyTypeData] = useState<Dropdown[]>([]);
@@ -112,18 +112,17 @@ function Profile() {
 				});
 			});
 			setPropertyStyleData(propertyStyleData);
-			
-			setUsername(profiles?.username as string)
-			setFirst_Name(profiles?.first_name as string)
-			setLast_Name(profiles?.last_name as string)
-			setProvinsi(profile_details?.province as number)
-			setAbout(profile_details?.about as string)
-			setKabupaten(profile_details?.city as number)
-			setType_name(profile_details?.property_type as number[])
-			setStyle_name(profile_details?.property_style as number[])
-			setAvatar_url(profiles?.avatar_url as string)
-			setBackground_url(profile_details?.banner as string)
-			
+
+			setUsername(profiles?.username as string);
+			setFirst_Name(profiles?.first_name as string);
+			setLast_Name(profiles?.last_name as string);
+			setProvinsi(profile_details?.province as number);
+			setAbout(profile_details?.about as string);
+			setKabupaten(profile_details?.city as number);
+			setType_name(profile_details?.property_type as number[]);
+			setStyle_name(profile_details?.property_style as number[]);
+			setAvatar_url(profiles?.avatar_url as string);
+			setBackground_url(profile_details?.banner as string);
 		};
 		fetch();
 	}, []);
@@ -162,7 +161,7 @@ function Profile() {
 		setAbout(event.target.value);
 	};
 
-	const handleLandImageChange = (
+	const handleLandImageChange = async (
 		event: React.ChangeEvent<HTMLInputElement>,
 	) => {
 		const file = event.target.files?.[0]; // Get the selected file
@@ -172,6 +171,17 @@ function Profile() {
 				setAvatar_url(reader.result as string);
 			};
 			reader.readAsDataURL(file); // Read the selected file as a data URL
+			const uuid = v4();
+			const upload = await supabase.storage
+				.from("avatars")
+				.upload(`${profiles?.id}/${uuid}`, file)
+				.then(async (r) => {
+					const { publicUrl } = supabase.storage
+						.from("avatars")
+						.getPublicUrl(`${profiles?.id}/${uuid}`).data;
+					return publicUrl;
+				});
+			setAvatar_url(upload as string);
 		} else {
 			setAvatar_url(""); // Clear the preview if no file is selected
 		}
@@ -183,7 +193,7 @@ function Profile() {
 		}
 	};
 
-	const handleBackGroundChange = (
+	const handleBackGroundChange = async (
 		event: React.ChangeEvent<HTMLInputElement>,
 	) => {
 		const file = event.target.files?.[0]; // Get the selected file
@@ -193,6 +203,17 @@ function Profile() {
 				setBackground_url(reader.result as string);
 			};
 			reader.readAsDataURL(file); // Read the selected file as a data URL
+			const uuid = v4();
+			const upload = await supabase.storage
+				.from("avatars")
+				.upload(`${profiles?.id}/${uuid}`, file)
+				.then(async (r) => {
+					const { publicUrl } = supabase.storage
+						.from("avatars")
+						.getPublicUrl(`${profiles?.id}/${uuid}`).data;
+					return publicUrl;
+				});
+			setBackground_url(upload as string);
 		} else {
 			setBackground_url(""); // Clear the preview if no file is selected
 		}
@@ -240,38 +261,29 @@ function Profile() {
 
 	// HANDLE BUTTON BUAT SUBMIT
 	const handleBiodataSubmit = async (event: any) => {
-		event.preventDefault();
-		const newBiodata = {
-			username,
-			first_name,
-			last_name,
-			provinsi,
-			avatar_url,
-			background_url,
-			style_name: [...style_name],
-			type_name: [...type_name],
-			kabupaten,
-			about,
-		};
-		
 		const user = (await supabase.auth.getUser()).data.user;
-		
-		const {data, error} = await supabase.from("profiles").update({
-			username,
-			first_name,
-			last_name,
-			avatar_url,
-		}).eq("id", user?.id);
-		
-		
-		const {data: data2, error: error2} = await supabase.from("profile_detail").update({
-			province: provinsi,
-			property_style: [...style_name],
-			property_type: [...type_name],
-			city: kabupaten,
-			about,
-			banner: background_url,
-		}).eq("user_id", user?.id);
+
+		const { data, error } = await supabase
+			.from("profiles")
+			.update({
+				username,
+				first_name,
+				last_name,
+				avatar_url,
+			})
+			.eq("id", user?.id);
+
+		const { data: data2, error: error2 } = await supabase
+			.from("profile_detail")
+			.update({
+				province: provinsi,
+				property_style: [...style_name],
+				property_type: [...type_name],
+				city: kabupaten,
+				about,
+				banner: background_url,
+			})
+			.eq("user_id", user?.id);
 	};
 
 	const [openChooseRole, setOpenChooseRole] = useState(false);
