@@ -308,7 +308,24 @@ export default function Login(props: { visible: any; onClose: any }) {
 														Facebook
 													</p>
 												</button>
-												<button className="flex hover:bg-[#e0c9af] h-[2rem] w-[7.375rem] items-center justify-center space-x-1 rounded-[7px] border border-[#B17C3F] bg-white">
+												<button
+													onClick={async (event: any) => {
+														event.preventDefault();
+														try {
+															const { data, error } =
+																await supabase.auth.signInWithOAuth({
+																	provider: "twitter",
+																	options: {
+																		redirectTo: `${location.origin}auth/callback/`,
+																	},
+																});
+															if (error) throw error;
+														} catch (error: any) {
+															alert(error.error_description || error.message);
+														}
+													}}
+													className="flex hover:bg-[#e0c9af] h-[2rem] w-[7.375rem] items-center justify-center space-x-1 rounded-[7px] border border-[#B17C3F] bg-white"
+												>
 													<svg
 														width="16"
 														height="16"
@@ -607,7 +624,6 @@ export default function Login(props: { visible: any; onClose: any }) {
 											) : (
 												<div>
 													<div className="ml-[2.3125rem] mt-[1.8rem] ">
-
 														{/* Error  */}
 														{isSentReset ? (
 															<motion.p
@@ -641,7 +657,7 @@ export default function Login(props: { visible: any; onClose: any }) {
 													<div className="ml-[2.3125rem] mt-[1.2rem] w-[22.375rem]">
 														<button
 															onClick={() => {
-																// setConfirmForgotPass(true), 
+																// setConfirmForgotPass(true),
 																// handleSubmitReset();
 																setIsSentReset(true);
 															}}
