@@ -1,14 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/router";
-
-const user = {
-	id: 21132,
-	name: "John Doe",
-	role: "client",
-};
 
 export default function ProfileNav(
 	props: any = {
@@ -17,6 +12,14 @@ export default function ProfileNav(
 	},
 ) {
 	const router = useRouter();
+	const [role, setRole] = useState<string>("");
+	useEffect(() => {
+		const fetch = async () => {
+			const role = await supabase.rpc("get_user_role_name");
+			if (role && role.data) setRole(role.data);
+		};
+		fetch();
+	}, []);
 
 	return (
 		<div>
@@ -57,7 +60,7 @@ export default function ProfileNav(
 									</div>
 								</Link>
 								{/* Dashboard */}
-								{user.role == "admin" && (
+								{role == "admin" && (
 									<Link href={"/dashboard"}>
 										<div className="flex w-[8.4375rem] items-center rounded-[0.5rem] bg-white py-[0.3rem] hover:bg-[#EAEAEA]">
 											<svg
@@ -85,13 +88,13 @@ export default function ProfileNav(
 											</svg>
 
 											<p className="ml-[0.875rem] text-[0.75rem] font-medium text-black">
-												Transaction
+												Dashboard
 											</p>
 										</div>
 									</Link>
 								)}
 								{/* Transaction */}
-								{user.role != "admin" && (
+								{role != "admin" && (
 									<Link href={"/transaction"}>
 										<div className="flex w-[8.4375rem] items-center rounded-[0.5rem] bg-white py-[0.3rem] hover:bg-[#EAEAEA]">
 											<svg
@@ -115,7 +118,7 @@ export default function ProfileNav(
 										</div>
 									</Link>
 								)}
-								{user.role == "designer" && (
+								{role == "designer" && (
 									// {/* Jual Design */}
 									<Link href={"/designForm"}>
 										<div className="flex w-[8.4375rem] items-center rounded-[0.5rem] bg-white py-[0.3rem] hover:bg-[#EAEAEA]">
