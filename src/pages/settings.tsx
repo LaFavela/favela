@@ -10,7 +10,7 @@ import Dropdown from "@/components/dropdwon";
 import { it } from "node:test";
 
 const user = {
-	role: "",
+	role: "Admin",
 };
 
 function Profile() {
