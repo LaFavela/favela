@@ -9,6 +9,56 @@ import "reactjs-popup/dist/index.css";
 import ShowRating from "../components/rating";
 import { type, style, province } from "@/components/tagList";
 import calculate from "@/tools/calculate";
+import { supabase } from "@/lib/supabase";
+import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
+import { useRouter } from "next/router";
+import { Database } from "@/types";
+
+export const getServerSideProps = async (
+	context: GetServerSidePropsContext,
+) => {
+	context.res.setHeader("Cache-Control", "s-maxage=20, stale-while-revalidate");
+
+	const { data: profile } = await supabase
+		.from("profiles")
+		.select("*")
+		.eq("username", "asdasd")
+		.single();
+
+	if (profile == null) {
+		return {
+			notFound: true,
+		};
+	}
+
+	const { data: role } = await supabase
+		.from("roles")
+		.select("role_name")
+		.eq("id", profile?.role_id)
+		.single();
+
+	const { data: profile_detail, error: errorProfile_detail } = await supabase
+		.from("profile_detail")
+		.select("*")
+		.eq("user_id", profile?.id)
+		.single();
+
+	const { data: provinsi } = await supabase
+		.from("provinsi")
+		.select("*")
+		.eq("id", profile_detail?.province)
+		.single();
+
+	const { data: kota, error } = await supabase
+		.from("kabupaten_kota")
+		.select("*")
+		.eq("id", profile_detail?.city)
+		.single();
+
+	return {
+		props: { profile, profile_detail, role, provinsi, kota },
+	};
+};
 
 export const designData = [
 	{
@@ -121,7 +171,9 @@ export const designData = [
 	},
 ];
 
-export default function Design() {
+export default function Design({}: InferGetServerSidePropsType<
+	typeof getServerSideProps
+>) {
 	const [hover, setHover] = useState(false);
 	const [index, setIndex] = useState(-1);
 	const [isPressed, setIsPressed] = useState(false);
@@ -183,13 +235,11 @@ export default function Design() {
 
 	const [budget, setbudget] = useState<number[]>([]);
 	const handleTagClick2 = (value: number) => {
-		
-			if (budget.includes(value)) {
-				setbudget([]);
-			} else {
-				setbudget([value]);
-			}
-		
+		if (budget.includes(value)) {
+			setbudget([]);
+		} else {
+			setbudget([value]);
+		}
 	};
 
 	const handleTagDelete = (value: string) => {
@@ -206,7 +256,6 @@ export default function Design() {
 		setValue(searchTerm);
 		console.log("search", searchTerm);
 	};
-
 
 	return (
 		<div>
@@ -298,7 +347,7 @@ export default function Design() {
 													key={index}
 												>
 													<span className="ml-2 pr-2 text-[11px] text-gold">
-														{"Rp. "+(Number(tag.toLocaleString("en-US")))}
+														{"Rp. " + Number(tag.toLocaleString("en-US"))}
 													</span>
 													<button
 														className="mr-2  "
@@ -577,19 +626,18 @@ export default function Design() {
 													className="w-[234px] h-[29px]"
 													onSubmit={(e) => {
 														e.preventDefault();
-                            if (value !=null){
-
-                              setbudget((prevSelected) => [
-                                ...prevSelected,
-                                value,
-                              ]);
-                            } 
+														if (value != null) {
+															setbudget((prevSelected) => [
+																...prevSelected,
+																value,
+															]);
+														}
 													}}
 												>
 													<input
 														type="number"
 														value={value}
-														onChange={(e:any) => {
+														onChange={(e: any) => {
 															setValue(e.target.value);
 														}}
 														className="pl-[1.5rem] pb-3  text-[0.7rem] border-2 w-[234px] h-[29px] rounded-md  border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F]"
