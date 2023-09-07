@@ -70,7 +70,7 @@ export default function Status(props: StatusProps) {
 									
 									<button 
 									onClick={() =>{
-										props.statusHandle();
+										props.statusHandle?.();
 										props.setShowStatus(!props.visible)
 									}}
 									className="w-[5.6875rem] h-[1.875rem] bg-[#FAB566] rounded-[1.5rem] text-white text-[0.75rem] hover:bg-[#d89a53]">
