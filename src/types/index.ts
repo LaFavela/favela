@@ -156,26 +156,75 @@ export interface Database {
           }
         ]
       }
+      experience: {
+        Row: {
+          created_at: string
+          description: string
+          end_date: string
+          id: string
+          institution: string
+          start_date: string
+          title: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          end_date?: string
+          id?: string
+          institution?: string
+          start_date?: string
+          title?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          end_date?: string
+          id?: string
+          institution?: string
+          start_date?: string
+          title?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "experience_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       facilities_form_request: {
         Row: {
           amount: number
+          created_by: string | null
           form_id: string | null
           id: string
           name: string
         }
         Insert: {
           amount: number
+          created_by?: string | null
           form_id?: string | null
           id?: string
           name?: string
         }
         Update: {
           amount?: number
+          created_by?: string | null
           form_id?: string | null
           id?: string
           name?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "facilities_form_request_created_by_fkey"
+            columns: ["created_by"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "facilities_form_request_form_id_fkey"
             columns: ["form_id"]
@@ -188,17 +237,17 @@ export interface Database {
         Row: {
           id: number
           id_provinsi: number | null
-          kabupaten: string | null
+          kabupaten: string
         }
         Insert: {
           id: number
           id_provinsi?: number | null
-          kabupaten?: string | null
+          kabupaten?: string
         }
         Update: {
           id?: number
           id_provinsi?: number | null
-          kabupaten?: string | null
+          kabupaten?: string
         }
         Relationships: [
           {
@@ -283,33 +332,36 @@ export interface Database {
       profile_detail: {
         Row: {
           about: string
+          banner: string | null
           city: number | null
           created_at: string
           id: string
-          property_style: number[] | null
-          property_type: number[] | null
+          property_style: number[]
+          property_type: number[]
           province: number | null
           updated_at: string | null
           user_id: string
         }
         Insert: {
           about?: string
+          banner?: string | null
           city?: number | null
           created_at?: string
           id?: string
-          property_style?: number[] | null
-          property_type?: number[] | null
+          property_style: number[]
+          property_type: number[]
           province?: number | null
           updated_at?: string | null
-          user_id?: string
+          user_id: string
         }
         Update: {
           about?: string
+          banner?: string | null
           city?: number | null
           created_at?: string
           id?: string
-          property_style?: number[] | null
-          property_type?: number[] | null
+          property_style?: number[]
+          property_type?: number[]
           province?: number | null
           updated_at?: string | null
           user_id?: string
@@ -381,7 +433,7 @@ export interface Database {
           created_at: string | null
           first_name: string | null
           id: string
-          last_name: string | null
+          last_name: string
           role_id: number
           updated_at: string | null
           username: string | null
@@ -391,7 +443,7 @@ export interface Database {
           created_at?: string | null
           first_name?: string | null
           id: string
-          last_name?: string | null
+          last_name?: string
           role_id?: number
           updated_at?: string | null
           username?: string | null
@@ -401,7 +453,7 @@ export interface Database {
           created_at?: string | null
           first_name?: string | null
           id?: string
-          last_name?: string | null
+          last_name?: string
           role_id?: number
           updated_at?: string | null
           username?: string | null
@@ -464,30 +516,30 @@ export interface Database {
       property_style: {
         Row: {
           id: number
-          style_name: string | null
+          style_name: string
         }
         Insert: {
           id?: number
-          style_name?: string | null
+          style_name?: string
         }
         Update: {
           id?: number
-          style_name?: string | null
+          style_name?: string
         }
         Relationships: []
       }
       property_type: {
         Row: {
           id: number
-          type_name: string | null
+          type_name: string
         }
         Insert: {
           id?: number
-          type_name?: string | null
+          type_name?: string
         }
         Update: {
           id?: number
-          type_name?: string | null
+          type_name?: string
         }
         Relationships: []
       }
@@ -498,7 +550,7 @@ export interface Database {
         }
         Insert: {
           id: number
-          provinsi: string
+          provinsi?: string
         }
         Update: {
           id?: number
@@ -606,6 +658,10 @@ export interface Database {
     }
     Functions: {
       check_design_permission: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      check_request_form_permission: {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
