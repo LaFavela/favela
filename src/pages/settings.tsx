@@ -1,5 +1,4 @@
-import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -7,14 +6,127 @@ import InputBoxSettings from "@/components/inputBoxSetting";
 import CloseIcon from "@mui/icons-material/Close";
 import InputPopUp from "@/components/popUpInput";
 import Dropdown from "@/components/dropdwon";
-import { it } from "node:test";
-import { start } from "repl";
+import { supabase } from "@/lib/supabase";
+import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
+import { useRouter } from "next/router";
+import { Database } from "@/types";
+import { set } from "react-hook-form";
+import { profile } from "console";
+import { style } from "@/components/tagList";
+
+// export const getServerSideProps = async (
+// 	context: GetServerSidePropsContext,
+// ) => {
+// 	context.res.setHeader("Cache-Control", "s-maxage=20, stale-while-revalidate");
+// 	const params = context.query.u;
+
+// 	// if (user == null) {
+// 	// 	return {
+// 	// 		notFound: true,
+// 	// 	};
+// 	// }
+
+// 	// return {
+// 	// 	props: { user, role },
+// 	// };
+// };
 
 const user = {
 	role: "Admin",
 };
 
+type Profile = Database["public"]["Tables"]["profiles"]["Row"];
+type ProfileDetail = Database["public"]["Tables"]["profile_detail"]["Row"];
+
+interface Dropdown {
+	value: number;
+	label: string;
+}
+
 function Profile() {
+	const [profiles, setProfiles] = useState<Profile>();
+	const [profile_details, setProfile_details] = useState<ProfileDetail>();
+
+	const [username, setUsername] = useState<string>("");
+	const [first_name, setFirst_Name] = useState<string>("");
+	const [last_name, setLast_Name] = useState<string>("");
+	const [provinsi, setProvinsi] = useState<number>(0);
+	const [about, setAbout] = useState<string>("");
+	const [avatar_url, setAvatar_url] = useState<string>("");
+	const [background_url, setBackground_url] = useState<string>("");
+	const [kabupaten, setKabupaten] = useState<number>(0);
+	const [style_name, setStyle_name] = useState<number[]>([0]);
+	const [type_name, setType_name] = useState<number[]>([0]);
+	
+	
+	const [provinsiData, setProvinsiData] = useState<Dropdown[]>([]);
+	const [kotaData, setKotaData] = useState<Dropdown[]>([]);
+	const [propertyTypeData, setPropertyTypeData] = useState<Dropdown[]>([]);
+	const [propertyStyleData, setPropertyStyleData] = useState<Dropdown[]>([]);
+	useEffect(() => {
+		const fetch = async () => {
+			const { user: user } = (await supabase.auth.getUser()).data;
+			const { data: profiles, error } = await supabase
+				.from("profiles")
+				.select(`*`)
+				.eq("id", user?.id)
+				.single();
+			if (profiles) setProfiles(profiles);
+			const { data: profile_details } = await supabase
+				.from("profile_detail")
+				.select(`*`)
+				.eq("user_id", user?.id)
+				.single();
+			if (profile_details) setProfile_details(profile_details);
+
+			const { data: provinsi } = await supabase.from("provinsi").select("*");
+			let provinsiData: Dropdown[] = [];
+			provinsi?.forEach((item) => {
+				provinsiData.push({
+					value: item.id,
+					label: item.provinsi,
+				});
+			});
+			setProvinsiData(provinsiData);
+
+			const { data: property_type } = await supabase
+				.from("property_type")
+				.select("*");
+			let propertyTypeData: Dropdown[] = [];
+			property_type?.forEach((item) => {
+				propertyTypeData.push({
+					value: item.id,
+					label: item.type_name as string,
+				});
+			});
+			setPropertyTypeData(propertyTypeData);
+
+			const { data: property_style } = await supabase
+				.from("property_style")
+				.select("*");
+			let propertyStyleData: Dropdown[] = [];
+			property_style?.forEach((item) => {
+				propertyStyleData.push({
+					value: item.id,
+					label: item.style_name as string,
+				});
+			});
+			setPropertyStyleData(propertyStyleData);
+			
+			setUsername(profiles?.username as string)
+			setFirst_Name(profiles?.first_name as string)
+			setLast_Name(profiles?.last_name as string)
+			setProvinsi(profile_details?.province as number)
+			setAbout(profile_details?.about as string)
+			setKabupaten(profile_details?.city as number)
+			setType_name(profile_details?.property_type as number[])
+			setStyle_name(profile_details?.property_style as number[])
+			setAvatar_url(profiles?.avatar_url as string)
+			setBackground_url(profile_details?.banner as string)
+			
+		};
+		fetch();
+	}, []);
 	const [biodata, setBiodata] = useState<
 		{
 			username: string;
@@ -25,21 +137,10 @@ function Profile() {
 			avatar_url: string;
 			background_url: string;
 			kabupaten: string;
-			style_name: string[];
-			type_name: string[];
+			style_name: number[];
+			type_name: number[];
 		}[]
 	>([]); //UNTTUK NAMPUNG SEMUA ARRAY USETATE
-
-	const [username, setUsername] = useState("");
-	const [first_name, setFirst_Name] = useState("");
-	const [last_name, setLast_Name] = useState("");
-	const [provinsi, setProvinsi] = useState("");
-	const [about, setAbout] = useState("");
-	const [kabupaten, setKabupaten] = useState("");
-	const [type_name, setType_name] = useState<string[]>([""]);
-	const [style_name, setStyle_name] = useState<string[]>([""]);
-	const [avatar_url, setAvatar_url] = useState("");
-	const [background_url, setBackground_url] = useState("");
 
 	const handleChangeUsername = (event: any) => {
 		setUsername(event.target.value);
@@ -103,14 +204,14 @@ function Profile() {
 		}
 	};
 
-	const handleChangePropertyType = (index: number, value: string) => {
+	const handleChangePropertyType = (index: number, value: number) => {
 		const updated_type_name = [...type_name];
 		updated_type_name[index] = value;
 		setType_name(updated_type_name);
 	};
 
 	const handleAddPropertyType = () => {
-		setType_name([...type_name, ""]);
+		setType_name([...type_name, -1]);
 	};
 
 	const handleDeletePropertyType = (index: number) => {
@@ -118,14 +219,14 @@ function Profile() {
 		setType_name(updated_type_name);
 	};
 
-	const handleChangePropertyStyle = (index: number, value: string) => {
+	const handleChangePropertyStyle = (index: number, value: number) => {
 		const updatedPropertyStyle = [...style_name];
 		updatedPropertyStyle[index] = value;
 		setStyle_name(updatedPropertyStyle);
 	};
 
 	const handleAddPropertyStyle = () => {
-		setStyle_name([...style_name, ""]);
+		setStyle_name([...style_name, -1]);
 	};
 
 	const handleDeletePropertyStyle = (index: number) => {
@@ -138,7 +239,7 @@ function Profile() {
 	};
 
 	// HANDLE BUTTON BUAT SUBMIT
-	const handleBiodataSubmit = (event: any) => {
+	const handleBiodataSubmit = async (event: any) => {
 		event.preventDefault();
 		const newBiodata = {
 			username,
@@ -152,18 +253,25 @@ function Profile() {
 			kabupaten,
 			about,
 		};
-
-		setBiodata([...biodata, newBiodata]);
-		setAvatar_url("");
-		setBackground_url("");
-		setUsername("");
-		setFirst_Name("");
-		setLast_Name("");
-		setProvinsi("");
-		setType_name([]);
-		setStyle_name([]);
-		setKabupaten("");
-		setAbout("");
+		
+		const user = (await supabase.auth.getUser()).data.user;
+		
+		const {data, error} = await supabase.from("profiles").update({
+			username,
+			first_name,
+			last_name,
+			avatar_url,
+		}).eq("id", user?.id);
+		
+		
+		const {data: data2, error: error2} = await supabase.from("profile_detail").update({
+			province: provinsi,
+			property_style: [...style_name],
+			property_type: [...type_name],
+			city: kabupaten,
+			about,
+			banner: background_url,
+		}).eq("user_id", user?.id);
 	};
 
 	const [openChooseRole, setOpenChooseRole] = useState(false);
@@ -290,7 +398,7 @@ function Profile() {
 							form="biodata-Form"
 							type="text"
 							title="Username"
-							value={username}
+							value={username!}
 							placeholder={"Enter Username"}
 							onChange={handleChangeUsername}
 						></InputBoxSettings>
@@ -298,7 +406,7 @@ function Profile() {
 							form="biodata-Form"
 							type="text"
 							title="Firstname"
-							value={first_name}
+							value={first_name!}
 							placeholder={"Enter Firstname"}
 							onChange={handleChangeFirstname}
 						></InputBoxSettings>
@@ -316,7 +424,7 @@ function Profile() {
 							user.role === "Admin") && (
 							<div>
 								<div>
-									{type_name.map((item, index) => (
+									{type_name?.map((item, index) => (
 										<div key={index}>
 											{index == 0 ? (
 												<Dropdown
@@ -325,13 +433,7 @@ function Profile() {
 													styleClassTag="py-[4px] border-2 border-gold rounded-[7px] w-full"
 													styleText="w-[200px] text-[15px]"
 													title="Property Type"
-													data={[
-														{ value: "Type1", label: "Type1" },
-														{ value: "Type2", label: "Type2" },
-														{ value: "Type3", label: "Type3" },
-														{ value: "Type4", label: "Type4" },
-														{ value: "Type5", label: "Type5" },
-													]}
+													data={propertyTypeData}
 													value={item}
 													placehoder="Select Property Type"
 													onChange={(e: any) =>
@@ -345,13 +447,7 @@ function Profile() {
 														styleClass="text-gold text-[13px] flex gap-[48px] mt-2 w-full pr-1"
 														styleClassTag="border-2 border-gold rounded-[7px] w-full py-[4px] ml-[147px]"
 														title=""
-														data={[
-															{ value: "Type1", label: "Type1" },
-															{ value: "Type2", label: "Type2" },
-															{ value: "Type3", label: "Type3" },
-															{ value: "Type4", label: "Type4" },
-															{ value: "Type5", label: "Type5" },
-														]}
+														data={propertyTypeData}
 														value={item}
 														placehoder="Select Property Type"
 														onChange={(e: any) =>
@@ -385,7 +481,7 @@ function Profile() {
 								</div>
 
 								<div>
-									{style_name.map((item, index) => (
+									{style_name?.map((item, index) => (
 										<div key={index}>
 											{index == 0 ? (
 												<Dropdown
@@ -394,13 +490,7 @@ function Profile() {
 													styleClassTag="py-[4px] border-2 border-gold rounded-[7px] w-full"
 													styleText="w-[200px] text-[15px]"
 													title="Property Style"
-													data={[
-														{ value: "Style1", label: "Style1" },
-														{ value: "Style2", label: "Style2" },
-														{ value: "Style3", label: "Style3" },
-														{ value: "Style4", label: "Style4" },
-														{ value: "Style5", label: "Style5" },
-													]}
+													data={propertyStyleData}
 													value={item}
 													placehoder="Select Property Style"
 													onChange={(e: any) =>
@@ -414,13 +504,7 @@ function Profile() {
 														styleClass="text-gold text-[13px] flex gap-[48px] mt-2 w-full pr-1"
 														styleClassTag="border-2 border-gold rounded-[7px] w-full py-[4px] ml-[147px]"
 														title=""
-														data={[
-															{ value: "Style1", label: "Style1" },
-															{ value: "Style2", label: "Style2" },
-															{ value: "Style3", label: "Style3" },
-															{ value: "Style4", label: "Style4" },
-															{ value: "Style5", label: "Style5" },
-														]}
+														data={propertyStyleData}
 														value={item}
 														placehoder="Select Property Style"
 														onChange={(e: any) =>
@@ -681,8 +765,8 @@ function Project() {
 		<div>
 			{projectModal && (
 				<div className="">
-				<div className="flex h-full w-full fixed left-0 justify-center -top-20">
-					<div className="absolute modal-content w-[553px] rounded-3xl bg-white drop-shadow-landingShado">
+					<div className="flex h-full w-full fixed left-0 justify-center -top-20">
+						<div className="absolute modal-content w-[553px] rounded-3xl bg-white drop-shadow-landingShado">
 							<div className="border-b-2 border-gold/60">
 								<h2 className="mx-8 my-4  text-[18px]">Detail Project</h2>
 							</div>
@@ -840,8 +924,8 @@ function Project() {
 
 			{isEditProject && editProjectIndex != -1 && (
 				<div className="">
-				<div className="flex h-full w-full fixed left-0 justify-center -top-20">
-					<div className="absolute modal-content w-[553px] rounded-3xl bg-white drop-shadow-landingShado">
+					<div className="flex h-full w-full fixed left-0 justify-center -top-20">
+						<div className="absolute modal-content w-[553px] rounded-3xl bg-white drop-shadow-landingShado">
 							<div className="border-b-2 border-gold/60">
 								<h2 className="mx-8 my-4  text-[18px]"> Edit Detail Project</h2>
 							</div>
@@ -872,7 +956,7 @@ function Project() {
 									type="date"
 									value={end_date}
 									required
-									onChange={handleEndDateChange	}
+									onChange={handleEndDateChange}
 								></InputPopUp>
 								<label className="mt-4 gap-24 pr-14">
 									<span className="mt-2 w-[120px] text-[10px]  text-[#B17C3F] ">
@@ -1247,8 +1331,8 @@ function Member() {
 		<div>
 			{modal && (
 				<div className="">
-				<div className="flex h-full w-full fixed left-0 justify-center top-0">
-					<div className="absolute modal-content w-[553px] rounded-3xl bg-white drop-shadow-landingShado">
+					<div className="flex h-full w-full fixed left-0 justify-center top-0">
+						<div className="absolute modal-content w-[553px] rounded-3xl bg-white drop-shadow-landingShado">
 							<div className="border-b-2 border-gold/60">
 								<h2 className="mx-8 my-4  text-[18px]">Detail Member</h2>
 							</div>
@@ -1311,8 +1395,8 @@ function Member() {
 
 			{isEditPopupOpen && editMemberIndex !== -1 && (
 				<div className="">
-				<div className="flex h-full w-full fixed left-0 justify-center top-0">
-					<div className="absolute modal-content w-[553px] rounded-3xl bg-white drop-shadow-landingShado">
+					<div className="flex h-full w-full fixed left-0 justify-center top-0">
+						<div className="absolute modal-content w-[553px] rounded-3xl bg-white drop-shadow-landingShado">
 							<div className="border-b-2 border-gold/60">
 								<h2 className="mx-8 my-4  text-[18px]">Edit Detail Member</h2>
 							</div>
@@ -1604,8 +1688,8 @@ function Education() {
 		<div>
 			{isEducationOpen && (
 				<div className="">
-				<div className="flex h-full w-full fixed left-0 justify-center -top-20">
-					<div className="absolute modal-content w-[553px] rounded-3xl bg-white drop-shadow-landingShado">
+					<div className="flex h-full w-full fixed left-0 justify-center -top-20">
+						<div className="absolute modal-content w-[553px] rounded-3xl bg-white drop-shadow-landingShado">
 							<div className="border-b-2 border-gold/60">
 								<h2 className="mx-8 my-4  text-[18px]">Detail Education</h2>
 							</div>
@@ -1690,8 +1774,8 @@ function Education() {
 
 			{isEditEducationOpen && editEducationIndex !== -1 && (
 				<div className="">
-				<div className="flex h-full w-full fixed left-0 justify-center -top-20">
-					<div className="absolute modal-content w-[553px] rounded-3xl bg-white drop-shadow-landingShado">
+					<div className="flex h-full w-full fixed left-0 justify-center -top-20">
+						<div className="absolute modal-content w-[553px] rounded-3xl bg-white drop-shadow-landingShado">
 							<div className="border-b-2 border-gold/60">
 								<h2 className="mx-8 my-4  text-[18px]">
 									{" "}
@@ -2075,8 +2159,8 @@ function Experience() {
 		<div>
 			{experienceModal && (
 				<div className="">
-				<div className="flex h-full w-full fixed left-0 justify-center -top-20">
-					<div className="absolute modal-content w-[553px] rounded-3xl bg-white drop-shadow-landingShado">
+					<div className="flex h-full w-full fixed left-0 justify-center -top-20">
+						<div className="absolute modal-content w-[553px] rounded-3xl bg-white drop-shadow-landingShado">
 							<div className="border-b-2 border-gold/60">
 								<h2 className="mx-8 my-4  text-[18px]">Detail Experience</h2>
 							</div>
@@ -2165,8 +2249,8 @@ function Experience() {
 
 			{isEditExperience && editExperienceIndex != -1 && (
 				<div className="">
-				<div className="flex h-full w-full fixed left-0 justify-center -top-20">
-					<div className="absolute modal-content w-[553px] rounded-3xl bg-white drop-shadow-landingShado">
+					<div className="flex h-full w-full fixed left-0 justify-center -top-20">
+						<div className="absolute modal-content w-[553px] rounded-3xl bg-white drop-shadow-landingShado">
 							<div className="border-b-2 border-gold/60">
 								<h2 className="mx-8 my-4  text-[18px]"> Edit Detail Project</h2>
 							</div>
@@ -2459,10 +2543,10 @@ function Design() {
 		{
 			name: designItem[0].name,
 			preview_image: [designItem[0].image],
-			price: designItem[0].price,			
+			price: designItem[0].price,
 			bedroom_count: designItem[0].bedroom,
 			bathroom_count: designItem[0].bathroom,
-			property_size: designItem[0].area
+			property_size: designItem[0].area,
 		},
 	]);
 
@@ -2499,9 +2583,7 @@ function Design() {
 									</span>
 									<span className="ml-5 w-full ">
 										<div className="flex w-full  justify-between">
-											<p className="text-[17px] font-medium">
-												{item.name}
-											</p>
+											<p className="text-[17px] font-medium">{item.name}</p>
 
 											<div className="flex gap-2">
 												<button onClick={() => handleDesignDelete(index)}>
@@ -2608,7 +2690,7 @@ function Design() {
 											</span>
 										</div>
 										<p className="text-[15px] font-semibold">
-											Rp. {Number (item.price).toLocaleString("en-US")}.00
+											Rp. {Number(item.price).toLocaleString("en-US")}.00
 										</p>
 									</span>
 								</div>
@@ -2720,7 +2802,6 @@ function Design() {
 }
 
 function Account() {
-	
 	const data = [
 		{
 			email: "ramadhanialqadri12@gmail.com",
@@ -2784,24 +2865,24 @@ function Account() {
 	const openEditEmailPopUp = () => {
 		setIsEditEmailOpen(!isEditEmailOpen);
 	};
-	
+
 	const closeEditEmail = () => {
 		setIsEditEmailOpen(false);
 		setPassword("");
-		setNewEmail("")
-	}
+		setNewEmail("");
+	};
 
 	const [isEditPasswordOpen, setIsEditPasswordOpen] = useState(false);
 	const openEditPasswordPopUp = () => {
 		setIsEditPasswordOpen(!isEditPasswordOpen);
 	};
-	
+
 	const closeEditPassword = () => {
 		setIsEditPasswordOpen(false);
 		setPassword("");
-		setNewPassword("")
-		setConfirmedPassword("")
-	}
+		setNewPassword("");
+		setConfirmedPassword("");
+	};
 
 	const [isSaveClcik, setIsClick] = useState(false);
 	const saveClick = () => {
@@ -3008,8 +3089,8 @@ function BankAccount() {
 		<div>
 			{isPopUpOpen && (
 				<div className="">
-				<div className="flex h-full w-full fixed left-0 justify-center top-20">
-					<div className="absolute modal-content w-[553px] rounded-3xl bg-white drop-shadow-landingShado">
+					<div className="flex h-full w-full fixed left-0 justify-center top-20">
+						<div className="absolute modal-content w-[553px] rounded-3xl bg-white drop-shadow-landingShado">
 							<div className="border-b-2 border-gold/60">
 								<h2 className="mx-8 my-4  text-[18px]"> Bank Account</h2>
 							</div>
@@ -3159,6 +3240,15 @@ function BankAccount() {
 }
 
 export default function Setting() {
+	const [role, setRole] = useState<string>("client");
+	// useffect that run once
+	useEffect(() => {
+		const fetch = async () => {
+			const role = await supabase.rpc("get_user_role_name");
+			if (role && role.data) setRole(role.data);
+		};
+		fetch();
+	});
 	const [selectedTab, setSelectedTab] = useState<string | null>("Profile");
 	const [color, setColor] = useState([
 		"#B17C3F",
@@ -3187,7 +3277,7 @@ export default function Setting() {
 	const navItem = [
 		{
 			name: "Profile",
-			role: ["Admin", "", "Designer", "Contractor"],
+			role: ["admin", "", "designer", "contractor"],
 			icon: (
 				<svg
 					width="18"
@@ -3215,7 +3305,7 @@ export default function Setting() {
 		},
 		{
 			name: "Project",
-			role: ["Admin", "Designer", "Contractor"],
+			role: ["admin", "designer", "contractor"],
 			icon: (
 				<svg
 					width="22"
@@ -3235,7 +3325,7 @@ export default function Setting() {
 		},
 		{
 			name: "Member",
-			role: ["Admin", "Contractor"],
+			role: ["admin", "contractor"],
 			icon: (
 				<svg
 					width="25"
@@ -3254,7 +3344,7 @@ export default function Setting() {
 		},
 		{
 			name: "Education",
-			role: ["Admin", "Designer"],
+			role: ["admin", "designer"],
 			icon: (
 				<svg
 					width="26"
@@ -3274,7 +3364,7 @@ export default function Setting() {
 		},
 		{
 			name: "Experience",
-			role: ["Admin", "Designer"],
+			role: ["admin", "designer"],
 			icon: (
 				<svg
 					width="21"
@@ -3294,7 +3384,7 @@ export default function Setting() {
 		},
 		{
 			name: "Design",
-			role: ["Admin", "Designer"],
+			role: ["admin", "designer"],
 			icon: (
 				<svg
 					width="26"
@@ -3314,7 +3404,7 @@ export default function Setting() {
 		},
 		{
 			name: "Account",
-			role: ["Admin", "", "Designer", "Contractor"],
+			role: ["admin", "client", "designer", "contractor"],
 			icon: (
 				<svg
 					width="21"
@@ -3334,7 +3424,7 @@ export default function Setting() {
 		},
 		{
 			name: "Bank Account",
-			role: ["Admin", "", "Designer", "Contractor"],
+			role: ["admin", "client", "designer", "contractor"],
 			icon: (
 				<svg
 					width="26"
@@ -3364,7 +3454,7 @@ export default function Setting() {
 					<div className="w-[20.5625rem] space-y-6">
 						{navItem.map(
 							(item, idx) =>
-								item.role.includes(user.role) && (
+								item.role.includes(role!) && (
 									<div
 										key={idx}
 										onClick={() => {
@@ -3414,5 +3504,3 @@ export default function Setting() {
 		</div>
 	);
 }
-
-export function Content() {}
