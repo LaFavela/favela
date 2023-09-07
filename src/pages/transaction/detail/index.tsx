@@ -7,14 +7,15 @@ import Status from "@/components/status";
 import Dropdown from "@/components/dropdwon";
 import { motion, AnimatePresence } from "framer-motion";
 import Footer from "@/components/footer";
-import Rating from '@mui/material/Rating';
-import CircleIcon from '@mui/icons-material/Circle';
+import Rating from "@mui/material/Rating";
+import CircleIcon from "@mui/icons-material/Circle";
+import PaymentTwoToneIcon from "@mui/icons-material/PaymentTwoTone";
 
 const user = {
-	id: "20ssH",
+	id: "2113s2",
 	name: "Ramadhani Al-Qadri",
 	img: "/assets/landing/Designer3.jpg",
-	role: "Designer",
+	role: "designer",
 };
 const transaction = {
 	id: "HNF29125367",
@@ -33,19 +34,19 @@ const Contributor = [
 		id: "21132",
 		name: "Ramadhani Al-Qadri",
 		img: "/assets/landing/Designer3.jpg",
-		role: "Client",
+		role: "client",
 	},
 	{
 		id: "21053",
 		name: "Muhammad Dwimas ",
 		img: "/assets/landing/Designer3.jpg",
-		role: "Designer",
+		role: "designer",
 	},
 	{
 		id: "21015",
 		name: "Dzulhi Raihan",
 		img: "/assets/landing/Designer3.jpg",
-		role: "Contractor",
+		role: "contractor",
 	},
 ];
 const constractor = {
@@ -56,7 +57,47 @@ const constractor = {
 	province: "DKI Jakarta",
 };
 
+const bank_account = [
+	{
+		bank_name: "Bank Central Asia",
+		bank_number: "1234567890",
+		bank_password: "123456",
+	},
+	{
+		bank_name: "Bank Mandiri",
+		bank_number: "1234567890",
+		bank_password: "123456",
+	},
+	{
+		bank_name: "Bank Mandiri",
+		bank_number: "1234567890",
+		bank_password: "123456",
+	},
+	{
+		bank_name: "Bank Mandiri",
+		bank_number: "1234567890",
+		bank_password: "123456",
+	},
+	{
+		bank_name: "Bank Mandiri",
+		bank_number: "1234567890",
+		bank_password: "123456",
+	},
+];
+
 export default function DetailTransaction() {
+	// Review
+	const [isReviewed, setReviewed] = useState(false);
+	const [titleReview, setTitleReview] = useState("");
+	const [descReview, setDescReview] = useState("");
+	const [ratingReview, setRatingReview] = useState(0);
+
+	// isProjectCancel?
+	const [isProjectCancel, setProjectCancel] = useState(false);
+	const handleProjectCancel = () => {
+		setProjectCancel(!isProjectCancel);
+	};
+
 	// Pop up Complain
 	const [complain, setShowComplain] = useState(false);
 	const handleOnCloseComplain = () => setShowComplain(false);
@@ -90,7 +131,7 @@ export default function DetailTransaction() {
 			description:
 				"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eget risus porta, tincidunt turpis at, interdum tortor. Sed id pretium elit. Sed eget risus porta, tincidunt turpis at, interdum tortor. Sed id pretium elit.",
 			media: "wertyuiop",
-			contract: "wertyuiop",
+			contract: "",
 			extraInfo:
 				"Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dolor, saepe esse. Laborum, vel velit aperiam illo sit ipsa qui sint fugiat. Harum, explicabo. Magni fuga exercitationem totam omnis distinctio quibusdam.",
 			payment: 0,
@@ -120,6 +161,14 @@ export default function DetailTransaction() {
 			}
 		});
 	}
+
+	const [statuspop, setShowStatus] = useState(false);
+	const handleOnCloseStatus = () => {
+		setShowStatus(false);
+	};
+	const [statustype, setStatustype] = useState("");
+	const [description, setDescription] = useState("");
+	const [title, setTitle] = useState("");
 
 	return (
 		<div>
@@ -172,27 +221,44 @@ export default function DetailTransaction() {
 									</div>
 								</div>
 								<div className="flex flex-col justify-between">
-									<motion.button
-										whileTap={{ scale: 0.85 }}
+									<button
 										onClick={() => {
 											setShowComplain(true);
 										}}
 										className="flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]"
 									>
 										Complain
-									</motion.button>
-									<motion.button
-										whileTap={{ scale: 0.85 }}
-										className="flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]"
-									>
+									</button>
+									<button className="flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]">
 										Download Contract
-									</motion.button>
-									<motion.button
-										whileTap={{ scale: 0.85 }}
-										className="flex justify-center items-center text-white text-[0.75rem] font-medium  w-[10.25rem] bg-[#B17C3F] hover:bg-[#8d6333] rounded-full h-[1.8125rem]"
-									>
-										Cancel Project
-									</motion.button>
+									</button>
+									{isProjectCancel ? (
+										<button
+											onClick={() => {
+												setShowStatus(true);
+												setStatustype("confirm");
+												setDescription(
+													"Are You Sure Want To Open This Project?",
+												);
+											}}
+											className="flex justify-center items-center text-white text-[0.75rem] font-medium  w-[10.25rem] bg-[#B17C3F] hover:bg-[#8d6333] rounded-full h-[1.8125rem]"
+										>
+											Reopen Project
+										</button>
+									) : (
+										<button
+											onClick={() => {
+												setShowStatus(true);
+												setStatustype("confirm");
+												setDescription(
+													"Are You Sure Want To Cancel This Project?",
+												);
+											}}
+											className="flex justify-center items-center text-white text-[0.75rem] font-medium  w-[10.25rem] bg-[#B17C3F] hover:bg-[#8d6333] rounded-full h-[1.8125rem]"
+										>
+											Cancel Project
+										</button>
+									)}
 								</div>
 							</div>
 							{/* Contributor */}
@@ -214,10 +280,10 @@ export default function DetailTransaction() {
 													/>
 												</div>
 												<div className="-space-y-1 ">
-													<p className="text-[0.75rem] font-normal ">
+													<p className="text-[0.75rem]  font-normal ">
 														{item.name}
 													</p>
-													<p className="text-[0.625rem] text-gold">
+													<p className="text-[0.625rem] capitalize text-gold">
 														{item.role}
 													</p>
 												</div>
@@ -231,49 +297,89 @@ export default function DetailTransaction() {
 									))}
 								</div>
 							</div>
-							{/* Update */}
-							{user.role == "Designer" && (
-								<div className=" w-full p-[1.4375rem] bg-white drop-shadow-landingShado  rounded-[1.5625rem]">
-									<p className="text-[0.875rem] font-medium">Update</p>
-									<div className="flex flex-col items-center space-y-2 justify-center">
-										<motion.div
-											whileTap={{ scale: 0.85 }}
-											className="flex flex-col items-center space-y-1 rounded-xl p-2 hover:bg-[#f7efe7] cursor-pointer"
-											onClick={() => {
-												setShowUpdate(true);
-												// handlePaymentTrack();
-											}}
-										>
-											<div>
-												<svg
-													width="20"
-													height="20"
-													viewBox="0 0 20 20"
-													fill="none"
-													xmlns="http://www.w3.org/2000/svg"
-												>
-													<g clipPath="url(#clip0_1999_2583)">
-														<path
-															d="M11 9H15V11H11V15H9V11H5V9H9V5H11V9ZM10 20C7.34784 20 4.8043 18.9464 2.92893 17.0711C1.05357 15.1957 0 12.6522 0 10C0 7.34784 1.05357 4.8043 2.92893 2.92893C4.8043 1.05357 7.34784 0 10 0C12.6522 0 15.1957 1.05357 17.0711 2.92893C18.9464 4.8043 20 7.34784 20 10C20 12.6522 18.9464 15.1957 17.0711 17.0711C15.1957 18.9464 12.6522 20 10 20ZM10 18C12.1217 18 14.1566 17.1571 15.6569 15.6569C17.1571 14.1566 18 12.1217 18 10C18 7.87827 17.1571 5.84344 15.6569 4.34315C14.1566 2.84285 12.1217 2 10 2C7.87827 2 5.84344 2.84285 4.34315 4.34315C2.84285 5.84344 2 7.87827 2 10C2 12.1217 2.84285 14.1566 4.34315 15.6569C5.84344 17.1571 7.87827 18 10 18Z"
-															fill="#B17C3F"
-														/>
-													</g>
-													<defs>
-														<clipPath id="clip0_1999_2583">
-															<rect width="20" height="20" fill="white" />
-														</clipPath>
-													</defs>
-												</svg>
-											</div>
-											<p className="text-[0.625rem] text-[#B17C3F]">
-												Make Update
+							{!isProjectCancel &&
+								// Update
+								user.role == "designer" && (
+									<div className=" w-full p-[1.4375rem] bg-white drop-shadow-landingShado  rounded-[1.5625rem]">
+										<p className="text-[0.875rem] font-medium">Update</p>
+										{status[status.length - 1].actionType.find(
+											(item: any) => item == "Payment",
+										) && !status[status.length - 1].isPayed ? (
+											<p className="text-[0.8rem] py-3 flex justify-center text-gray-400">
+												The Current Update Must be Paid before you can Make new
+												update
 											</p>
-										</motion.div>
+										) : (
+											<div className="flex flex-col items-center space-y-2 justify-center">
+												<motion.div
+													whileTap={{ scale: 0.85 }}
+													className="flex flex-col items-center space-y-1 rounded-xl p-2 hover:bg-[#f7efe7] cursor-pointer"
+													onClick={() => {
+														setShowUpdate(true);
+														// handlePaymentTrack();
+													}}
+												>
+													<div>
+														<svg
+															width="20"
+															height="20"
+															viewBox="0 0 20 20"
+															fill="none"
+															xmlns="http://www.w3.org/2000/svg"
+														>
+															<g clipPath="url(#clip0_1999_2583)">
+																<path
+																	d="M11 9H15V11H11V15H9V11H5V9H9V5H11V9ZM10 20C7.34784 20 4.8043 18.9464 2.92893 17.0711C1.05357 15.1957 0 12.6522 0 10C0 7.34784 1.05357 4.8043 2.92893 2.92893C4.8043 1.05357 7.34784 0 10 0C12.6522 0 15.1957 1.05357 17.0711 2.92893C18.9464 4.8043 20 7.34784 20 10C20 12.6522 18.9464 15.1957 17.0711 17.0711C15.1957 18.9464 12.6522 20 10 20ZM10 18C12.1217 18 14.1566 17.1571 15.6569 15.6569C17.1571 14.1566 18 12.1217 18 10C18 7.87827 17.1571 5.84344 15.6569 4.34315C14.1566 2.84285 12.1217 2 10 2C7.87827 2 5.84344 2.84285 4.34315 4.34315C2.84285 5.84344 2 7.87827 2 10C2 12.1217 2.84285 14.1566 4.34315 15.6569C5.84344 17.1571 7.87827 18 10 18Z"
+																	fill="#B17C3F"
+																/>
+															</g>
+															<defs>
+																<clipPath id="clip0_1999_2583">
+																	<rect width="20" height="20" fill="white" />
+																</clipPath>
+															</defs>
+														</svg>
+													</div>
+													<p className="text-[0.625rem] text-[#B17C3F]">
+														Make Update
+													</p>
+												</motion.div>
+											</div>
+										)}
 									</div>
+								)}
+							{/* Action */}
+							{!isProjectCancel && (
+								<Action
+									isReviewed={isReviewed}
+									setReviewed={setReviewed}
+									setTitleReview={setTitleReview}
+									setDescReview={setDescReview}
+									setRatingReview={setRatingReview}
+									status={status}
+									setStatus={setStatus}
+								></Action>
+							)}
+							{/* Review Box */}
+							{isReviewed && (
+								<div className="space-y-[0.375rem] w-full p-[1.4375rem] bg-white drop-shadow-landingShado  rounded-[1.5625rem]">
+									<p className="text-[0.875rem] font-medium">Review</p>
+									<p className="text-[0.8rem] font-normal">{titleReview}</p>
+									<Rating
+										name="read-only"
+										readOnly
+										value={ratingReview}
+										precision={0.5}
+										icon={<CircleIcon sx={{ color: "black", fontSize: 13 }} />}
+										emptyIcon={
+											<CircleIcon style={{ opacity: 0.55, fontSize: 13 }} />
+										}
+									/>
+									<p className="text-[0.7rem] text-gray-500 font-light break-all">
+										{descReview}
+									</p>
 								</div>
 							)}
-							{/* Action */}
-							<Action status={status} setStatus={setStatus}></Action>
 							{/* Detail of Payment */}
 							<div className="space-y-[0.375rem] w-full p-[1.4375rem] bg-white drop-shadow-landingShado  rounded-[1.5625rem]">
 								<p className="text-[0.875rem] font-medium">Detail of Payment</p>
@@ -369,6 +475,15 @@ export default function DetailTransaction() {
 						visible={complain}
 						setShowComplain={setShowComplain}
 						onClose={handleOnCloseComplain}
+					/>
+					<Status
+						visible={statuspop}
+						onClose={handleOnCloseStatus}
+						setShowStatus={setShowStatus}
+						status={statustype}
+						tittle={title}
+						description={description}
+						statusHandle={handleProjectCancel}
 					/>
 				</div>
 			</div>
@@ -467,10 +582,22 @@ export function Progress(props: progressProps) {
 }
 
 interface actionProps {
+	isReviewed: boolean;
 	status: StatusItem[];
 	setStatus: (value: StatusItem[]) => void;
+	setReviewed: (value: boolean) => void;
+	setTitleReview: (value: string) => void;
+	setDescReview: (value: string) => void;
+	setRatingReview: (value: number) => void;
 }
 export function Action(props: actionProps) {
+	const [statusPayment, setStatusPayment] = useState<any>();
+
+	const [showPaymentPopUp, setShowPaymentPopUp] = useState(false);
+	const handleOnClosePaymentPopUp = () => {
+		setShowPaymentPopUp(false);
+	};
+
 	const [showReview, setShowReview] = useState(false);
 	const handleOnCloseReview = () => {
 		setShowReview(false);
@@ -489,7 +616,7 @@ export function Action(props: actionProps) {
 		tempStatus[tempStatus.length - 1].isConfirmed = true;
 		props.setStatus(tempStatus);
 	}
-	function handlePay() {
+	function handlePayment() {
 		const tempStatus = props.status;
 		tempStatus[tempStatus.length - 1].isPayed = true;
 		props.setStatus(tempStatus);
@@ -516,19 +643,13 @@ export function Action(props: actionProps) {
 						(item) => item == "Contract",
 					) && (
 						<div className="flex ">
-							<motion.button
-								whileTap={{ scale: 0.85 }}
-								className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]"
-							>
+							<button className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]">
 								Download Contract
-							</motion.button>
+							</button>
 							{user.id != props.status[props.status.length - 1].updaterId && (
-								<motion.button
-									whileTap={{ scale: 0.85 }}
-									className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]"
-								>
+								<button className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]">
 									Upload Contract
-								</motion.button>
+								</button>
 							)}
 						</div>
 					)}
@@ -540,20 +661,19 @@ export function Action(props: actionProps) {
 								<p className="text-[0.8rem] text-[#4B4B4B]">Confirmed</p>
 							) : (
 								<div className="flex">
-									<motion.button
-										whileTap={{ scale: 0.85 }}
+									<button
 										type="button"
 										id="confirmButton"
 										onClick={() => {
 											handleConfirm();
 											setShowStatus(true);
-											setStatus("confirm");
+											setStatus("success");
 											setDescription("lorem");
 										}}
 										className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]"
 									>
 										Confirm
-									</motion.button>
+									</button>
 								</div>
 							)
 						) : props.status[props.status.length - 1].isConfirmed ? (
@@ -567,12 +687,9 @@ export function Action(props: actionProps) {
 						(item) => item == "Media",
 					) && (
 						<div className="flex   ">
-							<motion.button
-								whileTap={{ scale: 0.85 }}
-								className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]"
-							>
+							<button className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]">
 								Download Media
-							</motion.button>
+							</button>
 						</div>
 					)}
 					{props.status[props.status.length - 1].actionType.find(
@@ -583,18 +700,19 @@ export function Action(props: actionProps) {
 								<p className="text-[0.8rem] text-[#4B4B4B]">Paid</p>
 							) : (
 								<div className="flex   ">
-									<motion.button
-										whileTap={{ scale: 0.85 }}
+									<button
 										onClick={() => {
-											handlePay();
-											setShowStatus(true);
-											setStatus("success");
-											setDescription("Dah Bayar");
+											// handlePay();
+											// setShowStatus(true);
+											// setStatus("success");
+											// setDescription("Dah Bayar");
+											setStatusPayment(props.status);
+											setShowPaymentPopUp(true);
 										}}
 										className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]"
 									>
 										Pay
-									</motion.button>
+									</button>
 								</div>
 							)
 						) : props.status[props.status.length - 1].isPayed ? (
@@ -607,15 +725,16 @@ export function Action(props: actionProps) {
 					) &&
 						user.id != props.status[props.status.length - 1].updaterId && (
 							<div className="flex   ">
-								<motion.button
-									whileTap={{ scale: 0.85 }}
-									onClick={() => {
-										setShowReview(true);
-									}}
-									className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]"
-								>
-									Review
-								</motion.button>
+								{!props.isReviewed && (
+									<button
+										onClick={() => {
+											setShowReview(true);
+										}}
+										className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]"
+									>
+										Review
+									</button>
+								)}
 							</div>
 						)}
 					{props.status[props.status.length - 1].actionType.find(
@@ -662,18 +781,17 @@ export function Action(props: actionProps) {
 												</p>
 											</Link>
 											<div className="flex justify-center">
-												<motion.button
-													whileTap={{ scale: 0.85 }}
+												<button
 													onClick={() => {
 														handleConfirm();
 														setShowStatus(true);
-														setStatus("confirm");
+														setStatus("success");
 														setDescription("lorem");
 													}}
 													className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]"
 												>
 													Confirm
-												</motion.button>
+												</button>
 											</div>
 										</div>
 									)}
@@ -699,9 +817,21 @@ export function Action(props: actionProps) {
 					description={description}
 				/>
 				<Review
+					setReviewed={props.setReviewed}
+					setTitleReview={props.setTitleReview}
+					setDescReview={props.setDescReview}
+					setRatingReview={props.setRatingReview}
 					visible={showReview}
 					onClose={handleOnCloseReview}
 					setShowReview={setShowReview}
+				/>
+				<PaymentPopUp
+					statusPayment={statusPayment}
+					setStatusPayment={setStatusPayment}
+					visible={showPaymentPopUp}
+					onClose={handleOnClosePaymentPopUp}
+					setShowPayment={setShowPaymentPopUp}
+					handlePayment={handlePayment}
 				/>
 			</div>
 		</div>
@@ -1291,9 +1421,11 @@ export function ShowDocument(props: documentProps) {
 						initial={{ scale: 0.9, opacity: 0 }}
 						animate={{ scale: 1, opacity: 1 }}
 						ref={wrapperRef}
-						className="flex space-y-6 flex-col items-center justify-center py-12  bg-white rounded-[1.5625rem] w-[34.5625rem] overflow-hidden  drop-shadow-landingShado"
+						className="flex space-y-6 flex-col items-center justify-center   bg-white rounded-[1.5625rem] w-[34.5625rem] overflow-hidden  drop-shadow-landingShado"
 					>
-						<div className="h-10px w-full border-b"></div>
+						<div className="h-[3rem] w-full border-b flex  items-center">
+							<p className=" ml-8">Additional Information</p>
+						</div>
 
 						<p className="text-[0.75rem] w-[29.9375rem] break-all">
 							{props.extraInfo}
@@ -1361,6 +1493,11 @@ export function Complain(props: complainProps) {
 		setAtt(file);
 	};
 
+	function handleSubmit(e: any) {
+		e.preventDefault();
+		props.setShowComplain(false);
+	}
+
 	return (
 		<div className="">
 			{props.visible && (
@@ -1375,11 +1512,11 @@ export function Complain(props: complainProps) {
 							<p className="text-[1.0625rem] ml-6">Complain</p>
 						</div>
 						<div className="flex justify-center">
-							<form className="mt-2">
+							<form action="" onSubmit={handleSubmit} className="mt-2">
 								<p className="text-[0.625rem] text-gold">Category</p>
 								<Dropdown
-									styleClass="text-gold text-[15px] flex gap-[36px] mt-1 w-full "
-									styleClassTag="py-[3px] border-2 border-gold rounded-[7px] w-full"
+									styleClass=" text-gold text-[15px] flex gap-[36px] mt-1 w-full "
+									styleClassTag="py-[3px] border border-gold rounded-[7px] w-full"
 									styleText="w-[200px]"
 									data={[
 										{ value: "Type1", label: "Type1" },
@@ -1396,7 +1533,7 @@ export function Complain(props: complainProps) {
 								></Dropdown>
 								<p className="mt-2 text-[0.625rem] text-gold ">Description</p>
 								<textarea
-									form="biodata-Form"
+									required
 									id="description"
 									placeholder=""
 									value={description}
@@ -1425,7 +1562,7 @@ export function Complain(props: complainProps) {
 										}}
 										className="my-3  rounded-full border-[1px] border-gold bg-gold px-8 py-1 text-[13px] text-white hover:border-goldhov hover:bg-goldhov"
 									>
-										Save
+										Send
 									</button>
 								</div>
 							</form>
@@ -1441,6 +1578,10 @@ interface reviewProps {
 	visible: boolean;
 	onClose: (value: boolean) => void;
 	setShowReview: (value: boolean) => void;
+	setReviewed: (value: boolean) => void;
+	setTitleReview: (value: string) => void;
+	setDescReview: (value: string) => void;
+	setRatingReview: (value: number) => void;
 }
 export function Review(props: reviewProps) {
 	function useOutsideAlerter(ref: any) {
@@ -1469,9 +1610,16 @@ export function Review(props: reviewProps) {
 		setDescription(event.target.value);
 	};
 	const [hover, setHover] = useState(-1);
-
 	const [rating, setRating] = useState(0);
+	console.log(rating);
 
+	//
+	const handleSubmitReview = () => {
+		props.setReviewed(true);
+		props.setTitleReview(tittle);
+		props.setDescReview(description);
+		props.setRatingReview(rating);
+	};
 	return (
 		<div className="">
 			{props.visible && (
@@ -1486,21 +1634,29 @@ export function Review(props: reviewProps) {
 							<p className="text-[1.0625rem] ml-6">Review</p>
 						</div>
 						<div className="flex justify-center">
-							<form className="mt-2 w-[31.2rem]">
+							<form
+								onSubmit={(e) => {
+									e.preventDefault();
+									handleSubmitReview();
+									props.setShowReview(false);
+								}}
+								className="mt-2 w-[31.2rem]"
+							>
 								<InputPopUp
-								isWmax
+									isWmax
 									value={tittle}
 									required
 									type={"text"}
 									title={"Title"}
 									onChange={handleChangeTittle}
-									className="bg-white"
+									className="bg-white "
 									onKeyDown={(e) => {
 										if (e.key === "Enter") {
 											e.preventDefault();
 										}
 									}}
 								></InputPopUp>
+
 								<p className="mt-2 text-[0.625rem] text-gold ">Description</p>
 								<textarea
 									form="biodata-Form"
@@ -1516,20 +1672,22 @@ export function Review(props: reviewProps) {
 										}
 									}}
 								></textarea>
-								<p className="mt-2 text-[0.625rem] text-gold ">Rating</p>
+								<p className="mt-2 text-[0.625rem] mb-1 text-gold ">Rating</p>
 								<Rating
 									name="hover-feedback"
 									value={rating}
 									precision={0.5}
-									onChange={(event, newValue:any) => {
+									onChange={(event, newValue: any) => {
 										setRating(newValue);
 									}}
 									onChangeActive={(event, newHover) => {
 										setHover(newHover);
 									}}
-									icon={<CircleIcon fontSize="inherit" sx={{ color: "black" }} />}
+									icon={
+										<CircleIcon fontSize="small" sx={{ color: "#B17C3F" }} />
+									}
 									emptyIcon={
-										<CircleIcon style={{ opacity: 0.55 }} fontSize="inherit" />
+										<CircleIcon style={{ opacity: 0.55 }} fontSize="small" />
 									}
 								/>
 
@@ -1542,6 +1700,197 @@ export function Review(props: reviewProps) {
 										className="my-3  rounded-full border-[1px] border-gold bg-gold px-8 py-1 text-[13px] text-white hover:border-goldhov hover:bg-goldhov"
 									>
 										Save
+									</button>
+								</div>
+							</form>
+						</div>
+					</motion.div>
+				</div>
+			)}
+		</div>
+	);
+}
+
+interface paymentProps {
+	visible: boolean;
+	onClose: (value: boolean) => void;
+	setShowPayment: (value: boolean) => void;
+	handlePayment: () => void;
+	statusPayment: StatusItem[];
+	setStatusPayment: (value: StatusItem[]) => void;
+}
+export function PaymentPopUp(props: paymentProps) {
+	const [selectedBank, setSelectedBank] = useState(
+		bank_account.length > 0 ? bank_account[0] : null,
+	);
+
+	const [isListBankOpen, setListBankOpen] = useState(false);
+
+	function useOutsideAlerter(ref: any) {
+		useEffect(() => {
+			function handleClickOutside(event: any) {
+				if (ref.current && !ref.current.contains(event.target)) {
+					props.setShowPayment(false);
+				}
+			}
+			document.addEventListener("mousedown", handleClickOutside);
+			return () => {
+				document.removeEventListener("mousedown", handleClickOutside);
+			};
+		}, [ref]);
+	}
+	const wrapperRef = useRef(null);
+	useOutsideAlerter(wrapperRef);
+	return (
+		<div className="">
+			{props.visible && (
+				<div className="flex z-20 justify-center items-center  h-screen w-screen fixed left-0 top-20">
+					<motion.div
+						initial={{ scale: 0.9, opacity: 0 }}
+						animate={{ scale: 1, opacity: 1 }}
+						ref={wrapperRef}
+						className=" absolute bg-white rounded-[1.5625rem] pb-8 w-[34.5625rem] overflow-hidden  drop-shadow-landingShado"
+					>
+						<div className="h-[3.3125rem] flex items-center border-b">
+							<p className="text-[1.0625rem] ml-6">Pay</p>
+						</div>
+						<div className="flex justify-center">
+							<form
+								onSubmit={(e) => {
+									e.preventDefault();
+									props.handlePayment();
+									props.setShowPayment(false);
+								}}
+								className="mt-2 w-[31.2rem]"
+							>
+								<p className="mb-1 mt-1 text-gold text-[0.625rem]">Pay for</p>
+								<div className="">
+									<p className="font-medium text-[0.625rem]">
+										{props.statusPayment[props.statusPayment.length - 1].tittle}
+									</p>
+									<p className="w-[31.2rem] break-all text-[0.5rem] font-normal text-[#4B4B4B]">
+										{
+											props.statusPayment[props.statusPayment.length - 1]
+												.description
+										}
+									</p>
+									<p className="text-[0.875rem] font-semibold">
+										{"Rp  " +
+											Number(
+												props.statusPayment[props.statusPayment.length - 1]
+													.payment,
+											).toLocaleString("en-Us") +
+											",00"}
+									</p>
+								</div>
+
+								<p className="mb-1 mt-3 text-gold text-[0.625rem]">
+									Your Account
+								</p>
+								{bank_account.length > 0 ? (
+									<div>
+										<div
+											onClick={() => {
+												setListBankOpen(!isListBankOpen);
+											}}
+											className="cursor-pointer items-center justify-between px-4 flex w-[31.2rem] hover:bg-[#e4d1bc] h-[5.8125rem] border border-gold rounded-md"
+										>
+											<div className="flex items-center space-x-2 ">
+												<PaymentTwoToneIcon
+													sx={{ color: "#B17C3F", fontSize: 70 }}
+												/>
+												<div>
+													<p className="text-[0.625rem] font-medium">
+														{selectedBank?.bank_name}
+													</p>
+													<p className="text-[0.5rem]">
+														{selectedBank?.bank_number}
+													</p>
+												</div>
+											</div>
+											<div className="h-fit w-fit ">
+												<svg
+													width="24"
+													height="24"
+													viewBox="0 0 24 24"
+													fill="none"
+													xmlns="http://www.w3.org/2000/svg"
+												>
+													<path
+														d="M7 10L12 15L17 10"
+														stroke="#B17C3F"
+														strokeWidth="2.5"
+														strokeLinecap="round"
+														strokeLinejoin="round"
+													/>
+												</svg>
+											</div>
+										</div>
+										{isListBankOpen && (
+											<ul className="absolute bg-white mt-1 w-[31.2rem] thin-scrollbar max-h-[10rem] h- overflow-y-scroll p-2 border drop-shadow-md rounded-md ">
+												{bank_account.map((item, index) => {
+													return (
+														<li
+															key={index}
+															onClick={() => {
+																setSelectedBank(item);
+																setListBankOpen(!isListBankOpen);
+															}}
+															className="cursor-pointer hover:bg-[#e4d1bc] pl-6 items-center py-1 rounded-md flex "
+														>
+															<div>
+																<PaymentTwoToneIcon
+																	sx={{ color: "#B17C3F", fontSize: 40 }}
+																/>
+															</div>
+															<div className="ml-2">
+																<p className="text-[0.625rem] font-medium">
+																	{item.bank_name}
+																</p>
+																<p className="text-[0.5rem]">
+																	{item.bank_number}
+																</p>
+															</div>
+														</li>
+													);
+												})}
+											</ul>
+										)}
+										<p className="mb-1 mt-3 text-gold text-[0.625rem]">
+											Transaction Password
+										</p>
+										<InputPopUp
+											isWmax
+											required
+											type="password"
+											// title="Transaction Password"
+											// value={tittle}
+											// onChange={handleTitleChange}
+											className="bg-white "
+											onKeyDown={(e) => {
+												if (e.key === "Enter") {
+													e.preventDefault();
+												}
+											}}
+										></InputPopUp>
+									</div>
+								) : (
+									<div className="w-[31.2rem] flex justify-center">
+										<div>
+											<p className="text-[0.7rem] text-gray-400 flex justify-center">{`You Don't Have Bank Account`}</p>
+											<p className="text-[0.7rem] flex justify-center text-gray-400 ">
+												Add Bank Account To Pay
+											</p>
+										</div>
+									</div>
+								)}
+
+								<div className="mt-10 flex w-full justify-end ">
+									<button
+										type="submit"
+										className="my-3  rounded-full border-[1px] border-gold bg-gold px-8 py-1 text-[13px] text-white hover:border-goldhov hover:bg-goldhov"
+									>
+										Pay
 									</button>
 								</div>
 							</form>

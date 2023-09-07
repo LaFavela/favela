@@ -8,6 +8,7 @@ interface StatusProps {
 	status: string;
 	tittle: string;
 	description: string;
+	statusHandle?: () => void;
 }
 export default function Status(props: StatusProps) {
 	function useOutsideAlerter(ref: any) {
@@ -66,15 +67,13 @@ export default function Status(props: StatusProps) {
 						>
 							{props.status === "confirm" && (
 								<div className="space-x-2 mr-6">
-									<button
-										onClick={() => {
-											props.setShowStatus(false);
-										}}
-										className="w-[5.6875rem] h-[1.875rem] border-[#FAB566] border rounded-[1.5rem] text-[#FAB566] text-[0.75rem] hover:bg-[#f7f7f7]"
-									>
-										Cancel
-									</button>
-									<button className="w-[5.6875rem] h-[1.875rem] bg-[#FAB566] rounded-[1.5rem] text-white text-[0.75rem] hover:bg-[#d89a53]">
+									
+									<button 
+									onClick={() =>{
+										props.statusHandle();
+										props.setShowStatus(!props.visible)
+									}}
+									className="w-[5.6875rem] h-[1.875rem] bg-[#FAB566] rounded-[1.5rem] text-white text-[0.75rem] hover:bg-[#d89a53]">
 										Confirm
 									</button>
 								</div>
