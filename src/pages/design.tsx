@@ -13,50 +13,16 @@ import { supabase } from "@/lib/supabase";
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
 import { useRouter } from "next/router";
 import { Database } from "@/types";
+import Link from "next/link";
+import DesignProduct from "./designProduct";
 
 export const getServerSideProps = async (
 	context: GetServerSidePropsContext,
 ) => {
 	context.res.setHeader("Cache-Control", "s-maxage=20, stale-while-revalidate");
 
-	const { data: profile } = await supabase
-		.from("profiles")
-		.select("*")
-		.eq("username", "asdasd")
-		.single();
-
-	if (profile == null) {
-		return {
-			notFound: true,
-		};
-	}
-
-	const { data: role } = await supabase
-		.from("roles")
-		.select("role_name")
-		.eq("id", profile?.role_id)
-		.single();
-
-	const { data: profile_detail, error: errorProfile_detail } = await supabase
-		.from("profile_detail")
-		.select("*")
-		.eq("user_id", profile?.id)
-		.single();
-
-	const { data: provinsi } = await supabase
-		.from("provinsi")
-		.select("*")
-		.eq("id", profile_detail?.province)
-		.single();
-
-	const { data: kota, error } = await supabase
-		.from("kabupaten_kota")
-		.select("*")
-		.eq("id", profile_detail?.city)
-		.single();
-
 	return {
-		props: { profile, profile_detail, role, provinsi, kota },
+		props: {},
 	};
 };
 
@@ -171,9 +137,61 @@ export const designData = [
 	},
 ];
 
+type Style = Database["public"]["Tables"]["property_style"]["Row"];
+type Type = Database["public"]["Tables"]["property_type"]["Row"];
+type Design = Database["public"]["Tables"]["design"]["Row"];
+
 export default function Design({}: InferGetServerSidePropsType<
 	typeof getServerSideProps
 >) {
+	const [property_type, setProperty_type] = useState<Type[]>([]);
+	const [property_style, setProperty_style] = useState<Style[]>([]);
+	const [design, setDesign] = useState<Design[]>([]);
+
+	useEffect(() => {
+		const fetchData = async () => {
+			const { data: provinsi } = await supabase.from("provinsi").select("*");
+			const { data: kota } = await supabase.from("kabupaten_kota").select("*");
+			const { data: property_type } = await supabase
+				.from("property_type")
+				.select("*");
+			const { data: property_style } = await supabase
+				.from("property_style")
+				.select("*");
+
+			const { data: design } = await supabase.from("design").select("*");
+
+			// Assuming setProperty_type and setProperty_style are similar functions
+			if (design) setDesign(design);
+			if (property_type) setProperty_type(property_type);
+			if (property_style) setProperty_style(property_style);
+		};
+
+		fetchData();
+	}, []); // Remov
+
+	const getTags = (type: number, style: number) => {
+		const tag: string[] | undefined = [];
+		property_type.forEach((element) => {
+			if (element.id === type) tag.push(element.type_name!);
+		});
+		property_style.forEach((element) => {
+			if (element.id === style) tag.push(element.style_name!);
+		});
+		return tag;
+	};
+
+	const getTag = (type: number, style: number) => {
+		const tag: string[] | undefined = [];
+		property_type.forEach((element) => {
+			if (element.id === type) tag.push(element.type_name!);
+		});
+		property_style.forEach((element) => {
+			if (element.id === style) tag.push(element.style_name!);
+		});
+		return tag;
+	};
+
 	const [hover, setHover] = useState(false);
 	const [index, setIndex] = useState(-1);
 	const [isPressed, setIsPressed] = useState(false);
@@ -654,11 +672,12 @@ export default function Design({}: InferGetServerSidePropsType<
 
 				<div className="max-w-max  pt-5">
 					<div className=" flex flex-grow flex-row flex-wrap justify-center gap-[1.1rem]">
-						{designData.slice(0, visibleItems).map((designerData, idx) => {
+						{design.slice(0, visibleItems).map((designerData, idx) => {
 							return (
+								<Link 
+								key={idx} href={`/designProduct?id=${designerData.id}`}>
 								<div
-									key={idx}
-									className={`relative   rounded-[1.5625rem] transition-all overflow-hidden duration-300 h-[21rem] w-[15.46875rem]`}
+									className={`relative rounded-[1.5625rem] transition-all overflow-hidden duration-300 h-[21rem] w-[15.46875rem]`}
 									onMouseEnter={() => {
 										setHover(true);
 										setIndex(idx);
@@ -671,7 +690,11 @@ export default function Design({}: InferGetServerSidePropsType<
 									<div className="relative h-full w-full flex-auto">
 										<Image
 											className="rounded-3xl"
-											src={designerData.img}
+											src={
+												designerData.preview_image !== null
+													? designerData.preview_image[0]
+													: "https://via.placeholder.com/400"
+											}
 											alt={""}
 											fill={true}
 											style={{ objectFit: "cover" }}
@@ -710,21 +733,25 @@ export default function Design({}: InferGetServerSidePropsType<
 															: " text-[0.875rem] text-black truncate px-4 w-[13.125rem]"
 													}`}
 												>
-													{designerData.nama}
+													{designerData.name !== null
+														? designerData.name
+														: "No Name"}
 												</p>
 											</span>
 											{hover && index == idx && (
 												<span className="flex   items-center space-x-1 font-semibold">
 													<p className=" text-[0.9375rem] mt-[0.150rem]  text-black">
-														{"Rp. " + calculate(designerData.price)}
+														{"Rp" + calculate(designerData.price)}
 													</p>
 												</span>
 											)}
 										</div>
 										{hover && index == idx && (
 											<div className="-pt-2 mb-2 space-y-1">
-												<p className="text-[0.75rem]">{designerData.type}</p>
-												<ShowRating rate={designerData.rating}></ShowRating>
+												<p className="text-[0.75rem]">{}</p>
+												<ShowRating
+													rate={designerData.bedroom_count}
+												></ShowRating>
 											</div>
 										)}
 										<div
@@ -736,19 +763,25 @@ export default function Design({}: InferGetServerSidePropsType<
 										}
                     `}
 										>
-											{designerData.tag.slice(0, 2).map((tag, idx) => {
-												return (
-													<div
-														key={idx}
-														className="transition-all duration-300 rounded-full border-[#B17C3F] border-[0.0001rem] px-2"
-													>
-														<p className="font-medium">{tag}</p>
-													</div>
-												);
-											})}
+											{getTags(
+												designerData?.property_type!,
+												designerData?.property_style!,
+											)
+												.slice(0, 2)
+												.map((tag, idx) => {
+													return (
+														<div
+															key={idx}
+															className="transition-all duration-300 rounded-full border-[#B17C3F] border-[0.0001rem] px-2"
+														>
+															<p className="font-medium">{tag}</p>
+														</div>
+													);
+												})}
 										</div>
 									</motion.div>
 								</div>
+								</Link>
 							);
 						})}
 					</div>
@@ -756,7 +789,7 @@ export default function Design({}: InferGetServerSidePropsType<
 			</div>
 
 			<div className=" mt-10 flex items-center justify-center">
-				{visibleItems < designData.length && (
+				{visibleItems < design.length && (
 					<motion.button
 						whileTap={{ scale: 0.9 }}
 						className=" py-1 px-4 rounded-3xl border-2 border-[#B17C3F] bg-white text-[0.8rem] text-[#B17C3F] duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] font-semibold hover:text-white"
