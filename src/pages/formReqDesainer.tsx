@@ -1257,7 +1257,7 @@ export default function FormDesainer() {
 												<div className="relative">
 													<Dropdown
 														form="biodata-Form"
-														styleClass="text-gold text-[15px] flex gap-[187px] mt-1 w-full pr-7"
+														styleClass="text-gold text-[15px] flex gap-[187px] mt-1 w-full pr-7 pl-[94px]"
 														styleClassTag="border-2 border-gold rounded-[7px] w-full py-[2px]"
 														title=""
 														data={propertyTypeData}
@@ -1311,7 +1311,7 @@ export default function FormDesainer() {
 												<div className="relative">
 													<Dropdown
 														form="biodata-Form"
-														styleClass="text-gold text-[15px] flex gap-[187px] mt-1 w-full pr-7"
+														styleClass="text-gold text-[15px] flex gap-[187px] mt-1 w-full pr-7 pl-[94px]"
 														styleClassTag="border-2 border-gold rounded-[7px] w-full py-[2px]"
 														title=""
 														data={propertyStyleData}

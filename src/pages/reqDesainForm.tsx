@@ -10,6 +10,7 @@ import { properti } from "./designProduct";
 import { supabase } from "@/lib/supabase";
 import { v4 } from "uuid";
 import { set } from "react-hook-form";
+import { empty } from "@prisma/client/runtime/library";
 
 export default function SellDesignForm() {
 	const inputRef = useRef<HTMLInputElement>(null);
@@ -169,10 +170,9 @@ export default function SellDesignForm() {
 
 	const handleSubmit = async (event: any) => {
 		event.preventDefault();
-
 		const uuid = v4();
 		const landData: string[] = [];
-		const awaitLand = await Promise.all(
+		const awaitLand = await Promise.allSettled(
 			LandImage.map(async (item) => {
 				const fileUuid = v4();
 				let blob = await fetch(item).then((r) => r.blob());
@@ -184,12 +184,10 @@ export default function SellDesignForm() {
 					.getPublicUrl(`${uuid}/land/${fileUuid}`).data;
 				landData.push(publicUrl);
 			}),
-		).then(() => {
-			setLandImage(landData);
-		});
+		)
 
 		const referenceData: string[] = [];
-		const awaitReference = await Promise.all(
+		const awaitReference = await Promise.allSettled(
 			ReferenceImage.map(async (item) => {
 				const fileUuid = v4();
 				let blob = await fetch(item).then((r) => r.blob());
@@ -202,11 +200,7 @@ export default function SellDesignForm() {
 				referenceData.push(publicUrl);
 				console.log(preview, error);
 			}),
-		).then(() => {
-			setReferenceImage(referenceData);
-		});
-
-		console.log(ReferenceImage);
+		)
 
 		const { data: request } = await supabase
 			.from("request_form")
@@ -216,11 +210,11 @@ export default function SellDesignForm() {
 					land_size: landSize,
 					city: city,
 					deadline: deadline,
-					land_image: LandImage,
+					land_image: landData,
 					information: additionalInformation,
 					property_type: propertyType,
 					province: province,
-					reference_image: ReferenceImage,
+					reference_image: referenceData,
 					style: style,
 					sun_orientation: sunOrientation,
 					wind_orientation: windOrientation,
