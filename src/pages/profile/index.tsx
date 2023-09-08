@@ -14,7 +14,6 @@ import { toCapitalize } from "@/tools/uppercase";
 import { useRouter } from "next/router";
 import { Database } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
-import { type } from "os";
 
 export const getServerSideProps = async (
 	context: GetServerSidePropsContext,
@@ -249,7 +248,6 @@ export default function Profile({
 		"asudbave6qtdb783yehdn88udjjdhdn",
 		"wertyuiohvvbj",
 	]);
-
 
 	const handleFollower = () => {
 		setFollower([...follower, userVisitor.id]);
@@ -686,7 +684,7 @@ export default function Profile({
 							<div className="flex flex-col gap-5 px-12 py-10">
 								<p className="text-[25px] font-semibold">Design</p>
 
-								{design?.slice(0,visibleItemDesign).map((design, index) => {
+								{design?.slice(0, visibleItemDesign).map((design, index) => {
 									return (
 										<Link
 											href={`/designProduct`}
@@ -891,7 +889,11 @@ export default function Profile({
 										<div
 											className={`container flex  max-w-[791px] 
                     
-                    ${index===experience.length-1 ? "bg-white" : "border-b-2 border-gold bg-white"}`}
+                    ${
+											index === experience.length - 1
+												? "bg-white"
+												: "border-b-2 border-gold bg-white"
+										}`}
 											key={index}
 										>
 											<span>
@@ -1118,13 +1120,15 @@ export default function Profile({
 						<div className="flex flex-col gap-5 px-12 py-10">
 							<p className="text-[25px] font-semibold">Review</p>
 
-							{reviewData.slice(0,visibleItemReview).map((review, index) => {
+							{reviewData.slice(0, visibleItemReview).map((review, index) => {
 								return (
 									<div
 										className={`container flex  max-w-full  gap-x-6 
                     
                     ${
-											index==reviewData.length-1 ? "bg-white" : "border-b-2 border-gray-200 bg-white"
+											index == reviewData.length - 1
+												? "bg-white"
+												: "border-b-2 border-gray-200 bg-white"
 										}`}
 										key={index}
 									>
@@ -1218,28 +1222,28 @@ export default function Profile({
 								);
 							})}
 							{reviewData.length > 3 && (
-									<div className="flex justify-center cursor-pointer ">
-										{visibleItemReview < reviewData.length ? (
-											<p
-												className="text-[#B17C3F] hover:bg-gray-100 rounded-lg p-1 px-2 text-[0.8rem] mt-4"
-												onClick={() => {
-													setVisibleItemReview(visibleItemReview + 3);
-												}}
-											>
-												Show More
-											</p>
-										) : (
-											<p
-												className="text-[#B17C3F] hover:bg-gray-100 rounded-lg p-1 px-2 text-[0.8rem] mt-4"
-												onClick={() => {
-													setVisibleItemReview(3);
-												}}
-											>
-												Show Fewer
-											</p>
-										)}
-									</div>
-								)}
+								<div className="flex justify-center cursor-pointer ">
+									{visibleItemReview < reviewData.length ? (
+										<p
+											className="text-[#B17C3F] hover:bg-gray-100 rounded-lg p-1 px-2 text-[0.8rem] mt-4"
+											onClick={() => {
+												setVisibleItemReview(visibleItemReview + 3);
+											}}
+										>
+											Show More
+										</p>
+									) : (
+										<p
+											className="text-[#B17C3F] hover:bg-gray-100 rounded-lg p-1 px-2 text-[0.8rem] mt-4"
+											onClick={() => {
+												setVisibleItemReview(3);
+											}}
+										>
+											Show Fewer
+										</p>
+									)}
+								</div>
+							)}
 						</div>
 					</div>
 				</div>

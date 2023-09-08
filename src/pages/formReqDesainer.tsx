@@ -35,6 +35,8 @@ export default function FormDesainer() {
 	const [kotaData, setKotaData] = useState<Dropdown[]>([]);
 	const [propertyTypeData, setPropertyTypeData] = useState<Dropdown[]>([]);
 	const [propertyStyleData, setPropertyStyleData] = useState<Dropdown[]>([]);
+	
+	const [username, setUsername] = useState<string>("");
 
 	useEffect(() => {
 		const init = async () => {
@@ -46,6 +48,8 @@ export default function FormDesainer() {
 				.single();
 			setFirstName(profile?.first_name as string);
 			setLastName(profile?.last_name as string);
+			
+			setUsername(profile?.username as string);
 
 			const { data: profile_detail } = await supabase
 				.from("profile_detail")
@@ -1227,7 +1231,7 @@ export default function FormDesainer() {
 									</p>
 								</div>
 								<div className="pr-5 flex justify-end border-t-2">
-									<Link href={"/profile"}>
+									<Link href={`/profile?u=${username}`}>
 										<button
 											onClick={openConfirmPopUp}
 											type="submit"
