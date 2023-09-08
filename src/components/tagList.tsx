@@ -71,19 +71,22 @@ export const province = [
 	},
 ];
 
-export const region = [
-  {
-    city : [
-      {
-        label : ["Surabaya","Malang","Lombok","Mataram","Jakarta" ],
-        value : ["Surabaya","Malang","Lombok","Mataram","Jakarta" ] 
-      }
-    ],
-    province : [
-      {
-        label : ["Jawa Timur","Jawa Barat","NTB","DKI Jakarta" ],
-        value : ["Jawa Timur","Jawa Barat","NTB","DKI Jakarta" ] 
-      }
-    ],
-  }
-];
+// export const region = {
+// 	city: [
+// 		{
+// 			label: ["Surabaya", "Malang", "Lombok", "Mataram", "Jakarta"],
+// 			value: ["Surabaya", "Malang", "Lombok", "Mataram", "Jakarta"],
+// 		},
+// 	],
+// 	province: [
+// 		{
+// 			label: ["Jawa Timur", "Jawa Barat", "NTB", "DKI Jakarta"],
+// 			value: ["Jawa Timur", "Jawa Barat", "NTB", "DKI Jakarta"],
+// 		},
+// 	],
+// };  
+
+export const apalah = {
+	city:{kabupaten:"Jakarta", id:1},
+	province: {provinsi:"DKI Jakarta", id:1},
+};

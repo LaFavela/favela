@@ -7,7 +7,7 @@ import Popup from "reactjs-popup";
 import { motion, AnimatePresence } from "framer-motion";
 import "reactjs-popup/dist/index.css";
 import ShowRating from "../components/rating";
-import { type, style, province, region } from "@/components/tagList";
+import { type, style, province, apalah } from "@/components/tagList";
 import { supabase } from "@/lib/supabase";
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
 import { useRouter } from "next/router";
@@ -275,37 +275,47 @@ export const designerData = [
 	},
 ];
 
+interface Region {
+	provinsi: Province[];
+	kota: City[];
+}
+
 export default function Designer({
 	profile,
 	profile_detail,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-	const [provinsi, setProvinsi] = useState<Province[]>([]);
-	const [kota, setKota] = useState<City[]>([]);
 	const [property_type, setProperty_type] = useState<Type[]>([]);
 	const [property_style, setProperty_style] = useState<Style[]>([]);
 
+	const [region, setRegion] = useState<Region>();
+	const [filteredProvinces, setFilteredProvinces] = useState<Province[]>([]);
+	const [filteredCities, setFilteredCities] = useState<City[]>([]);
+	console.log(region);
+
 	useEffect(() => {
-		const fetch = async () => {
-			// const { data: provinsi } = await supabase.from("provinsi").select("*");
-			// if (provinsi) setProvinsi(provinsi);
-
-			// const { data: kota, error } = await supabase
-			// 	.from("kabupaten_kota")
-			// 	.select("*");
-			// if (kota) setKota(kota);
-
+		const fetchData = async () => {
+			const { data: provinsi } = await supabase.from("provinsi").select("*");
+			const { data: kota } = await supabase.from("kabupaten_kota").select("*");
 			const { data: property_type } = await supabase
 				.from("property_type")
 				.select("*");
-			if (property_type) setProperty_type(property_type);
-
 			const { data: property_style } = await supabase
 				.from("property_style")
 				.select("*");
+
+			if (provinsi && kota) {
+				setRegion({ provinsi: provinsi, kota: kota });
+				setFilteredProvinces(provinsi); // Initialize filteredProvinces with all provinces
+				setFilteredCities(kota); // Initialize filteredCities with all cities
+			}
+
+			// Assuming setProperty_type and setProperty_style are similar functions
+			if (property_type) setProperty_type(property_type);
 			if (property_style) setProperty_style(property_style);
 		};
-		fetch();
-	}, []);
+
+		fetchData();
+	}, []); // Remov
 
 	const getTag = (type: number[], style: number[]) => {
 		const tag: string[] | undefined = [];
@@ -370,6 +380,7 @@ export default function Designer({
 	};
 
 	const [selectedTags, setSelectedTags] = useState<string[]>([]);
+	const [selectedStyleTag, setSelectedStyleTag] = useState<string[]>([]);
 
 	const handleTagClick = (value: string) => {
 		if (selectedTags.includes(value)) {
@@ -379,15 +390,24 @@ export default function Designer({
 		}
 	};
 
-	const [selectedRegion, setSelectedRegion] = useState<{ [key: string]: any }>(
-		{},
-	);
+	const handleStyleTag = (value: string) => {
+		if (selectedStyleTag.includes(value)) {
+			setSelectedStyleTag(selectedStyleTag.filter((tag) => tag !== value));
+		} else {
+			setSelectedStyleTag([...selectedStyleTag, value]);
+		}
+	};
+
+	const [selectedRegion, setSelectedRegion] = useState<{
+		[key: string]: boolean;
+	}>({});
+	console.log(selectedRegion);
 
 	const handleTagDelete = (value: string) => {
 		const updatedTags = selectedTags.filter((tag) => tag !== value);
 		setSelectedTags(updatedTags);
 	};
-	const handleTagDelete2 = (key: string) => {
+	const handleTagDelete2 = (key: any) => {
 		// Create a copy of the selectedRegion object
 		const updatedRegion = { ...selectedRegion };
 
@@ -399,10 +419,23 @@ export default function Designer({
 	};
 
 	const [value, setValue] = useState("");
-	const onSearch = (searchTerm: any) => {
+	const onSearch = (searchTerm: string) => {
 		setValue(searchTerm);
 		setShowSuggestions(false);
 		console.log("search", searchTerm);
+
+		// Filter provinces based on the query
+		const filteredProvs = region?.provinsi.filter((prov) =>
+			prov.provinsi.toLowerCase().includes(searchTerm.toLowerCase()),
+		);
+
+		// Filter cities based on the query
+		const filteredCity = region?.kota.filter((city) =>
+			city.kabupaten.toLowerCase().includes(searchTerm.toLowerCase()),
+		);
+
+		setFilteredProvinces(filteredProvs || []);
+		setFilteredCities(filteredCity || []);
 	};
 
 	const [showSuggestions, setShowSuggestions] = useState(false);
@@ -489,36 +522,38 @@ export default function Designer({
 									</div>
 									<div className="flex flex-row gap-2">
 										<AnimatePresence>
-										{Object.keys(selectedRegion).map((tag, index) => (
-												<motion.li
-													initial={{ scale: 0 }}
-													animate={{ scale: 1 }}
-													exit={{ scale: 0 }}
-													className="flex h-[30px] max-w-fit flex-row justify-between rounded-full bg-[#E4D1BC]"
-													key={index}
-												>
-													<span className="ml-2 mt-[7px] pr-2 text-[11px] text-gold">
-														{tag}
-													</span>
-													<button
-														className="mr-2 mt-[3px] "
-														onClick={() => handleTagDelete2(tag)}
+											{Object.entries(selectedRegion).map(
+												([tag, isSelected], index) => (
+													<motion.li
+														initial={{ scale: 0 }}
+														animate={{ scale: 1 }}
+														exit={{ scale: 0 }}
+														className="flex h-[30px] max-w-fit flex-row justify-between rounded-full bg-[#E4D1BC]"
+														key={index}
 													>
-														<svg
-															width="15"
-															height="16"
-															viewBox="0 0 15 16"
-															fill="none"
-															xmlns="http://www.w3.org/2000/svg"
+														<span className="ml-2 mt-[7px] pr-2 text-[11px] text-gold">
+															{tag}
+														</span>
+														<button
+															className="mr-2 mt-[3px] "
+															onClick={() => handleTagDelete2(tag)}
 														>
-															<path
-																d="M2.18063 13.0492C1.49841 12.3903 0.954256 11.6021 0.579906 10.7306C0.205556 9.85919 0.00851124 8.9219 0.000269691 7.97348C-0.00797185 7.02505 0.172755 6.08449 0.531904 5.20666C0.891053 4.32882 1.42143 3.53131 2.09209 2.86065C2.76276 2.18999 3.56027 1.65961 4.4381 1.30046C5.31593 0.941309 6.2565 0.760583 7.20492 0.768824C8.15335 0.777066 9.09063 0.97411 9.96209 1.34846C10.8335 1.72281 11.6217 2.26697 12.2806 2.94918C13.5818 4.29634 14.3017 6.10064 14.2854 7.97348C14.2692 9.84631 13.518 11.6378 12.1936 12.9622C10.8693 14.2865 9.07776 15.0377 7.20492 15.054C5.33209 15.0703 3.52779 14.3503 2.18063 13.0492ZM3.18777 12.042C4.26 13.1143 5.71426 13.7166 7.23063 13.7166C8.74699 13.7166 10.2013 13.1143 11.2735 12.042C12.3457 10.9698 12.9481 9.51555 12.9481 7.99918C12.9481 6.48282 12.3457 5.02856 11.2735 3.95633C10.2013 2.88409 8.74699 2.28172 7.23063 2.28172C5.71426 2.28172 4.26 2.88409 3.18777 3.95633C2.11554 5.02856 1.51317 6.48282 1.51317 7.99918C1.51317 9.51555 2.11554 10.9698 3.18777 12.042ZM10.2592 5.97776L8.23777 7.99918L10.2592 10.0206L9.25206 11.0278L7.23063 9.00633L5.2092 11.0278L4.20206 10.0206L6.22349 7.99918L4.20206 5.97776L5.2092 4.97061L7.23063 6.99204L9.25206 4.97061L10.2592 5.97776Z"
-																fill="#B17C3F"
-															/>
-														</svg>
-													</button>
-												</motion.li>
-											))}
+															<svg
+																width="15"
+																height="16"
+																viewBox="0 0 15 16"
+																fill="none"
+																xmlns="http://www.w3.org/2000/svg"
+															>
+																<path
+																	d="M2.18063 13.0492C1.49841 12.3903 0.954256 11.6021 0.579906 10.7306C0.205556 9.85919 0.00851124 8.9219 0.000269691 7.97348C-0.00797185 7.02505 0.172755 6.08449 0.531904 5.20666C0.891053 4.32882 1.42143 3.53131 2.09209 2.86065C2.76276 2.18999 3.56027 1.65961 4.4381 1.30046C5.31593 0.941309 6.2565 0.760583 7.20492 0.768824C8.15335 0.777066 9.09063 0.97411 9.96209 1.34846C10.8335 1.72281 11.6217 2.26697 12.2806 2.94918C13.5818 4.29634 14.3017 6.10064 14.2854 7.97348C14.2692 9.84631 13.518 11.6378 12.1936 12.9622C10.8693 14.2865 9.07776 15.0377 7.20492 15.054C5.33209 15.0703 3.52779 14.3503 2.18063 13.0492ZM3.18777 12.042C4.26 13.1143 5.71426 13.7166 7.23063 13.7166C8.74699 13.7166 10.2013 13.1143 11.2735 12.042C12.3457 10.9698 12.9481 9.51555 12.9481 7.99918C12.9481 6.48282 12.3457 5.02856 11.2735 3.95633C10.2013 2.88409 8.74699 2.28172 7.23063 2.28172C5.71426 2.28172 4.26 2.88409 3.18777 3.95633C2.11554 5.02856 1.51317 6.48282 1.51317 7.99918C1.51317 9.51555 2.11554 10.9698 3.18777 12.042ZM10.2592 5.97776L8.23777 7.99918L10.2592 10.0206L9.25206 11.0278L7.23063 9.00633L5.2092 11.0278L4.20206 10.0206L6.22349 7.99918L4.20206 5.97776L5.2092 4.97061L7.23063 6.99204L9.25206 4.97061L10.2592 5.97776Z"
+																	fill="#B17C3F"
+																/>
+															</svg>
+														</button>
+													</motion.li>
+												),
+											)}
 										</AnimatePresence>
 									</div>
 								</div>
@@ -751,9 +786,9 @@ export default function Designer({
 												<div key={index} className="">
 													<button
 														value={style.value}
-														onClick={() => handleTagClick(style.value)}
+														onClick={() => handleStyleTag(style.value)}
 														className={`text-[12px] hover:bg-[#E4D1BC] text-start pl-1 font-medium w-full rounded-full py-1 pr-5  hover:text-gold ${
-															selectedTags.includes(style.value)
+															selectedStyleTag.includes(style.value)
 																? "bg-[#E4D1BC] text-gold"
 																: ""
 														}`}
@@ -774,60 +809,63 @@ export default function Designer({
 													type="text"
 													value={value}
 													onChange={(e) => {
-														setValue(e.target.value);
+														onSearch(e.target.value);
 														setShowSuggestions(e.target.value !== ""); // Show suggestions only when there's a search term
 													}}
 													className="text-[13px] border-2 w-[234px] h-[29px] rounded-md pl-2 border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F]"
 												/>
 											</div>
 											<div className="">
-												{showSuggestions && value && (
+												{showSuggestions && (
 													<div className=" bg-white left-4 border-[1px] w-[234px] rounded-md  px-2 py-2 mt-1 absolute">
-														{Object.values(region).map((item, index) => {
-															if (
-																item.name
-																	.toLowerCase()
-																	.includes(value.toLowerCase())
-															) {
-																return (
-																	<div key={index} className="text-[13px]">
-																		<div
-																			onClick={() => {
-																				onSearch(item);
-																				setSelectedRegion((prevSelected) => {
-																				  if ("kota" in item) {
-																					 // It's a city
-																					 return {
-																						...prevSelected,
-																						[item.name]: item,
-																					 };
-																				  } else if ("provinsi" in item) {
-																					 // It's a province
-																					 return {
-																						...prevSelected,
-																						[item.name]: item,
-																					 };
-																				  }
-																				  return prevSelected; // Default case
-																				});
-																			 }}
-																			className="flex justify-between py-1 hover:bg-[#F0F0F0]"
-																		>
-																			<div className="px-2 flex justify-between w-full">
-																				<p className="text-gold">{item.name}</p>
-																				<p className="text-[10px] text-black/50 my-auto">
-																					{item === region.city
-																						? "City"
-																						: "Province"}
-																				</p>
-																			</div>
+														<div>
+															{filteredProvinces.slice(0,6).map((item) => (
+																<div key={item.id}>
+																	<div
+																		onClick={() => {
+																			onSearch(item.provinsi);
+																			setSelectedRegion((prevSelected) => ({
+																				...prevSelected,
+																				[item.provinsi]: true, 
+																			}));
+																		}}
+																		className="flex justify-between py-1 hover:bg-[#F0F0F0]"
+																	>
+																		<div className="px-2 flex justify-between w-full">
+																			<p className="text-gold text-[13px]">
+																				{item.provinsi}
+																			</p>
+																			<p className="text-[10px] text-black/50 my-auto">
+																				Province{" "}
+																			</p>
 																		</div>
 																	</div>
-																);
-															}
-
-															return null;
-														})}
+																</div>
+															))}
+															{filteredCities.slice(0,6).map((item) => (
+																<div key={item.id}>
+																	<div
+																		onClick={() => {
+																			onSearch(item.kabupaten);
+																			setSelectedRegion((prevSelected) => ({
+																				...prevSelected,
+																				[item.kabupaten]: true,
+																			}));
+																		}}
+																		className="flex justify-between py-1 hover:bg-[#F0F0F0]"
+																	>
+																		<div className="px-2 flex justify-between w-full">
+																			<p className="text-gold text-[13px]">
+																				{item.kabupaten}
+																			</p>
+																			<p className="text-[10px] text-black/50 my-auto">
+																				City
+																			</p>
+																		</div>
+																	</div>
+																</div>
+															))}
+														</div>
 													</div>
 												)}
 											</div>
@@ -858,7 +896,7 @@ export default function Designer({
 									<div className="relative h-full w-full flex-auto">
 										<Image
 											className="rounded-3xl"
-											src={designerData.user_id.avatar_url!}
+											src={designerData?.user_id?.avatar_url!}
 											alt={""}
 											fill={true}
 											style={{ objectFit: "cover" }}
@@ -914,7 +952,7 @@ export default function Designer({
 															fill="none"
 															xmlns="http://www.w3.org/2000/svg"
 														>
-															<g clip-path="url(#clip0_2340_2331)">
+															<g clipPath="url(#clip0_2340_2331)">
 																<path
 																	fillRule="evenodd"
 																	clipRule="evenodd"
@@ -945,7 +983,9 @@ export default function Designer({
 										{hover && index == idx && (
 											<div className="-pt-2 mb-2 space-y-1">
 												<p className="text-[0.75rem]">
-													{designerData.city.kabupaten}
+													{designerData.city === null
+														? " "
+														: designerData.city.kabupaten}
 												</p>
 												<ShowRating rate={4}></ShowRating>
 											</div>
