@@ -8,8 +8,51 @@ import { motion, AnimatePresence } from "framer-motion";
 import "reactjs-popup/dist/index.css";
 import ShowRating from "../components/rating";
 import { type, style, province } from "@/components/tagList";
+import { supabase } from "@/lib/supabase";
+import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
+import { useRouter } from "next/router";
+import { Database } from "@/types";
+import { set } from "react-hook-form";
 
-export const designerData = [
+type Designer = Database["public"]["Tables"]["profile_detail"]["Row"] & {
+	user_id: Database["public"]["Tables"]["profiles"]["Row"];
+	province: Database["public"]["Tables"]["provinsi"]["Row"];
+	city: Database["public"]["Tables"]["kabupaten_kota"]["Row"];
+};
+
+type Province = Database["public"]["Tables"]["provinsi"]["Row"];
+type City = Database["public"]["Tables"]["kabupaten_kota"]["Row"];
+type Style = Database["public"]["Tables"]["property_style"]["Row"];
+type Type = Database["public"]["Tables"]["property_type"]["Row"];
+
+export const getServerSideProps = async (
+	context: GetServerSidePropsContext,
+) => {
+	context.res.setHeader("Cache-Control", "s-maxage=20, stale-while-revalidate");
+
+	const { data: profile } = await supabase
+		.from("profiles")
+		.select("*")
+		.range(0, 10)
+		.filter("role_id", "eq", 3);
+
+	const ids: string[] = [];
+	profile?.map((item) => {
+		ids.push(item.id);
+	});
+
+	const { data: profile_detail } = await supabase
+		.from("profile_detail")
+		.select("user_id(*), province(*), city(*), property_type, property_style")
+		.in("user_id", ids)
+		.returns<Designer[]>();
+
+	return {
+		props: { profile, profile_detail },
+	};
+};
+
+const designerData = [
 	{
 		id: 1,
 		city: "Mataram",
@@ -232,7 +275,51 @@ export const designerData = [
 	},
 ];
 
-export default function Designer() {
+export default function Designer({
+	profile,
+	profile_detail,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+	const [provinsi, setProvinsi] = useState<Province[]>([]);
+	const [kota, setKota] = useState<City[]>([]);
+	const [property_type, setProperty_type] = useState<Type[]>([]);
+	const [property_style, setProperty_style] = useState<Style[]>([]);
+
+	useEffect(() => {
+		const fetch = async () => {
+			// const { data: provinsi } = await supabase.from("provinsi").select("*");
+			// if (provinsi) setProvinsi(provinsi);
+
+			// const { data: kota, error } = await supabase
+			// 	.from("kabupaten_kota")
+			// 	.select("*");
+			// if (kota) setKota(kota);
+
+			const { data: property_type } = await supabase
+				.from("property_type")
+				.select("*");
+			if (property_type) setProperty_type(property_type);
+
+			const { data: property_style } = await supabase
+				.from("property_style")
+				.select("*");
+			if (property_style) setProperty_style(property_style);
+		};
+		fetch();
+	}, []);
+
+	const getTag = (type: number[], style: number[]) => {
+		const tag: string[] | undefined = [];
+		for (let i = 0; i < type.length; i++) {
+			property_type.forEach((element) => {
+				if (element.id === type[i]) tag.push(element.type_name!);
+			});
+			property_style.forEach((element) => {
+				if (element.id === style[i]) tag.push(element.style_name!);
+			});
+			return tag;
+		}
+	};
+
 	const [hover, setHover] = useState(false);
 	const [index, setIndex] = useState(-1);
 	const [isPressed, setIsPressed] = useState(false);
@@ -294,7 +381,7 @@ export default function Designer() {
 
 	const [selectedProvinces, setSelectedProvinces] = useState<string[]>([]);
 	const [selectedCities, setSelectedCities] = useState<string[]>([]);
-	console.log(selectedProvinces, selectedCities);
+
 	const handleTagClick2 = (value: string, isCity: boolean) => {
 		if (isCity) {
 			if (selectedCities.includes(value)) {
@@ -415,10 +502,9 @@ export default function Designer() {
 										<AnimatePresence>
 											{selectedProvinces.map((tag, index) => (
 												<motion.li
-												initial={{ scale: 0 }}
-												animate={{ scale: 1 }}
-												exit={{ scale: 0 }}
-
+													initial={{ scale: 0 }}
+													animate={{ scale: 1 }}
+													exit={{ scale: 0 }}
 													className="flex h-[30px] max-w-fit flex-row justify-between rounded-full bg-[#E4D1BC]"
 													key={index}
 												>
@@ -787,7 +873,7 @@ export default function Designer() {
 
 				<div className="max-w-max  pt-5">
 					<div className=" flex flex-grow flex-row flex-wrap justify-center gap-[1.1rem]">
-						{designerData.slice(0, visibleItems).map((designerData, idx) => {
+						{profile_detail?.slice(0, visibleItems).map((designerData, idx) => {
 							return (
 								<div
 									key={idx}
@@ -804,7 +890,7 @@ export default function Designer() {
 									<div className="relative h-full w-full flex-auto">
 										<Image
 											className="rounded-3xl"
-											src={designerData.img}
+											src={designerData.user_id.avatar_url!}
 											alt={""}
 											fill={true}
 											style={{ objectFit: "cover" }}
@@ -843,13 +929,14 @@ export default function Designer() {
 															: " text-[0.875rem] text-black truncate px-4 w-[13.125rem]"
 													}`}
 												>
-													{designerData.nama}
+													{designerData.user_id.first_name}{" "}
+													{designerData.user_id.last_name}
 												</p>
 											</span>
 											{hover && index == idx && (
 												<span className="flex   items-center space-x-1 font-semibold">
 													<p className=" text-[0.9375rem] mt-[0.06rem]  text-black">
-														{designerData.follower}
+														{200}
 													</p>
 													<div className=" w-[0.875rem] h-[0.6875rem]  ">
 														<svg
@@ -889,8 +976,10 @@ export default function Designer() {
 										</div>
 										{hover && index == idx && (
 											<div className="-pt-2 mb-2 space-y-1">
-												<p className="text-[0.75rem]">{designerData.city}</p>
-												<ShowRating rate={designerData.rating}></ShowRating>
+												<p className="text-[0.75rem]">
+													{designerData.city.kabupaten}
+												</p>
+												<ShowRating rate={4}></ShowRating>
 											</div>
 										)}
 										<div
@@ -902,16 +991,21 @@ export default function Designer() {
 										}
                     `}
 										>
-											{designerData.tag.slice(0, 2).map((tag, idx) => {
-												return (
-													<div
-														key={idx}
-														className="transition-all duration-300 rounded-full border-[#B17C3F] border-[0.0001rem] px-2"
-													>
-														<p className="font-medium">{tag}</p>
-													</div>
-												);
-											})}
+											{getTag(
+												designerData?.property_type!,
+												designerData?.property_style!,
+											)
+												?.slice(0, 2)
+												.map((tag: string, idx: number) => {
+													return (
+														<div
+															key={idx}
+															className="transition-all duration-300 rounded-full border-[#B17C3F] border-[0.0001rem] px-2"
+														>
+															<p className="font-medium">{tag}</p>
+														</div>
+													);
+												})}
 										</div>
 									</motion.div>
 								</div>
