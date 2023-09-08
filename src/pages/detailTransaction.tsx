@@ -563,7 +563,7 @@ export function Action(props: actionProps) {
 								Suggestion:
 							</p>
 							{constractor != null && (
-								<Link href={"/merchantProfile"}>
+								<Link href={"/profile"}>
 									<div className="w-[35.625rem]  flex space-x-3 p-[1rem] rounded-[0.625rem] border-[#e3d0ba] border-[0.1rem]">
 										<div className="relative w-[3.625rem] h-[3.625rem] rounded-[0.375rem] overflow-hidden">
 											<Image
@@ -975,7 +975,7 @@ export function Update(props: updateProps) {
 									</p>
 								</div>
 								{constractor != null && (
-									<Link href={"/merchantProfile"}>
+									<Link href={"/profile"}>
 										<div className="w-[31.2rem]  flex space-x-3 p-[1rem] rounded-[0.625rem] border-[#e3d0ba] border-[0.1rem]">
 											<div className="relative w-[3.625rem] h-[3.625rem] rounded-[0.375rem] overflow-hidden">
 												<Image

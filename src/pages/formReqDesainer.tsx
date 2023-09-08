@@ -1227,7 +1227,7 @@ export default function FormDesainer() {
 									</p>
 								</div>
 								<div className="pr-5 flex justify-end border-t-2">
-									<Link href={"./merchantProfile"}>
+									<Link href={"/profile"}>
 										<button
 											onClick={openConfirmPopUp}
 											type="submit"
