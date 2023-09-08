@@ -8,10 +8,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import "reactjs-popup/dist/index.css";
 import ShowRating from "../components/rating";
 import { type, style, province } from "@/components/tagList";
-import { supabase } from "@/lib/supabase";
-import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
-import { useRouter } from "next/router";
+import Link from "next/link";
 import { Database } from "@/types";
+import { supabase } from "@/lib/supabase";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { set } from "react-hook-form";
 
 type Designer = Database["public"]["Tables"]["profile_detail"]["Row"] & {
@@ -275,37 +275,41 @@ const designerData = [
 	},
 ];
 
+interface Region {
+	provinsi: Province[];
+	kota: City[];
+}
+
 export default function Designer({
 	profile,
 	profile_detail,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-	const [provinsi, setProvinsi] = useState<Province[]>([]);
-	const [kota, setKota] = useState<City[]>([]);
 	const [property_type, setProperty_type] = useState<Type[]>([]);
 	const [property_style, setProperty_style] = useState<Style[]>([]);
 
+	const [region, setRegion] = useState<Region>();
+	console.log(region);
+
 	useEffect(() => {
-		const fetch = async () => {
-			// const { data: provinsi } = await supabase.from("provinsi").select("*");
-			// if (provinsi) setProvinsi(provinsi);
-
-			// const { data: kota, error } = await supabase
-			// 	.from("kabupaten_kota")
-			// 	.select("*");
-			// if (kota) setKota(kota);
-
+		const fetchData = async () => {
+			const { data: provinsi } = await supabase.from("provinsi").select("*");
+			const { data: kota } = await supabase.from("kabupaten_kota").select("*");
 			const { data: property_type } = await supabase
 				.from("property_type")
 				.select("*");
-			if (property_type) setProperty_type(property_type);
-
 			const { data: property_style } = await supabase
 				.from("property_style")
 				.select("*");
+
+			if (provinsi && kota) setRegion({ provinsi: provinsi, kota: kota });
+
+			// Assuming setProperty_type and setProperty_style are similar functions
+			if (property_type) setProperty_type(property_type);
 			if (property_style) setProperty_style(property_style);
 		};
-		fetch();
-	}, []);
+
+		fetchData();
+	}, []); // Remov
 
 	const getTag = (type: number[], style: number[]) => {
 		const tag: string[] | undefined = [];
@@ -370,6 +374,7 @@ export default function Designer({
 	};
 
 	const [selectedTags, setSelectedTags] = useState<string[]>([]);
+	const [selectedStyleTag, setSelectedStyleTag] = useState<string[]>([]);
 
 	const handleTagClick = (value: string) => {
 		if (selectedTags.includes(value)) {
@@ -379,35 +384,28 @@ export default function Designer({
 		}
 	};
 
-	const [selectedProvinces, setSelectedProvinces] = useState<string[]>([]);
-	const [selectedCities, setSelectedCities] = useState<string[]>([]);
-
-	const handleTagClick2 = (value: string, isCity: boolean) => {
-		if (isCity) {
-			if (selectedCities.includes(value)) {
-				setSelectedCities([]);
-			} else {
-				setSelectedCities([value]);
-			}
+	const handleStyleTag = (value: string) => {
+		if (selectedStyleTag.includes(value)) {
+			setSelectedStyleTag(selectedStyleTag.filter((tag) => tag !== value));
 		} else {
-			if (selectedProvinces.includes(value)) {
-				setSelectedProvinces([]);
-			} else {
-				setSelectedCities([]); // Deselect cities
-				setSelectedProvinces([value]);
-			}
+			setSelectedStyleTag([...selectedStyleTag, value]);
 		}
 	};
+
+	const [selectedRegion, setSelectedRegion] = useState<string[]>([]);
+	console.log(selectedRegion);
 
 	const handleTagDelete = (value: string) => {
 		const updatedTags = selectedTags.filter((tag) => tag !== value);
 		setSelectedTags(updatedTags);
 	};
+	const handleStyleTagDeleted = (value: string) => {
+		const updatedTags = selectedStyleTag.filter((tag) => tag !== value);
+		setSelectedStyleTag(updatedTags);
+	};
 	const handleTagDelete2 = (value: string) => {
-		const updatedTags = selectedProvinces.filter((tag) => tag !== value);
-		const updateCity = selectedCities.filter((tag) => tag !== value);
-		setSelectedProvinces(updatedTags);
-		setSelectedCities(updateCity);
+		const updatedTags = selectedRegion.filter((tag) => tag !== value);
+		setSelectedRegion(updatedTags);
 	};
 
 	const [value, setValue] = useState("");
@@ -500,7 +498,7 @@ export default function Designer({
 									</div>
 									<div className="flex flex-row gap-2">
 										<AnimatePresence>
-											{selectedProvinces.map((tag, index) => (
+											{selectedRegion.map((tag, index) => (
 												<motion.li
 													initial={{ scale: 0 }}
 													animate={{ scale: 1 }}
@@ -762,9 +760,9 @@ export default function Designer({
 												<div key={index} className="">
 													<button
 														value={style.value}
-														onClick={() => handleTagClick(style.value)}
+														onClick={() => handleStyleTag(style.value)}
 														className={`text-[12px] hover:bg-[#E4D1BC] text-start pl-1 font-medium w-full rounded-full py-1 pr-5  hover:text-gold ${
-															selectedTags.includes(style.value)
+															selectedStyleTag.includes(style.value)
 																? "bg-[#E4D1BC] text-gold"
 																: ""
 														}`}
@@ -792,74 +790,87 @@ export default function Designer({
 												/>
 											</div>
 											<div className="">
-												{showSuggestions && value && (
+												{showSuggestions && (
 													<div className=" bg-white left-4 border-[1px] w-[234px] rounded-md  px-2 py-2 mt-1 absolute">
-														{province.map((item, index) => {
-															const provinceLabel = item.label.toLowerCase();
-															const matchingCities = item.city.filter(
-																(city) => {
-																	const search = value.toLowerCase();
-																	const cityLabel = city.label.toLowerCase();
-
-																	return cityLabel.includes(search);
-																},
+														{/* {region.map((item, index) => {
+															const matchingCities = item.kota.filter((city) =>
+																city.kabupaten
+																	.toLowerCase()
+																	.includes(value.toLowerCase()),
+															);
+															const matchingProvinces = item.provinsi.filter(
+																(province) =>
+																	province.provinsi
+																		.toLowerCase()
+																		.includes(value.toLowerCase()),
 															);
 
 															if (
-																provinceLabel.includes(value.toLowerCase()) ||
-																matchingCities.length > 0
+																matchingCities.length > 0 ||
+																matchingProvinces.length > 0
 															) {
 																return (
 																	<div key={index} className="text-[13px]">
-																		<div
-																			onClick={() => {
-																				onSearch(item.label);
-																				setSelectedProvinces((prevSelected) => [
-																					...prevSelected,
-																					item.label,
-																				]); // Add selected province to array
-																			}}
-																			className="flex justify-between py-1 hover:bg-[#F0F0F0]"
-																		>
-																			<div className="px-2 flex justify-between w-full">
-																				<p className="text-gold">
-																					{item.label}
-																				</p>
-																				<p className="text-[10px] text-black/50 my-auto">
-																					Province
-																				</p>
-																			</div>
-																		</div>
-																		{matchingCities.map((city, cityIndex) => (
-																			<div
-																				onClick={() => {
-																					onSearch(city.label);
-																					setSelectedProvinces(
-																						(prevSelected) => [
-																							...prevSelected,
-																							city.label,
-																						],
-																					); // Add selected province to array
-																				}}
-																				key={cityIndex}
-																				className="flex cursor-pointer justify-between py-1 hover:bg-[#F0F0F0]"
-																			>
-																				<div className="px-2 cursor-pointer flex justify-between w-full">
-																					<p className="text-gold cursor-pointer">
-																						{city.label}
-																					</p>
-																					<p className="cursor-pointer text-[10px] text-black/50 my-auto ">
-																						City
-																					</p>
+																		{matchingCities.map(
+																			(cityLabel, cityIndex) => (
+																				<div
+																					key={`city-${cityIndex}`}
+																					onClick={() => {
+																						onSearch(cityLabel);
+																						setSelectedRegion(
+																							(prevSelected) => [
+																								...prevSelected,
+																								cityLabel.kabupaten,
+																							],
+																						);
+																					}}
+																					className="flex justify-between py-1 hover:bg-[#F0F0F0]"
+																				>
+																					<div className="px-2 flex justify-between w-full">
+																						<p className="text-gold">
+																							{cityLabel.kabupaten}
+																						</p>
+																						<p className="text-[10px] text-black/50 my-auto">
+																							City
+																						</p>
+																					</div>
 																				</div>
-																			</div>
-																		))}
+																			),
+																		)}
+																		{matchingProvinces.map(
+																			(provinceLabel, provinceIndex) => (
+																				<div
+																					key={`province-${provinceIndex}`}
+																					onClick={() => {
+																						onSearch(provinceLabel);
+																						setSelectedRegion(
+																							(prevSelected) => [
+																								...prevSelected,
+																								provinceLabel.provinsi,
+																							],
+																						);
+																					}}
+																					className="flex cursor-pointer justify-between py-1 hover:bg-[#F0F0F0]"
+																				>
+																					<div className="px-2 cursor-pointer flex justify-between w-full">
+																						<p className="text-gold">
+																							{provinceLabel.provinsi}
+																						</p>
+																						<p className="cursor-pointer text-[10px] text-black/50 my-auto">
+																							Province
+																						</p>
+																					</div>
+																				</div>
+																			),
+																		)}
 																	</div>
 																);
 															}
 
 															return null;
-														})}
+														})} */}
+
+														{Object.keys(region!).flatMap((key) => region[key])}
 													</div>
 												)}
 											</div>
@@ -890,7 +901,7 @@ export default function Designer({
 									<div className="relative h-full w-full flex-auto">
 										<Image
 											className="rounded-3xl"
-											src={designerData.user_id.avatar_url!}
+											src={designerData?.user_id?.avatar_url!}
 											alt={""}
 											fill={true}
 											style={{ objectFit: "cover" }}
@@ -977,7 +988,9 @@ export default function Designer({
 										{hover && index == idx && (
 											<div className="-pt-2 mb-2 space-y-1">
 												<p className="text-[0.75rem]">
-													{designerData.city.kabupaten}
+													{designerData.city === null
+														? " "
+														: designerData.city.kabupaten}
 												</p>
 												<ShowRating rate={4}></ShowRating>
 											</div>
