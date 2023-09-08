@@ -1,18 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/router";
 
 export default function ProfileNav(
 	props: any = {
 		visible: false,
 		onClose: false,
-		isDesigner: false,
-		isAgent: false,
 	},
 ) {
 	const router = useRouter();
+	const [role, setRole] = useState<string>("");
+	useEffect(() => {
+		const fetch = async () => {
+			const role = await supabase.rpc("get_user_role_name");
+			if (role && role.data) setRole(role.data);
+		};
+		fetch();
+	}, []);
 
 	return (
 		<div>
@@ -41,8 +48,8 @@ export default function ProfileNav(
 										>
 											<circle cx="20" cy="20" r="20" fill="#EAEAEA" />
 											<path
-												fill-rule="evenodd"
-												clip-rule="evenodd"
+												fillRule="evenodd"
+												clipRule="evenodd"
 												d="M20 10.4C18.3209 10.3997 16.6711 10.8398 15.2153 11.6764C13.7594 12.5129 12.5484 13.7167 11.7032 15.1675C10.858 16.6184 10.4081 18.2655 10.3984 19.9446C10.3887 21.6237 10.8196 23.2759 11.648 24.7364C12.2079 24.0087 12.9277 23.4195 13.7517 23.0144C14.5757 22.6092 15.4818 22.399 16.4 22.4H23.6C24.5182 22.399 25.4243 22.6092 26.2483 23.0144C27.0723 23.4195 27.7921 24.0087 28.352 24.7364C29.1804 23.2759 29.6113 21.6237 29.6016 19.9446C29.5919 18.2655 29.142 16.6184 28.2968 15.1675C27.4516 13.7167 26.2406 12.5129 24.7847 11.6764C23.3289 10.8398 21.6791 10.3997 20 10.4ZM29.5316 27.2912C31.136 25.1995 32.0039 22.6361 32 20C32 13.3724 26.6276 8 20 8C13.3724 8 8.00001 13.3724 8.00001 20C7.99605 22.6361 8.8639 25.1996 10.4684 27.2912L10.4624 27.3128L10.8884 27.8084C12.0139 29.1242 13.4113 30.1803 14.9843 30.9039C16.5573 31.6276 18.2685 32.0015 20 32C22.4328 32.0045 24.8089 31.2655 26.81 29.882C27.6631 29.2926 28.4367 28.5956 29.1116 27.8084L29.5376 27.3128L29.5316 27.2912ZM20 12.8C19.0452 12.8 18.1295 13.1793 17.4544 13.8544C16.7793 14.5295 16.4 15.4452 16.4 16.4C16.4 17.3548 16.7793 18.2704 17.4544 18.9456C18.1295 19.6207 19.0452 20 20 20C20.9548 20 21.8705 19.6207 22.5456 18.9456C23.2207 18.2704 23.6 17.3548 23.6 16.4C23.6 15.4452 23.2207 14.5295 22.5456 13.8544C21.8705 13.1793 20.9548 12.8 20 12.8Z"
 												fill="black"
 											/>
@@ -52,30 +59,66 @@ export default function ProfileNav(
 										</p>
 									</div>
 								</Link>
+								{/* Dashboard */}
+								{role == "admin" && (
+									<Link href={"/dashboard"}>
+										<div className="flex w-[8.4375rem] items-center rounded-[0.5rem] bg-white py-[0.3rem] hover:bg-[#EAEAEA]">
+											<svg
+												width="30"
+												height="30"
+												viewBox="0 0 30 30"
+												fill="none"
+												xmlns="http://www.w3.org/2000/svg"
+												className="ml-2"
+											>
+												<circle cx="15" cy="15" r="15" fill="#EAEAEA" />
+												<path
+													d="M21.6667 8H8.33333C7.59695 8 7 8.59695 7 9.33333V19.1111C7 19.8475 7.59695 20.4444 8.33333 20.4444H21.6667C22.403 20.4444 23 19.8475 23 19.1111V9.33333C23 8.59695 22.403 8 21.6667 8Z"
+													stroke="black"
+													strokeWidth="2"
+													strokeLinejoin="round"
+												/>
+												<path
+													d="M10.5557 23.9999H19.4446M15.0001 20.4443V23.9999"
+													stroke="black"
+													strokeWidth="2"
+													strokeLinecap="round"
+													strokeLinejoin="round"
+												/>
+											</svg>
+
+											<p className="ml-[0.875rem] text-[0.75rem] font-medium text-black">
+												Dashboard
+											</p>
+										</div>
+									</Link>
+								)}
 								{/* Transaction */}
-								<Link href={"/transaction"}>
-									<div className="flex w-[8.4375rem] items-center rounded-[0.5rem] bg-white py-[0.3rem] hover:bg-[#EAEAEA]">
-										<svg
-											className="ml-[0.5rem]"
-											width="30"
-											height="30"
-											viewBox="0 0 40 40"
-											fill="none"
-											xmlns="http://www.w3.org/2000/svg"
-										>
-											<circle cx="20" cy="20" r="20" fill="#EAEAEA" />
-											<path
-												d="M10 15H28M24 10L29 15L24 20M30 25H12M16 20L11 25L16 30"
-												stroke="black"
-												stroke-width="3"
-											/>
-										</svg>
-										<p className="ml-[0.875rem] text-[0.75rem] font-medium text-black">
-											Transaction
-										</p>
-									</div>
-								</Link>
-								{props.isDesigner && (
+								{role != "admin" && (
+									<Link href={"/transaction"}>
+										<div className="flex w-[8.4375rem] items-center rounded-[0.5rem] bg-white py-[0.3rem] hover:bg-[#EAEAEA]">
+											<svg
+												className="ml-[0.5rem]"
+												width="30"
+												height="30"
+												viewBox="0 0 40 40"
+												fill="none"
+												xmlns="http://www.w3.org/2000/svg"
+											>
+												<circle cx="20" cy="20" r="20" fill="#EAEAEA" />
+												<path
+													d="M10 15H28M24 10L29 15L24 20M30 25H12M16 20L11 25L16 30"
+													stroke="black"
+													strokeWidth="3"
+												/>
+											</svg>
+											<p className="ml-[0.875rem] text-[0.75rem] font-medium text-black">
+												Transaction
+											</p>
+										</div>
+									</Link>
+								)}
+								{role == "designer" && (
 									// {/* Jual Design */}
 									<Link href={"/designForm"}>
 										<div className="flex w-[8.4375rem] items-center rounded-[0.5rem] bg-white py-[0.3rem] hover:bg-[#EAEAEA]">
@@ -133,7 +176,7 @@ export default function ProfileNav(
 											if (router.pathname == "/") {
 												router.reload();
 											} else {
-												router.push("/");	
+												router.push("/");
 											}
 										} catch (error) {
 											console.log(error);
@@ -151,8 +194,8 @@ export default function ProfileNav(
 									>
 										<circle cx="20" cy="20" r="20" fill="#EAEAEA" />
 										<path
-											fill-rule="evenodd"
-											clip-rule="evenodd"
+											fillRule="evenodd"
+											clipRule="evenodd"
 											d="M17.4064 8.09005C19.6051 7.53271 21.1999 9.66074 21.1999 11.7648V30.4316C21.1999 32.5357 19.6051 34.6637 17.4064 34.1064C12.1233 32.7677 8.17578 27.4529 8.17578 21.0982C8.17578 14.7435 12.1233 9.42873 17.4064 8.09005ZM23.9149 16.1555C24.1369 15.9055 24.438 15.7651 24.752 15.7651C25.0659 15.7651 25.367 15.9055 25.5891 16.1555L29.1411 20.1555C29.3631 20.4056 29.4878 20.7446 29.4878 21.0982C29.4878 21.4518 29.3631 21.7908 29.1411 22.0409L25.5891 26.0409C25.3658 26.2838 25.0667 26.4182 24.7562 26.4152C24.4458 26.4121 24.1488 26.2719 23.9293 26.0247C23.7098 25.7775 23.5853 25.4431 23.5826 25.0935C23.5799 24.7439 23.6992 24.407 23.9149 24.1556L25.4458 22.4316H15.2799C14.9658 22.4316 14.6647 22.2911 14.4426 22.041C14.2206 21.791 14.0959 21.4518 14.0959 21.0982C14.0959 20.7446 14.2206 20.4054 14.4426 20.1554C14.6647 19.9053 14.9658 19.7649 15.2799 19.7649H25.4458L23.9149 18.0408C23.6929 17.7908 23.5682 17.4517 23.5682 17.0982C23.5682 16.7446 23.6929 16.4055 23.9149 16.1555Z"
 											fill="black"
 										/>
