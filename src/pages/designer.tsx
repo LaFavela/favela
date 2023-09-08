@@ -390,6 +390,7 @@ export default function Designer({
 		}
 	};
 
+	
 	const handleStyleTag = (value: string) => {
 		if (selectedStyleTag.includes(value)) {
 			setSelectedStyleTag(selectedStyleTag.filter((tag) => tag !== value));
@@ -398,16 +399,27 @@ export default function Designer({
 		}
 	};
 
-	const [selectedRegion, setSelectedRegion] = useState<{
-		[key: string]: boolean;
-	}>({});
-	console.log(selectedRegion);
 
+	const [selectedRegion, setSelectedRegion] = useState<{ [key: string]: any }>(
+		{},
+	)
+	
+	// INI HANDLE UNTUK HAPUS TAG YANG TYPE
 	const handleTagDelete = (value: string) => {
 		const updatedTags = selectedTags.filter((tag) => tag !== value);
 		setSelectedTags(updatedTags);
 	};
-	const handleTagDelete2 = (key: any) => {
+	
+	// INI HANDLE UNTUK HAPUS TAG YANG STYLE
+	const handleStyleTagDeleted = (value: string) => {
+		const updatedTags = selectedStyleTag.filter((tag) => tag !== value);
+		setSelectedStyleTag(updatedTags);
+	};
+
+	
+	console.log(selectedRegion);
+
+	const handleTagDelete2 = (key: string) => {
 		// Create a copy of the selectedRegion object
 		const updatedRegion = { ...selectedRegion };
 
@@ -418,6 +430,7 @@ export default function Designer({
 		setSelectedRegion(updatedRegion);
 	};
 
+	//YANG INI UNTUK DI INPUTBOX SEARCHING YANG REGION
 	const [value, setValue] = useState("");
 	const onSearch = (searchTerm: string) => {
 		setValue(searchTerm);
@@ -502,6 +515,40 @@ export default function Designer({
 													<button
 														className="mr-2 mt-[3px] "
 														onClick={() => handleTagDelete(tag)}
+													>
+														<svg
+															width="15"
+															height="16"
+															viewBox="0 0 15 16"
+															fill="none"
+															xmlns="http://www.w3.org/2000/svg"
+														>
+															<path
+																d="M2.18063 13.0492C1.49841 12.3903 0.954256 11.6021 0.579906 10.7306C0.205556 9.85919 0.00851124 8.9219 0.000269691 7.97348C-0.00797185 7.02505 0.172755 6.08449 0.531904 5.20666C0.891053 4.32882 1.42143 3.53131 2.09209 2.86065C2.76276 2.18999 3.56027 1.65961 4.4381 1.30046C5.31593 0.941309 6.2565 0.760583 7.20492 0.768824C8.15335 0.777066 9.09063 0.97411 9.96209 1.34846C10.8335 1.72281 11.6217 2.26697 12.2806 2.94918C13.5818 4.29634 14.3017 6.10064 14.2854 7.97348C14.2692 9.84631 13.518 11.6378 12.1936 12.9622C10.8693 14.2865 9.07776 15.0377 7.20492 15.054C5.33209 15.0703 3.52779 14.3503 2.18063 13.0492ZM3.18777 12.042C4.26 13.1143 5.71426 13.7166 7.23063 13.7166C8.74699 13.7166 10.2013 13.1143 11.2735 12.042C12.3457 10.9698 12.9481 9.51555 12.9481 7.99918C12.9481 6.48282 12.3457 5.02856 11.2735 3.95633C10.2013 2.88409 8.74699 2.28172 7.23063 2.28172C5.71426 2.28172 4.26 2.88409 3.18777 3.95633C2.11554 5.02856 1.51317 6.48282 1.51317 7.99918C1.51317 9.51555 2.11554 10.9698 3.18777 12.042ZM10.2592 5.97776L8.23777 7.99918L10.2592 10.0206L9.25206 11.0278L7.23063 9.00633L5.2092 11.0278L4.20206 10.0206L6.22349 7.99918L4.20206 5.97776L5.2092 4.97061L7.23063 6.99204L9.25206 4.97061L10.2592 5.97776Z"
+																fill="#B17C3F"
+															/>
+														</svg>
+													</button>
+												</motion.li>
+											))}
+										</AnimatePresence>
+									</div>
+									<div className="flex flex-row gap-2">
+										<AnimatePresence>
+											{selectedStyleTag.map((tag, index) => (
+												<motion.li
+													initial={{ scale: 0 }}
+													animate={{ scale: 1 }}
+													exit={{ scale: 0 }}
+													className="flex h-[30px]  max-w-fit flex-row justify-between rounded-full bg-[#E4D1BC]"
+													key={index}
+												>
+													<span className="ml-2 mt-[0.45rem] pr-2 text-[11px] text-gold">
+														{tag}
+													</span>
+													<button
+														className="mr-2 mt-[3px] "
+														onClick={() => handleStyleTagDeleted(tag)}
 													>
 														<svg
 															width="15"
