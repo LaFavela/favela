@@ -176,7 +176,10 @@ export default function DetailTransaction({
 				.eq("transaction_id", transactionId)
 				.order("created_at", { ascending: true });
 
-			if (statusData) setStatus(statusData);
+			if (statusData) {
+				setStatus(statusData);
+				handlePaymentTrack();
+			}
 		};
 		fetch();
 	}, [transactionId]);
@@ -793,7 +796,7 @@ export function Action(props: actionProps) {
 						) : props.status[props.status.length - 1].isPaid ? (
 							<p className="text-[0.8rem] text-[#4B4B4B]">Paid</p>
 						) : (
-							<p className="text-[0.8rem] text-[#4B4B4B]">Waiting For Paid</p>
+							<p className="text-[0.8rem] text-[#4B4B4B]">Waiting For Payment to be Paid</p>
 						))}
 					{props.status[props.status.length - 1].action_type.find(
 						(item) => item == "Finish Project",
@@ -928,7 +931,7 @@ interface updateProps {
 	handleContract: (e: any) => void;
 	status: Status[];
 	setStatus: (value: Status[]) => void;
-	handlePaymentTrack: (e: any) => void;
+	handlePaymentTrack: () => void;
 	visible: boolean;
 	onClose: (value: boolean) => void;
 	setShowUpdate: (value: boolean) => void;
@@ -1167,14 +1170,14 @@ export function Update(props: updateProps) {
 			).data?.path;
 		}
 
-		const { data: newStatus } = await supabase
+		const { data: newStatus, error } = await supabase
 			.from("transaction_status")
 			.insert([
 				{
 					title: title,
 					description: description,
-					media: mediaData,
-					contract: contractData,
+					media: mediaData ? mediaData : "",
+					contract: contractData ? contractData : "",
 					extra_info: extraInfo,
 					payment: parseInt(payment),
 					contractor_id: constractorId === "" ? null : constractorId,
@@ -1187,7 +1190,10 @@ export function Update(props: updateProps) {
 			.select()
 			.single();
 
-		if (newStatus) props.setStatus([...props.status, newStatus]);
+		if (newStatus) {
+			props.setStatus([...props.status, newStatus]);
+			props.handlePaymentTrack();
+		}
 		props.setShowUpdate(false);
 	}
 
@@ -1497,7 +1503,7 @@ export function ShowDocument(props: documentProps) {
 			window.location.href = downloadLink?.signedUrl;
 		}
 	};
-	
+
 	const handleDownloadMedia = async () => {
 		const { data: downloadLink } = await supabase.storage
 			.from("transaction")
