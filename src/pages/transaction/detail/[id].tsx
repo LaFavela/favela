@@ -16,7 +16,9 @@ import { User } from "@supabase/supabase-js";
 import { Database } from "@/types";
 import { getDate, getTime } from "@/tools/time";
 import { createPagesServerClient } from "@supabase/auth-helpers-nextjs";
+import { v4 } from "uuid";
 import { stat } from "fs/promises";
+import { cache } from "sharp";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"] & {
 	role_id: Database["public"]["Tables"]["roles"]["Row"];
@@ -50,13 +52,13 @@ export const getServerSideProps = async (
 		.eq("transaction_id", transactionData?.id)
 		.single();
 
-	let {data: contributorData} = await supabase
-			.from("profiles")
-			.select("*, role_id(*)")
-			.or(
-				`id.eq.${transactionContributor?.client_id},id.eq.${transactionContributor?.designer_id},id.eq.${transactionContributor?.contractor_id}`,
-			)
-			.order("role_id", { ascending: true });
+	let { data: contributorData } = await supabase
+		.from("profiles")
+		.select("*, role_id(*)")
+		.or(
+			`id.eq.${transactionContributor?.client_id},id.eq.${transactionContributor?.designer_id},id.eq.${transactionContributor?.contractor_id}`,
+		)
+		.order("role_id", { ascending: true });
 
 	const { data: statusData } = await supabase
 		.from("transaction_status")
@@ -1145,15 +1147,34 @@ export function Update(props: updateProps) {
 	}, []);
 
 	async function handleStatus() {
-		console.log(props.transactionId);
-		const { data: newStatus, error } = await supabase
+		let mediaData: string | undefined, contractData: string | undefined;
+
+		if (props.selectedMedia) {
+			let upload = `${props.transactionId}/media/${v4()}`;
+			mediaData = (
+				await supabase.storage
+					.from("transaction")
+					.upload(upload, props.selectedMedia)
+			).data?.path;
+		}
+
+		if (props.selectedContract) {
+			let upload = `${props.transactionId}/media/${v4()}`;
+			contractData = (
+				await supabase.storage
+					.from("transaction")
+					.upload(upload, props.selectedContract)
+			).data?.path;
+		}
+
+		const { data: newStatus } = await supabase
 			.from("transaction_status")
 			.insert([
 				{
 					title: title,
 					description: description,
-					media: media,
-					contract: contract,
+					media: mediaData,
+					contract: contractData,
 					extra_info: extraInfo,
 					payment: parseInt(payment),
 					contractor_id: constractorId === "" ? null : constractorId,
@@ -1165,8 +1186,6 @@ export function Update(props: updateProps) {
 			])
 			.select()
 			.single();
-
-		console.log(newStatus, error);
 
 		if (newStatus) props.setStatus([...props.status, newStatus]);
 		props.setShowUpdate(false);
@@ -1468,19 +1487,26 @@ export function ShowDocument(props: documentProps) {
 	const wrapperRef = useRef(null);
 	useOutsideAlerter(wrapperRef);
 
-	const handleDownloadContract = () => {
-		const downloadLink = document.createElement("a");
-		downloadLink.href = props.srcContract; // Ganti dengan URL file yang ingin diunduh
-		downloadLink.download = "contract"; // Nama file yang akan disimpan oleh pengguna
-
-		downloadLink.click();
+	const handleDownloadContract = async () => {
+		const { data: downloadLink } = await supabase.storage
+			.from("transaction")
+			.createSignedUrl(props.srcContract, 60, {
+				download: true,
+			});
+		if (typeof window !== "undefined" && downloadLink?.signedUrl) {
+			window.location.href = downloadLink?.signedUrl;
+		}
 	};
-	const handleDownloadMedia = () => {
-		const downloadLink = document.createElement("a");
-		downloadLink.href = props.srcMedia; // Ganti dengan URL file yang ingin diunduh
-		downloadLink.download = "Media"; // Nama file yang akan disimpan oleh pengguna
-
-		downloadLink.click();
+	
+	const handleDownloadMedia = async () => {
+		const { data: downloadLink } = await supabase.storage
+			.from("transaction")
+			.createSignedUrl(props.srcMedia, 60, {
+				download: true,
+			});
+		if (typeof window !== "undefined" && downloadLink?.signedUrl) {
+			window.location.href = downloadLink?.signedUrl;
+		}
 	};
 	return (
 		<div>
