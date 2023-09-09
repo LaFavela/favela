@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { Skeleton } from "@mui/material";
 import { supabase } from "@/lib/supabase";
-import { User } from "@supabase/supabase-js";
 import { Database } from "@/types";
 import { getDate } from "@/tools/time";
 const people = [
@@ -32,7 +31,6 @@ export default function Transaction() {
 				)
 				.returns<Transactions[]>();
 			if (data) setTransactionData(data);
-			console.log(data, error);
 		};
 		fetch();
 	}, []);
