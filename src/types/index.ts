@@ -9,6 +9,30 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      bank_account: {
+        Row: {
+          bank_number: number
+          created_at: string
+          id: number
+          name: string
+          password: string
+        }
+        Insert: {
+          bank_number?: number
+          created_at?: string
+          id?: number
+          name?: string
+          password?: string
+        }
+        Update: {
+          bank_number?: number
+          created_at?: string
+          id?: number
+          name?: string
+          password?: string
+        }
+        Relationships: []
+      }
       channel: {
         Row: {
           client_id: string | null
@@ -156,26 +180,75 @@ export interface Database {
           }
         ]
       }
+      experience: {
+        Row: {
+          created_at: string
+          description: string
+          end_date: string
+          id: string
+          institution: string
+          start_date: string
+          title: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          end_date?: string
+          id?: string
+          institution?: string
+          start_date?: string
+          title?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          end_date?: string
+          id?: string
+          institution?: string
+          start_date?: string
+          title?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "experience_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       facilities_form_request: {
         Row: {
           amount: number
+          created_by: string | null
           form_id: string | null
           id: string
           name: string
         }
         Insert: {
           amount: number
+          created_by?: string | null
           form_id?: string | null
           id?: string
           name?: string
         }
         Update: {
           amount?: number
+          created_by?: string | null
           form_id?: string | null
           id?: string
           name?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "facilities_form_request_created_by_fkey"
+            columns: ["created_by"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "facilities_form_request_form_id_fkey"
             columns: ["form_id"]
@@ -188,17 +261,17 @@ export interface Database {
         Row: {
           id: number
           id_provinsi: number | null
-          kabupaten: string | null
+          kabupaten: string
         }
         Insert: {
           id: number
           id_provinsi?: number | null
-          kabupaten?: string | null
+          kabupaten?: string
         }
         Update: {
           id?: number
           id_provinsi?: number | null
-          kabupaten?: string | null
+          kabupaten?: string
         }
         Relationships: [
           {
@@ -283,10 +356,11 @@ export interface Database {
       profile_detail: {
         Row: {
           about: string
+          banner: string | null
           city: number | null
           created_at: string
           id: string
-          property_style: number[] | null
+          property_style: number[]
           property_type: number[] | null
           province: number | null
           updated_at: string | null
@@ -294,21 +368,23 @@ export interface Database {
         }
         Insert: {
           about?: string
+          banner?: string | null
           city?: number | null
           created_at?: string
           id?: string
-          property_style?: number[] | null
+          property_style?: number[]
           property_type?: number[] | null
           province?: number | null
           updated_at?: string | null
-          user_id?: string
+          user_id: string
         }
         Update: {
           about?: string
+          banner?: string | null
           city?: number | null
           created_at?: string
           id?: string
-          property_style?: number[] | null
+          property_style?: number[]
           property_type?: number[] | null
           province?: number | null
           updated_at?: string | null
@@ -381,7 +457,7 @@ export interface Database {
           created_at: string | null
           first_name: string | null
           id: string
-          last_name: string | null
+          last_name: string
           role_id: number
           updated_at: string | null
           username: string | null
@@ -391,7 +467,7 @@ export interface Database {
           created_at?: string | null
           first_name?: string | null
           id: string
-          last_name?: string | null
+          last_name?: string
           role_id?: number
           updated_at?: string | null
           username?: string | null
@@ -401,7 +477,7 @@ export interface Database {
           created_at?: string | null
           first_name?: string | null
           id?: string
-          last_name?: string | null
+          last_name?: string
           role_id?: number
           updated_at?: string | null
           username?: string | null
@@ -464,30 +540,30 @@ export interface Database {
       property_style: {
         Row: {
           id: number
-          style_name: string | null
+          style_name: string
         }
         Insert: {
           id?: number
-          style_name?: string | null
+          style_name?: string
         }
         Update: {
           id?: number
-          style_name?: string | null
+          style_name?: string
         }
         Relationships: []
       }
       property_type: {
         Row: {
           id: number
-          type_name: string | null
+          type_name: string
         }
         Insert: {
           id?: number
-          type_name?: string | null
+          type_name?: string
         }
         Update: {
           id?: number
-          type_name?: string | null
+          type_name?: string
         }
         Relationships: []
       }
@@ -498,7 +574,7 @@ export interface Database {
         }
         Insert: {
           id: number
-          provinsi: string
+          provinsi?: string
         }
         Update: {
           id?: number
@@ -600,12 +676,159 @@ export interface Database {
         }
         Relationships: []
       }
+      transaction: {
+        Row: {
+          created_at: string
+          id: string
+          img: string
+          name: string
+          price_estimated: number
+          property_type: string
+          status: string
+          type: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          img?: string
+          name?: string
+          price_estimated?: number
+          property_type?: string
+          status?: string
+          type?: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          img?: string
+          name?: string
+          price_estimated?: number
+          property_type?: string
+          status?: string
+          type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      transaction_contributor: {
+        Row: {
+          client_id: string | null
+          contractor_id: string | null
+          created_at: string
+          designer_id: string | null
+          id: string
+          transaction_id: string | null
+        }
+        Insert: {
+          client_id?: string | null
+          contractor_id?: string | null
+          created_at?: string
+          designer_id?: string | null
+          id?: string
+          transaction_id?: string | null
+        }
+        Update: {
+          client_id?: string | null
+          contractor_id?: string | null
+          created_at?: string
+          designer_id?: string | null
+          id?: string
+          transaction_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transaction_contributor_client_id_fkey"
+            columns: ["client_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transaction_contributor_contractor_id_fkey"
+            columns: ["contractor_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transaction_contributor_designer_id_fkey"
+            columns: ["designer_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transaction_contributor_transaction_id_fkey"
+            columns: ["transaction_id"]
+            referencedRelation: "transaction"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      transaction_status: {
+        Row: {
+          contract: string
+          created_at: string
+          created_by: string
+          description: string
+          extra_info: string
+          id: string
+          isConfirmed: boolean
+          isPaid: boolean
+          media: string
+          payment: number
+          title: string
+          transaction_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          contract?: string
+          created_at?: string
+          created_by?: string
+          description?: string
+          extra_info?: string
+          id?: string
+          isConfirmed?: boolean
+          isPaid?: boolean
+          media?: string
+          payment?: number
+          title?: string
+          transaction_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          contract?: string
+          created_at?: string
+          created_by?: string
+          description?: string
+          extra_info?: string
+          id?: string
+          isConfirmed?: boolean
+          isPaid?: boolean
+          media?: string
+          payment?: number
+          title?: string
+          transaction_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transaction_status_transaction_id_fkey"
+            columns: ["transaction_id"]
+            referencedRelation: "transaction"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
       check_design_permission: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      check_request_form_permission: {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
