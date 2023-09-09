@@ -44,7 +44,7 @@ interface Dropdown {
 	label: string;
 }
 
-function Profile() {
+function Profile(props:{role:string}) {
 	const [profiles, setProfiles] = useState<Profile>();
 	const [profile_details, setProfile_details] = useState<ProfileDetail>();
 
@@ -431,9 +431,9 @@ function Profile() {
 							onChange={handleChangeLastName}
 						></InputBoxSettings>
 
-						{(user.role === "Designer" ||
-							user.role === "Contractor" ||
-							user.role === "Admin") && (
+						{(props.role === "designer" ||
+							props.role === "contractor" ||
+							props.role === "admin") && (
 							<div>
 								<div>
 									{type_name?.map((item, index) => (
@@ -606,9 +606,10 @@ function Profile() {
 						</label>
 					</div>
 					<div className="pb-20 justify-end w-full flex mt-16">
-						{user.role === "client" && (
+						{props.role === "client" && (
 							<div className="my-auto">
 								<button
+									type="button"
 									onClick={handleOpenChooseRole}
 									className="mr-5 text-[16px] underline text-gold"
 								>
@@ -629,7 +630,7 @@ function Profile() {
 	);
 }
 
-function Project() {
+function Project(props:{role:string}) {
 	const [projects, setProjects] = useState<
 		{
 			institution: string;
@@ -1225,7 +1226,7 @@ function Project() {
 				</div>
 			) : (
 				<div>
-					{user.role === "Admin" && (
+					{props.role === "Admin" && (
 						<div className="flex flex-col items-center justify-center mt-36 pb-5">
 							<p className="text-[19px] font-medium">No Project Registered</p>
 							<p className="text-[12px]  text-[#BEB8B8]">
@@ -1233,7 +1234,7 @@ function Project() {
 							</p>
 						</div>
 					)}
-					{user.role === "Contractor" && (
+					{props.role === "Contractor" && (
 						<div className="flex flex-col items-center justify-center mt-16 pb-5">
 							<p className="text-[19px] font-medium">No Project Registered</p>
 							<p className="text-[12px]  text-[#BEB8B8]">
@@ -1242,7 +1243,7 @@ function Project() {
 						</div>
 					)}
 
-					{user.role === "Designer" && (
+					{props.role === "designer" && (
 						<div className="flex flex-col items-center justify-center mt-24 pb-5">
 							<p className="text-[19px] font-medium">No Project Registered</p>
 							<p className="text-[12px]  text-[#BEB8B8]">
@@ -1265,7 +1266,7 @@ function Project() {
 	);
 }
 
-function Member() {
+function Member(props:{role:string}) {
 	//state untuk member
 	const [members, setMembers] = useState<
 		{ name: string; job: string; description: string }[]
@@ -1558,7 +1559,7 @@ function Member() {
 				</div>
 			) : (
 				<div>
-					{user.role === "Admin" && (
+					{props.role === "Admin" && (
 						<div className="flex flex-col items-center justify-center mt-36 pb-5">
 							<p className="text-[19px] font-medium">No Member Registered</p>
 							<p className="text-[12px]  text-[#BEB8B8]">
@@ -1566,7 +1567,7 @@ function Member() {
 							</p>
 						</div>
 					)}
-					{user.role === "Contractor" && (
+					{props.role === "Contractor" && (
 						<div className="flex flex-col items-center justify-center mt-16 pb-5">
 							<p className="text-[19px] font-medium">No Member Registered</p>
 							<p className="text-[12px]  text-[#BEB8B8]">
@@ -1589,7 +1590,7 @@ function Member() {
 	);
 }
 
-function Education() {
+function Education(props:{role:string}) {
 	const [education, setEducation] = useState<
 		{
 			institution: string;
@@ -2025,7 +2026,7 @@ function Education() {
 				</div>
 			) : (
 				<div>
-					{user.role === "Admin" && (
+					{props.role === "Admin" && (
 						<div className="flex flex-col items-center justify-center mt-36 pb-5">
 							<p className="text-[19px] font-medium">No Education Registered</p>
 							<p className="text-[12px]  text-[#BEB8B8]">
@@ -2033,7 +2034,7 @@ function Education() {
 							</p>
 						</div>
 					)}
-					{user.role === "Designer" && (
+					{props.role === "designer" && (
 						<div className="flex flex-col items-center justify-center mt-24 pb-5">
 							<p className="text-[19px] font-medium">No Education Registered</p>
 							<p className="text-[12px]  text-[#BEB8B8]">
@@ -2056,7 +2057,7 @@ function Education() {
 	);
 }
 
-function Experience() {
+function Experience(props:{role:string}) {
 	const [experience, setExperience] = useState<
 		{
 			institution: string;
@@ -2166,6 +2167,8 @@ function Experience() {
 	const openExperiencePopUp = () => {
 		setExperienceModal(!experienceModal);
 	};
+	
+	console.log(user)
 
 	return (
 		<div>
@@ -2485,7 +2488,7 @@ function Experience() {
 				</div>
 			) : (
 				<div>
-					{user.role === "Admin" && (
+					{props.role === "Admin" && (
 						<div className="flex flex-col items-center justify-center mt-36 pb-5">
 							<p className="text-[19px] font-medium">
 								No Experience Registered
@@ -2495,7 +2498,7 @@ function Experience() {
 							</p>
 						</div>
 					)}
-					{user.role === "Designer" && (
+					{user.role === "designer" && (
 						<div className="flex flex-col items-center justify-center mt-24 pb-5">
 							<p className="text-[19px] font-medium">
 								No Experience Registered
@@ -2520,7 +2523,7 @@ function Experience() {
 	);
 }
 
-function Design() {
+function Design(props:{role:string}) {
 	const designItem = [
 		{
 			id: 1,
@@ -2791,7 +2794,7 @@ function Design() {
 							</p>
 						</div>
 					)}
-					{user.role === "Designer" && (
+					{user.role === "designer" && (
 						<div className="flex flex-col items-center justify-center mt-24 pb-5">
 							<p className="text-[19px] font-medium">No Design Registered</p>
 							<p className="text-[12px]  text-[#BEB8B8]">
@@ -2813,7 +2816,7 @@ function Design() {
 	);
 }
 
-function Account() {
+function Account(props:{role:string}) {
 	const data = [
 		{
 			email: "ramadhanialqadri12@gmail.com",
@@ -3054,7 +3057,7 @@ function Account() {
 	);
 }
 
-function BankAccount() {
+function BankAccount(props:{role:string}) {
 	const bankAccountData = [
 		{
 			bankName: "Bank BRI",
@@ -3219,7 +3222,7 @@ function BankAccount() {
 						</div>
 					)}
 
-					{user.role === "Designer" && (
+					{user.role === "designer" && (
 						<div className="flex flex-col items-center justify-center mt-24 pb-5">
 							<p className="text-[19px] font-medium">No Account Registered</p>
 							<p className="text-[12px]  text-[#BEB8B8]">
@@ -3502,14 +3505,14 @@ export default function Setting() {
 					</div>
 					{/* content Right */}
 					<div className="w-[58.375rem]  border-l-2">
-						{selectedTab === "Profile" && <Profile />}
-						{selectedTab === "Project" && <Project />}
-						{selectedTab === "Member" && <Member />}
-						{selectedTab === "Education" && <Education />}
-						{selectedTab === "Experience" && <Experience />}
-						{selectedTab === "Design" && <Design />}
-						{selectedTab === "Account" && <Account />}
-						{selectedTab === "Bank Account" && <BankAccount />}
+						{selectedTab === "Profile" && <Profile role={role} />}
+						{selectedTab === "Project" && <Project  role={role}/>}
+						{selectedTab === "Member" && <Member  role={role}/>}
+						{selectedTab === "Education" && <Education  role={role}/>}
+						{selectedTab === "Experience" && <Experience  role={role}/>}
+						{selectedTab === "Design" && <Design  role={role}/>}
+						{selectedTab === "Account" && <Account  role={role}/>}
+						{selectedTab === "Bank Account" && <BankAccount  role={role} />}
 					</div>
 				</div>
 			</div>
