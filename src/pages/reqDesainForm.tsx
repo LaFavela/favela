@@ -6,7 +6,6 @@ import InputPopUp from "@/components/popUpInput";
 import CloseIcon from "@mui/icons-material/Close";
 import Dropdown from "@/components/dropdwon";
 import InputBoxForm from "@/components/inpuBoxForm";
-import { properti } from "./designct";
 import { supabase } from "@/lib/supabase";
 import { v4 } from "uuid";
 import { set } from "react-hook-form";
