@@ -382,6 +382,8 @@ export default function Designer({
 	const [selectedTags, setSelectedTags] = useState<string[]>([]);
 	const [selectedStyleTag, setSelectedStyleTag] = useState<string[]>([]);
 
+	
+	//INI UNTUK NAMBAH TAG TYPE
 	const handleTagClick = (value: string) => {
 		if (selectedTags.includes(value)) {
 			setSelectedTags(selectedTags.filter((tag) => tag !== value));
@@ -390,7 +392,7 @@ export default function Designer({
 		}
 	};
 
-	
+	//INI HANDLE UNTUK NAMBAH TAG STYLE
 	const handleStyleTag = (value: string) => {
 		if (selectedStyleTag.includes(value)) {
 			setSelectedStyleTag(selectedStyleTag.filter((tag) => tag !== value));
@@ -419,6 +421,7 @@ export default function Designer({
 	
 	console.log(selectedRegion);
 
+	//HANDLE UNTUK HAPUS TAG DAERAH
 	const handleTagDelete2 = (key: string) => {
 		// Create a copy of the selectedRegion object
 		const updatedRegion = { ...selectedRegion };
