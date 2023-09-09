@@ -16,6 +16,7 @@ import { useRouter } from "next/router";
 import { Database } from "@/types";
 import Rating from "@mui/material/Rating";
 import { User } from "@supabase/supabase-js";
+import { getDate } from "@/tools/time";
 
 export const getServerSideProps = async (
 	context: GetServerSidePropsContext,
@@ -482,7 +483,7 @@ export default function DesignProduct({
 										Registered:
 									</p>
 									<p className="text-[0.9375rem] font-medium ">
-										{design.created_at}
+										{design.created_at && getDate(design.created_at)}
 									</p>
 								</div>
 								{/* Hour */}
