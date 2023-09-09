@@ -682,7 +682,9 @@ export interface Database {
           id: string
           img: string
           name: string
+          price_estimated: number
           property_type: string
+          status: string
           type: string
           updated_at: string | null
         }
@@ -691,7 +693,9 @@ export interface Database {
           id?: string
           img?: string
           name?: string
+          price_estimated?: number
           property_type?: string
+          status?: string
           type?: string
           updated_at?: string | null
         }
@@ -700,7 +704,9 @@ export interface Database {
           id?: string
           img?: string
           name?: string
+          price_estimated?: number
           property_type?: string
+          status?: string
           type?: string
           updated_at?: string | null
         }
