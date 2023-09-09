@@ -6,6 +6,7 @@ import { Skeleton } from "@mui/material";
 import { supabase } from "@/lib/supabase";
 import { User } from "@supabase/supabase-js";
 import { Database } from "@/types";
+import { getDate } from "@/tools/time";
 const people = [
 	{ id: 1, name: "Semua" },
 	{ id: 2, name: "Property" },
@@ -58,7 +59,7 @@ export default function Transaction() {
 										{item.transaction_id.type}
 									</p>
 									<p className="text-[0.75rem]">
-										{item.transaction_id.created_at}
+										{getDate(item.transaction_id.created_at)}
 									</p>
 									<p className="text-[0.75rem]">{item.id}</p>
 								</div>
@@ -78,7 +79,7 @@ export default function Transaction() {
 											{item.transaction_id.property_type}
 										</p>
 										<p className="text-[1rem] font-medium">
-											Rp.{" "}
+											Rp
 											{item.transaction_id.price_estimated.toLocaleString(
 												"en-US",
 											)}
