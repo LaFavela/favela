@@ -50,15 +50,17 @@ export default function Transaction() {
 						transactionData.map((item, idx) => (
 							<div
 								key={idx}
-								className="w-full h-fit p-[1.375rem] border border-[#e3d0ba] bg-white space-y-[0.875rem] rounded-[0.9375rem]"
+								className="w-full h-fit p-[1.375rem] border border-[#f7e6d4] bg-white cursor-pointer hover:bg-[#f7e6d4] space-y-[0.875rem] rounded-[0.9375rem]"
 							>
+								<Link href={`/transaction/detail/${item.transaction_id.id}`} className=" space-y-[0.875rem]">
 								<div className="flex space-x-3 items-center">
-									<p className="text-[0.875rem] font-semibold">
+									<p className="text-[0.875rem] font-semibold text-gold">
 										{item.transaction_id.type}
 									</p>
 									<p className="text-[0.75rem]">
 										{getDate(item.transaction_id.created_at)}
 									</p>
+									<p className="font-extralight text-gold">|</p>
 									<p className="text-[0.75rem]">{item.id}</p>
 								</div>
 								<div className="flex space-x-3">
@@ -76,28 +78,22 @@ export default function Transaction() {
 										<p className="text-[0.875rem] font-light text-[#BEB8B8]">
 											{item.transaction_id.property_type}
 										</p>
-										<p className="text-[1rem] font-medium">
+										<p className="text-[1rem] font-semibold">
 											Rp
 											{item.transaction_id.price_estimated.toLocaleString(
-												"en-US",
+												"id-ID",
 											)}
-											.00
+											,00
 										</p>
 									</div>
-									<div className="flex-col justify-between flex w-[21.5625rem]">
-										<p className="text-[0.875rem] font-semibold">Status:</p>
+									<div className="flex-col justify-start flex w-[21.5625rem]">
+										<p className="text-[0.875rem] font-semibold text-gold">Status:</p>
 										<p className="text-[0.75rem] font-light ">
 											{item.transaction_id.status}
 										</p>
-										<Link
-											href={`/transaction/detail/${item.transaction_id.id}`}
-										>
-											<p className="text-[0.875rem] font-medium text-[#B17C3F]">
-												Detail Transaction
-											</p>
-										</Link>
+										</div>
 									</div>
-								</div>
+								</Link>
 							</div>
 						))
 					) : (
