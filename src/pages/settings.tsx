@@ -606,7 +606,7 @@ function Profile() {
 						</label>
 					</div>
 					<div className="pb-20 justify-end w-full flex mt-16">
-						{user.role === "" && (
+						{user.role === "client" && (
 							<div className="my-auto">
 								<button
 									onClick={handleOpenChooseRole}
@@ -3202,7 +3202,7 @@ function BankAccount() {
 				</div>
 			) : (
 				<div>
-					{user.role === "" && (
+					{user.role === "client" && (
 						<div className="flex flex-col items-center justify-center mt-8 pb-5">
 							<p className="text-[19px] font-medium">No Account Registered</p>
 							<p className="text-[12px]  text-[#BEB8B8]">
@@ -3289,7 +3289,7 @@ export default function Setting() {
 	const navItem = [
 		{
 			name: "Profile",
-			role: ["admin", "", "designer", "contractor"],
+			role: ["admin", "client", "designer", "contractor"],
 			icon: (
 				<svg
 					width="18"
