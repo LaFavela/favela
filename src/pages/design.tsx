@@ -14,7 +14,6 @@ import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
 import { useRouter } from "next/router";
 import { Database } from "@/types";
 import Link from "next/link";
-import DesignProduct from "./designProduct";
 
 export const getServerSideProps = async (
 	context: GetServerSidePropsContext,
@@ -675,7 +674,7 @@ export default function Design({}: InferGetServerSidePropsType<
 						{design.slice(0, visibleItems).map((designerData, idx) => {
 							return (
 								<Link 
-								key={idx} href={`/designProduct?id=${designerData.id}`}>
+								key={idx} href={`/design/${designerData.id}`}>
 								<div
 									className={`relative rounded-[1.5625rem] transition-all overflow-hidden duration-300 h-[21rem] w-[15.46875rem]`}
 									onMouseEnter={() => {
