@@ -1,18 +1,266 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import InputBox from "@/components/inpuBox";
 import InputPopUp from "@/components/popUpInput";
 import CloseIcon from "@mui/icons-material/Close";
 import Dropdown from "@/components/dropdwon";
+import IMGPreview from "@/components/imgPreview";
+import { supabase } from "@/lib/supabase";
+import { v4 } from "uuid";
 
 export default function Form() {
+	// state pop up image
+	const [srcIMG, setSrcIMG] = useState<any>("" as any);
+	const [showIMG, setShowIMG] = useState(false);
+	const handleOnCloseIMG = () => setShowIMG(false);
+	// STATE UNTUK MEMBER
+
 	const [members, setMembers] = useState<
 		{ name: string; job: string; description: string }[]
 	>([]);
 	const [name, setName] = useState("");
 	const [job, setJob] = useState("");
 	const [description, setDescription] = useState("");
+
+	//BATAS STATE UNTUK MEMBER
+
+	//STATE UNTUK BIODATA
+
+	const [biodata, setBiodata] = useState<
+		{
+			companyName: string;
+			province: number;
+			about: string;
+			selectedCity: number;
+			propertyType: number[];
+			propertyStyle: number[];
+		}[]
+	>([]);
+
+	const [companyName, setCompanyName] = useState("");
+	const [province, setProvince] = useState<number>(NaN);
+	const [about, setAbout] = useState("");
+	const [selectedCity, setSelectedCity] = useState<number>(NaN); // State to store the selected city
+	const [propertyType, setPropertyType] = useState<number[]>([NaN]);
+	const [propertyStyle, setPropertyStyle] = useState<number[]>([NaN]);
+
+	//BATAS STATE UNTUK BIODATA
+
+	//STATE UNTUK PROJECT
+
+	const [projects, setProjects] = useState<
+		{
+			institution: string;
+			title: string;
+			start_date: string;
+			end_date: string;
+			description: string;
+			image: string[];
+		}[]
+	>([]);
+	const [institution, setInstitution] = useState("");
+	const [title, setTitle] = useState("");
+	const [departement, setDepartement] = useState("");
+	const [information, setInformation] = useState("");
+	const [dateFrom, setDateFrom] = useState("");
+	const [dateUntil, setDateUntil] = useState("");
+	const [image, setImage] = useState<string[]>([]);
+
+	//BATAS STATE UNTUK PROJECT
+
+	const [provinsiData, setProvinsiData] = useState<Dropdown[]>([]);
+	const [kotaData, setKotaData] = useState<Dropdown[]>([]);
+	const [propertyTypeData, setPropertyTypeData] = useState<Dropdown[]>([]);
+	const [propertyStyleData, setPropertyStyleData] = useState<Dropdown[]>([]);
+
+	useEffect(() => {
+		const init = async () => {
+			const user = (await supabase.auth.getSession()).data.session?.user;
+			const { data: profile } = await supabase
+				.from("profiles")
+				.select("*")
+				.eq("id", user?.id)
+				.single();
+			setCompanyName(profile?.first_name as string);
+
+			const { data: profile_detail } = await supabase
+				.from("profile_detail")
+				.select("*")
+				.eq("user_id", user?.id)
+				.single();
+			setProvince(profile_detail?.province as number);
+			setSelectedCity(profile_detail?.city as number);
+			setAbout(profile_detail?.about as string);
+			const { data: provinsi } = await supabase.from("provinsi").select("*");
+			let provinsiData: Dropdown[] = [];
+			provinsi?.forEach((item) => {
+				provinsiData.push({
+					value: item.id,
+					label: item.provinsi,
+				});
+			});
+			setProvinsiData(provinsiData);
+
+			const { data: property_type } = await supabase
+				.from("property_type")
+				.select("*");
+			let propertyTypeData: Dropdown[] = [];
+			property_type?.forEach((item) => {
+				propertyTypeData.push({
+					value: item.id,
+					label: item.type_name as string,
+				});
+			});
+			setPropertyTypeData(propertyTypeData);
+
+			const { data: property_style } = await supabase
+				.from("property_style")
+				.select("*");
+			let propertyStyleData: Dropdown[] = [];
+			property_style?.forEach((item) => {
+				propertyStyleData.push({
+					value: item.id,
+					label: item.style_name as string,
+				});
+			});
+			setPropertyStyleData(propertyStyleData);
+		};
+		init();
+	}, []);
+
+	//EVENT HANDLER BIODATA
+
+	const handleChangeCompanyName = (event: any) => {
+		setCompanyName(event.target.value);
+	};
+
+	const handleChangeProvince = async (event: any) => {
+		setProvince(event);
+		const { data: kota } = await supabase
+			.from("kabupaten_kota")
+			.select("*")
+			.eq("id_provinsi", event);
+		let temp: Dropdown[] = [];
+		kota?.forEach((item) => {
+			temp.push({
+				value: item.id,
+				label: item.kabupaten as string,
+			});
+		});
+		setKotaData(temp);
+	};
+
+	const handleChangeAbout = (event: any) => {
+		setAbout(event.target.value);
+	};
+
+	const handleChangePropertyType = (index: number, value: number) => {
+		const updatedPropertyType = [...propertyType];
+		updatedPropertyType[index] = value;
+		setPropertyType(updatedPropertyType);
+	};
+
+	const handleAddPropertyType = () => {
+		setPropertyType([...propertyType, NaN]);
+	};
+
+	const handleDeletePropertyType = (index: number) => {
+		const updatedPropertType = propertyType.filter((_, i) => i !== index);
+		setPropertyType(updatedPropertType);
+	};
+
+	const handleChangePropertyStyle = (index: number, value: number) => {
+		const updatedPropertyStyle = [...propertyStyle];
+		updatedPropertyStyle[index] = value;
+		setPropertyStyle(updatedPropertyStyle);
+	};
+
+	const handleAddPropertyStyle = () => {
+		setPropertyStyle([...propertyStyle, NaN]);
+	};
+
+	const handleDeletePropertyStyle = (index: number) => {
+		const updatedPropertStyle = propertyStyle.filter((_, i) => i !== index);
+		setPropertyStyle(updatedPropertStyle);
+	};
+
+	const handleDropdown = (city: any) => {
+		setSelectedCity(city);
+	};
+
+	const [projectUrl, setProjectUrl] = useState<string[]>([]);
+
+	const handleBiodataSubmit = async (event: any) => {
+		event.preventDefault();
+
+		const user = (await supabase.auth.getSession()).data.session?.user;
+		const { data: profile } = await supabase
+			.from("profiles")
+			.update({ first_name: companyName })
+			.eq("id", user?.id)
+			.select();
+
+		const { data: profile_detail } = await supabase
+			.from("profile_detail")
+			.update({
+				about: about,
+				province: province,
+				city: selectedCity,
+				property_type: propertyType,
+				property_style: propertyStyle,
+			})
+			.eq("user_id", user?.id)
+			.select();
+
+		let { data: member } = await supabase.rpc("insert_member_contractors", {
+			data_to_insert: members,
+		});
+
+		const uploadProjectImages = async () => {
+			const projectUrls: string[] = []; // Declare a variable outside the function to store the URLs
+			for (const project of projects) {
+				// No need to setProjectUrl([]) here
+
+				for (const image of project.image) {
+					const uuid = v4();
+					let blob = await fetch(image).then((r) => r.blob());
+
+					const upload = await supabase.storage
+						.from("project")
+						.upload(`${user?.id}/${uuid}`, blob)
+						.then(async (r) => {
+							const { publicUrl } = supabase.storage
+								.from("project")
+								.getPublicUrl(`${user?.id}/${uuid}`).data;
+							return publicUrl;
+						});
+
+					projectUrls.push(upload); // Add each uploaded URL to the projectUrls array
+				}
+				project.image = projectUrls;
+			}
+		};
+
+		uploadProjectImages();
+
+		projects.map(async (project) => {
+			const { data: project_data } = await supabase.from("project").insert([
+				{
+					title: project.title,
+					description: project.description,
+					image: project.image,
+					institution: project.institution,
+					start_date: project.start_date,
+					end_date: project.end_date,
+				},
+			]);
+		});
+	};
+
+	//BATAS EVENT HANDLER BIODATA
+
+	//EVENT HANDLE MEMBER
 
 	const handleNameChange = (event: any) => {
 		setName(event.target.value);
@@ -62,7 +310,6 @@ export default function Form() {
 	};
 
 	const closeEditPopup = () => {
-		// Close the pop-up without saving any changes
 		setIsEditPopupOpen(false);
 	};
 
@@ -77,27 +324,9 @@ export default function Form() {
 		setModal(!modal);
 	};
 
-	// MEMBER SETTING
+	// BATAS EVENT HANDLER MEMBER
 
-	// DETAIL PROJECT
-	const [projects, setProjects] = useState<
-		{
-			institution: string;
-			title: string;
-			departement: string;
-			dateFrom: string;
-			dateUntil: string;
-			information: string;
-			image: string[];
-		}[]
-	>([]);
-	const [institution, setInstitution] = useState("");
-	const [title, setTitle] = useState("");
-	const [departement, setDepartement] = useState("");
-	const [information, setInformation] = useState("");
-	const [dateFrom, setDateFrom] = useState("");
-	const [dateUntil, setDateUntil] = useState("");
-	const [image, setImage] = useState<string[]>([]);
+	//EVENT HANDLER PROJECT
 
 	const handleInstitutionChange = (event: any) => {
 		setInstitution(event.target.value);
@@ -156,9 +385,9 @@ export default function Form() {
 			institution,
 			title,
 			departement,
-			dateFrom,
-			dateUntil,
-			information,
+			start_date: dateFrom,
+			end_date: dateUntil,
+			description: information,
 			image: [...image],
 		};
 		setProjects([...projects, newProjects]);
@@ -180,9 +409,9 @@ export default function Form() {
 		setEditProjectIndex(index);
 		setInstitution(projectToEdit.institution);
 		setTitle(projectToEdit.title);
-		setDateFrom(projectToEdit.dateFrom);
-		setDateUntil(projectToEdit.dateUntil);
-		setInformation(projectToEdit.information);
+		setDateFrom(projectToEdit.start_date);
+		setDateUntil(projectToEdit.end_date);
+		setInformation(projectToEdit.description);
 		setImage(projectToEdit.image);
 		setIsEditProject(true);
 	};
@@ -193,9 +422,9 @@ export default function Form() {
 			...updateProjects[index],
 			institution,
 			title,
-			dateFrom,
-			dateUntil,
-			information,
+			start_date: dateFrom,
+			end_date: dateUntil,
+			description: information,
 			image: [...image],
 		};
 		setProjects(updateProjects);
@@ -217,86 +446,13 @@ export default function Form() {
 		setProjects(updatedProjects);
 	};
 
+	//BATAS EVENT HANDLER PROJECT
+
 	const [projectModal, setProjectModal] = useState(false);
 
 	const openProjectPopUp = () => {
 		setProjectModal(!projectModal);
 		image.length = 0;
-	};
-	// DETAIL PROJECT
-	//BIODATA
-	const [biodata, setBiodata] = useState<
-		{
-			firstName: string;
-			lastName: string;
-			province: string;
-			about: string;
-			selectedCity: string;
-			tag: string[];
-		}[]
-	>([]);
-
-	
-	const [firstName, setFirstName] = useState("");
-	const [lastName, setLastName] = useState("");
-	const [province, setProvince] = useState("");
-	const [about, setAbout] = useState("");
-	const [selectedCity, setSelectedCity] = useState(""); // State to store the selected city
-	const [tag, setTag] = useState<string[]>([""]);
-
-	const handleChangeFirstname = (event: any) => {
-		setFirstName(event.target.value);
-	};
-
-	const handleChangeLastName = (event: any) => {
-		setLastName(event.target.value);
-	};
-
-	const handleChangeProvince = (event: any) => {
-		setProvince(event);
-	};
-
-	const handleChangeAbout = (event: any) => {
-		setAbout(event.target.value);
-	};
-
-	const handleChangeTag = (index: number, value: string) => {
-		const updatedTags = [...tag];
-		updatedTags[index] = value;
-		setTag(updatedTags);
-	};
-
-	const handleDropdown = (city: any) => {
-		setSelectedCity(city);
-	};
-
-	const handleAddTag = () => {
-		setTag([...tag, ""]);
-	};
-
-	const handleDeleteTag = (index: number) => {
-		const updatedTag = tag.filter((_, i) => i !== index);
-		setTag(updatedTag);
-	};
-
-	const handleBiodataSubmit = (event: any) => {
-		event.preventDefault();
-		const newBiodata = {
-			firstName,
-			lastName,
-			province,
-			tag: [...tag],
-			selectedCity,
-			about,
-		};
-
-		setBiodata([...biodata, newBiodata]);
-		setFirstName("");
-		setLastName("");
-		setProvince("");
-		setTag([]);
-		setSelectedCity("");
-		setAbout("");
 	};
 
 	const [confirmModal, setConfirmModal] = useState(false);
@@ -304,8 +460,6 @@ export default function Form() {
 	const openConfirmPopUp = () => {
 		setConfirmModal(!confirmModal);
 	};
-
-	
 
 	return (
 		<div>
@@ -379,9 +533,7 @@ export default function Form() {
 						<div className="absolute bottom-0 left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-black/40">
 							<div className="z-50 modal-content w-[553px] rounded-3xl bg-white">
 								<div className="border-b-2 border-gold/60">
-									<h2 className="mx-8 my-4  text-[18px]">
-										Edit Detail Member 
-									</h2>
+									<h2 className="mx-8 my-4  text-[18px]">Edit Detail Member</h2>
 								</div>
 
 								<div className="ml-14 py-5">
@@ -773,15 +925,17 @@ export default function Form() {
 									</p>
 								</div>
 								<div className="pr-5 flex justify-end border-t-2">
-									<Link href={"./merchantProfile"}>
-										<button
-											onClick={openConfirmPopUp}
-											type="submit"
-											className="my-3 mr-3 rounded-full border-[1px] border-[#FAB566] bg-[#FAB566] px-8 py-1 text-[13px] text-white hover:border-[#FFD5A6] hover:bg-[#FFD5A6]"
-										>
-											Confirm
-										</button>
-									</Link>
+									<button
+										onClick={(event: any) => {
+											handleBiodataSubmit(event);
+										}}
+										type="submit"
+										className="my-3 mr-3 rounded-full border-[1px] border-[#FAB566] bg-[#FAB566] px-8 py-1 text-[13px] text-white hover:border-[#FFD5A6] hover:bg-[#FFD5A6]"
+									>
+										{/* <Link href={"./merchantProfile"}> */}
+										Confirm
+										{/* </Link> */}
+									</button>
 								</div>
 							</div>
 						</div>
@@ -794,105 +948,140 @@ export default function Form() {
 						<div className="mb-10 w-full rounded-3xl bg-white drop-shadow-landingShado mt-7">
 							<div className="ml-14 py-8">
 								<p className="text-[15px] font-semibold text-gold">Biodata</p>
+
 								<InputBox
 									form="biodata-Form"
 									type="text"
-									title="Firstname"
-									onChange={handleChangeFirstname}
+									title="Name"
+									placeholder={"Enter Name"}
+									onChange={handleChangeCompanyName}
+									value={companyName}
 								></InputBox>
-								<InputBox
-									form="biodata-Form"
-									type="text"
-									title="Lastname"
-									onChange={handleChangeLastName}
-								></InputBox>
+
 								<div>
-									{tag.map((item, index) => (
+									{propertyType.map((item, index) => (
 										<div key={index}>
 											{index == 0 ? (
 												<Dropdown
 													form="biodata-Form"
-													styleClass=" bg-white text-gold flex gap-[157px] mt-2 w-full pr-7"
-													styleClassTag="bg-white border-2 border-gold rounded-[7px] w-full"
-													title="Tag"
-													data={[
-														{ value: "Tag1", label: "Tag1" },
-														{ value: "Tag2", label: "Tag2" },
-														{ value: "Tag3", label: "Tag3" },
-														{ value: "Tag4", label: "Tag4" },
-														{ value: "Tag5", label: "Tag5" },
-													]}
+													styleClass="text-gold text-[15px] flex gap-[36px] mt-2 w-full pr-7"
+													styleClassTag="py-[3px] border-2 border-gold rounded-[7px] w-full"
+													styleText="w-[200px]"
+													title="Property Type"
+													data={propertyTypeData}
 													value={item}
-													placehoder="Select Tag"
-													onChange={(e: any) => handleChangeTag(index, e)}
+													placehoder="Select Property Type"
+													onChange={(e: any) =>
+														handleChangePropertyType(index, e)
+													}
 												></Dropdown>
 											) : (
 												<div className="relative">
 													<Dropdown
 														form="biodata-Form"
-														styleClass=" bg-white text-gold flex gap-[187px] mt-1 w-full pr-7"
-														styleClassTag="bg-white border-2 border-gold rounded-[7px] w-full py-[2px]"
+														styleClass="text-gold text-[15px] flex gap-[187px] mt-1 w-full pr-7"
+														styleClassTag="border-2 border-gold rounded-[7px] w-full py-[2px]"
 														title=""
-														data={[
-															{ value: "Tag1", label: "Tag1" },
-															{ value: "Tag2", label: "Tag2" },
-															{ value: "Tag3", label: "Tag3" },
-															{ value: "Tag4", label: "Tag4" },
-															{ value: "Tag5", label: "Tag5" },
-														]}
+														data={propertyTypeData}
 														value={item}
-														placehoder="Select Tag"
-														onChange={(e: any) => handleChangeTag(index, e)}
+														placehoder="Select Property Type"
+														onChange={(e: any) =>
+															handleChangePropertyType(index, e)
+														}
 													></Dropdown>
 													<div className="flex justify-end pr-[57px]"></div>
 												</div>
 											)}
 
 											<div className="ml-[187px] mt-2 flex pr-[55px] text-gold text-[11px]">
-												{tag.length > index + 1 ? (
-													
+												{propertyType.length > index + 1 ? (
 													<div className="w-full flex justify-end">
-														<button onClick={() => handleDeleteTag(index)}>
-															Delete Tag
+														<button
+															onClick={() => handleDeletePropertyType(index)}
+														>
+															Delete Type
 														</button>
 													</div>
 												) : (
-													<button onClick={handleAddTag}>+ Add Tag</button>
-													
+													<button onClick={handleAddPropertyType}>
+														+ Add Type
+													</button>
 												)}
-												
 											</div>
 										</div>
 									))}
 								</div>
+
+								<div>
+									{propertyStyle.map((item, index) => (
+										<div key={index}>
+											{index == 0 ? (
+												<Dropdown
+													form="biodata-Form"
+													styleClass="text-gold text-[15px] text-[15px] flex gap-[36px] mt-2 w-full pr-7"
+													styleClassTag="py-[3px] border-2 border-gold rounded-[7px] w-full"
+													styleText="w-[200px]"
+													title="Property Style"
+													data={propertyStyleData}
+													value={item}
+													placehoder="Select Property Style"
+													onChange={(e: any) =>
+														handleChangePropertyStyle(index, e)
+													}
+												></Dropdown>
+											) : (
+												<div className="relative">
+													<Dropdown
+														form="biodata-Form"
+														styleClass="text-gold text-[15px] flex gap-[187px] mt-1 w-full pr-7"
+														styleClassTag="border-2 border-gold rounded-[7px] w-full py-[2px]"
+														title=""
+														data={propertyStyleData}
+														value={item}
+														placehoder="Select Property Style"
+														onChange={(e: any) =>
+															handleChangePropertyStyle(index, e)
+														}
+													></Dropdown>
+													<div className="flex justify-end pr-[57px]"></div>
+												</div>
+											)}
+
+											<div className="ml-[187px] mt-2 flex pr-[55px] text-gold text-[11px]">
+												{propertyStyle.length > index + 1 ? (
+													<div className="w-full flex justify-end">
+														<button
+															onClick={() => handleDeletePropertyStyle(index)}
+														>
+															Delete Style
+														</button>
+													</div>
+												) : (
+													<button onClick={handleAddPropertyStyle}>
+														+ Add Style
+													</button>
+												)}
+											</div>
+										</div>
+									))}
+								</div>
+
 								<Dropdown
 									form="biodata-Form"
-									styleClass=" bg-white text-gold flex gap-[120px] mt-2 w-full pr-7"
-									styleClassTag="bg-white border-2 border-gold rounded-[7px] w-full"
+									styleClass="text-gold text-[15px] flex gap-[123px] mt-2 w-full pr-7"
+									styleClassTag="border-2 py-[4px] border-gold rounded-[7px] w-full"
 									title="Province"
-									data={[
-										{ value: "Lombok Timur", label: "Lombok Timur" },
-										{ value: "Mataram", label: "Mataram" },
-										{ value: "Bima", label: "Bima" },
-										{ value: "Dompu", label: "Dompu" },
-										{ value: "Sumbawa", label: "Sumbawa" },
-									]}
+									data={provinsiData}
 									value={province}
 									placehoder="Select Province"
 									onChange={handleChangeProvince}
 								></Dropdown>
 								<Dropdown
 									form="biodata-Form"
-									styleClass=" bg-white text-gold flex gap-[157px] mt-2 w-full pr-7"
-									styleClassTag="bg-white border-2 border-gold rounded-[7px] w-full"
+									styleClass="text-gold text-[15px] flex gap-[158px] mt-2 w-full pr-7"
+									styleClassTag="py-[4px] border-2 border-gold rounded-[7px] w-full"
 									title="City"
-									data={[
-										{ value: "Lombok Timur", label: "Lombok Timur" },
-										{ value: "Mataram", label: "Mataram" },
-										{ value: "Bima", label: "Bima" },
-										{ value: "Dompu", label: "Dompu" },
-										{ value: "Sumbawa", label: "Sumbawa" },
-									]}
+									data={kotaData}
 									value={selectedCity}
 									placehoder="Select City"
 									onChange={handleDropdown}
@@ -904,6 +1093,7 @@ export default function Form() {
 									<textarea
 										form="biodata-Form"
 										id="description"
+										placeholder="Enter About"
 										value={about}
 										onChange={handleChangeAbout}
 										className=" mt-1 block h-[95px] w-full rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
@@ -1094,11 +1284,28 @@ export default function Form() {
 											</div>
 											<p>{projects.title}</p>
 											<p className="text-black/60">
-												{projects.dateFrom.substr(0, 0 + 4)} -
-												{projects.dateUntil.substr(0, 0 + 4) === "2023"
+												{projects.start_date.substr(0, 0 + 4)} -
+												{projects.end_date.substr(0, 0 + 4) === "2023"
 													? " Now"
-													: projects.dateUntil.substr(0, 0 + 4)}
+													: projects.end_date.substr(0, 0 + 4)}
 											</p>
+
+											<div className="flex gap-3 w-full mt-3">
+												{projects.image.map((item, index) => (
+													<div key={index}>
+														<Image
+															onClick={() => {
+																setSrcIMG(item);
+																setShowIMG(true);
+															}}
+															src={item}
+															alt=""
+															width={60}
+															height={60}
+														></Image>
+													</div>
+												))}
+											</div>
 										</span>
 									</div>
 								))}
@@ -1106,38 +1313,43 @@ export default function Form() {
 						</div>
 
 						<div className="pb-20 justify-end w-full flex">
-							<form id="biodata-Form" onSubmit={handleBiodataSubmit}>
-								<button
-									onClick={openConfirmPopUp}
-									type="submit"
-									className="bg-gold rounded-full py-3 px-7 text-white text-[15px] hover:bg-goldhov"
-								>
-									Request
-								</button>
-							</form>
+							<button
+								onClick={openConfirmPopUp}
+								type="submit"
+								className="bg-gold rounded-full py-3 px-7 text-white text-[15px] hover:bg-goldhov"
+							>
+								Request
+							</button>
 						</div>
 					</div>
 
 					<div className="container max-w-[400px]">
 						<div className="mb-10 w-full rounded-3xl bg-white drop-shadow-landingShado mt-14">
 							<div className="px-7 py-6">
-								<p className="text-[17px] font-medium">Lorem Ipsum</p>
+								<p className="text-[17px] font-medium">Request As Contractor</p>
 								<p className="text-[15px]">
-									Morbi lobortis aliquet nisl. Lorem ipsum dolor sit amet,
-									consectetur adipiscing elit. Pellentesque maximus felis id
-									varius imperdiet. Donec condimentum bibendum tempus. Proin ac
-									massa non felis ultricies varius eget ut est. Aliquam
-									scelerisque velit in lorem pellentesque, a vulputate dolor
-									accumsan. Nulla tortor ipsum, placerat eget risus ut, sagittis
-									tincidunt lectus. Donec in dui erat. Duis eu risus tristique,
-									rhoncus erat et, iaculis elit. Mauris id suscipit libero, id
-									fringilla nisi. Duis a vestibulum est.
+									This page will help potential clients or project owners get a
+									clear understanding of your company, your team, and your
+									ability to complete previous projects.
 								</p>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
+			<div>
+				<IMGPreview
+					src={srcIMG}
+					onClose={handleOnCloseIMG}
+					visible={showIMG}
+					setShowIMG={setShowIMG}
+				></IMGPreview>
+			</div>
 		</div>
 	);
+}
+
+interface Dropdown {
+	value: number;
+	label: string;
 }
