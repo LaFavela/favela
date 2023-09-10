@@ -258,7 +258,6 @@ export default function Landing() {
 						);
 					})}
 				</div>
-				<Footer></Footer>
 			</div>
 
 			{/* PEMBATAS 7 */}
