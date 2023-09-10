@@ -211,6 +211,7 @@ export default function SellDesignForm() {
 			.from("request_form")
 			.insert([
 				{
+					design_name: "name",
 					budget: budget,
 					land_size: landSize,
 					city: city,
@@ -242,6 +243,8 @@ export default function SellDesignForm() {
 					.select();
 			}),
 		);
+		
+		// F
 	};
 
 	const handleAddFacilities = () => {
