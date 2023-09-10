@@ -36,7 +36,7 @@ export default function Landing() {
 
   return (
     <div className=" transition-all duration-300 ease-linear">
-      <div className="container mx-auto h-[10rem] max-w-md sm:max-w-xl xl:max-w-5xl 2xl:max-w-7xl">
+      <div className="container mx-auto  max-w-md sm:max-w-xl xl:max-w-5xl 2xl:max-w-7xl">
         {/* {loading? (
           <div className="pt-[8rem]">
             <Skeleton className="pt-[8rem] rounded-xl"  variant="rectangular" width="1314px" height="466px"/>
@@ -258,7 +258,6 @@ export default function Landing() {
             );
           })}
         </div>
-      <Footer></Footer>
       </div>
 
       {/* PEMBATAS 7 */}
