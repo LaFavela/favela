@@ -20,7 +20,7 @@ export const constractorData = [
 		rating: 4,
 		follower: 12,
 		job: "Ikea Designer",
-		link: "merchantProfile",
+		link: "profile",
 		tag: ["Villa", "Modern", "Traditional"],
 	},
 	{
@@ -32,7 +32,7 @@ export const constractorData = [
 		rating: 4,
 		follower: 12,
 		job: "Ikea Designer",
-		link: "merchantProfile",
+		link: "profile",
 		tag: ["Villa", "Modern", "Traditional"],
 	},
 	{
