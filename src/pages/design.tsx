@@ -718,7 +718,6 @@ export default function Design() {
 					</motion.button>
 				)}
 			</div>
-			<Footer></Footer>
 		</div>
 	);
 }

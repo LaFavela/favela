@@ -18,7 +18,7 @@ export default function ProfileButton() {
 		// declare the data fetching function
 		const fetchData = async () => {
 			const data = (await supabase.auth.getSession()).data.session?.user;
-      let { data: profiles, error } = await supabase
+			let { data: profiles, error } = await supabase
 				.from("profiles")
 				.select("*")
 				.eq("id", data?.id);
@@ -70,14 +70,18 @@ export default function ProfileButton() {
 				className="flex cursor-pointer justify-end"
 			>
 				<div className="flex items-center space-x-4">
-					<Image
-						className="rounded-full"
-						// src={img}
-						alt="profile"
-						src={session?.avatar_url as string}
-						width={36}
-						height={36}
-					/>
+					<div className="relative h-[40px] w-[40px] rounded-full">
+						<Image
+							className="rounded-full"
+							// src={img}
+							alt="profile"
+							src={session?.avatar_url as string}
+							fill={true}
+							objectFit="cover"
+							// width={36}
+							// height={36}
+						/>
+					</div>
 					<div>
 						<p className={"text-[1.125rem] font-normal" + textColor}>
 							{session?.first_name}

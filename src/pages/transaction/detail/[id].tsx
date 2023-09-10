@@ -559,7 +559,6 @@ export default function DetailTransaction({
 					/>
 				</div>
 			</div>
-			<Footer></Footer>
 		</div>
 	);
 }
