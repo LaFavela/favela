@@ -257,6 +257,37 @@ export interface Database {
           }
         ]
       }
+      follower: {
+        Row: {
+          follower: string | null
+          following: string | null
+          id: string
+        }
+        Insert: {
+          follower?: string | null
+          following?: string | null
+          id?: string
+        }
+        Update: {
+          follower?: string | null
+          following?: string | null
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "follower_follower_fkey"
+            columns: ["follower"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "follower_following_fkey"
+            columns: ["following"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       kabupaten_kota: {
         Row: {
           id: number
@@ -359,6 +390,7 @@ export interface Database {
           banner: string | null
           city: number | null
           created_at: string
+          follower_count: number
           id: string
           property_style: number[]
           property_type: number[] | null
@@ -371,6 +403,7 @@ export interface Database {
           banner?: string | null
           city?: number | null
           created_at?: string
+          follower_count?: number
           id?: string
           property_style?: number[]
           property_type?: number[] | null
@@ -383,6 +416,7 @@ export interface Database {
           banner?: string | null
           city?: number | null
           created_at?: string
+          follower_count?: number
           id?: string
           property_style?: number[]
           property_type?: number[] | null
@@ -589,14 +623,16 @@ export interface Database {
           created_at: string
           created_by: string | null
           deadline: string
+          design_name: string
           id: string
           information: string
           land_image: string[]
+          land_shape: string
           land_size: number
+          property_style: number | null
           property_type: number | null
           province: number | null
           reference_image: string[]
-          style: string
           sun_orientation: string
           wind_orientation: string
         }
@@ -606,14 +642,16 @@ export interface Database {
           created_at?: string
           created_by?: string | null
           deadline?: string
+          design_name?: string
           id?: string
           information?: string
           land_image?: string[]
+          land_shape?: string
           land_size: number
+          property_style?: number | null
           property_type?: number | null
           province?: number | null
           reference_image?: string[]
-          style?: string
           sun_orientation?: string
           wind_orientation?: string
         }
@@ -623,14 +661,16 @@ export interface Database {
           created_at?: string
           created_by?: string | null
           deadline?: string
+          design_name?: string
           id?: string
           information?: string
           land_image?: string[]
+          land_shape?: string
           land_size?: number
+          property_style?: number | null
           property_type?: number | null
           province?: number | null
           reference_image?: string[]
-          style?: string
           sun_orientation?: string
           wind_orientation?: string
         }
@@ -648,6 +688,12 @@ export interface Database {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "request_form_property_style_fkey"
+            columns: ["property_style"]
+            referencedRelation: "property_style"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "request_form_property_type_fkey"
             columns: ["property_type"]
             referencedRelation: "property_type"
@@ -657,6 +703,67 @@ export interface Database {
             foreignKeyName: "request_form_province_fkey"
             columns: ["province"]
             referencedRelation: "provinsi"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      review: {
+        Row: {
+          contractor_id: string | null
+          created_at: string
+          description: string
+          design_id: string | null
+          designer_id: string | null
+          id: number
+          rating: number | null
+          title: string
+          transaction_id: string | null
+        }
+        Insert: {
+          contractor_id?: string | null
+          created_at?: string
+          description?: string
+          design_id?: string | null
+          designer_id?: string | null
+          id?: number
+          rating?: number | null
+          title?: string
+          transaction_id?: string | null
+        }
+        Update: {
+          contractor_id?: string | null
+          created_at?: string
+          description?: string
+          design_id?: string | null
+          designer_id?: string | null
+          id?: number
+          rating?: number | null
+          title?: string
+          transaction_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "review_contractor_id_fkey"
+            columns: ["contractor_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "review_design_id_fkey"
+            columns: ["design_id"]
+            referencedRelation: "design"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "review_designer_id_fkey"
+            columns: ["designer_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "review_transaction_id_fkey"
+            columns: ["transaction_id"]
+            referencedRelation: "transaction"
             referencedColumns: ["id"]
           }
         ]
@@ -719,7 +826,7 @@ export interface Database {
           created_at: string
           designer_id: string | null
           id: string
-          transaction_id: string | null
+          transaction_id: string
         }
         Insert: {
           client_id?: string | null
@@ -727,7 +834,7 @@ export interface Database {
           created_at?: string
           designer_id?: string | null
           id?: string
-          transaction_id?: string | null
+          transaction_id: string
         }
         Update: {
           client_id?: string | null
@@ -735,7 +842,7 @@ export interface Database {
           created_at?: string
           designer_id?: string | null
           id?: string
-          transaction_id?: string | null
+          transaction_id?: string
         }
         Relationships: [
           {
@@ -766,7 +873,9 @@ export interface Database {
       }
       transaction_status: {
         Row: {
+          action_type: string[]
           contract: string
+          contractor_id: string | null
           created_at: string
           created_by: string
           description: string
@@ -775,13 +884,15 @@ export interface Database {
           isConfirmed: boolean
           isPaid: boolean
           media: string
-          payment: number
+          payment: number | null
           title: string
           transaction_id: string | null
           updated_at: string | null
         }
         Insert: {
+          action_type?: string[]
           contract?: string
+          contractor_id?: string | null
           created_at?: string
           created_by?: string
           description?: string
@@ -790,13 +901,15 @@ export interface Database {
           isConfirmed?: boolean
           isPaid?: boolean
           media?: string
-          payment?: number
+          payment?: number | null
           title?: string
           transaction_id?: string | null
           updated_at?: string | null
         }
         Update: {
+          action_type?: string[]
           contract?: string
+          contractor_id?: string | null
           created_at?: string
           created_by?: string
           description?: string
@@ -805,12 +918,18 @@ export interface Database {
           isConfirmed?: boolean
           isPaid?: boolean
           media?: string
-          payment?: number
+          payment?: number | null
           title?: string
           transaction_id?: string | null
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "transaction_status_contractor_id_fkey"
+            columns: ["contractor_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "transaction_status_transaction_id_fkey"
             columns: ["transaction_id"]

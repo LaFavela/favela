@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import InputPopUp from "@/components/popUpInput";
 import DragAndDropInput from "@/components/inputDrop";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Status from "@/components/status";
 import Dropdown from "@/components/dropdwon";
 import { motion, AnimatePresence } from "framer-motion";
@@ -10,45 +10,77 @@ import Footer from "@/components/footer";
 import Rating from "@mui/material/Rating";
 import CircleIcon from "@mui/icons-material/Circle";
 import PaymentTwoToneIcon from "@mui/icons-material/PaymentTwoTone";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import { supabase } from "@/lib/supabase";
+import { User } from "@supabase/supabase-js";
+import { Database } from "@/types";
+import { getDate, getTime } from "@/tools/time";
+import { createPagesServerClient } from "@supabase/auth-helpers-nextjs";
+import { v4 } from "uuid";
+import { stat } from "fs/promises";
+import { cache } from "sharp";
 
-const user = {
-	id: "2113s2",
-	name: "Ramadhani Al-Qadri",
-	img: "/assets/landing/Designer3.jpg",
-	role: "designer",
+type Profile = Database["public"]["Tables"]["profiles"]["Row"] & {
+	role_id: Database["public"]["Tables"]["roles"]["Row"];
 };
-const transaction = {
-	id: "HNF29125367",
-	transactionType: "Build",
-	transactionDate: "16 January 2023",
+type Status = Database["public"]["Tables"]["transaction_status"]["Row"];
+type Contributor =
+	Database["public"]["Tables"]["transaction_contributor"]["Row"];
 
-	propertyType: "Villa",
-	propertyName: "Ampenan Asri",
-	propertyDate: "16 January 2023",
+export const getServerSideProps = async (
+	context: GetServerSidePropsContext,
+) => {
+	context.res.setHeader("Cache-Control", "s-maxage=20, stale-while-revalidate");
+	const params = context.query.id;
+	const supabase = createPagesServerClient(context);
 
-	img: "/assets/browse/Build14.png",
+	const { data: transactionData } = await supabase
+		.from("transaction")
+		.select("*")
+		.eq("id", params)
+		.single();
+
+	if (transactionData == null) {
+		return {
+			notFound: true,
+		};
+	}
+
+	const { data: transactionContributor } = await supabase
+		.from("transaction_contributor")
+		.select("*")
+		.eq("transaction_id", transactionData?.id)
+		.single();
+
+	let { data: contributorData } = await supabase
+		.from("profiles")
+		.select("*, role_id(*)")
+		.or(
+			`id.eq.${transactionContributor?.client_id},id.eq.${transactionContributor?.designer_id},id.eq.${transactionContributor?.contractor_id}`,
+		)
+		.order("role_id", { ascending: true });
+
+	const { data: statusData } = await supabase
+		.from("transaction_status")
+		.select("*")
+		.eq("transaction_id", transactionData?.id)
+		.order("created_at", { ascending: true });
+
+	const role = (await supabase.rpc("get_user_role_name")).data;
+	const user = (await supabase.auth.getUser()).data.user;
+
+	return {
+		props: {
+			transactionData,
+			transactionContributor,
+			contributorData,
+			statusData,
+			role,
+			user,
+		},
+	};
 };
-
-const Contributor = [
-	{
-		id: "21132",
-		name: "Ramadhani Al-Qadri",
-		img: "/assets/landing/Designer3.jpg",
-		role: "client",
-	},
-	{
-		id: "21053",
-		name: "Muhammad Dwimas ",
-		img: "/assets/landing/Designer3.jpg",
-		role: "designer",
-	},
-	{
-		id: "21015",
-		name: "Dzulhi Raihan",
-		img: "/assets/landing/Designer3.jpg",
-		role: "contractor",
-	},
-];
+// const constractor = null;
 const constractor = {
 	name: "Sinar Bata",
 	img: "/assets/landing/Designer3.jpg",
@@ -85,7 +117,14 @@ const bank_account = [
 	},
 ];
 
-export default function DetailTransaction() {
+export default function DetailTransaction({
+	transactionData,
+	contributorData,
+	transactionContributor,
+	statusData,
+	role,
+	user,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	// Review
 	const [isReviewed, setReviewed] = useState(false);
 	const [titleReview, setTitleReview] = useState("");
@@ -94,7 +133,7 @@ export default function DetailTransaction() {
 
 	// isProjectCancel?
 	const [isProjectCancel, setProjectCancel] = useState(false);
-	const handleProjectCancel : any = () => {
+	const handleProjectCancel: any = () => {
 		setProjectCancel(!isProjectCancel);
 	};
 
@@ -122,45 +161,43 @@ export default function DetailTransaction() {
 		setSelectedContract(file);
 	};
 
+	const [transactionId, setTransactionId] = useState(transactionData?.id);
 	const [payment, setPayment] = useState([] as any);
 
-	const [status, setStatus] = useState([
-		{
-			id: 0,
-			tittle: "Momen Kebersamaan",
-			description:
-				"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eget risus porta, tincidunt turpis at, interdum tortor. Sed id pretium elit. Sed eget risus porta, tincidunt turpis at, interdum tortor. Sed id pretium elit.",
-			media: "wertyuiop",
-			contract: "",
-			extraInfo:
-				"Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dolor, saepe esse. Laborum, vel velit aperiam illo sit ipsa qui sint fugiat. Harum, explicabo. Magni fuga exercitationem totam omnis distinctio quibusdam.",
-			payment: 0,
-			date: "16 January 2023",
-			time: "08.00",
-			constractorId: "",
-			actionType: [] as any,
-			updaterId: "21053",
-			isConfirmed: false,
-			isPayed: false,
-		},
-	]);
-	useEffect(() => {
-		handlePaymentTrack();
-	});
+	const [status, setStatus] = useState<Status[]>(
+		statusData ? statusData : [{} as Status],
+	);
 
-	function handlePaymentTrack() {
-		const pay = [] as any;
-		status.map((item) => {
-			if (item.payment > 0) {
-				const temp = {
-					phase: item.tittle,
-					price: item.payment as number,
-				} as any;
-				pay.push(temp);
-				setPayment(pay);
+	useEffect(() => {
+		const fetch = async () => {
+			const { data: statusData, error } = await supabase
+				.from("transaction_status")
+				.select("*")
+				.eq("transaction_id", transactionId)
+				.order("created_at", { ascending: true });
+
+			if (statusData) {
+				setStatus(statusData);
+				handlePaymentTrack();
 			}
-		});
-	}
+		};
+		fetch();
+	}, [transactionId]);
+
+	const handlePaymentTrack = () => {
+		const pay = [] as any;
+		if (status)
+			status.map((item) => {
+				if (item?.payment! > 0) {
+					const temp = {
+						phase: item.title,
+						price: item.payment as number,
+					} as any;
+					pay.push(temp);
+					setPayment(pay);
+				}
+			});
+	};
 
 	const [statuspop, setShowStatus] = useState(false);
 	const handleOnCloseStatus = () => {
@@ -182,16 +219,24 @@ export default function DetailTransaction() {
 							{/* Indormation */}
 							<div className="flex  justify-between w-full p-[1.4375rem] bg-white drop-shadow-landingShado  rounded-[1.5625rem]">
 								<div className="flex space-x-[1.25rem]">
-									<div className="relative w-[7.3125rem] h-[7.3125rem] rounded-[0.625rem] overflow-hidden">
-										<Image src={transaction.img} alt="property" fill={true} />
-									</div>
-									<div className="  flex flex-col justify-between">
+									{transactionData?.img ? (
+										<div className="relative w-[7.3125rem] h-[7.3125rem] rounded-[0.625rem] overflow-hidden">
+											<Image
+												src={transactionData?.img}
+												alt="property"
+												fill={true}
+											/>
+										</div>
+									) : (
+										<div className="relative w-[7.3125rem] h-[7.3125rem] rounded-[0.625rem] overflow-hidden"></div>
+									)}
+									<div className="flex flex-col justify-between w-[22rem]">
 										<div className="flex ">
 											<p className="text-[0.9375rem] font-light mr-1">
 												Name :{" "}
 											</p>
 											<p className="text-[0.9375rem] font-medium">
-												{transaction.propertyName}
+												{transactionData?.name}
 											</p>
 										</div>
 										<div className="flex">
@@ -199,15 +244,18 @@ export default function DetailTransaction() {
 												Type :{" "}
 											</p>
 											<p className="text-[0.9375rem] font-medium">
-												{transaction.propertyType}
+												{transactionData?.property_type}
 											</p>
 										</div>
 										<div className="flex">
 											<p className="text-[0.9375rem] font-light mr-1">
-												ID Transaction :{" "}
+												Transaction ID :{" "}
 											</p>
-											<p className="text-[0.9375rem] font-medium">
-												{transaction.id}
+											<p
+												title={transactionData?.id}
+												className="text-[0.9375rem] font-medium overflow-auto truncate w-8/12"
+											>
+												{transactionData?.id}
 											</p>
 										</div>
 										<div className="flex">
@@ -215,13 +263,14 @@ export default function DetailTransaction() {
 												Request Date :{" "}
 											</p>
 											<p className="text-[0.9375rem] font-medium">
-												{transaction.propertyDate}
+												{transactionData &&
+													transactionData.created_at &&
+													getDate(transactionData.created_at)}
 											</p>
 										</div>
 									</div>
 								</div>
 								<div className="flex flex-col justify-start space-y-2">
-									
 									<button
 										onClick={() => {
 											setShowComplain(true);
@@ -233,9 +282,10 @@ export default function DetailTransaction() {
 									<button className="flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]">
 										Download Contract
 									</button>
-									{!status[status.length - 1].actionType.find(
-										(item: any) => item === "Finish Project",
-									) &&
+									{status &&
+										!status[status.length - 1].action_type.find(
+											(item: any) => item === "Finish Project",
+										) &&
 										(isProjectCancel ? (
 											<button
 												onClick={() => {
@@ -269,46 +319,53 @@ export default function DetailTransaction() {
 							<div className="space-y-[0.375rem] w-full p-[1.4375rem] bg-white drop-shadow-landingShado  rounded-[1.5625rem]">
 								<p className="text-[0.875rem] font-medium">Contributor</p>
 								<div className="flex justify-center py-1 space-x-2">
-									{Contributor.map((item, idx) => (
-										<div key={idx} className="flex space-x-4">
-											<Link
-												href={"/merchantProfile"}
-												className="flex space-x-2  h-fit p-1 rounded-full pr-3 hover:bg-[#e6e6e6]"
-											>
-												<div className="relative w-[1.875rem] h-[1.875rem] rounded-full overflow-hidden">
-													<Image
-														src={item.img}
-														alt="contributor"
-														fill={true}
-														objectFit="cover"
-													/>
-												</div>
-												<div className="-space-y-1 ">
-													<p className="text-[0.75rem]  font-normal ">
-														{item.name}
-													</p>
-													<p className="text-[0.625rem] capitalize text-gold">
-														{item.role}
-													</p>
-												</div>
-											</Link>
-											{idx !== Contributor.length - 1 && (
-												<div className="  w-[0.5rem] ">
-													<div className="h-[2.4rem]  bg-gray-300 w-[0.01rem]"></div>
-												</div>
-											)}
-										</div>
-									))}
+									{contributorData &&
+										contributorData.map((item, idx) => {
+											if (item)
+												return (
+													<div key={idx} className="flex space-x-4">
+														<Link
+															href={`/merchantProfile/${item.id}`}
+															className="flex space-x-2  h-fit p-1 rounded-full pr-3 hover:bg-[#e6e6e6]"
+														>
+															<div className="relative w-[1.875rem] h-[1.875rem] rounded-full overflow-hidden">
+																<Image
+																	src={item.avatar_url!}
+																	alt="contributor"
+																	fill={true}
+																	style={{ objectFit: "cover" }}
+																	quality={50}
+																/>
+															</div>
+															<div className="-space-y-1 ">
+																<p className="text-[0.75rem]  font-normal ">
+																	{item.first_name} {item.last_name}
+																</p>
+																<p className="text-[0.625rem] capitalize text-gold">
+																	{item.role_id.role_name}
+																</p>
+															</div>
+														</Link>
+														{idx !== contributorData.length - 1 && (
+															<div className="  w-[0.5rem] ">
+																<div className="h-[2.4rem]  bg-gray-300 w-[0.01rem]"></div>
+															</div>
+														)}
+													</div>
+												);
+										})}
 								</div>
 							</div>
 							{!isProjectCancel &&
 								// Update
-								user.role == "designer" && (
+								role == "designer" && (
 									<div className=" w-full p-[1.4375rem] bg-white drop-shadow-landingShado  rounded-[1.5625rem]">
 										<p className="text-[0.875rem] font-medium">Update</p>
-										{status[status.length - 1].actionType.find(
+										{status &&
+										status[status.length - 1].action_type.find(
 											(item: any) => item == "Payment",
-										) && !status[status.length - 1].isPayed ? (
+										) &&
+										!status[status.length - 1].isPaid ? (
 											<p className="text-[0.8rem] py-3 flex justify-center text-gray-400">
 												The Current Update Must be Paid before you can Make new
 												update
@@ -360,8 +417,17 @@ export default function DetailTransaction() {
 									setTitleReview={setTitleReview}
 									setDescReview={setDescReview}
 									setRatingReview={setRatingReview}
-									status={status}
+									status={status ? status : [{} as Status]}
 									setStatus={setStatus}
+									transactionContributor={
+										transactionContributor
+											? transactionContributor
+											: ({} as Contributor)
+									}
+									contributorData={
+										contributorData ? contributorData : [{} as Profile]
+									}
+									user={user ? user : ({} as User)}
 								></Action>
 							)}
 							{/* Review Box */}
@@ -423,7 +489,7 @@ export default function DetailTransaction() {
 						</div>
 						<div className="p-[1.4375rem]  w-[36.5625rem] h-fit space-y-[1.125rem] bg-white drop-shadow-landingShado  rounded-[1.5625rem]">
 							<p className="text-[0.875rem] font-medium">Status</p>
-							{status.length > 0 ? (
+							{status && status.length > 0 ? (
 								status.map((item, idx) => (
 									<div key={idx}>
 										<Progress
@@ -458,11 +524,13 @@ export default function DetailTransaction() {
 						setContract={setSelectedContract}
 						handleMedia={handleMedia}
 						handleContract={handleContract}
-						status={status}
+						status={status ? status : [{} as Status]}
 						setStatus={setStatus}
 						visible={showUpdate}
 						onClose={handleOnCloseUpdate}
 						setShowUpdate={setShowUpdate}
+						handlePaymentTrack={handlePaymentTrack}
+						transactionId={transactionId}
 					/>
 					<ShowDocument
 						visible={showDocument}
@@ -485,7 +553,7 @@ export default function DetailTransaction() {
 						onClose={handleOnCloseStatus}
 						setShowStatus={setShowStatus}
 						status={statustype}
-						tittle={title}
+						title={title}
 						description={description}
 						statusHandle={handleProjectCancel}
 					/>
@@ -497,7 +565,7 @@ export default function DetailTransaction() {
 }
 
 interface progressProps {
-	status: StatusItem;
+	status: Status;
 	length: number;
 	id: number;
 	srcMedia: string;
@@ -515,7 +583,7 @@ export function Progress(props: progressProps) {
 		<div className="flex    ">
 			<div className="h-full">
 				<p className="text-[0.75rem]  w-[10.4375rem]">
-					{props.status.date}, {props.status.time}
+					{getDate(props.status.created_at)}, {getTime(props.status.created_at)}
 				</p>
 			</div>
 			<div className=" w-[3.3rem] ">
@@ -538,30 +606,30 @@ export function Progress(props: progressProps) {
 			</div>
 			<div className=" ml-2 ">
 				<p className="text-[0.75rem] break-all  font-medium">
-					{props.status.tittle}
+					{props.status.title}
 				</p>
 				<p className="text-[0.625rem] break-all w-[22rem] font-light mt-1">
 					{props.status.description}
 				</p>
 
-				{props.status.payment != 0 && !isNaN(props.status.payment) && (
+				{props.status.payment !== null && !isNaN(props.status.payment) && (
 					<div className="flex text-[0.625rem] space-x-2">
 						<p className="font-light text-[#B17C3F]">Payment at this point:</p>
 						<p className="font-medium ">
-							Rp. {Number(props.status.payment).toLocaleString("en-US")}.00
+							Rp{Number(props.status.payment).toLocaleString("id-ID")},00
 						</p>
 					</div>
 				)}
 
 				{(props.status.media != "" ||
 					props.status.contract != "" ||
-					props.status.extraInfo != "") && (
+					props.status.extra_info != "") && (
 					<motion.div
 						whileTap={{ scale: 0.85 }}
 						onClick={() => {
 							props.setSrcMedia(props.status.media);
 							props.setSrcContract(props.status.contract);
-							props.setExtraInfo(props.status.extraInfo);
+							props.setExtraInfo(props.status.extra_info);
 							props.setShowDocument(true);
 						}}
 						className="mt-2 h-fit w-fit  p-1 rounded-md hover:bg-gray-200"
@@ -587,12 +655,15 @@ export function Progress(props: progressProps) {
 
 interface actionProps {
 	isReviewed: boolean;
-	status: StatusItem[];
-	setStatus: (value: StatusItem[]) => void;
+	status: Status[];
+	setStatus: (value: Status[]) => void;
 	setReviewed: (value: boolean) => void;
 	setTitleReview: (value: string) => void;
 	setDescReview: (value: string) => void;
 	setRatingReview: (value: number) => void;
+	contributorData: Profile[];
+	transactionContributor: Contributor;
+	user: User;
 }
 export function Action(props: actionProps) {
 	const [statusPayment, setStatusPayment] = useState<any>();
@@ -622,7 +693,7 @@ export function Action(props: actionProps) {
 	}
 	function handlePayment() {
 		const tempStatus = props.status;
-		tempStatus[tempStatus.length - 1].isPayed = true;
+		tempStatus[tempStatus.length - 1].isPaid = true;
 		props.setStatus(tempStatus);
 	}
 
@@ -633,7 +704,7 @@ export function Action(props: actionProps) {
 				<div className="flex ">
 					<p className="text-[#B17C3F] text-[0.875rem]">Status:</p>
 					<p className="text-[0.875rem] break-all ml-2 font-medium">
-						{props.status[props.status.length - 1].tittle}
+						{props.status[props.status.length - 1].title}
 					</p>
 				</div>
 				<p className="text-[0.75rem]  break-all  text-[#4B4B4B] ml-[3.45rem] font-light">
@@ -643,24 +714,26 @@ export function Action(props: actionProps) {
 					{/* {props.status.actionType.length === 0 && (
 					<p className="text-[0.875] text-[#4B4B4B]">No Action</p>
 				)} */}
-					{props.status[props.status.length - 1].actionType.find(
+					{props.status[props.status.length - 1].action_type.find(
 						(item) => item == "Contract",
 					) && (
 						<div className="flex ">
 							<button className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]">
 								Download Contract
 							</button>
-							{user.id != props.status[props.status.length - 1].updaterId && (
+							{props.user.id !=
+								props.status[props.status.length - 1].created_by && (
 								<button className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]">
 									Upload Contract
 								</button>
 							)}
 						</div>
 					)}
-					{props.status[props.status.length - 1].actionType.find(
+					{props.status[props.status.length - 1].action_type.find(
 						(item) => item == "Confirmation",
 					) &&
-						(user.id != props.status[props.status.length - 1].updaterId ? (
+						(props.user.id !=
+						props.status[props.status.length - 1].created_by ? (
 							props.status[props.status.length - 1].isConfirmed ? (
 								<p className="text-[0.8rem] text-[#4B4B4B]">Confirmed</p>
 							) : (
@@ -687,7 +760,7 @@ export function Action(props: actionProps) {
 								Waiting Confirmation
 							</p>
 						))}
-					{props.status[props.status.length - 1].actionType.find(
+					{props.status[props.status.length - 1].action_type.find(
 						(item) => item == "Media",
 					) && (
 						<div className="flex   ">
@@ -696,11 +769,12 @@ export function Action(props: actionProps) {
 							</button>
 						</div>
 					)}
-					{props.status[props.status.length - 1].actionType.find(
+					{props.status[props.status.length - 1].action_type.find(
 						(item) => item == "Payment",
 					) &&
-						(user.id != props.status[props.status.length - 1].updaterId ? (
-							props.status[props.status.length - 1].isPayed ? (
+						(props.user.id !=
+						props.status[props.status.length - 1].created_by ? (
+							props.status[props.status.length - 1].isPaid ? (
 								<p className="text-[0.8rem] text-[#4B4B4B]">Paid</p>
 							) : (
 								<div className="flex   ">
@@ -719,15 +793,16 @@ export function Action(props: actionProps) {
 									</button>
 								</div>
 							)
-						) : props.status[props.status.length - 1].isPayed ? (
+						) : props.status[props.status.length - 1].isPaid ? (
 							<p className="text-[0.8rem] text-[#4B4B4B]">Paid</p>
 						) : (
-							<p className="text-[0.8rem] text-[#4B4B4B]">Waiting For Paid</p>
+							<p className="text-[0.8rem] text-[#4B4B4B]">Waiting For Payment to be Paid</p>
 						))}
-					{props.status[props.status.length - 1].actionType.find(
+					{props.status[props.status.length - 1].action_type.find(
 						(item) => item == "Finish Project",
 					) &&
-						user.id != props.status[props.status.length - 1].updaterId && (
+						props.user.id !=
+							props.status[props.status.length - 1].created_by && (
 							<div className="flex   ">
 								{!props.isReviewed && (
 									<button
@@ -741,7 +816,7 @@ export function Action(props: actionProps) {
 								)}
 							</div>
 						)}
-					{props.status[props.status.length - 1].actionType.find(
+					{props.status[props.status.length - 1].action_type.find(
 						(item) => item == "Contractor",
 					) && (
 						<div className=" ml-4 flex flex-col items-center space-y-2  ">
@@ -753,7 +828,7 @@ export function Action(props: actionProps) {
 									<div className="w-[35.625rem]  flex space-x-3 p-[1rem] rounded-[0.625rem] border-[#e3d0ba] border-[0.1rem]">
 										<div className="relative w-[3.625rem] h-[3.625rem] rounded-[0.375rem] overflow-hidden">
 											<Image
-												src={constractor.img}
+												src={constractor?.img}
 												alt="constractor"
 												fill={true}
 												objectFit="cover"
@@ -761,19 +836,20 @@ export function Action(props: actionProps) {
 										</div>
 										<div className="flex flex-col justify-between">
 											<p className="text-[0.875rem] font-medium">
-												{constractor.name}
+												{constractor?.name}
 											</p>
 											<p className="text-[0.75rem] font-light">
-												{constractor.role}
+												{constractor?.role}
 											</p>
 											<p className="text-[0.625rem] font-light">
-												{constractor.city}, {constractor.province}
+												{constractor?.city}, {constractor?.province}
 											</p>
 										</div>
 									</div>
 								</Link>
 							)}
-							{user.id != props.status[props.status.length - 1].updaterId ? (
+							{props.user.id !=
+							props.status[props.status.length - 1].created_by ? (
 								<div className="flex flex-col items-center">
 									{props.status[props.status.length - 1].isConfirmed ? (
 										<p className="text-[0.8rem] text-[#4B4B4B]">Confirmed</p>
@@ -817,7 +893,7 @@ export function Action(props: actionProps) {
 					onClose={handleOnCloseStatus}
 					setShowStatus={setShowStatus}
 					status={status}
-					tittle={title}
+					title={title}
 					description={description}
 				/>
 				<Review
@@ -828,6 +904,10 @@ export function Action(props: actionProps) {
 					visible={showReview}
 					onClose={handleOnCloseReview}
 					setShowReview={setShowReview}
+					propertyId={"adasd"}
+					contractorId={props.transactionContributor.contractor_id}
+					designerId={props.transactionContributor.designer_id}
+					transactionId={props.transactionContributor.transaction_id}
 				/>
 				<PaymentPopUp
 					statusPayment={statusPayment}
@@ -842,22 +922,6 @@ export function Action(props: actionProps) {
 	);
 }
 
-interface StatusItem {
-	id: number;
-	tittle: string;
-	description: string;
-	media: string;
-	contract: string;
-	extraInfo: string;
-	payment: number;
-	date: string;
-	time: string;
-	constractorId: string;
-	actionType: string[];
-	updaterId: string;
-	isConfirmed: boolean;
-	isPayed: boolean;
-}
 interface updateProps {
 	selectedMedia: File | null;
 	setMedia: (value: File | null) => void;
@@ -865,15 +929,16 @@ interface updateProps {
 	setContract: (value: File | null) => void;
 	handleMedia: (e: any) => void;
 	handleContract: (e: any) => void;
-	status: StatusItem[];
-	setStatus: (value: StatusItem[]) => void;
-
+	status: Status[];
+	setStatus: (value: Status[]) => void;
+	handlePaymentTrack: () => void;
 	visible: boolean;
 	onClose: (value: boolean) => void;
 	setShowUpdate: (value: boolean) => void;
+	transactionId: string;
 }
 export function Update(props: updateProps) {
-	const [tittle, setTitle] = useState("");
+	const [title, setTitle] = useState("");
 	const handleTitleChange = (e: any) => {
 		handleDateChange();
 		handleTimeChange();
@@ -956,7 +1021,6 @@ export function Update(props: updateProps) {
 	const [actionType, setActionType] = useState<string[]>([]);
 
 	const [constractorId, setConstractorId] = useState("");
-	const [updaterId, setUpdaterId] = useState(user.id);
 
 	function manageCheck(checkboxId: string) {
 		const checkbox = document.getElementById(checkboxId) as HTMLInputElement;
@@ -1085,25 +1149,51 @@ export function Update(props: updateProps) {
 		) as HTMLInputElement;
 	}, []);
 
-	function handleStatus() {
-		const newStatus = {
-			id: props.status.length + 1,
-			tittle: tittle,
-			description: description,
-			media: media,
-			contract: contract,
-			extraInfo: extraInfo,
-			payment: parseInt(payment),
-			date: date,
-			time: time,
-			constractorId: constractorId,
-			actionType: actionType,
-			updaterId: updaterId,
-			isConfirmed: false,
-			isPayed: false,
-		};
+	async function handleStatus() {
+		let mediaData: string | undefined, contractData: string | undefined;
 
-		props.setStatus([...props.status, newStatus]);
+		if (props.selectedMedia) {
+			let upload = `${props.transactionId}/media/${v4()}`;
+			mediaData = (
+				await supabase.storage
+					.from("transaction")
+					.upload(upload, props.selectedMedia)
+			).data?.path;
+		}
+
+		if (props.selectedContract) {
+			let upload = `${props.transactionId}/media/${v4()}`;
+			contractData = (
+				await supabase.storage
+					.from("transaction")
+					.upload(upload, props.selectedContract)
+			).data?.path;
+		}
+
+		const { data: newStatus, error } = await supabase
+			.from("transaction_status")
+			.insert([
+				{
+					title: title,
+					description: description,
+					media: mediaData ? mediaData : "",
+					contract: contractData ? contractData : "",
+					extra_info: extraInfo,
+					payment: parseInt(payment),
+					contractor_id: constractorId === "" ? null : constractorId,
+					action_type: actionType,
+					isConfirmed: false,
+					isPaid: false,
+					transaction_id: props.transactionId,
+				},
+			])
+			.select()
+			.single();
+
+		if (newStatus) {
+			props.setStatus([...props.status, newStatus]);
+			props.handlePaymentTrack();
+		}
 		props.setShowUpdate(false);
 	}
 
@@ -1134,7 +1224,7 @@ export function Update(props: updateProps) {
 	return (
 		<div>
 			{props.visible && (
-				<div className="flex justify-center items-center  h-screen w-screen fixed left-0">
+				<div className="flex justify-center items-center  h-screen w-screen fixed left-0 mt-7 top-0">
 					<motion.div
 						initial={{ scale: 0.9, opacity: 0 }}
 						animate={{ scale: 1, opacity: 1 }}
@@ -1152,7 +1242,7 @@ export function Update(props: updateProps) {
 						>
 							<div className=" flex justify-center space-y-2 ">
 								<div>
-									{/* tittle */}
+									{/* title */}
 									<div className="mt-4  space-x-2  w-fit flex flex-start items-center ">
 										<input
 											type={"checkbox"}
@@ -1186,7 +1276,7 @@ export function Update(props: updateProps) {
 												required
 												type="text"
 												title="Title"
-												value={tittle}
+												value={title}
 												onChange={handleTitleChange}
 												className="bg-white "
 												onKeyDown={(e) => {
@@ -1403,19 +1493,26 @@ export function ShowDocument(props: documentProps) {
 	const wrapperRef = useRef(null);
 	useOutsideAlerter(wrapperRef);
 
-	const handleDownloadContract = () => {
-		const downloadLink = document.createElement("a");
-		downloadLink.href = props.srcContract; // Ganti dengan URL file yang ingin diunduh
-		downloadLink.download = "contract"; // Nama file yang akan disimpan oleh pengguna
-
-		downloadLink.click();
+	const handleDownloadContract = async () => {
+		const { data: downloadLink } = await supabase.storage
+			.from("transaction")
+			.createSignedUrl(props.srcContract, 60, {
+				download: true,
+			});
+		if (typeof window !== "undefined" && downloadLink?.signedUrl) {
+			window.location.href = downloadLink?.signedUrl;
+		}
 	};
-	const handleDownloadMedia = () => {
-		const downloadLink = document.createElement("a");
-		downloadLink.href = props.srcMedia; // Ganti dengan URL file yang ingin diunduh
-		downloadLink.download = "Media"; // Nama file yang akan disimpan oleh pengguna
 
-		downloadLink.click();
+	const handleDownloadMedia = async () => {
+		const { data: downloadLink } = await supabase.storage
+			.from("transaction")
+			.createSignedUrl(props.srcMedia, 60, {
+				download: true,
+			});
+		if (typeof window !== "undefined" && downloadLink?.signedUrl) {
+			window.location.href = downloadLink?.signedUrl;
+		}
 	};
 	return (
 		<div>
@@ -1586,6 +1683,10 @@ interface reviewProps {
 	setTitleReview: (value: string) => void;
 	setDescReview: (value: string) => void;
 	setRatingReview: (value: number) => void;
+	designerId: string | null;
+	propertyId: string | null;
+	contractorId: string | null;
+	transactionId: string | null;
 }
 export function Review(props: reviewProps) {
 	function useOutsideAlerter(ref: any) {
@@ -1604,7 +1705,7 @@ export function Review(props: reviewProps) {
 	const wrapperRef = useRef(null);
 	useOutsideAlerter(wrapperRef);
 
-	const [tittle, setTittle] = useState("");
+	const [title, setTittle] = useState("");
 	const handleChangeTittle = (event: any) => {
 		setTittle(event.target.value);
 	};
@@ -1615,12 +1716,11 @@ export function Review(props: reviewProps) {
 	};
 	const [hover, setHover] = useState(-1);
 	const [rating, setRating] = useState(0);
-	console.log(rating);
 
 	//
 	const handleSubmitReview = () => {
 		props.setReviewed(true);
-		props.setTitleReview(tittle);
+		props.setTitleReview(title);
 		props.setDescReview(description);
 		props.setRatingReview(rating);
 	};
@@ -1648,7 +1748,7 @@ export function Review(props: reviewProps) {
 							>
 								<InputPopUp
 									isWmax
-									value={tittle}
+									value={title}
 									required
 									type={"text"}
 									title={"Title"}
@@ -1720,8 +1820,8 @@ interface paymentProps {
 	onClose: (value: boolean) => void;
 	setShowPayment: (value: boolean) => void;
 	handlePayment: () => void;
-	statusPayment: StatusItem[];
-	setStatusPayment: (value: StatusItem[]) => void;
+	statusPayment: Status[];
+	setStatusPayment: (value: Status[]) => void;
 }
 export function PaymentPopUp(props: paymentProps) {
 	const [selectedBank, setSelectedBank] = useState(
@@ -1770,7 +1870,7 @@ export function PaymentPopUp(props: paymentProps) {
 								<p className="mb-1 mt-1 text-gold text-[0.625rem]">Pay for</p>
 								<div className="">
 									<p className="font-medium text-[0.625rem]">
-										{props.statusPayment[props.statusPayment.length - 1].tittle}
+										{props.statusPayment[props.statusPayment.length - 1].title}
 									</p>
 									<p className="w-[31.2rem] break-all text-[0.5rem] font-normal text-[#4B4B4B]">
 										{
@@ -1868,7 +1968,7 @@ export function PaymentPopUp(props: paymentProps) {
 											required
 											type="password"
 											// title="Transaction Password"
-											// value={tittle}
+											// value={title}
 											// onChange={handleTitleChange}
 											className="bg-white "
 											onKeyDown={(e) => {
