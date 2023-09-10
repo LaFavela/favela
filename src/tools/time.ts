@@ -27,7 +27,6 @@ export function getDate(timestampz: string) {
 	 
 	 var fmt = new Intl.DateTimeFormat('en-US', {year: 'numeric', month: 'long', day: 'numeric'});
 	 // now use fmt.format(dateobject) as many times as you wish
-	 console.log(fmt.format(dateObj));
 
 	return fmt.format(dateObj);
 }
