@@ -1,136 +1,266 @@
 import Link from "next/link";
-export default function Footer() {
-  return (
-    <div>
-      <div className="pb-28 pt-28 justify-center items-center flex flex-col">
-        <div className="flex items-center justify-center gap-20 border-b-2 pb-9 w-full">
-          <div>
-            <p className=" text-[1.5rem] font-medium text-[#B17C3F] pb-4">
-              Contact Us
-            </p>
-            <Link href={"https://wa.me/6281392709800"} className="flex">
-              <span className="mt-1 pr-4">
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 14 14"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M13.7428 10.9666L10.5482 8.06205C10.3972 7.9248 10.1988 7.8516 9.99482 7.8579C9.79086 7.86421 9.59732 7.94952 9.45508 8.09584L7.57448 10.0299C7.12182 9.94343 6.21177 9.65973 5.27501 8.72532C4.33825 7.78778 4.05455 6.87538 3.97046 6.42586L5.90293 4.54447C6.04942 4.40233 6.13487 4.20876 6.14117 4.00474C6.14748 3.80071 6.07416 3.60224 5.93672 3.45132L3.03291 0.257525C2.89542 0.106131 2.70432 0.0143001 2.50021 0.00153386C2.2961 -0.0112323 2.09505 0.0560725 1.93976 0.189154L0.234412 1.65167C0.0985433 1.78803 0.0174476 1.96951 0.00650858 2.1617C-0.00527953 2.35817 -0.23004 7.01212 3.3787 10.6224C6.52691 13.7699 10.4704 14.0001 11.5565 14.0001C11.7153 14.0001 11.8127 13.9954 11.8386 13.9938C12.0308 13.9831 12.2122 13.9016 12.3479 13.7651L13.8096 12.059C13.9432 11.9042 14.011 11.7033 13.9985 11.4992C13.9861 11.2951 13.8943 11.104 13.7428 10.9666Z"
-                    fill="#B17C3F"
-                  />
-                </svg>
-              </span>
-              <span className="text-[#9ca3af] text-[0.75rem] pb-2">+6281392709800</span>
-            </Link>
+import InputBoxForm from "./inpuBoxForm";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import { useState, useEffect, useRef } from "react";
+import InputPopUp from "./popUpInput";
 
-            <Link href={"#"} className="flex">
-              <span className="mt-1 pr-3">
-                <svg
-                  width="18"
-                  height="14"
-                  viewBox="0 0 18 14"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M17.5 1.75C17.5 0.7875 16.7125 0 15.75 0H1.75C0.7875 0 0 0.7875 0 1.75V12.25C0 13.2125 0.7875 14 1.75 14H15.75C16.7125 14 17.5 13.2125 17.5 12.25V1.75ZM15.75 1.75L8.75 6.125L1.75 1.75H15.75ZM15.75 12.25H1.75V3.5L8.75 7.875L15.75 3.5V12.25Z"
-                    fill="#B17C3F"
-                  />
-                </svg>
-              </span>
-              <span className="text-[#9ca3af] text-[0.75rem] pb-3 mt-[0.03125rem] ">favelapapela@unram.ac.id</span>
-            </Link>
-            <div className="flex flex-row gap-5">
-              <div>
-                <Link href={"https://www.facebook.com/DzulhiRaihan/"}>
-                  <svg
-                    width="28"
-                    height="28"
-                    viewBox="0 0 31 31"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M30.0834 15.4998C30.0834 7.44984 23.5501 0.916504 15.5001 0.916504C7.45008 0.916504 0.916748 7.44984 0.916748 15.4998C0.916748 22.5582 5.93341 28.4353 12.5834 29.7915V19.8748H9.66675V15.4998H12.5834V11.854C12.5834 9.03942 14.873 6.74984 17.6876 6.74984H21.3334V11.1248H18.4167C17.6147 11.1248 16.9584 11.7811 16.9584 12.5832V15.4998H21.3334V19.8748H16.9584V30.0103C24.323 29.2811 30.0834 23.0686 30.0834 15.4998Z"
-                      fill="#B17C3F"
-                    />
-                  </svg>
-                </Link>
-              </div>
-              <div>
-                <Link href={"https://www.instagram.com/bukanrehan__/"}>
-                  <svg
-                    width="28"
-                    height="28"
-                    viewBox="0 0 31 31"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M9.37508 0.916504H21.6251C26.2917 0.916504 30.0834 4.70817 30.0834 9.37484V21.6248C30.0834 23.8681 29.1923 26.0195 27.606 27.6058C26.0198 29.192 23.8684 30.0832 21.6251 30.0832H9.37508C4.70842 30.0832 0.916748 26.2915 0.916748 21.6248V9.37484C0.916748 7.13155 1.80789 4.98014 3.39414 3.39389C4.98038 1.80765 7.13179 0.916504 9.37508 0.916504ZM9.08342 3.83317C7.69103 3.83317 6.35567 4.38629 5.3711 5.37086C4.38654 6.35543 3.83341 7.69078 3.83341 9.08317V21.9165C3.83341 24.8186 6.18133 27.1665 9.08342 27.1665H21.9167C23.3091 27.1665 24.6445 26.6134 25.6291 25.6288C26.6136 24.6443 27.1667 23.3089 27.1667 21.9165V9.08317C27.1667 6.18109 24.8188 3.83317 21.9167 3.83317H9.08342ZM23.1563 6.02067C23.6398 6.02067 24.1035 6.21273 24.4453 6.55459C24.7872 6.89645 24.9792 7.36012 24.9792 7.84359C24.9792 8.32705 24.7872 8.79072 24.4453 9.13258C24.1035 9.47445 23.6398 9.6665 23.1563 9.6665C22.6729 9.6665 22.2092 9.47445 21.8673 9.13258C21.5255 8.79072 21.3334 8.32705 21.3334 7.84359C21.3334 7.36012 21.5255 6.89645 21.8673 6.55459C22.2092 6.21273 22.6729 6.02067 23.1563 6.02067ZM15.5001 8.20817C17.434 8.20817 19.2886 8.9764 20.6561 10.3439C22.0235 11.7113 22.7917 13.566 22.7917 15.4998C22.7917 17.4337 22.0235 19.2884 20.6561 20.6558C19.2886 22.0233 17.434 22.7915 15.5001 22.7915C13.5662 22.7915 11.7115 22.0233 10.3441 20.6558C8.97664 19.2884 8.20842 17.4337 8.20842 15.4998C8.20842 13.566 8.97664 11.7113 10.3441 10.3439C11.7115 8.9764 13.5662 8.20817 15.5001 8.20817ZM15.5001 11.1248C14.3398 11.1248 13.227 11.5858 12.4065 12.4062C11.586 13.2267 11.1251 14.3395 11.1251 15.4998C11.1251 16.6602 11.586 17.773 12.4065 18.5934C13.227 19.4139 14.3398 19.8748 15.5001 19.8748C16.6604 19.8748 17.7732 19.4139 18.5937 18.5934C19.4141 17.773 19.8751 16.6602 19.8751 15.4998C19.8751 14.3395 19.4141 13.2267 18.5937 12.4062C17.7732 11.5858 16.6604 11.1248 15.5001 11.1248Z"
-                      fill="#B17C3F"
-                    />
-                  </svg>
-                </Link>
-              </div>
-              <div className="mt-[0.03125rem]">
-                <Link href={"https://twitter.com/home"}>
-                  <svg
-                    width="28"
-                    height="24"
-                    viewBox="0 0 31 26"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M30.7542 3.75016C29.6313 4.26058 28.4208 4.596 27.1667 4.75641C28.45 3.9835 29.4417 2.7585 29.9084 1.28558C28.6979 2.01475 27.3563 2.52516 25.9417 2.81683C24.7896 1.56266 23.1709 0.833496 21.3334 0.833496C17.9063 0.833496 15.1063 3.6335 15.1063 7.08975C15.1063 7.58558 15.1646 8.06683 15.2667 8.51891C10.075 8.25641 5.4521 5.76266 2.37502 1.98558C1.83543 2.90433 1.52918 3.9835 1.52918 5.121C1.52918 7.29391 2.62293 9.21891 4.3146 10.3127C3.27918 10.3127 2.31668 10.021 1.47085 9.5835V9.62725C1.47085 12.6606 3.62918 15.1981 6.48752 15.7668C5.56983 16.018 4.60641 16.0529 3.67293 15.8689C4.06903 17.1121 4.84476 18.1999 5.89108 18.9794C6.93741 19.7589 8.20171 20.191 9.50627 20.2147C7.29489 21.9654 4.55376 22.9117 1.73335 22.8981C1.23752 22.8981 0.741683 22.8689 0.24585 22.8106C3.01668 24.5897 6.31252 25.6252 9.84168 25.6252C21.3334 25.6252 27.6479 16.0877 27.6479 7.81891C27.6479 7.54183 27.6479 7.27933 27.6333 7.00225C28.8583 6.12725 29.9083 5.01891 30.7542 3.75016Z"
-                      fill="#B17C3F"
-                    />
-                  </svg>
-                </Link>
-              </div>
-            </div>
-          </div>
-          <div>
-            <p className=" text-[1.5rem] font-medium text-[#B17C3F]">
-              Website Link
-            </p>
-            <Link href={"./"}>
-              <p className="text-[#9ca3af] text-[0.75rem] pb-2">Home</p>
-            </Link>
-            <Link href={"./browse"}>
-              <p className="text-[#9ca3af] text-[0.75rem] pb-2">Browse</p>
-            </Link>
-            <Link href={"./build"}>
-              <p className="text-[#9ca3af] text-[0.75rem] pb-2">Build</p>
-            </Link>
-            <Link href={"./aboutUs"}>
-              <p className="text-[#9ca3af] text-[0.75rem] pb-2">About Us</p>
-            </Link>
-          </div>
-          <div>
-            <p className=" text-[1.5rem] font-medium text-[#B17C3F]">
-              Our Service
-            </p>
-            <Link href={"./browse"}>
-              <p className="ml-1 text-[#9ca3af] text-[0.75rem] pb-2">Buy Properties</p>
-            </Link>
-            <Link href={"./sellPropertyForm"}>
-              <p className="ml-1 text-[#9ca3af] text-[0.75rem] pb-2">Sell Properties</p>
-            </Link> 
-            <Link href={"./browse"}>
-              <p className="ml-1 text-[#9ca3af] text-[0.75rem] pb-2">Rent Properies</p>
-            </Link>
-            <Link href={"./build"}>
-              <p className="ml-1 text-[#9ca3af] text-[0.75rem] pb-2">Build Properties</p>
-            </Link>
-          </div>
-        </div>
-        <p className="text-[#9ca3af] text-[0.75rem] pt-2">Copyrighted © 2022 by Favela Corp.</p>
-      </div>
-    </div>
-  );
+export default function Footer() {
+	const [showSuggest, setShowSuggest] = useState(false);
+	const handleOnCloseSuggest = () => setShowSuggest(false);
+	return (
+		<div>
+			<div className="mt-20 bottom-0 w-full">
+				<div className="flex flex-col items-center">
+					<svg
+						className="ml-3"
+						width="472"
+						height="98"
+						viewBox="0 0 472 98"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<path
+							d="M471.5 98C371 98 290.766 98 232.5 98C174.234 98 99 98 0.5 98C125 83.5 132.5 5.5 232.5 0C318 5 353 81.5 471.5 98Z"
+							fill="url(#paint0_linear_2954_764)"
+						/>
+						<defs>
+							<linearGradient
+								id="paint0_linear_2954_764"
+								x1="236"
+								y1="0"
+								x2="236"
+								y2="512.5"
+								gradientUnits="userSpaceOnUse"
+							>
+								<stop stop-color="white" />
+								<stop offset="1" stop-color="#ECD3B6" stop-opacity="0.36" />
+							</linearGradient>
+						</defs>
+					</svg>
+
+					<div className="absolute mt-10 flex flex-col items-center space-y-1">
+						<motion.button
+							whileTap={{ scale: 0.87 }}
+							// transition={{ duration: 0.1 }}
+							onClick={() => setShowSuggest(!showSuggest)}
+							className="text-[0.875rem] px-4 border hover:bg-[#f1e7dd] border-gold rounded-full font-light text-gold"
+						>
+							Suggestion
+						</motion.button>
+						<p className="text-gold text-[0.6875rem]">
+							Your Suggestion Will Improve Us
+						</p>
+					</div>
+				</div>
+				<div className="w-full  bg-[#FBF7F1] flex flex-col items-center">
+					<Link
+						href={"/"}
+						className="-mt-1 relative h-[35px] w-[100px] hover:bg-gold/20 rounded-lg"
+					>
+						<Image
+							src={"/assets/logo/logo.png"}
+							alt="Picture of the author"
+							fill={true}
+						/>
+					</Link>
+					<div className="mt-1 ml-2 flex justify-between w-[20rem] ">
+						<Link
+							href={"/"}
+							className="text-gold font-light text-[1.2rem] hover:bg-gold/20 rounded-lg px-3 py-[0.15rem]"
+						>
+							Home
+						</Link>
+						<Link
+							href={"/designer"}
+							className="text-gold font-light  text-[1.2rem] hover:bg-gold/20 rounded-lg px-3 py-[0.15rem]"
+						>
+							Build
+						</Link>
+						<Link
+							href={"/design"}
+							className="text-gold font-light  text-[1.2rem] hover:bg-gold/20 rounded-lg px-3 py-[0.15rem]"
+						>
+							Design
+						</Link>
+					</div>
+					<div className="flex space-x-2 mt-2 ">
+						<Link
+							href={"#"}
+							className="p-1 flex items-center justify-center hover:bg-gold/20 rounded-md"
+						>
+							<svg
+								width="19"
+								height="15"
+								viewBox="0 0 19 15"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<path
+									d="M16.934 0.107422H1.88155C0.846699 0.107422 0.00940776 0.916767 0.00940776 1.90597L0 12.6972C0 13.6864 0.846699 14.4958 1.88155 14.4958H16.934C17.9688 14.4958 18.8155 13.6864 18.8155 12.6972V1.90597C18.8155 0.916767 17.9688 0.107422 16.934 0.107422ZM16.934 3.70451L9.40777 8.20087L1.88155 3.70451V1.90597L9.40777 6.40232L16.934 1.90597V3.70451Z"
+									fill="#B17C3F"
+								/>
+							</svg>
+						</Link>
+						<Link
+							href={"#"}
+							className="p-1 items-center justify-center hover:bg-gold/20 rounded-md"
+						>
+							<svg
+								width="17"
+								height="17"
+								viewBox="0 0 17 17"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<path
+									d="M9.35821 0.00102131C9.96393 -0.00130306 10.5696 0.00478476 11.1752 0.0192829L11.3362 0.0250933C11.5222 0.0317339 11.7056 0.0400346 11.9272 0.0499954C12.8104 0.0914988 13.413 0.230951 13.9418 0.435978C14.4896 0.646815 14.9511 0.932358 15.4126 1.39388C15.8346 1.80858 16.1612 2.31023 16.3697 2.86393C16.5747 3.39268 16.7142 3.99614 16.7557 4.87934C16.7656 5.10013 16.7739 5.28441 16.7806 5.47034L16.7855 5.63138C16.8003 6.23666 16.8066 6.84211 16.8046 7.44757L16.8055 8.0668V9.15419C16.8075 9.75992 16.8011 10.3657 16.7864 10.9712L16.7814 11.1322C16.7747 11.3182 16.7664 11.5016 16.7565 11.7233C16.715 12.6064 16.5739 13.2091 16.3697 13.7378C16.1619 14.2921 15.8352 14.7942 15.4126 15.2087C14.9976 15.6307 14.4957 15.9572 13.9418 16.1658C13.413 16.3708 12.8104 16.5103 11.9272 16.5518C11.7056 16.5617 11.5222 16.57 11.3362 16.5767L11.1752 16.5816C10.5697 16.5964 9.96393 16.6028 9.35821 16.6007L8.73899 16.6016H7.65245C7.04672 16.6036 6.441 16.5972 5.83546 16.5825L5.67443 16.5775C5.47738 16.5704 5.28038 16.5621 5.08343 16.5526C4.20025 16.5111 3.59763 16.37 3.06805 16.1658C2.51415 15.9577 2.01242 15.6311 1.59803 15.2087C1.17557 14.7939 0.848675 14.292 0.640146 13.7378C0.435122 13.2091 0.295673 12.6064 0.25417 11.7233C0.244926 11.5263 0.236625 11.3293 0.229268 11.1322L0.225118 10.9712C0.209815 10.3657 0.202897 9.75993 0.204367 9.15419V7.44757C0.20205 6.84212 0.208138 6.23666 0.222628 5.63138L0.228438 5.47034C0.235079 5.28441 0.243379 5.10013 0.25334 4.87934C0.294843 3.99531 0.434292 3.39351 0.639315 2.86393C0.847968 2.30996 1.1755 1.80845 1.59886 1.39471C2.01297 0.971996 2.51438 0.6448 3.06805 0.435978C3.59763 0.230951 4.19942 0.0914988 5.08343 0.0499954L5.67443 0.0250933L5.83546 0.0209431C6.44072 0.00564727 7.04616 -0.00127071 7.65162 0.000191304L9.35821 0.00102131ZM8.50491 4.15137C7.95501 4.14359 7.40904 4.24518 6.89874 4.45025C6.38844 4.65531 5.92398 4.95975 5.53236 5.34588C5.14074 5.73201 4.82976 6.19212 4.61751 6.69948C4.40525 7.20684 4.29595 7.75132 4.29595 8.30129C4.29595 8.85126 4.40525 9.39575 4.61751 9.90311C4.82976 10.4105 5.14074 10.8706 5.53236 11.2567C5.92398 11.6428 6.38844 11.9473 6.89874 12.1523C7.40904 12.3574 7.95501 12.459 8.50491 12.4512C9.60563 12.4512 10.6613 12.014 11.4396 11.2356C12.2179 10.4573 12.6552 9.40162 12.6552 8.30088C12.6552 7.20014 12.2179 6.14448 11.4396 5.36614C10.6613 4.5878 9.60563 4.15137 8.50491 4.15137ZM8.50491 5.8115C8.83569 5.80541 9.16438 5.86529 9.47176 5.98765C9.77914 6.11001 10.0591 6.2924 10.2952 6.52415C10.5313 6.75591 10.7188 7.0324 10.8469 7.33745C10.9749 7.64251 11.0409 7.97003 11.041 8.30087C11.041 8.63172 10.9751 8.95925 10.8472 9.26436C10.7192 9.56946 10.5318 9.846 10.2957 10.0778C10.0597 10.3097 9.77987 10.4922 9.47253 10.6146C9.16519 10.7371 8.83653 10.7971 8.50574 10.7911C7.84531 10.7911 7.21193 10.5287 6.74493 10.0617C6.27793 9.59472 6.01558 8.96132 6.01558 8.30088C6.01558 7.64044 6.27793 7.00704 6.74493 6.54004C7.21193 6.07303 7.84531 5.81067 8.50574 5.81067L8.50491 5.8115ZM12.8627 2.90626C12.5949 2.91698 12.3417 3.0309 12.156 3.22415C11.9703 3.41741 11.8666 3.67502 11.8666 3.94302C11.8666 4.21102 11.9703 4.46862 12.156 4.66188C12.3417 4.85514 12.5949 4.96906 12.8627 4.97977C13.1379 4.97977 13.4018 4.87046 13.5964 4.67587C13.791 4.48129 13.9003 4.21737 13.9003 3.94219C13.9003 3.667 13.791 3.40309 13.5964 3.2085C13.4018 3.01392 13.1379 2.9046 12.8627 2.9046V2.90626Z"
+									fill="#B17C3F"
+								/>
+							</svg>
+						</Link>
+						<Link
+							href={"#"}
+							className="p-1 items-center justify-center hover:bg-gold/20 rounded-md"
+						>
+							<svg
+								width="17"
+								height="17"
+								viewBox="0 0 17 17"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<path
+									d="M16.7961 8.32178C16.7961 3.72816 13.0773 0 8.49515 0C3.91302 0 0.194183 3.72816 0.194183 8.32178C0.194183 12.3495 3.04972 15.7032 6.83496 16.4771V10.8183H5.17477V8.32178H6.83496V6.24133C6.83496 4.63523 8.13821 3.32871 9.7403 3.32871H11.8155V5.82524H10.1553C9.69879 5.82524 9.32525 6.19972 9.32525 6.65742V8.32178H11.8155V10.8183H9.32525V16.6019C13.5172 16.1859 16.7961 12.6408 16.7961 8.32178Z"
+									fill="#B17C3F"
+								/>
+							</svg>
+						</Link>
+						<Link
+							href={"#"}
+							className="p-1 items-center justify-center hover:bg-gold/20 rounded-md"
+						>
+							<svg
+								width="19"
+								height="15"
+								viewBox="0 0 19 15"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<path
+									d="M19 1.80017C18.3074 2.0964 17.5609 2.29107 16.7874 2.38417C17.5789 1.93559 18.1905 1.22463 18.4783 0.369798C17.7318 0.792984 16.9044 1.08922 16.0319 1.25849C15.3214 0.530609 14.3231 0.107422 13.1898 0.107422C11.0762 0.107422 9.34938 1.73246 9.34938 3.73836C9.34938 4.02613 9.38535 4.30543 9.44831 4.56781C6.24643 4.41546 3.39532 2.96816 1.49758 0.776057C1.1648 1.30927 0.975924 1.93559 0.975924 2.59576C0.975924 3.85686 1.65048 4.97407 2.69379 5.60885C2.05521 5.60885 1.4616 5.43957 0.939948 5.18566V5.21105C0.939948 6.97151 2.27107 8.4442 4.0339 8.77429C3.46793 8.92004 2.87375 8.94032 2.29805 8.83353C2.54233 9.55505 3.02075 10.1864 3.66606 10.6388C4.31136 11.0912 5.0911 11.3419 5.89566 11.3557C4.53183 12.3717 2.84128 12.9209 1.10184 12.9131C0.796043 12.9131 0.490246 12.8961 0.184448 12.8623C1.89332 13.8948 3.92597 14.4958 6.10253 14.4958C13.1898 14.4958 17.0843 8.96049 17.0843 4.16155C17.0843 4.00074 17.0843 3.84839 17.0753 3.68758C17.8308 3.17976 18.4783 2.53651 19 1.80017Z"
+									fill="#B17C3F"
+								/>
+							</svg>
+						</Link>
+					</div>
+					<div className="w-full border-gold/20 flex justify-center py-2 mt-2 border-t">
+						<p className="text-[0.8125rem] text-gold font-medium ">
+							Copyrighted © 2023 by La Favela
+						</p>
+					</div>
+				</div>
+			</div>
+			<Suggest
+				visible={showSuggest}
+				onClose={handleOnCloseSuggest}
+				setShowSuggest={setShowSuggest}
+			/>
+		</div>
+	);
+}
+
+interface SuggestionProps {
+	visible: boolean;
+	onClose: (value: boolean) => void;
+	setShowSuggest: (value: boolean) => void;
+}
+export function Suggest(props: SuggestionProps) {
+	const [title, setTitle] = useState("");
+	const [description, setDescription] = useState("");
+	const handleChangeTitle = (event: any) => {
+		setTitle(event.target.value);
+	};
+	const handleChangeDescription = (event: any) => {
+		setDescription(event.target.value);
+	};
+	function useOutsideAlerter(ref: any) {
+		useEffect(() => {
+			function handleClickOutside(event: any) {
+				if (ref.current && !ref.current.contains(event.target)) {
+					props.setShowSuggest(false);
+				}
+			}
+			document.addEventListener("mousedown", handleClickOutside);
+			return () => {
+				document.removeEventListener("mousedown", handleClickOutside);
+			};
+		}, [ref]);
+	}
+	const wrapperRef = useRef(null);
+	useOutsideAlerter(wrapperRef);
+	return (
+		<div>
+			{props.visible && (
+				<div className="fixed top-0 bg-black/10 left-0 flex justify-center w-screen  h-screen items-center">
+					<motion.div
+						initial={{ opacity: 0, scale: 0.85 }}
+						animate={{ opacity: 1, scale: 1 }}
+						ref={wrapperRef}
+						className="absolute  bg-white/95 rounded-[1.5625rem] pb-6 w-[34.5625rem] overflow-hidden  drop-shadow-landingShado"
+					>
+						<div className="h-[3.3125rem] flex items-center border-b">
+							<p className="text-[1.0625rem] ml-6">Suggestion</p>
+						</div>
+						<div className="flex w-full justify-center">
+							<form className="mt-2 w-[90%]">
+								<p className="text-[0.625rem] text-gold">Tittle</p>
+								<InputPopUp
+									isWmax
+									required
+									type="text"
+									value={title}
+									onChange={handleChangeTitle}
+									className="bg-transparent "
+									onKeyDown={(e) => {
+										if (e.key === "Enter") {
+											e.preventDefault();
+										}
+									}}
+								></InputPopUp>
+
+								<p className="mt-2 text-[0.625rem] text-gold ">Description</p>
+								<textarea
+									form="biodata-Form"
+									id="description"
+									placeholder=""
+									value={description}
+									onChange={handleChangeDescription}
+									className=" mt-1 block h-[95px] w-full rounded-md border border-[#B17C3F] bg-transparent px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
+									maxLength={500}
+									onKeyDown={(e) => {
+										if (e.key === "Enter") {
+											e.preventDefault();
+										}
+									}}
+								></textarea>
+
+								<div className="mt-4 flex w-full justify-end ">
+									<button
+										type="submit"
+										onClick={() => {
+											// handleCheck();
+										}}
+										className="my-3  rounded-full border-[1px] border-gold bg-gold px-8 py-1 text-[13px] text-white hover:border-goldhov hover:bg-goldhov"
+									>
+										Send
+									</button>
+								</div>
+							</form>
+						</div>
+					</motion.div>
+				</div>
+			)}
+		</div>
+	);
 }
