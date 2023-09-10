@@ -70,15 +70,19 @@ function User() {
 								<div key={index}>
 									<div className="grid grid-cols-4 gap-4 mb-5">
 										<div className="flex gap-3">
-											<Image
-												src={item.avatar_url}
-												alt=""
-												height={30}
-												width={30}
-												className="rounded-full object-fill"
-											></Image>
+											<div className="relative h-[30px] w-[30px] rounded full">
+												<Image
+													src={item.avatar_url}
+													alt={item.username}
+													// height={30}
+													// width={30}
+													fill={true}
+													objectFit="cover"
+													className="rounded-full"
+												></Image>
+											</div>
 
-											<p className="my-auto text-[13px] truncate overflow-hidden">
+											<p className="w-[160px] my-auto text-[13px] truncate overflow-hidden">
 												{item.username}
 											</p>
 										</div>
@@ -160,17 +164,38 @@ function RoleRequest() {
 		},
 		{
 			id: 2,
-			avatar_url: "/assets/profile/raihan.jpg",
-			name: "Dzulhi Raihan",
+			avatar_url: "/assets/profile/dwimas.jpg",
+			name: "Muhammad Dwimas Catur Nugraha",
 			email: "dzulhiraihan@gmail.com",
 			role: "Contractor",
 		},
 		{
 			id: 3,
-			avatar_url: "/assets/profile/raihan.jpg",
-			name: "Dzulhi Raihan",
+			avatar_url: "/assets/profile/dhira.jpg",
+			name: "Dhira Wahyu F.",
 			email: "dzulhiraihan@gmail.com",
 			role: "Contractor",
+		},
+		{
+			id: 4,
+			avatar_url: "/assets/profile/Ali.jpg",
+			name: "Ali An Nuur",
+			email: "dzulhiraihan@gmail.com",
+			role: "Designer",
+		},
+		{
+			id: 5,
+			avatar_url: "/assets/profile/yan.jpg",
+			name: "Yan Saputri",
+			email: "dzulhiraihan@gmail.com",
+			role: "Contractor",
+		},
+		{
+			id: 6,
+			avatar_url: "/assets/profile/eky.jpg",
+			name: "Rezky Sulihin",
+			email: "dzulhiraihan@gmail.com",
+			role: "Designer",
 		},
 	];
 
@@ -182,6 +207,36 @@ function RoleRequest() {
 			email: userData[0].name,
 			avatar_url: userData[0].avatar_url,
 			role: userData[0].role,
+		},
+		{
+			username: userData[1].name,
+			email: userData[1].name,
+			avatar_url: userData[1].avatar_url,
+			role: userData[1].role,
+		},
+		{
+			username: userData[2].name,
+			email: userData[2].name,
+			avatar_url: userData[2].avatar_url,
+			role: userData[2].role,
+		},
+		{
+			username: userData[3].name,
+			email: userData[3].name,
+			avatar_url: userData[3].avatar_url,
+			role: userData[3].role,
+		},
+		{
+			username: userData[4].name,
+			email: userData[4].name,
+			avatar_url: userData[4].avatar_url,
+			role: userData[4].role,
+		},
+		{
+			username: userData[5].name,
+			email: userData[5].name,
+			avatar_url: userData[5].avatar_url,
+			role: userData[5].role,
 		},
 	]);
 
@@ -214,15 +269,19 @@ function RoleRequest() {
 								<div key={index}>
 									<div className="grid grid-cols-4 gap-4 mb-5">
 										<div className="flex gap-3">
-											<Image
-												src={item.avatar_url}
-												alt=""
-												height={30}
-												width={30}
-												className="rounded-full object-fill"
-											></Image>
+											<div className="relative h-[30px] w-[30px] rounded full">
+												<Image
+													src={item.avatar_url}
+													alt={item.username}
+													// height={30}
+													// width={30}
+													fill={true}
+													objectFit="cover"
+													className="rounded-full"
+												></Image>
+											</div>
 
-											<p className="my-auto text-[13px] truncate overflow-hidden">
+											<p className="w-[160px] my-auto text-[13px] truncate overflow-hidden">
 												{item.username}
 											</p>
 										</div>
@@ -271,7 +330,7 @@ function Design() {
 	const userData = [
 		{
 			id: 1,
-			preview_image: "/assets/landing/Build1.jpg",
+			preview_image: "/assets/landing/Build2.jpg",
 			name: "Rumah Ala Jepang",
 			property_type: "Villa",
 		},
@@ -405,7 +464,7 @@ function Complain() {
 	const userData = [
 		{
 			id: 1,
-			avatar_url: "/assets/profile/avatar.jpg",
+			avatar_url: "/assets/profile/eky.jpg",
 			name: "Muhammad Ramadhani Al-Qadri Shafika",
 			email: "muhammaddzulhiraihan@gmail.com",
 			category: "Service",
@@ -518,15 +577,18 @@ function Complain() {
 								<div key={index}>
 									<div className="grid grid-cols-4 gap-4 mb-5">
 										<div className="flex gap-3">
-											<Image
-												src={item.avatar_url}
-												alt=""
-												height={30}
-												width={30}
-												className="rounded-full object-fill"
-											></Image>
-
-											<p className="my-auto text-[13px] truncate overflow-hidden">
+											<div className="relative h-[30px] w-[30px] rounded full">
+												<Image
+													src={item.avatar_url}
+													alt={item.username}
+													// height={30}
+													// width={30}
+													fill={true}
+													objectFit="cover"
+													className="rounded-full"
+												></Image>
+											</div>
+											<p className="w-[160px] my-auto text-[13px] truncate overflow-hidden">
 												{item.username}
 											</p>
 										</div>
@@ -652,8 +714,6 @@ function Transaction() {
 		const updatedTransaction = transaction.filter((_, i) => i !== index);
 		setTransaction(updatedTransaction);
 	};
-	
-	
 
 	return (
 		<div>
