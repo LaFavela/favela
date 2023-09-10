@@ -36,7 +36,7 @@ export default function ProfileNav(
 						<div className=" flex w-[9.8125rem] justify-center rounded-[1rem] bg-white drop-shadow">
 							<div className="my-[0.7rem] ">
 								{/* Profile */}
-								<Link href={"/merchantProfile"}>
+								<Link href={"/profile"}>
 									<div className="flex w-[8.4375rem] items-center rounded-[0.5rem] bg-white py-[0.3rem] hover:bg-[#EAEAEA]">
 										<svg
 											className="ml-[0.5rem]"
