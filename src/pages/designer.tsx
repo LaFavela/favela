@@ -12,13 +12,14 @@ import { supabase } from "@/lib/supabase";
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
 import { useRouter } from "next/router";
 import { Database } from "@/types";
-import { set } from "react-hook-form";
+import Link from "next/link";
 
 type Designer = Database["public"]["Tables"]["profile_detail"]["Row"] & {
 	user_id: Database["public"]["Tables"]["profiles"]["Row"];
 	province: Database["public"]["Tables"]["provinsi"]["Row"];
 	city: Database["public"]["Tables"]["kabupaten_kota"]["Row"];
 };
+type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
 type Province = Database["public"]["Tables"]["provinsi"]["Row"];
 type City = Database["public"]["Tables"]["kabupaten_kota"]["Row"];
@@ -29,26 +30,11 @@ export const getServerSideProps = async (
 	context: GetServerSidePropsContext,
 ) => {
 	context.res.setHeader("Cache-Control", "s-maxage=20, stale-while-revalidate");
-
-	const { data: profile } = await supabase
-		.from("profiles")
-		.select("*")
-		.range(0, 10)
-		.filter("role_id", "eq", 3);
-
-	const ids: string[] = [];
-	profile?.map((item) => {
-		ids.push(item.id);
-	});
-
-	const { data: profile_detail } = await supabase
-		.from("profile_detail")
-		.select("user_id(*), province(*), city(*), property_type, property_style")
-		.in("user_id", ids)
-		.returns<Designer[]>();
+	let style = context.query.style;
+	let type = context.query.type;
 
 	return {
-		props: { profile, profile_detail },
+		props: {},
 	};
 };
 
@@ -280,17 +266,18 @@ interface Region {
 	kota: City[];
 }
 
-export default function Designer({
-	profile,
-	profile_detail,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function Designer({}: InferGetServerSidePropsType<
+	typeof getServerSideProps
+>) {
 	const [property_type, setProperty_type] = useState<Type[]>([]);
 	const [property_style, setProperty_style] = useState<Style[]>([]);
 
 	const [region, setRegion] = useState<Region>();
-	const [filteredProvinces, setFilteredProvinces] = useState<Province[]>([]);
-	const [filteredCities, setFilteredCities] = useState<City[]>([]);
-	console.log(region);
+	const [filteredProvinces, setFilteredProvinces] = useState<Province[]>();
+	const [filteredCities, setFilteredCities] = useState<City[]>();
+
+	const [profiles, setProfiles] = useState<Profile[]>([]); // Initialize profiles with empty array
+	const [profile_detail, setProfile_detail] = useState<Designer[]>([]); // Initialize profile_detail with empty array
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -312,6 +299,30 @@ export default function Designer({
 			// Assuming setProperty_type and setProperty_style are similar functions
 			if (property_type) setProperty_type(property_type);
 			if (property_style) setProperty_style(property_style);
+
+			const { data: profile } = await supabase
+				.from("profiles")
+				.select("*")
+				.filter("role_id", "eq", 3);
+
+			const ids: string[] = [];
+			profile?.map((item) => {
+				ids.push(item.id);
+			});
+
+			let profile_detail: Designer[] | null = null;
+
+			profile_detail = (
+				await supabase
+					.from("profile_detail")
+					.select(
+						"user_id(*), province(*), city(*), property_type, property_style",
+					)
+					.in("user_id", ids)
+					.returns<Designer[]>()
+			).data;
+
+			if (profile_detail) setProfile_detail(profile_detail);
 		};
 
 		fetchData();
@@ -328,6 +339,16 @@ export default function Designer({
 			});
 			return tag;
 		}
+	};
+	const getTypeTag = (type: number) => {
+		let tag: string | undefined = "";
+		tag = property_type[type - 1].type_name!;
+		return tag;
+	};
+	const getStyleTag = (style: number) => {
+		let tag: string | undefined = "";
+		tag = property_style[style - 1].style_name!;
+		return tag;
 	};
 
 	const [hover, setHover] = useState(false);
@@ -379,50 +400,49 @@ export default function Designer({
 		setOldestClick(!isOldestClick);
 	};
 
-	const [selectedTags, setSelectedTags] = useState<string[]>([]);
-	const [selectedStyleTag, setSelectedStyleTag] = useState<string[]>([]);
+	const [selectedTags, setSelectedTags] = useState<number[]>([]);
+	const [selectedStyleTag, setSelectedStyleTag] = useState<number[]>([]);
 
-	
 	//INI UNTUK NAMBAH TAG TYPE
-	const handleTagClick = (value: string) => {
-		if (selectedTags.includes(value)) {
-			setSelectedTags(selectedTags.filter((tag) => tag !== value));
-		} else {
-			setSelectedTags([...selectedTags, value]);
+	const handleTagClick = async (value: number) => {
+		if (selectedTags) {
+			if (selectedTags.includes(value)) {
+				setSelectedTags(selectedTags.filter((tag) => tag !== value));
+			} else {
+				setSelectedTags([...selectedTags, value]);
+			}
 		}
 	};
 
 	//INI HANDLE UNTUK NAMBAH TAG STYLE
-	const handleStyleTag = (value: string) => {
-		if (selectedStyleTag.includes(value)) {
-			setSelectedStyleTag(selectedStyleTag.filter((tag) => tag !== value));
-		} else {
-			setSelectedStyleTag([...selectedStyleTag, value]);
+	const handleStyleTag = (value: number) => {
+		if (selectedStyleTag) {
+			if (selectedStyleTag.includes(value)) {
+				setSelectedStyleTag(selectedStyleTag.filter((tag) => tag !== value));
+			} else {
+				setSelectedStyleTag([...selectedStyleTag, value]);
+			}
 		}
 	};
 
-
-	const [selectedRegion, setSelectedRegion] = useState<{ [key: string]: any }>(
+	const [selectedRegion, setSelectedRegion] = useState<{ [key: number]: any }>(
 		{},
-	)
-	
+	);
+
 	// INI HANDLE UNTUK HAPUS TAG YANG TYPE
-	const handleTagDelete = (value: string) => {
-		const updatedTags = selectedTags.filter((tag) => tag !== value);
+	const handleTagDelete = (value: number) => {
+		const updatedTags = selectedTags?.filter((tag) => tag !== value);
 		setSelectedTags(updatedTags);
 	};
-	
+
 	// INI HANDLE UNTUK HAPUS TAG YANG STYLE
-	const handleStyleTagDeleted = (value: string) => {
-		const updatedTags = selectedStyleTag.filter((tag) => tag !== value);
+	const handleStyleTagDeleted = (value: number) => {
+		const updatedTags = selectedStyleTag?.filter((tag) => tag !== value);
 		setSelectedStyleTag(updatedTags);
 	};
 
-	
-	console.log(selectedRegion);
-
 	//HANDLE UNTUK HAPUS TAG DAERAH
-	const handleTagDelete2 = (key: string) => {
+	const handleTagDelete2 = (key: number) => {
 		// Create a copy of the selectedRegion object
 		const updatedRegion = { ...selectedRegion };
 
@@ -438,8 +458,6 @@ export default function Designer({
 	const onSearch = (searchTerm: string) => {
 		setValue(searchTerm);
 		setShowSuggestions(false);
-		console.log("search", searchTerm);
-
 		// Filter provinces based on the query
 		const filteredProvs = region?.provinsi.filter((prov) =>
 			prov.provinsi.toLowerCase().includes(searchTerm.toLowerCase()),
@@ -456,6 +474,113 @@ export default function Designer({
 
 	const [showSuggestions, setShowSuggestions] = useState(false);
 	const router = useRouter();
+
+	useEffect(() => {
+		router.replace(
+			{
+				query: { ...router.query, style: selectedStyleTag },
+			},
+			undefined,
+			{ shallow: true },
+		);
+		const fetch = async () => {
+			const { data: profile } = await supabase
+				.from("profiles")
+				.select("*")
+				.filter("role_id", "eq", 3);
+
+			const ids: string[] = [];
+			profile?.map((item) => {
+				ids.push(item.id);
+			});
+
+			let profile_detail: Designer[] | null = null;
+
+			if (selectedStyleTag && selectedTags) {
+				profile_detail = (
+					await supabase
+						.from("profile_detail")
+						.select(
+							"user_id(*), province(*), city(*), property_type, property_style",
+						)
+						.in("user_id", ids)
+						.contains("property_style", selectedStyleTag)
+						.contains("property_type", selectedTags)
+						.returns<Designer[]>()
+				).data;
+			} else if (selectedStyleTag) {
+				profile_detail = (
+					await supabase
+						.from("profile_detail")
+						.select(
+							"user_id(*), province(*), city(*), property_type, property_style",
+						)
+						.in("user_id", ids)
+						.contains("property_style", selectedStyleTag)
+						.returns<Designer[]>()
+				).data;
+			} else {
+				profile_detail = (
+					await supabase
+						.from("profile_detail")
+						.select(
+							"user_id(*), province(*), city(*), property_type, property_style",
+						)
+						.in("user_id", ids)
+						.returns<Designer[]>()
+				).data;
+			}
+			if (profile_detail) setProfile_detail(profile_detail);
+		};
+		fetch();
+	}, [selectedStyleTag]);
+	useEffect(() => {
+		router.replace(
+			{
+				query: { ...router.query, type: selectedTags },
+			},
+			undefined,
+			{ shallow: true },
+		);
+		const fetch = async () => {
+			const { data: profile } = await supabase
+				.from("profiles")
+				.select("*")
+				.filter("role_id", "eq", 3);
+
+			const ids: string[] = [];
+			profile?.map((item) => {
+				ids.push(item.id);
+			});
+
+			let profile_detail: Designer[] | null = null;
+
+			if (selectedTags) {
+				profile_detail = (
+					await supabase
+						.from("profile_detail")
+						.select(
+							"user_id(*), province(*), city(*), property_type, property_style",
+						)
+						.in("user_id", ids)
+						.contains("property_type", selectedTags)
+						.returns<Designer[]>()
+				).data;
+			} else {
+				profile_detail = (
+					await supabase
+						.from("profile_detail")
+						.select(
+							"user_id(*), province(*), city(*), property_type, property_style",
+						)
+						.in("user_id", ids)
+						.returns<Designer[]>()
+				).data;
+			}
+			if (profile_detail) setProfile_detail(profile_detail);
+		};
+		fetch();
+	}, [selectedTags]);
 
 	return (
 		<div>
@@ -504,70 +629,72 @@ export default function Designer({
 								<div className="tags-input mt-3 pl-3 flex gap-x-2">
 									<div className="flex flex-row gap-2">
 										<AnimatePresence>
-											{selectedTags.map((tag, index) => (
-												<motion.li
-													initial={{ scale: 0 }}
-													animate={{ scale: 1 }}
-													exit={{ scale: 0 }}
-													className="flex h-[30px]  max-w-fit flex-row justify-between rounded-full bg-[#E4D1BC]"
-													key={index}
-												>
-													<span className="ml-2 mt-[0.45rem] pr-2 text-[11px] text-gold">
-														{tag}
-													</span>
-													<button
-														className="mr-2 mt-[3px] "
-														onClick={() => handleTagDelete(tag)}
+											{selectedTags &&
+												selectedTags.map((tag, index) => (
+													<motion.li
+														initial={{ scale: 0 }}
+														animate={{ scale: 1 }}
+														exit={{ scale: 0 }}
+														className="flex h-[30px]  max-w-fit flex-row justify-between rounded-full bg-[#E4D1BC]"
+														key={index}
 													>
-														<svg
-															width="15"
-															height="16"
-															viewBox="0 0 15 16"
-															fill="none"
-															xmlns="http://www.w3.org/2000/svg"
+														<span className="ml-2 mt-[0.45rem] pr-2 text-[11px] text-gold">
+															{getTypeTag(tag)}
+														</span>
+														<button
+															className="mr-2 mt-[3px] "
+															onClick={() => handleTagDelete(tag)}
 														>
-															<path
-																d="M2.18063 13.0492C1.49841 12.3903 0.954256 11.6021 0.579906 10.7306C0.205556 9.85919 0.00851124 8.9219 0.000269691 7.97348C-0.00797185 7.02505 0.172755 6.08449 0.531904 5.20666C0.891053 4.32882 1.42143 3.53131 2.09209 2.86065C2.76276 2.18999 3.56027 1.65961 4.4381 1.30046C5.31593 0.941309 6.2565 0.760583 7.20492 0.768824C8.15335 0.777066 9.09063 0.97411 9.96209 1.34846C10.8335 1.72281 11.6217 2.26697 12.2806 2.94918C13.5818 4.29634 14.3017 6.10064 14.2854 7.97348C14.2692 9.84631 13.518 11.6378 12.1936 12.9622C10.8693 14.2865 9.07776 15.0377 7.20492 15.054C5.33209 15.0703 3.52779 14.3503 2.18063 13.0492ZM3.18777 12.042C4.26 13.1143 5.71426 13.7166 7.23063 13.7166C8.74699 13.7166 10.2013 13.1143 11.2735 12.042C12.3457 10.9698 12.9481 9.51555 12.9481 7.99918C12.9481 6.48282 12.3457 5.02856 11.2735 3.95633C10.2013 2.88409 8.74699 2.28172 7.23063 2.28172C5.71426 2.28172 4.26 2.88409 3.18777 3.95633C2.11554 5.02856 1.51317 6.48282 1.51317 7.99918C1.51317 9.51555 2.11554 10.9698 3.18777 12.042ZM10.2592 5.97776L8.23777 7.99918L10.2592 10.0206L9.25206 11.0278L7.23063 9.00633L5.2092 11.0278L4.20206 10.0206L6.22349 7.99918L4.20206 5.97776L5.2092 4.97061L7.23063 6.99204L9.25206 4.97061L10.2592 5.97776Z"
-																fill="#B17C3F"
-															/>
-														</svg>
-													</button>
-												</motion.li>
-											))}
+															<svg
+																width="15"
+																height="16"
+																viewBox="0 0 15 16"
+																fill="none"
+																xmlns="http://www.w3.org/2000/svg"
+															>
+																<path
+																	d="M2.18063 13.0492C1.49841 12.3903 0.954256 11.6021 0.579906 10.7306C0.205556 9.85919 0.00851124 8.9219 0.000269691 7.97348C-0.00797185 7.02505 0.172755 6.08449 0.531904 5.20666C0.891053 4.32882 1.42143 3.53131 2.09209 2.86065C2.76276 2.18999 3.56027 1.65961 4.4381 1.30046C5.31593 0.941309 6.2565 0.760583 7.20492 0.768824C8.15335 0.777066 9.09063 0.97411 9.96209 1.34846C10.8335 1.72281 11.6217 2.26697 12.2806 2.94918C13.5818 4.29634 14.3017 6.10064 14.2854 7.97348C14.2692 9.84631 13.518 11.6378 12.1936 12.9622C10.8693 14.2865 9.07776 15.0377 7.20492 15.054C5.33209 15.0703 3.52779 14.3503 2.18063 13.0492ZM3.18777 12.042C4.26 13.1143 5.71426 13.7166 7.23063 13.7166C8.74699 13.7166 10.2013 13.1143 11.2735 12.042C12.3457 10.9698 12.9481 9.51555 12.9481 7.99918C12.9481 6.48282 12.3457 5.02856 11.2735 3.95633C10.2013 2.88409 8.74699 2.28172 7.23063 2.28172C5.71426 2.28172 4.26 2.88409 3.18777 3.95633C2.11554 5.02856 1.51317 6.48282 1.51317 7.99918C1.51317 9.51555 2.11554 10.9698 3.18777 12.042ZM10.2592 5.97776L8.23777 7.99918L10.2592 10.0206L9.25206 11.0278L7.23063 9.00633L5.2092 11.0278L4.20206 10.0206L6.22349 7.99918L4.20206 5.97776L5.2092 4.97061L7.23063 6.99204L9.25206 4.97061L10.2592 5.97776Z"
+																	fill="#B17C3F"
+																/>
+															</svg>
+														</button>
+													</motion.li>
+												))}
 										</AnimatePresence>
 									</div>
 									<div className="flex flex-row gap-2">
 										<AnimatePresence>
-											{selectedStyleTag.map((tag, index) => (
-												<motion.li
-													initial={{ scale: 0 }}
-													animate={{ scale: 1 }}
-													exit={{ scale: 0 }}
-													className="flex h-[30px]  max-w-fit flex-row justify-between rounded-full bg-[#E4D1BC]"
-													key={index}
-												>
-													<span className="ml-2 mt-[0.45rem] pr-2 text-[11px] text-gold">
-														{tag}
-													</span>
-													<button
-														className="mr-2 mt-[3px] "
-														onClick={() => handleStyleTagDeleted(tag)}
+											{selectedStyleTag &&
+												selectedStyleTag.map((tag, index) => (
+													<motion.li
+														initial={{ scale: 0 }}
+														animate={{ scale: 1 }}
+														exit={{ scale: 0 }}
+														className="flex h-[30px]  max-w-fit flex-row justify-between rounded-full bg-[#E4D1BC]"
+														key={index}
 													>
-														<svg
-															width="15"
-															height="16"
-															viewBox="0 0 15 16"
-															fill="none"
-															xmlns="http://www.w3.org/2000/svg"
+														<span className="ml-2 mt-[0.45rem] pr-2 text-[11px] text-gold">
+															{getStyleTag(tag)}
+														</span>
+														<button
+															className="mr-2 mt-[3px] "
+															onClick={() => handleStyleTagDeleted(tag)}
 														>
-															<path
-																d="M2.18063 13.0492C1.49841 12.3903 0.954256 11.6021 0.579906 10.7306C0.205556 9.85919 0.00851124 8.9219 0.000269691 7.97348C-0.00797185 7.02505 0.172755 6.08449 0.531904 5.20666C0.891053 4.32882 1.42143 3.53131 2.09209 2.86065C2.76276 2.18999 3.56027 1.65961 4.4381 1.30046C5.31593 0.941309 6.2565 0.760583 7.20492 0.768824C8.15335 0.777066 9.09063 0.97411 9.96209 1.34846C10.8335 1.72281 11.6217 2.26697 12.2806 2.94918C13.5818 4.29634 14.3017 6.10064 14.2854 7.97348C14.2692 9.84631 13.518 11.6378 12.1936 12.9622C10.8693 14.2865 9.07776 15.0377 7.20492 15.054C5.33209 15.0703 3.52779 14.3503 2.18063 13.0492ZM3.18777 12.042C4.26 13.1143 5.71426 13.7166 7.23063 13.7166C8.74699 13.7166 10.2013 13.1143 11.2735 12.042C12.3457 10.9698 12.9481 9.51555 12.9481 7.99918C12.9481 6.48282 12.3457 5.02856 11.2735 3.95633C10.2013 2.88409 8.74699 2.28172 7.23063 2.28172C5.71426 2.28172 4.26 2.88409 3.18777 3.95633C2.11554 5.02856 1.51317 6.48282 1.51317 7.99918C1.51317 9.51555 2.11554 10.9698 3.18777 12.042ZM10.2592 5.97776L8.23777 7.99918L10.2592 10.0206L9.25206 11.0278L7.23063 9.00633L5.2092 11.0278L4.20206 10.0206L6.22349 7.99918L4.20206 5.97776L5.2092 4.97061L7.23063 6.99204L9.25206 4.97061L10.2592 5.97776Z"
-																fill="#B17C3F"
-															/>
-														</svg>
-													</button>
-												</motion.li>
-											))}
+															<svg
+																width="15"
+																height="16"
+																viewBox="0 0 15 16"
+																fill="none"
+																xmlns="http://www.w3.org/2000/svg"
+															>
+																<path
+																	d="M2.18063 13.0492C1.49841 12.3903 0.954256 11.6021 0.579906 10.7306C0.205556 9.85919 0.00851124 8.9219 0.000269691 7.97348C-0.00797185 7.02505 0.172755 6.08449 0.531904 5.20666C0.891053 4.32882 1.42143 3.53131 2.09209 2.86065C2.76276 2.18999 3.56027 1.65961 4.4381 1.30046C5.31593 0.941309 6.2565 0.760583 7.20492 0.768824C8.15335 0.777066 9.09063 0.97411 9.96209 1.34846C10.8335 1.72281 11.6217 2.26697 12.2806 2.94918C13.5818 4.29634 14.3017 6.10064 14.2854 7.97348C14.2692 9.84631 13.518 11.6378 12.1936 12.9622C10.8693 14.2865 9.07776 15.0377 7.20492 15.054C5.33209 15.0703 3.52779 14.3503 2.18063 13.0492ZM3.18777 12.042C4.26 13.1143 5.71426 13.7166 7.23063 13.7166C8.74699 13.7166 10.2013 13.1143 11.2735 12.042C12.3457 10.9698 12.9481 9.51555 12.9481 7.99918C12.9481 6.48282 12.3457 5.02856 11.2735 3.95633C10.2013 2.88409 8.74699 2.28172 7.23063 2.28172C5.71426 2.28172 4.26 2.88409 3.18777 3.95633C2.11554 5.02856 1.51317 6.48282 1.51317 7.99918C1.51317 9.51555 2.11554 10.9698 3.18777 12.042ZM10.2592 5.97776L8.23777 7.99918L10.2592 10.0206L9.25206 11.0278L7.23063 9.00633L5.2092 11.0278L4.20206 10.0206L6.22349 7.99918L4.20206 5.97776L5.2092 4.97061L7.23063 6.99204L9.25206 4.97061L10.2592 5.97776Z"
+																	fill="#B17C3F"
+																/>
+															</svg>
+														</button>
+													</motion.li>
+												))}
 										</AnimatePresence>
 									</div>
 									<div className="flex flex-row gap-2">
@@ -810,18 +937,18 @@ export default function Designer({
 											Choose Type
 										</p>
 										<div className="flex flex-col gap-x-2 space-y-1">
-											{type.map((type, index) => (
+											{property_type.map((type, index) => (
 												<div key={index} className="">
 													<button
-														value={type.value}
-														onClick={() => handleTagClick(type.value)}
+														value={type.id}
+														onClick={() => handleTagClick(type.id)}
 														className={`text-[12px] hover:bg-[#E4D1BC] font-medium text-start pl-2 w-full rounded-full py-1 pr-5  hover:text-gold ${
-															selectedTags.includes(type.value)
+															selectedTags && selectedTags.includes(type.id)
 																? "bg-[#E4D1BC] text-gold"
 																: ""
 														}`}
 													>
-														{type.label}
+														{type.type_name}
 													</button>
 												</div>
 											))}
@@ -832,18 +959,19 @@ export default function Designer({
 											Choose Style
 										</p>
 										<div className="flex flex-col gap-x-2 space-y-1 ">
-											{style.map((style, index) => (
+											{property_style.map((style, index) => (
 												<div key={index} className="">
 													<button
-														value={style.value}
-														onClick={() => handleStyleTag(style.value)}
+														value={style.id}
+														onClick={() => handleStyleTag(style.id)}
 														className={`text-[12px] hover:bg-[#E4D1BC] text-start pl-1 font-medium w-full rounded-full py-1 pr-5  hover:text-gold ${
-															selectedStyleTag.includes(style.value)
+															selectedStyleTag &&
+															selectedStyleTag.includes(style.id)
 																? "bg-[#E4D1BC] text-gold"
 																: ""
 														}`}
 													>
-														{style.label}
+														{style.style_name}
 													</button>
 												</div>
 											))}
@@ -869,52 +997,54 @@ export default function Designer({
 												{showSuggestions && (
 													<div className=" bg-white left-4 border-[1px] w-[234px] rounded-md  px-2 py-2 mt-1 absolute">
 														<div>
-															{filteredProvinces.slice(0,6).map((item) => (
-																<div key={item.id}>
-																	<div
-																		onClick={() => {
-																			onSearch(item.provinsi);
-																			setSelectedRegion((prevSelected) => ({
-																				...prevSelected,
-																				[item.provinsi]: true, 
-																			}));
-																		}}
-																		className="flex justify-between py-1 hover:bg-[#F0F0F0]"
-																	>
-																		<div className="px-2 flex justify-between w-full">
-																			<p className="text-gold text-[13px]">
-																				{item.provinsi}
-																			</p>
-																			<p className="text-[10px] text-black/50 my-auto">
-																				Province{" "}
-																			</p>
+															{filteredProvinces &&
+																filteredProvinces.slice(0, 6).map((item) => (
+																	<div key={item.id}>
+																		<div
+																			onClick={() => {
+																				onSearch(item.provinsi);
+																				setSelectedRegion((prevSelected) => ({
+																					...prevSelected,
+																					[item.provinsi]: true,
+																				}));
+																			}}
+																			className="flex justify-between py-1 hover:bg-[#F0F0F0]"
+																		>
+																			<div className="px-2 flex justify-between w-full">
+																				<p className="text-gold text-[13px]">
+																					{item.provinsi}
+																				</p>
+																				<p className="text-[10px] text-black/50 my-auto">
+																					Province{" "}
+																				</p>
+																			</div>
 																		</div>
 																	</div>
-																</div>
-															))}
-															{filteredCities.slice(0,6).map((item) => (
-																<div key={item.id}>
-																	<div
-																		onClick={() => {
-																			onSearch(item.kabupaten);
-																			setSelectedRegion((prevSelected) => ({
-																				...prevSelected,
-																				[item.kabupaten]: true,
-																			}));
-																		}}
-																		className="flex justify-between py-1 hover:bg-[#F0F0F0]"
-																	>
-																		<div className="px-2 flex justify-between w-full">
-																			<p className="text-gold text-[13px]">
-																				{item.kabupaten}
-																			</p>
-																			<p className="text-[10px] text-black/50 my-auto">
-																				City
-																			</p>
+																))}
+															{filteredCities &&
+																filteredCities.slice(0, 6).map((item) => (
+																	<div key={item.id}>
+																		<div
+																			onClick={() => {
+																				onSearch(item.kabupaten);
+																				setSelectedRegion((prevSelected) => ({
+																					...prevSelected,
+																					[item.kabupaten]: true,
+																				}));
+																			}}
+																			className="flex justify-between py-1 hover:bg-[#F0F0F0]"
+																		>
+																			<div className="px-2 flex justify-between w-full">
+																				<p className="text-gold text-[13px]">
+																					{item.kabupaten}
+																				</p>
+																				<p className="text-[10px] text-black/50 my-auto">
+																					City
+																				</p>
+																			</div>
 																		</div>
 																	</div>
-																</div>
-															))}
+																))}
 														</div>
 													</div>
 												)}
@@ -931,142 +1061,146 @@ export default function Designer({
 					<div className=" flex flex-grow flex-row flex-wrap justify-center gap-[1.1rem]">
 						{profile_detail?.slice(0, visibleItems).map((designerData, idx) => {
 							return (
-								<div
+								<Link
 									key={idx}
-									className={`relative   rounded-[1.5625rem] transition-all overflow-hidden duration-300 h-[21rem] w-[15.46875rem]`}
-									onMouseEnter={() => {
-										setHover(true);
-										setIndex(idx);
-									}}
-									onMouseLeave={() => {
-										setHover(false);
-										setIndex(-1);
-									}}
+									href={`/profile?u=${designerData.user_id.username}`}
 								>
-									<div className="relative h-full w-full flex-auto">
-										<Image
-											className="rounded-3xl"
-											src={designerData?.user_id?.avatar_url!}
-											alt={""}
-											fill={true}
-											style={{ objectFit: "cover" }}
-										/>
-									</div>
-									<motion.div
-										animate={{ opacity: hover && index == idx ? 1 : 0 }}
-										transition={{ ease: "easeIn", duration: 0.2 }}
-										className={` ${
-											hover && index == idx
-												? "absolute top-0 h-full w-full bg-[#00000035]"
-												: ""
-										}`}
-									></motion.div>
-									<motion.div
-										layout
-										transition={{ duration: 0.2 }}
-										className={` rounded-t-[1.5625rem]  text-[#4B4B4B]  ${
-											hover && index == idx
-												? "p-6 absolute bottom-0  w-full bg-[#ffffffe7]"
-												: "p-2 space-y-1 absolute bottom-0 w-full bg-[#ffffffc0]"
-										}`}
+									<div
+										className={`relative   rounded-[1.5625rem] transition-all overflow-hidden duration-300 h-[21rem] w-[15.46875rem]`}
+										onMouseEnter={() => {
+											setHover(true);
+											setIndex(idx);
+										}}
+										onMouseLeave={() => {
+											setHover(false);
+											setIndex(-1);
+										}}
 									>
-										<div
-											className={`flex   ${
+										<div className="relative h-full w-full flex-auto">
+											<Image
+												className="rounded-3xl"
+												src={designerData?.user_id?.avatar_url!}
+												alt={""}
+												fill={true}
+												style={{ objectFit: "cover" }}
+											/>
+										</div>
+										<motion.div
+											animate={{ opacity: hover && index == idx ? 1 : 0 }}
+											transition={{ ease: "easeIn", duration: 0.2 }}
+											className={` ${
 												hover && index == idx
-													? "justify-between items-start"
-													: "justify-center items-center text-center"
+													? "absolute top-0 h-full w-full bg-[#00000035]"
+													: ""
+											}`}
+										></motion.div>
+										<motion.div
+											layout
+											transition={{ duration: 0.2 }}
+											className={` rounded-t-[1.5625rem]  text-[#4B4B4B]  ${
+												hover && index == idx
+													? "p-6 absolute bottom-0  w-full bg-[#ffffffe7]"
+													: "p-2 space-y-1 absolute bottom-0 w-full bg-[#ffffffc0]"
 											}`}
 										>
-											<span className="flex flex-col space-y-2">
-												<p
-													className={`align-middle  font-semibold ${
-														hover && index == idx
-															? " text-[#4B4B4B] text-[1.0625rem]"
-															: " text-[0.875rem] text-black truncate px-4 w-[13.125rem]"
-													}`}
-												>
-													{designerData.user_id.first_name}{" "}
-													{designerData.user_id.last_name}
-												</p>
-											</span>
-											{hover && index == idx && (
-												<span className="flex   items-center space-x-1 font-semibold">
-													<p className=" text-[0.9375rem] mt-[0.06rem]  text-black">
-														{200}
+											<div
+												className={`flex   ${
+													hover && index == idx
+														? "justify-between items-start"
+														: "justify-center items-center text-center"
+												}`}
+											>
+												<span className="flex flex-col space-y-2">
+													<p
+														className={`align-middle  font-semibold ${
+															hover && index == idx
+																? " text-[#4B4B4B] text-[1.0625rem]"
+																: " text-[0.875rem] text-black truncate px-4 w-[13.125rem]"
+														}`}
+													>
+														{designerData.user_id.first_name}{" "}
+														{designerData.user_id.last_name}
 													</p>
-													<div className=" w-[0.875rem] h-[0.6875rem]  ">
-														<svg
-															width="14"
-															height="11"
-															viewBox="0 0 14 11"
-															fill="none"
-															xmlns="http://www.w3.org/2000/svg"
-														>
-															<g clipPath="url(#clip0_2340_2331)">
-																<path
-																	fillRule="evenodd"
-																	clipRule="evenodd"
-																	d="M10 7C10.9133 7.62 11.5533 8.46 11.5533 9.58V11.58H14.22V9.58C14.22 8.12667 11.84 7.26667 10 7Z"
-																	fill="black"
-																/>
-																<path
-																	d="M6.00001 5.33333C7.47277 5.33333 8.66668 4.13943 8.66668 2.66667C8.66668 1.19391 7.47277 0 6.00001 0C4.52725 0 3.33334 1.19391 3.33334 2.66667C3.33334 4.13943 4.52725 5.33333 6.00001 5.33333Z"
-																	fill="black"
-																/>
-																<path
-																	fillRule="evenodd"
-																	clipRule="evenodd"
-																	d="M9.99984 6.33382C11.4732 6.33382 12.6665 5.14049 12.6665 3.66716C12.6665 2.19382 11.4732 1.00049 9.99984 1.00049C9.6865 1.00049 9.39317 1.06715 9.11317 1.16049C9.68685 1.86997 9.99982 2.75476 9.99982 3.66716C9.99982 4.57955 9.68685 5.46434 9.11317 6.17382C9.39317 6.26716 9.6865 6.33382 9.99984 6.33382ZM5.99984 7.00049C4.21984 7.00049 0.666504 7.89382 0.666504 9.66716V11.6672H11.3332V9.66716C11.3332 7.89382 7.77984 7.00049 5.99984 7.00049Z"
-																	fill="black"
-																/>
-															</g>
-															<defs>
-																<clipPath id="clip0_2340_2331">
-																	<rect width="14" height="11" fill="white" />
-																</clipPath>
-															</defs>
-														</svg>
-													</div>
 												</span>
-											)}
-										</div>
-										{hover && index == idx && (
-											<div className="-pt-2 mb-2 space-y-1">
-												<p className="text-[0.75rem]">
-													{designerData.city === null
-														? " "
-														: designerData.city.kabupaten}
-												</p>
-												<ShowRating rate={4}></ShowRating>
+												{hover && index == idx && (
+													<span className="flex   items-center space-x-1 font-semibold">
+														<p className=" text-[0.9375rem] mt-[0.06rem]  text-black">
+															{200}
+														</p>
+														<div className=" w-[0.875rem] h-[0.6875rem]  ">
+															<svg
+																width="14"
+																height="11"
+																viewBox="0 0 14 11"
+																fill="none"
+																xmlns="http://www.w3.org/2000/svg"
+															>
+																<g clipPath="url(#clip0_2340_2331)">
+																	<path
+																		fillRule="evenodd"
+																		clipRule="evenodd"
+																		d="M10 7C10.9133 7.62 11.5533 8.46 11.5533 9.58V11.58H14.22V9.58C14.22 8.12667 11.84 7.26667 10 7Z"
+																		fill="black"
+																	/>
+																	<path
+																		d="M6.00001 5.33333C7.47277 5.33333 8.66668 4.13943 8.66668 2.66667C8.66668 1.19391 7.47277 0 6.00001 0C4.52725 0 3.33334 1.19391 3.33334 2.66667C3.33334 4.13943 4.52725 5.33333 6.00001 5.33333Z"
+																		fill="black"
+																	/>
+																	<path
+																		fillRule="evenodd"
+																		clipRule="evenodd"
+																		d="M9.99984 6.33382C11.4732 6.33382 12.6665 5.14049 12.6665 3.66716C12.6665 2.19382 11.4732 1.00049 9.99984 1.00049C9.6865 1.00049 9.39317 1.06715 9.11317 1.16049C9.68685 1.86997 9.99982 2.75476 9.99982 3.66716C9.99982 4.57955 9.68685 5.46434 9.11317 6.17382C9.39317 6.26716 9.6865 6.33382 9.99984 6.33382ZM5.99984 7.00049C4.21984 7.00049 0.666504 7.89382 0.666504 9.66716V11.6672H11.3332V9.66716C11.3332 7.89382 7.77984 7.00049 5.99984 7.00049Z"
+																		fill="black"
+																	/>
+																</g>
+																<defs>
+																	<clipPath id="clip0_2340_2331">
+																		<rect width="14" height="11" fill="white" />
+																	</clipPath>
+																</defs>
+															</svg>
+														</div>
+													</span>
+												)}
 											</div>
-										)}
-										<div
-											className={` flex  space-x-1  text-[0.5625rem] text-[#B17C3F] 
+											{hover && index == idx && (
+												<div className="-pt-2 mb-2 space-y-1">
+													<p className="text-[0.75rem]">
+														{designerData.city === null
+															? " "
+															: designerData.city.kabupaten}
+													</p>
+													<ShowRating rate={4}></ShowRating>
+												</div>
+											)}
+											<div
+												className={` flex  space-x-1  text-[0.5625rem] text-[#B17C3F] 
                     ${
 											hover && index == idx
 												? "justify-start"
 												: " justify-center "
 										}
                     `}
-										>
-											{getTag(
-												designerData?.property_type!,
-												designerData?.property_style!,
-											)
-												?.slice(0, 2)
-												.map((tag: string, idx: number) => {
-													return (
-														<div
-															key={idx}
-															className="transition-all duration-300 rounded-full border-[#B17C3F] border-[0.0001rem] px-2"
-														>
-															<p className="font-medium">{tag}</p>
-														</div>
-													);
-												})}
-										</div>
-									</motion.div>
-								</div>
+											>
+												{getTag(
+													designerData?.property_type!,
+													designerData?.property_style!,
+												)
+													?.slice(0, 2)
+													.map((tag: string, idx: number) => {
+														return (
+															<div
+																key={idx}
+																className="transition-all duration-300 rounded-full border-[#B17C3F] border-[0.0001rem] px-2"
+															>
+																<p className="font-medium">{tag}</p>
+															</div>
+														);
+													})}
+											</div>
+										</motion.div>
+									</div>
+								</Link>
 							);
 						})}
 					</div>
