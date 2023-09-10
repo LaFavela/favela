@@ -425,7 +425,7 @@ export default function Designer({}: InferGetServerSidePropsType<
 		}
 	};
 
-	const [selectedRegion, setSelectedRegion] = useState<{ [key: number]: any }>(
+	const [selectedRegion, setSelectedRegion] = useState<{ [key: string]: any }>(
 		{},
 	);
 
@@ -442,7 +442,7 @@ export default function Designer({}: InferGetServerSidePropsType<
 	};
 
 	//HANDLE UNTUK HAPUS TAG DAERAH
-	const handleTagDelete2 = (key: number) => {
+	const handleTagDelete2 = (key: string) => {
 		// Create a copy of the selectedRegion object
 		const updatedRegion = { ...selectedRegion };
 
