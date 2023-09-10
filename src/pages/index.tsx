@@ -1,38 +1,57 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import Footer from "@/components/footer";
-import { setTransparent } from "../tools/transparent";
 import Image from "next/image";
 import { designerData } from "./designer";
 import { Skeleton } from "@mui/material";
 import Head from "next/head";
+import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
+import { supabase } from "@/lib/supabase";
+import { useRouter } from "next/router";
+import { Database } from "@/types";
 
-export default function Landing() {
-	const [isPressed, setIsPressed] = useState(false);
-	const handleButtonClick = () => {
-		setIsPressed(!isPressed);
+export const getServerSideProps = async (
+	context: GetServerSidePropsContext,
+) => {
+	context.res.setHeader("Cache-Control", "s-maxage=20, stale-while-revalidate");
+
+	const { data: designers } = await supabase
+		.from("profiles")
+		.select("*")
+		.eq("role_id", 3)
+		.order("created_at", { ascending: false }) // Urutkan berdasarkan created_at secara descending (terbaru ke lama)
+		.limit(4) // Batasi hasil menjadi satu baris (yang terbaru)
+		// .single();
+
+	if (designers == null) {
+		return {
+			notFound: true,
+		};
+	}
+
+	return {
+		props: { designers },
 	};
-	const [visibleItems] = useState(3);
+};
+
+type Designer = Database["public"]["Tables"]["profiles"]["Row"];
+
+export default function Landing({}: InferGetServerSidePropsType<
+	typeof getServerSideProps
+>) {
+	const [designer, setDesigner] = useState<Designer[]>([]);
 	const [visibleDesigner] = useState(4);
-	const handleScroll = () => {
-		const scrollPosition = window.pageYOffset;
-		const threshold = 100;
-		const transparentValue = scrollPosition < threshold;
-		console.log(transparentValue);
-		setTransparent(transparentValue);
-	};
 
 	useEffect(() => {
-		window.addEventListener("scroll", handleScroll);
-		return () => window.removeEventListener("scroll", handleScroll);
-	});
+		const fetchData = async () => {
+			const { data: designer } = await supabase.from("profiles").select("*").eq("role_id", 3).order("created_at", { ascending: false }).limit(4) ;
 
-	const [loading, setLoading] = useState(true);
-	useEffect(() => {
-		setTimeout(() => {
-			setLoading(false);
-		}, 3000);
-	}, []);
+			console.log(designer);
+			// Assuming setProperty_type and setProperty_style are similar functions
+			if (designer) setDesigner(designer);
+		};
+
+		fetchData();
+	}, []); // Remov
 
 	return (
 		<div className=" transition-all duration-300 ease-linear">
@@ -40,13 +59,6 @@ export default function Landing() {
 				<title>{`Hunify "Your Property at 1 Click!"`}</title>
 			</Head>
 			<div className="container mx-auto max-w-md sm:max-w-xl xl:max-w-5xl 2xl:max-w-7xl">
-				{/* {loading? (
-          <div className="pt-[8rem]">
-            <Skeleton className="pt-[8rem] rounded-xl"  variant="rectangular" width="1314px" height="466px"/>
-          </div>
-        ):(
-
-        )} */}
 				<div className="relative pt-[8rem] ">
 					<Image
 						src="/assets/landing/landingBG.jpg"
@@ -54,8 +66,6 @@ export default function Landing() {
 						width={1314}
 						height={466}
 						className="rounded-2xl"
-						// onLoad={(image)=>image.classList.add('animate-fadeIn')}
-						// onLoadingComplete={}
 					/>
 					<div className="absolute bottom-[2rem] left-6 text-[#E3E3E3]  sm:bottom-[2.5rem] xl:bottom-24 xl:left-16 2xl:bottom-[7rem] 2xl:left-20">
 						<p className="text-center text-4xl font-medium text-[#FBC68A] sm:text-5xl xl:text-[5rem] 2xl:text-[6.5rem]">
@@ -112,7 +122,10 @@ export default function Landing() {
 							</div>
 						</div>
 						<p className="px-2 text-[5px] xl:mt-1 xl:px-5 xl:text-[10px] 2xl:px-8 2xl:text-[14px]">
-            The Find Designer feature allows you to find a designer or architect according to location, design style and property style. View portfolios, read reviews, and contact directly for your project
+							The Find Designer feature allows you to find a designer or
+							architect according to location, design style and property style.
+							View portfolios, read reviews, and contact directly for your
+							project
 						</p>
 					</div>
 
@@ -139,7 +152,9 @@ export default function Landing() {
 							</div>
 						</div>
 						<p className="px-2 text-[5px] xl:mt-1 xl:px-5 xl:text-[10px] 2xl:px-8 2xl:text-[14px]">
-            The Buy Design feature allows you to purchase customised home designs from trusted designers. Search for a design you like, view the details, and buy the design that fits your project
+							The Buy Design feature allows you to purchase customised home
+							designs from trusted designers. Search for a design you like, view
+							the details, and buy the design that fits your project
 						</p>
 					</div>
 
@@ -163,7 +178,9 @@ export default function Landing() {
 							</div>
 						</div>
 						<p className="px-2 text-[5px] xl:mt-1 xl:px-5 xl:text-[10px] 2xl:px-8 2xl:text-[14px]">
-            The Design Consult feature gives you the opportunity to consult with professional designers. Discuss your ideas, receive expert advice, and start planning your dream home project with confidence
+							The Design Consult feature gives you the opportunity to consult
+							with professional designers. Discuss your ideas, receive expert
+							advice, and start planning your dream home project with confidence
 						</p>
 					</div>
 
@@ -190,7 +207,9 @@ export default function Landing() {
 							</div>
 						</div>
 						<p className="px-2 text-[7px] xl:mt-1 xl:px-5 xl:text-[10px] 2xl:px-8 2xl:text-[14px]">
-            The Build Properties feature lets you explore ready-to-build properties. Find a property that suits you, view the details, and start planning the construction of your dream home
+							The Build Properties feature lets you explore ready-to-build
+							properties. Find a property that suits you, view the details, and
+							start planning the construction of your dream home
 						</p>
 					</div>
 				</div>
@@ -205,21 +224,15 @@ export default function Landing() {
 					<p className="text-[30px] font-medium">
 						To The <span className="text-[#B17C3F]">Designers</span>
 					</p>
-					{/* <div className="w-[820px]">
-            <p className="mt-4 text-center text-[15px]">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            </p>
-          </div> */}
 				</div>
 
 				<div className=" flex flex-grow flex-row justify-center gap-10 pl-7 pr-7">
-					{designerData.slice(0, visibleDesigner).map((designerData, idx) => {
+					{designer.slice(0, visibleDesigner).map((designerData, idx) => {
 						return (
 							<div key={idx} className="">
 								<div className="relative flex-auto gap-20">
 									<Image
-										src={designerData.img}
+										src={designerData.avatar_url!=null? designerData.avatar_url:""}
 										alt=""
 										height={315}
 										width={283}
@@ -229,13 +242,13 @@ export default function Landing() {
 										<div className="absolute inset-0 flex justify-between">
 											<div className="ml-5 mt-5 flex">
 												<p className="text-[1.3rem] font-semibold text-white">
-													{designerData.nama}
+													{designerData.first_name? designerData.first_name:""}{" "}{designerData.last_name? designerData.last_name:""}
 												</p>
 											</div>
 										</div>
 										<div className="flex items-end">
 											<Link
-												href={"./designer"}
+												href={"./profile?u=" + (designerData?.username || "")}
 												className="absolute mb-5 ml-5 h-[2.5rem] w-[2.5rem]  rounded-full"
 											>
 												<svg

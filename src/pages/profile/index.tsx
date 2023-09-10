@@ -264,8 +264,12 @@ export default function Profile({
 	const [property_type, setProperty_type] = useState<Property_type[]>([]);
 	const [property_style, setProperty_style] = useState<Property_style[]>([]);
 
+
+	const [session, setSession] = useState<string>();
 	useEffect(() => {
 		const fetch = async () => {
+			const data = await supabase.rpc("get_current_user_id");
+			if (data && data.data) setSession(data.data);
 			const { data: property_style } = await supabase
 				.from("property_style")
 				.select("*")
@@ -334,12 +338,12 @@ export default function Profile({
 
 	return (
 		<div>
-			<div className=" container mx-auto mt-20 flex h-10 max-w-[1320px] justify-between ">
+			<div className=" container mx-auto mt-20 flex max-w-[1320px] justify-between ">
 				<div className="container max-w-[884px] gap-y-5 ">
 					<div className="relative h-[457px] w-full rounded-3xl bg-white drop-shadow-landingShado">
 						<div className="h-[254px] relative ">
 							<Image
-								src={profile_detail?.banner!}
+								src={profile_detail.banner? profile_detail.banner:" "}
 								alt=""
 								// style={{
 								//   maxWidth: "884",
@@ -354,7 +358,7 @@ export default function Profile({
 							/>
 						</div>
 						<div className="absolute bottom-0 pb-4  left-8 flex items-center justify-center">
-							<div className="flex h-[215px] bw-[215px] items-center  justify-center rounded-full ">
+							<div className="flex h-[215px] w-[215px] items-center  justify-center rounded-full ">
 								<Image
 									src={profile?.avatar_url!}
 									alt=""
@@ -364,9 +368,11 @@ export default function Profile({
 										width: "100%",
 										height: "100%",
 									}}
-									height={200}
-									width={200}
-									className="h-[200px] w-[200px] rounded-full"
+									// height={200}
+									// width={200}
+									fill={true}
+									objectFit="cover"
+									className="h-[200px] w-[200px] rounded-full border-4 border-white"
 								/>
 							</div>
 							<div>
@@ -545,7 +551,7 @@ export default function Profile({
 													</p>
 												</div>
 											)}
-											{userVisitor.id !== profile?.id && (
+											{session !== profile?.id && (
 												<div className="mt-3 flex gap-3">
 													{follower.find((item) => item === userVisitor.id) ? (
 														<AnimatePresence>
@@ -635,7 +641,7 @@ export default function Profile({
 															</p>
 														</button>
 													) : (
-														<button className="flex gap-2 rounded-full border-2 border-gold bg-white px-3 py-1 hover:bg-[#E0C8AD] hover:border-[#E0C8AD] ">
+														<button className="flex gap-2 rounded-full border border-gold bg-white px-3 py-1 hover:bg-[#E0C8AD] hover:border-[#E0C8AD] ">
 															<span className="mt-[4px]">
 																<svg
 																	width="13"
@@ -687,7 +693,7 @@ export default function Profile({
 								{design?.slice(0, visibleItemDesign).map((design, index) => {
 									return (
 										<Link
-											href={`/designProduct`}
+											href={`/design/${design.id}`}
 											className="container flex items-center pl-4 space-x-4 max-w-[791px] rounded-xl border-2 border-gray-200 cursor-pointer hover:bg-[#e4d1bc]"
 											key={index}
 										>
