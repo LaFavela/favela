@@ -39,6 +39,8 @@
     "react-scroll-parallax": "^3.4.2",
     "reactjs-popup": "^2.0.5",
     "sharp": "^0.32.5",
+    "supabase": "^1.93.0",
+    "swr": "^2.2.1",
     "uuid": "^9.0.0",
     "watchpack": "^2.4.0"
   },

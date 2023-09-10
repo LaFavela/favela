@@ -35,6 +35,8 @@ export default function FormDesainer() {
 	const [kotaData, setKotaData] = useState<Dropdown[]>([]);
 	const [propertyTypeData, setPropertyTypeData] = useState<Dropdown[]>([]);
 	const [propertyStyleData, setPropertyStyleData] = useState<Dropdown[]>([]);
+	
+	const [username, setUsername] = useState<string>("");
 
 	useEffect(() => {
 		const init = async () => {
@@ -46,6 +48,8 @@ export default function FormDesainer() {
 				.single();
 			setFirstName(profile?.first_name as string);
 			setLastName(profile?.last_name as string);
+			
+			setUsername(profile?.username as string);
 
 			const { data: profile_detail } = await supabase
 				.from("profile_detail")
@@ -91,7 +95,7 @@ export default function FormDesainer() {
 		};
 		init();
 	}, []);
-	
+
 	const [education, setEducation] = useState<
 		{
 			studyInstitution: string;
@@ -484,7 +488,6 @@ export default function FormDesainer() {
 		setSelectedCity(city);
 	};
 
-
 	const handleBiodataSubmit = async (event: any) => {
 		event.preventDefault();
 
@@ -545,6 +548,32 @@ export default function FormDesainer() {
 					end_date: project.dateUntil,
 				},
 			]);
+		});
+
+		education.map(async (edu) => {
+			const { data: education_data, error } = await supabase
+				.from("education")
+				.insert([
+					{
+						institution: edu.studyInstitution,
+						title: edu.studyTitle,
+						start_date: edu.StudyFrom,
+						end_date: edu.StudyUntil,
+						description: edu.studyDescription,
+					},
+				]);
+		});
+
+		members.map(async (member) => {
+			const { data: member_data } = await supabase
+				.from("member_contractor")
+				.insert([
+					{
+						name: member.name,
+						job: member.job,
+						description: member.description,
+					},
+				]);
 		});
 	};
 
@@ -622,18 +651,19 @@ export default function FormDesainer() {
 				)}
 				<AnimatePresence>
 					{isEducationOpen && (
-						<motion.div 
-						initial={{ opacity: 0}}
-						animate={{ opacity: 1 }}
-						exit={{ opacity: 0}}
-						
-						className="fixed inset-0 z-10 flex items-center justify-center">
+						<motion.div
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							exit={{ opacity: 0 }}
+							className="fixed inset-0 z-10 flex items-center justify-center"
+						>
 							<div className="absolute bottom-0 left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-black/40">
-								<motion.div 
-								initial={{ scale: 0.8}}
-								animate={{ scale: 1 }}
-								exit={{ scale: 0.8}}
-								className="modal-content w-[553px] rounded-3xl bg-white">
+								<motion.div
+									initial={{ scale: 0.8 }}
+									animate={{ scale: 1 }}
+									exit={{ scale: 0.8 }}
+									className="modal-content w-[553px] rounded-3xl bg-white"
+								>
 									<div className="border-b-2 border-gold/60">
 										<h2 className="mx-8 my-4  text-[18px]">Detail Education</h2>
 									</div>
@@ -1201,7 +1231,7 @@ export default function FormDesainer() {
 									</p>
 								</div>
 								<div className="pr-5 flex justify-end border-t-2">
-									<Link href={"./merchantProfile"}>
+									<Link href={`/profile?u=${username}`}>
 										<button
 											onClick={openConfirmPopUp}
 											type="submit"

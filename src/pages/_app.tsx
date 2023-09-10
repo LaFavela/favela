@@ -12,6 +12,7 @@ import {
 import ChatButton from "@/components/chatButton";
 
 import { Poppins } from "next/font/google";
+import Footer from "@/components/footer";
 
 const poppins = Poppins({
 	subsets: ["latin"],
@@ -64,7 +65,10 @@ export default function App({ Component, pageProps }: AppProps) {
 					login={true}
 				></Navbar>
 				<ChatButton></ChatButton>
-				<Component {...pageProps} />
+				<Component {...pageProps}>
+
+				</Component>
+				<Footer></Footer>
 			</main>
 		</SessionContextProvider>
 	);
