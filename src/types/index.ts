@@ -9,6 +9,30 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      bank_account: {
+        Row: {
+          bank_number: number
+          created_at: string
+          id: number
+          name: string
+          password: string
+        }
+        Insert: {
+          bank_number?: number
+          created_at?: string
+          id?: number
+          name?: string
+          password?: string
+        }
+        Update: {
+          bank_number?: number
+          created_at?: string
+          id?: number
+          name?: string
+          password?: string
+        }
+        Relationships: []
+      }
       channel: {
         Row: {
           client_id: string | null
@@ -337,7 +361,7 @@ export interface Database {
           created_at: string
           id: string
           property_style: number[]
-          property_type: number[]
+          property_type: number[] | null
           province: number | null
           updated_at: string | null
           user_id: string
@@ -348,8 +372,8 @@ export interface Database {
           city?: number | null
           created_at?: string
           id?: string
-          property_style: number[]
-          property_type: number[]
+          property_style?: number[]
+          property_type?: number[] | null
           province?: number | null
           updated_at?: string | null
           user_id: string
@@ -361,7 +385,7 @@ export interface Database {
           created_at?: string
           id?: string
           property_style?: number[]
-          property_type?: number[]
+          property_type?: number[] | null
           province?: number | null
           updated_at?: string | null
           user_id?: string
@@ -651,6 +675,149 @@ export interface Database {
           role_name?: string | null
         }
         Relationships: []
+      }
+      transaction: {
+        Row: {
+          created_at: string
+          id: string
+          img: string
+          name: string
+          price_estimated: number
+          property_type: string
+          status: string
+          type: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          img?: string
+          name?: string
+          price_estimated?: number
+          property_type?: string
+          status?: string
+          type?: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          img?: string
+          name?: string
+          price_estimated?: number
+          property_type?: string
+          status?: string
+          type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      transaction_contributor: {
+        Row: {
+          client_id: string | null
+          contractor_id: string | null
+          created_at: string
+          designer_id: string | null
+          id: string
+          transaction_id: string | null
+        }
+        Insert: {
+          client_id?: string | null
+          contractor_id?: string | null
+          created_at?: string
+          designer_id?: string | null
+          id?: string
+          transaction_id?: string | null
+        }
+        Update: {
+          client_id?: string | null
+          contractor_id?: string | null
+          created_at?: string
+          designer_id?: string | null
+          id?: string
+          transaction_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transaction_contributor_client_id_fkey"
+            columns: ["client_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transaction_contributor_contractor_id_fkey"
+            columns: ["contractor_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transaction_contributor_designer_id_fkey"
+            columns: ["designer_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transaction_contributor_transaction_id_fkey"
+            columns: ["transaction_id"]
+            referencedRelation: "transaction"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      transaction_status: {
+        Row: {
+          contract: string
+          created_at: string
+          created_by: string
+          description: string
+          extra_info: string
+          id: string
+          isConfirmed: boolean
+          isPaid: boolean
+          media: string
+          payment: number
+          title: string
+          transaction_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          contract?: string
+          created_at?: string
+          created_by?: string
+          description?: string
+          extra_info?: string
+          id?: string
+          isConfirmed?: boolean
+          isPaid?: boolean
+          media?: string
+          payment?: number
+          title?: string
+          transaction_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          contract?: string
+          created_at?: string
+          created_by?: string
+          description?: string
+          extra_info?: string
+          id?: string
+          isConfirmed?: boolean
+          isPaid?: boolean
+          media?: string
+          payment?: number
+          title?: string
+          transaction_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transaction_status_transaction_id_fkey"
+            columns: ["transaction_id"]
+            referencedRelation: "transaction"
+            referencedColumns: ["id"]
+          }
+        ]
       }
     }
     Views: {
