@@ -1,16 +1,16 @@
 export const type = [
-	{ label: "type 1", value: "type 1" },
-	{ label: "type 2", value: "type 2" },
-	{ label: "type 3", value: "type 3" },
-	{ label: "type 4", value: "type 4" },
+	{ label: "type 1", value: 1 },
+	{ label: "type 2", value: 2 },
+	{ label: "type 3", value: 3 },
+	{ label: "type 4", value: 4 },
 ];
 
 export const style = [
-	{ label: "stye 1", value: "stye 1" },
-	{ label: "stye 2", value: "stye 2" },
-	{ label: "stye 3", value: "stye 3" },
-	{ label: "stye 4", value: "stye 4" },
-	{ label: "stye 5", value: "stye 5" },
+	{ label: "stye 1", value: 1 },
+	{ label: "stye 2", value: 2 },
+	{ label: "stye 3", value: 3 },
+	{ label: "stye 4", value: 4 },
+	{ label: "stye 5", value: 5 },
 ];
 
 export const province = [
