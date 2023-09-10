@@ -473,16 +473,18 @@ export default function Designer({}: InferGetServerSidePropsType<
 	};
 
 	const [showSuggestions, setShowSuggestions] = useState(false);
+
+	
 	const router = useRouter();
 
 	useEffect(() => {
-		router.replace(
-			{
-				query: { ...router.query, style: selectedStyleTag },
-			},
-			undefined,
-			{ shallow: true },
-		);
+		// router.replace(
+		// 	{
+		// 		query: { ...router.query, style: selectedStyleTag, type: selectedTags },
+		// 	},
+		// 	undefined,
+		// 	{ shallow: true },
+		// );
 		const fetch = async () => {
 			const { data: profile } = await supabase
 				.from("profiles")
@@ -493,94 +495,22 @@ export default function Designer({}: InferGetServerSidePropsType<
 			profile?.map((item) => {
 				ids.push(item.id);
 			});
-
-			let profile_detail: Designer[] | null = null;
-
-			if (selectedStyleTag && selectedTags) {
-				profile_detail = (
-					await supabase
-						.from("profile_detail")
-						.select(
-							"user_id(*), province(*), city(*), property_type, property_style",
-						)
-						.in("user_id", ids)
-						.contains("property_style", selectedStyleTag)
-						.contains("property_type", selectedTags)
-						.returns<Designer[]>()
-				).data;
-			} else if (selectedStyleTag) {
-				profile_detail = (
-					await supabase
-						.from("profile_detail")
-						.select(
-							"user_id(*), province(*), city(*), property_type, property_style",
-						)
-						.in("user_id", ids)
-						.contains("property_style", selectedStyleTag)
-						.returns<Designer[]>()
-				).data;
-			} else {
-				profile_detail = (
-					await supabase
-						.from("profile_detail")
-						.select(
-							"user_id(*), province(*), city(*), property_type, property_style",
-						)
-						.in("user_id", ids)
-						.returns<Designer[]>()
-				).data;
-			}
+			let region = Object.keys(selectedRegion);
+			let { data: profile_detail, error } = await supabase
+				.from("profile_detail")
+				.select(
+					"user_id(*), province(*), city(*), property_type, property_style",
+				)
+				.in("user_id", ids)
+				.or(
+					`and(property_style.cs.{${selectedStyleTag}},property_type.cs.{${selectedTags}})`
+				)
+				.returns<Designer[]>();
+			console.log(profile_detail, error);
 			if (profile_detail) setProfile_detail(profile_detail);
 		};
 		fetch();
-	}, [selectedStyleTag]);
-	useEffect(() => {
-		router.replace(
-			{
-				query: { ...router.query, type: selectedTags },
-			},
-			undefined,
-			{ shallow: true },
-		);
-		const fetch = async () => {
-			const { data: profile } = await supabase
-				.from("profiles")
-				.select("*")
-				.filter("role_id", "eq", 3);
-
-			const ids: string[] = [];
-			profile?.map((item) => {
-				ids.push(item.id);
-			});
-
-			let profile_detail: Designer[] | null = null;
-
-			if (selectedTags) {
-				profile_detail = (
-					await supabase
-						.from("profile_detail")
-						.select(
-							"user_id(*), province(*), city(*), property_type, property_style",
-						)
-						.in("user_id", ids)
-						.contains("property_type", selectedTags)
-						.returns<Designer[]>()
-				).data;
-			} else {
-				profile_detail = (
-					await supabase
-						.from("profile_detail")
-						.select(
-							"user_id(*), province(*), city(*), property_type, property_style",
-						)
-						.in("user_id", ids)
-						.returns<Designer[]>()
-				).data;
-			}
-			if (profile_detail) setProfile_detail(profile_detail);
-		};
-		fetch();
-	}, [selectedTags]);
+	}, [selectedStyleTag, selectedTags, selectedRegion]);
 
 	return (
 		<div>
