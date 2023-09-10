@@ -35,7 +35,7 @@ export default function FormDesainer() {
 	const [kotaData, setKotaData] = useState<Dropdown[]>([]);
 	const [propertyTypeData, setPropertyTypeData] = useState<Dropdown[]>([]);
 	const [propertyStyleData, setPropertyStyleData] = useState<Dropdown[]>([]);
-	
+
 	const [username, setUsername] = useState<string>("");
 
 	useEffect(() => {
@@ -48,7 +48,7 @@ export default function FormDesainer() {
 				.single();
 			setFirstName(profile?.first_name as string);
 			setLastName(profile?.last_name as string);
-			
+
 			setUsername(profile?.username as string);
 
 			const { data: profile_detail } = await supabase
@@ -583,33 +583,168 @@ export default function FormDesainer() {
 		setConfirmModal(!confirmModal);
 	};
 
+	//EXPERIENCE
+
+	const [experience, setExperience] = useState<
+		{
+			experienceInstitution: string;
+			experienceTitle: string;
+			experienceDepartement: string;
+			experienceFrom: string;
+			experienceUntil: string;
+			experienceDescription: string;
+		}[]
+	>([]);
+
+	const [experienceInstitution, set_experienceInstitution] = useState("");
+	const [experienceTitle, set_experienceTitle] = useState("");
+	const [experienceDepartement, set_experienceDepartement] = useState("");
+	const [experienceFrom, set_experienceFrom] = useState("");
+	const [experienceUntil, set_experienceUntil] = useState("");
+	const [experienceDescription, set_experienceDescription] = useState("");
+
+	const handleexperienceIntitutionChange = (event: any) => {
+		set_experienceInstitution(event.target.value);
+	};
+	const handleexperienceTitleChange = (event: any) => {
+		set_experienceTitle(event.target.value);
+	};
+	const handleexperienceDepartementChange = (event: any) => {
+		set_experienceDepartement(event.target.value);
+	};
+	const handleexperienceFromChange = (event: any) => {
+		set_experienceFrom(event.target.value);
+	};
+	const handleexperienceUntilChange = (event: any) => {
+		set_experienceUntil(event.target.value);
+	};
+	const handleexperienceDescriptionChange = (event: any) => {
+		set_experienceDescription(event.target.value);
+	};
+
+	const handleExperienceSubmit = (event: any) => {
+		event.preventDefault();
+		const newExperience = {
+			experienceInstitution,
+			experienceTitle,
+			experienceDepartement,
+			experienceFrom,
+			experienceUntil,
+			experienceDescription,
+		};
+
+		setExperience([...experience, newExperience]);
+		set_experienceDescription("");
+		set_experienceInstitution("");
+		set_experienceTitle("");
+		set_experienceDepartement("");
+		set_experienceFrom("");
+		set_experienceUntil("");
+	};
+
+	const [isEditExperienceOpen, setIsEditExperienceOpen] = useState(false);
+	const [editexperienceIndex, setEditexperienceIndex] = useState(-1);
+
+	const openEditexperience = (index: number) => {
+		const experienceToEdit = experience[index];
+		setEditexperienceIndex(index);
+		set_experienceInstitution(experienceToEdit.experienceInstitution);
+		set_experienceTitle(experienceToEdit.experienceTitle);
+		set_experienceDepartement(experienceToEdit.experienceDepartement);
+		set_experienceFrom(experienceToEdit.experienceFrom);
+		set_experienceUntil(experienceToEdit.experienceUntil);
+		set_experienceDescription(experienceToEdit.experienceDescription);
+		setIsEditExperienceOpen(true);
+	};
+
+	const handleEditexperienceSave = (index: number) => {
+		const updateexperience = [...experience];
+		updateexperience[index] = {
+			...updateexperience[index],
+			experienceInstitution,
+			experienceTitle,
+			experienceDepartement,
+			experienceFrom,
+			experienceUntil,
+			experienceDescription,
+		};
+		setExperience(updateexperience);
+		set_experienceInstitution("");
+		set_experienceTitle("");
+		set_experienceDepartement("");
+		set_experienceFrom("");
+		set_experienceUntil("");
+		setDescription("");
+		setIsEditExperienceOpen(false);
+	};
+
+	const closeEditExperience = () => {
+		setIsEditExperienceOpen(false);
+	};
+
+	const handleExperienceDelete = (index: number) => {
+		const updateExperience = experience.filter((_, i) => i !== index);
+		setExperience(updateExperience);
+	};
+
+	const [isExperienceOpen, setIsExperienceOpen] = useState(false);
+	const openExperiencePopUp = () => {
+		setIsExperienceOpen(!isExperienceOpen);
+	};
+
+	const experienceEditClose = () => {
+		setIsEditExperienceOpen(false);
+	};
+
 	return (
 		<div>
 			<div>
-				{modal && (
+				{isExperienceOpen && (
 					<div className="fixed inset-0 z-10 flex items-center justify-center">
 						<div className="absolute bottom-0 left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-black/40">
 							<div className="modal-content w-[553px] rounded-3xl bg-white">
 								<div className="border-b-2 border-gold/60">
-									<h2 className="mx-8 my-4  text-[18px]">Detail Member</h2>
+									<h2 className="mx-8 my-4  text-[18px]">Detail Experience</h2>
 								</div>
-								<form id="memberForm" onSubmit={handleSubmit}>
+								<form id="ExperienceForm" onSubmit={handleExperienceSubmit}>
 									<div className="ml-14 py-5">
 										<InputPopUp
 											type="text"
-											title="nama"
-											value={name}
-											onChange={handleNameChange}
+											title="Institution"
+											value={experienceInstitution}
+											onChange={handleexperienceIntitutionChange}
 											className="bg-white"
 											required
 										></InputPopUp>
 										<InputPopUp
-											title="Job"
+											title="Title"
 											type="text"
-											value={job}
+											value={experienceTitle}
 											className="bg-white"
 											required
-											onChange={handleJobChange}
+											onChange={handleexperienceTitleChange}
+										></InputPopUp>
+										<InputPopUp
+											title="Departement"
+											type="text"
+											value={experienceDepartement}
+											className="bg-white"
+											required
+											onChange={handleexperienceDepartementChange}
+										></InputPopUp>
+										<InputPopUp
+											title="From"
+											type="date"
+											value={experienceFrom}
+											className="bg-white"
+											onChange={handleexperienceFromChange}
+										></InputPopUp>
+										<InputPopUp
+											title="Until"
+											type="date"
+											value={experienceUntil}
+											className="bg-white"
+											onChange={handleexperienceUntilChange}
 										></InputPopUp>
 										<label className="mt-4 gap-24 pr-14">
 											<span className="mt-2 w-[120px] text-[10px]  text-[#B17C3F] ">
@@ -617,8 +752,8 @@ export default function FormDesainer() {
 											</span>
 											<textarea
 												id="description"
-												value={description}
-												onChange={handleDescriptionChange}
+												value={experienceDescription}
+												onChange={handleexperienceDescriptionChange}
 												placeholder="Description"
 												className=" mt-1 block w-[440px] h-[127px] rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
 												maxLength={500}
@@ -639,7 +774,7 @@ export default function FormDesainer() {
 										</button>
 										<button
 											className="my-3 mr-14 rounded-full border-[1px] border-gold px-5 py-1 text-[13px] hover:border-red-400 hover:bg-red-400 hover:text-white"
-											onClick={openPopUp}
+											onClick={openExperiencePopUp}
 										>
 											Close
 										</button>
@@ -735,7 +870,7 @@ export default function FormDesainer() {
 											</button>
 											<button
 												className="my-3 mr-14 rounded-full border-[1px] border-gold px-5 py-1 text-[13px] hover:border-red-400 hover:bg-red-400 hover:text-white"
-												onClick={openEducationPopUp}
+												onClick={openExperiencePopUp}
 											>
 												Close
 											</button>
@@ -834,30 +969,54 @@ export default function FormDesainer() {
 					</div>
 				)}
 
-				{isEditPopupOpen && editMemberIndex !== -1 && (
+				{isEditExperienceOpen && editexperienceIndex !== -1 && (
 					<div className="fixed inset-0 z-10 flex items-center justify-center">
 						<div className="absolute bottom-0 left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-black/40">
 							<div className="z-50 modal-content w-[553px] rounded-3xl bg-white">
 								<div className="border-b-2 border-gold/60">
-									<h2 className="mx-8 my-4  text-[18px]">Edit Detail Member</h2>
+									<h2 className="mx-8 my-4  text-[18px]">
+										Edit Detail Experience
+									</h2>
 								</div>
 
 								<div className="ml-14 py-5">
 									<InputPopUp
 										type="text"
-										title="nama"
-										value={name}
-										onChange={handleNameChange}
-										required
+										title="Institution"
+										value={experienceInstitution}
+										onChange={handleexperienceIntitutionChange}
 										className="bg-white"
+										required
 									></InputPopUp>
 									<InputPopUp
-										title="Job"
+										title="Title"
 										type="text"
-										value={job}
-										required
+										value={experienceTitle}
 										className="bg-white"
-										onChange={handleJobChange}
+										required
+										onChange={handleexperienceTitleChange}
+									></InputPopUp>
+									<InputPopUp
+										title="Departement"
+										type="text"
+										value={experienceDepartement}
+										className="bg-white"
+										required
+										onChange={handleexperienceDepartementChange}
+									></InputPopUp>
+									<InputPopUp
+										title="From"
+										type="date"
+										value={experienceFrom}
+										className="bg-white"
+										onChange={handleexperienceFromChange}
+									></InputPopUp>
+									<InputPopUp
+										title="Until"
+										type="date"
+										value={experienceUntil}
+										className="bg-white"
+										onChange={handleexperienceUntilChange}
 									></InputPopUp>
 									<label className="mt-4 gap-24 pr-14">
 										<span className="mt-2 w-[120px] text-[10px]  text-[#B17C3F] ">
@@ -865,8 +1024,8 @@ export default function FormDesainer() {
 										</span>
 										<textarea
 											id="description"
-											value={description}
-											onChange={handleDescriptionChange}
+											value={experienceDescription}
+											onChange={handleexperienceDescriptionChange}
 											placeholder="Description"
 											className=" mt-1 block w-[440px] h-[127px] rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
 											maxLength={500}
@@ -880,14 +1039,16 @@ export default function FormDesainer() {
 								</div>
 								<div className="flex justify-end border-t-2 border-gold/60">
 									<button
-										onClick={() => handleEditPopupSave(editMemberIndex)}
+										onClick={() =>
+											handleEditexperienceSave(editexperienceIndex)
+										}
 										className="my-3 mr-3 rounded-full border-[1px] border-gold bg-gold px-8 py-1 text-[13px] text-white hover:border-goldhov hover:bg-goldhov"
 									>
 										Save
 									</button>
 									<button
 										className="my-3 mr-14 rounded-full border-[1px] border-gold px-5 py-1 text-[13px] hover:border-red-400 hover:bg-red-400 hover:text-white"
-										onClick={closeEditPopup}
+										onClick={closeEditExperience}
 									>
 										Close
 									</button>
@@ -1246,9 +1407,9 @@ export default function FormDesainer() {
 					</div>
 				)}
 
-				<div className="container relative mx-auto mt-20 flex h-10 max-w-[1320px] justify-between ">
+				<div className="container relative mx-auto mt-10 flex max-w-[1320px] justify-between ">
 					<div className=" container relative max-w-[884px]  ">
-						<p className="text-[20px] font-medium ml-1">Profile</p>
+						<p className="text-[20px] font-medium ml-1">Request as Designer</p>
 						<div className="mb-10 w-full rounded-3xl bg-white drop-shadow-landingShado mt-7">
 							<div className="ml-14 py-8">
 								<p className="text-[15px] font-semibold text-gold">Biodata</p>
@@ -1527,8 +1688,10 @@ export default function FormDesainer() {
 						<div className="mb-10 w-full rounded-3xl bg-white drop-shadow-landingShado">
 							<div className="ml-14 mr-14 py-8 pb-14">
 								<div className="mb-8 flex w-full justify-between">
-									<p className="text-[15px] font-semibold text-gold">Member</p>
-									<button onClick={openPopUp}>
+									<p className="text-[15px] font-semibold text-gold">
+										Experience
+									</p>
+									<button onClick={openExperiencePopUp}>
 										<svg
 											width="21"
 											height="20"
@@ -1551,28 +1714,30 @@ export default function FormDesainer() {
 										</svg>
 									</button>
 								</div>
-								{members.map((member, index) => (
+								{experience.map((experience, index) => (
 									<div className="flex pb-10" key={index}>
 										<span>
 											<svg
-												width="53"
-												height="55"
-												viewBox="0 0 53 55"
+												width="51"
+												height="49"
+												viewBox="0 0 51 49"
 												fill="none"
 												xmlns="http://www.w3.org/2000/svg"
 											>
 												<path
-													d="M4.9375 54.875C4.9375 54.875 0.625 54.875 0.625 50.3125C0.625 45.75 4.9375 32.0625 26.5 32.0625C48.0625 32.0625 52.375 45.75 52.375 50.3125C52.375 54.875 48.0625 54.875 48.0625 54.875H4.9375ZM26.5 27.5C29.9312 27.5 33.2219 26.0579 35.6482 23.491C38.0744 20.9241 39.4375 17.4427 39.4375 13.8125C39.4375 10.1823 38.0744 6.70088 35.6482 4.13398C33.2219 1.56707 29.9312 0.125 26.5 0.125C23.0688 0.125 19.7781 1.56707 17.3518 4.13398C14.9256 6.70088 13.5625 10.1823 13.5625 13.8125C13.5625 17.4427 14.9256 20.9241 17.3518 23.491C19.7781 26.0579 23.0688 27.5 26.5 27.5Z"
+													d="M5.16683 48.3749C3.76892 48.3749 2.57179 47.8768 1.57546 46.8804C0.579125 45.8841 0.081806 44.6878 0.0835004 43.2916V15.3333C0.0835004 13.9353 0.581667 12.7382 1.578 11.7419C2.57433 10.7455 3.77061 10.2482 5.16683 10.2499H15.3335V5.16659C15.3335 3.76867 15.8317 2.57155 16.828 1.57521C17.8243 0.578881 19.0206 0.0815618 20.4168 0.0832563H30.5835C31.9814 0.0832563 33.1785 0.581423 34.1749 1.57776C35.1712 2.57409 35.6685 3.77037 35.6668 5.16659V10.2499H45.8335C47.2314 10.2499 48.4285 10.7481 49.4249 11.7444C50.4212 12.7408 50.9185 13.937 50.9168 15.3333V43.2916C50.9168 44.6895 50.4187 45.8866 49.4223 46.883C48.426 47.8793 47.2297 48.3766 45.8335 48.3749H5.16683ZM20.4168 10.2499H30.5835V5.16659H20.4168V10.2499Z"
 													fill="#B17C3F"
 												/>
 											</svg>
 										</span>
 										<span className="ml-8 w-full ">
 											<div className="flex w-full  justify-between">
-												<p className="text-[17px] font-medium">{member.name}</p>
+												<p className="text-[17px] font-medium">
+													{experience.experienceInstitution}
+												</p>
 
 												<div className="flex gap-2">
-													<button onClick={() => handleDelete(index)}>
+													<button onClick={() => handleEducationDelete(index)}>
 														<svg
 															width="17"
 															height="16"
@@ -1587,7 +1752,7 @@ export default function FormDesainer() {
 														</svg>
 													</button>
 
-													<button onClick={() => openPopUpEdit(index)}>
+													<button onClick={() => openEditexperience(index)}>
 														<svg
 															width="15"
 															height="16"
@@ -1603,8 +1768,16 @@ export default function FormDesainer() {
 													</button>
 												</div>
 											</div>
-
-											<p>{member.job}</p>
+											<p>
+												{experience.experienceTitle} ,{" "}
+												{experience.experienceDepartement}
+											</p>
+											<p className="text-black/60">
+												{experience.experienceFrom.substr(0, 0 + 4)} -
+												{experience.experienceUntil.substr(0, 0 + 4) === "2023"
+													? " Now"
+													: experience.experienceUntil.substr(0, 0 + 4)}
+											</p>
 										</span>
 									</div>
 								))}

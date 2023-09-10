@@ -942,9 +942,9 @@ export default function Form() {
 					</div>
 				)}
 
-				<div className="container relative mx-auto mt-20 flex h-10 max-w-[1320px] justify-between ">
+				<div className="container relative mx-auto mt-10 flex  max-w-[1320px] justify-between ">
 					<div className=" container relative max-w-[884px]  ">
-						<p className="text-[20px] font-medium ml-1">Profile</p>
+						<p className="text-[20px] font-medium ml-1">Request as Contractor</p>
 						<div className="mb-10 w-full rounded-3xl bg-white drop-shadow-landingShado mt-7">
 							<div className="ml-14 py-8">
 								<p className="text-[15px] font-semibold text-gold">Biodata</p>
