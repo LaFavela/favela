@@ -4,11 +4,12 @@ import Image from "next/image";
 import { motion, AnimatePresence, m } from "framer-motion";
 import { useRef, useEffect } from "react";
 import IMGPreview from "./imgPreview";
-import { convertTime } from "@/tools/time";
+import { getTime } from "@/tools/time";
 import { supabase } from "@/lib/supabase";
 import { Database } from "@/types";
 import { User } from "@supabase/auth-helpers-nextjs";
 import { data } from "@/pages/browse";
+import { v4 } from "uuid";
 
 interface ChatProps {
 	visible: boolean;
@@ -45,7 +46,7 @@ export function Chat(props: ChatProps) {
 			"postgres_changes",
 			{ event: "INSERT", schema: "public", table: "message" },
 			(payload) => {
-				console.log("Change received!", payload);
+				// console.log("Change received!", payload);
 				fetchMessage(activeChannel!);
 				fetchLastMessage(channel!);
 			},
@@ -71,18 +72,34 @@ export function Chat(props: ChatProps) {
 	>([]);
 	const addChatMessage = async (messageContent: string, channel_id: string) => {
 		try {
-			const { data, error } = await supabase
-				.from("message")
-				.insert([{ content: messageContent, channel: channel_id }])
-				.select();
-			if (error) throw error;
+			console.log(selectedImage);
+			if (selectedFile) {
+				const imageSrc = `/${channel_id}/${v4()}`;
+				const { data, error: uploadError } = await supabase.storage
+					.from("message")
+					.upload(imageSrc, selectedFile);
+				console.log(data, uploadError);
+				const { data: message, error } = await supabase
+					.from("message")
+					.insert([
+						{ content: messageContent, channel: channel_id, img: imageSrc },
+					])
+					.select();
+				if (error) throw error;
+			} else {
+				const { data, error } = await supabase
+					.from("message")
+					.insert([{ content: messageContent, channel: channel_id }])
+					.select();
+				if (error) throw error;
+			}
 			fetchMessage(channel_id);
 			fetchLastMessage(channel!);
 		} catch (error) {
 			console.log(error);
 		}
 	};
-	
+
 	const fetchLastMessage = (channel: Channel[]) => {
 		channel.map(async (channel) => {
 			try {
@@ -126,9 +143,8 @@ export function Chat(props: ChatProps) {
 		};
 		fetchChannel();
 		fetchSession();
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-
 
 	const lastMessage = useRef<any>(null);
 	const [value, setValue] = useState("");
@@ -140,7 +156,7 @@ export function Chat(props: ChatProps) {
 
 	const [uploading, setUploading] = useState(false);
 	const [selectedImage, setSelectedImage] = useState("");
-	const [selectedFile, setSelectedFile] = useState<File>();
+	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
 	function scrollToBottom() {
 		lastMessage?.current?.scrollIntoView({ behavior: "smooth" });
@@ -162,6 +178,28 @@ export function Chat(props: ChatProps) {
 			};
 		}, [ref]);
 	}
+
+	const handleFile = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
+		if (target.files) {
+			const file = target.files[0];
+			if (file) {
+				// Periksa apakah file tidak null
+				// setSelectedFile(file);
+				setSelectedImage(URL.createObjectURL(file));
+				// console.log(file);
+				// console.log(selectedFile);
+				// console.log(selectedImage);
+				const reader = new FileReader();
+				// reader.onloadend = () => {
+				// 	setSelectedImage(reader.result as string);
+				// };
+				reader.readAsDataURL(file);
+				console.log(selectedImage);
+			}else{
+				setSelectedImage("");
+			}
+		}
+	};
 
 	const wrapperRef = useRef(null);
 	useOutsideAlerter(wrapperRef);
@@ -217,7 +255,7 @@ export function Chat(props: ChatProps) {
 											<label
 												className="absolute right-0 top-0 m-2"
 												onClick={() => {
-													setSelectedFile(undefined);
+													setSelectedFile(null);
 													setSelectedImage("");
 												}}
 											>
@@ -359,15 +397,23 @@ export function Chat(props: ChatProps) {
 																		{data.img ? (
 																			<div className="relative h-auto max-w-[16rem] rounded-lg ">
 																				<Image
-																					onClick={() => {
+																					onClick={async () => {
 																						setShowIMG(true);
-																						setSrcIMG(data.img);
+																						if (data.img)
+																							setSrcIMG(
+																								await supabase.storage
+																									.from("chat")
+																									.createSignedUrl(
+																										data.img,
+																										60,
+																									),
+																							);
 																					}}
 																					className="place-content-center rounded-sm "
 																					// sizes="(max-width: 16rem)"
 																					height={0}
 																					width={256}
-																					src={data.img}
+																					src={srcIMG}
 																					// fill={true}
 																					alt={"chat"}
 																					style={{ objectFit: "fill" }}
@@ -380,7 +426,7 @@ export function Chat(props: ChatProps) {
 																			{data.content}
 																		</p>
 																		<p className="ml-3 place-self-end text-[0.5rem]">
-																			{convertTime(data.created_at)}
+																			{getTime(data.created_at)}
 																		</p>
 																	</div>
 																</div>
@@ -411,7 +457,7 @@ export function Chat(props: ChatProps) {
 																			{data.content}
 																		</p>
 																		<p className="ml-3 place-self-end text-[0.5rem]">
-																			{convertTime(data.created_at)}
+																			{getTime(data.created_at)}
 																		</p>
 																	</div>
 																</div>
@@ -431,7 +477,7 @@ export function Chat(props: ChatProps) {
 														addChatMessage(value, activeChannel);
 														setValue("");
 
-														setSelectedFile(undefined);
+														setSelectedFile(null);
 														setSelectedImage("");
 													}
 												}}
@@ -470,17 +516,7 @@ export function Chat(props: ChatProps) {
 															// onClick={()=>{setSelectedImage("")}}
 															accept="image"
 															className="hidden"
-															onChange={({ target }) => {
-																if (target.files) {
-																	const file = target.files[0];
-																	if (file) {
-																		// Periksa apakah file tidak null
-																		setSelectedImage(URL.createObjectURL(file));
-																		setSelectedFile(file);
-																		// console.log(file);
-																	}
-																}
-															}}
+															onChange={(event) => handleFile(event)}
 														></input>
 													</label>
 
@@ -492,14 +528,12 @@ export function Chat(props: ChatProps) {
 														placeholder="Tulis Pesan Disini"
 													/>
 													<button
-													// type="submit"
-													// onClick={()=>{
-													//   handleUpload();
-													//   setSelectedFile(undefined);
-													//   setSelectedImage("");
-													//   }}
-
-													// disabled={uploading}
+														type="submit"
+														onClick={() => {
+															setSelectedFile(null);
+															setSelectedImage("");
+														}}
+														disabled={uploading}
 													>
 														<svg
 															width="16"
