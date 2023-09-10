@@ -952,7 +952,7 @@ export interface Database {
           created_at: string
           designer_id: string | null
           id: string
-          transaction_id: string | null
+          transaction_id: string
         }
         Insert: {
           client_id?: string | null
@@ -960,7 +960,7 @@ export interface Database {
           created_at?: string
           designer_id?: string | null
           id?: string
-          transaction_id?: string | null
+          transaction_id: string
         }
         Update: {
           client_id?: string | null
@@ -968,7 +968,7 @@ export interface Database {
           created_at?: string
           designer_id?: string | null
           id?: string
-          transaction_id?: string | null
+          transaction_id?: string
         }
         Relationships: [
           {
@@ -999,7 +999,9 @@ export interface Database {
       }
       transaction_status: {
         Row: {
+          action_type: string[]
           contract: string
+          contractor_id: string | null
           created_at: string
           created_by: string
           description: string
@@ -1014,7 +1016,9 @@ export interface Database {
           updated_at: string | null
         }
         Insert: {
+          action_type?: string[]
           contract?: string
+          contractor_id?: string | null
           created_at?: string
           created_by?: string
           description?: string
@@ -1029,7 +1033,9 @@ export interface Database {
           updated_at?: string | null
         }
         Update: {
+          action_type?: string[]
           contract?: string
+          contractor_id?: string | null
           created_at?: string
           created_by?: string
           description?: string
@@ -1044,6 +1050,12 @@ export interface Database {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "transaction_status_contractor_id_fkey"
+            columns: ["contractor_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "transaction_status_transaction_id_fkey"
             columns: ["transaction_id"]

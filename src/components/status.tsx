@@ -6,7 +6,7 @@ interface StatusProps {
 	onClose: (value: boolean) => void;
 	setShowStatus: (value: boolean) => void;
 	status: string;
-	tittle: string;
+	title: string;
 	description: string;
 	statusHandle?: () => void;
 }
@@ -52,7 +52,7 @@ export default function Status(props: StatusProps) {
 					>
 						<div className={"w-full flex items-center h-[3.25rem] " + bgColor}>
 							<p className="ml-10 text-[1.0625rem] font-medium text-white">
-								{props.tittle}
+								{props.title}
 							</p>
 						</div>
 						<div className="flex justify-center">
