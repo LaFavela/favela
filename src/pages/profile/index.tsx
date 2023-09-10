@@ -343,7 +343,7 @@ export default function Profile({
 					<div className="relative h-[457px] w-full rounded-3xl bg-white drop-shadow-landingShado">
 						<div className="h-[254px] relative ">
 							<Image
-								src={profile_detail.banner? profile_detail.banner:" "}
+								src={profile_detail?.banner!}
 								alt=""
 								// style={{
 								//   maxWidth: "884",
