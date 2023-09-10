@@ -805,6 +805,173 @@ function Transaction() {
 	);
 }
 
+function Suggestion() {
+	const userData = [
+		{
+			id: 1,
+			avatar_url: "/assets/profile/eky.jpg",
+			name: "Muhammad Ramadhani Al-Qadri Shafika",
+			email: "muhammaddzulhiraihan@gmail.com",
+			title: "Service",
+			description:
+				"Saya ingin melaporkan penipuan yang dilakukan oleh orang ini",
+		},
+		{
+			id: 2,
+			avatar_url: "/assets/profile/raihan.jpg",
+			name: "Dzulhi Raihan",
+			email: "dzulhiraihan@gmail.com",
+			title: "Service",
+			description:
+				"Saya ingin melaporkan penipuan yang dilakukan oleh orang ini karena pesanan saya belum jadi sampai sekarang dari bulan yang lalu saya pesan",
+		},
+		{
+			id: 3,
+			avatar_url: "/assets/profile/raihan.jpg",
+			name: "Dzulhi Raihan",
+			email: "dzulhiraihan@gmail.com",
+			title: "Service",
+			description:
+				"Saya ingin melaporkan penipuan yang dilakukan oleh orang ini",
+		},
+	];
+
+	const [user, setUser] = useState<
+		{
+			avatar_url: string;
+			email: string;
+			title: string;
+			username: string;
+			description: string;
+		}[]
+	>([
+		{
+			username: userData[0].name,
+			email: userData[0].email,
+			avatar_url: userData[0].avatar_url,
+			title: userData[0].title,
+			description: userData[0].description,
+		},
+		{
+			username: userData[1].name,
+			email: userData[1].email,
+			avatar_url: userData[1].avatar_url,
+			title: userData[1].title,
+			description: userData[1].description,
+		},
+	]);
+
+	const [username, setUsername] = useState("");
+	const [avatar_url, setAvatar_url] = useState("");
+	const [email, setEmail] = useState("");
+	const [title, setTitle] = useState("");
+	const [description, setDescription] = useState("");
+
+	const [isCheckOpen, setIsCheckOpen] = useState(false);
+	const [checkIndex, setCheckIndex] = useState(-1);
+
+	const openCheck = (index: number) => {
+		const detailComplain = user[index];
+		setCheckIndex(index);
+		setTitle(detailComplain.title);
+		setDescription(detailComplain.description);
+		setIsCheckOpen(true);
+	};
+
+	const closeCheck = () => {
+		setIsCheckOpen(false);
+	};
+
+	return (
+		<div>
+			{isCheckOpen && checkIndex !== -1 && (
+				<div
+					onClick={closeCheck}
+					className="fixed inset-0 z-10 flex items-center justify-center"
+				>
+					<div className="h-[379px] w-[553px] bg-white drop-shadow-landingShado rounded-[25px] ">
+						<div className="w-full h-[50px] border-gold/40 border-b-2 flex justify-end items-center pr-5">
+							<CloseIcon className="text-gold" onClick={closeCheck}></CloseIcon>
+						</div>
+						<div className="w-full px-6 mt-3  h-[220px]">
+							<p className="text-gold text-[13px]">
+								Title : <span className="text-black">{title}</span>
+							</p>
+							<p className="text-gold text-[13px] mt-2">Description :</p>
+							<p className="text-[13px] mt-2">{description}</p>
+						</div>
+						<div className="flex items-center justify-center">
+							<button className="text-[13px] font-medium text-gold py-1 px-5 rounded-full border-gold bg-white border-2 hover:bg-goldhov">
+								Download Attachment
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
+			<div>
+				{user.length > 0 ? (
+					<div>
+						<div className="bg-[#F5EEE6] ml-6 h-[47px] grid grid-cols-4 text-center text-[13px] items-center text-gold font-light">
+							<p>Profile</p>
+							<p>Email</p>
+							<p>Title</p>
+							<p>Action</p>
+						</div>
+						<div className="ml-6 mt-6 px-1">
+							{user.map((item, index) => (
+								<div key={index}>
+									<div className="grid grid-cols-4 gap-4 mb-5">
+										<div className="flex gap-3">
+											<div className="relative h-[30px] w-[30px] rounded full">
+												<Image
+													src={item.avatar_url}
+													alt={item.username}
+													// height={30}
+													// width={30}
+													fill={true}
+													objectFit="cover"
+													className="rounded-full"
+												></Image>
+											</div>
+											<p className="w-[160px] my-auto text-[13px] truncate overflow-hidden">
+												{item.username}
+											</p>
+										</div>
+										<div className="flex justify-center items-center">
+											<p className="text-[13px]  truncate overflow-hidden">
+												{item.email}
+											</p>
+										</div>
+										<div className="flex justify-center items-center text-center">
+											<p className="text-[13px] truncate overflow-hidden">
+												{item.title}
+											</p>
+										</div>
+										<div>
+											<div className="flex gap-4 w-[222.5px] items-center justify-center pr-3">
+												<button
+													onClick={() => openCheck(index)}
+													className="hover:bg-goldhov hover:border-goldhov flex gap-2 border-2 border-gold py-1 px-2 rounded-[7px]"
+												>
+													<p className="text-[9px] text-gold">Check</p>
+												</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							))}
+						</div>
+					</div>
+				) : (
+					<div className="flex items-center justify-center h-full mt-24">
+						<p className="text-[19px] font-medium">No Users Complain</p>
+					</div>
+				)}
+			</div>
+		</div>
+	);
+}
+
 export default function Dashboard() {
 	const [selectedTab, setSelectedTab] = useState<string | null>("User");
 	const [color, setColor] = useState([
@@ -948,9 +1115,26 @@ export default function Dashboard() {
 				</svg>
 			),
 		},
+		{
+			name: "Suggestion",
+			icon: (
+				<svg
+					width="28"
+					height="26"
+					viewBox="0 0 28 26"
+					fill="none"
+					xmlns="http://www.w3.org/2000/svg"
+				>
+					<path
+						d="M15.736 26L14 25L18 18H24C24.2628 18.0004 24.523 17.9489 24.7658 17.8486C25.0087 17.7482 25.2293 17.6009 25.4151 17.4151C25.6009 17.2293 25.7482 17.0087 25.8486 16.7658C25.9489 16.523 26.0004 16.2628 26 16V4C26.0004 3.73725 25.9489 3.477 25.8486 3.23417C25.7482 2.99134 25.6009 2.7707 25.4151 2.58491C25.2293 2.39911 25.0087 2.25181 24.7658 2.15144C24.523 2.05107 24.2628 1.99961 24 2H4C3.73725 1.99961 3.477 2.05107 3.23417 2.15144C2.99134 2.25181 2.7707 2.39911 2.58491 2.58491C2.39911 2.7707 2.25181 2.99134 2.15144 3.23417C2.05107 3.477 1.99961 3.73725 2 4V16C1.99961 16.2628 2.05107 16.523 2.15144 16.7658C2.25181 17.0087 2.39911 17.2293 2.58491 17.4151C2.7707 17.6009 2.99134 17.7482 3.23417 17.8486C3.477 17.9489 3.73725 18.0004 4 18H13V20H4C2.93913 20 1.92172 19.5786 1.17157 18.8284C0.421428 18.0783 1.25074e-07 17.0609 1.25074e-07 16V4C-0.000131255 3.47468 0.103242 2.95447 0.304214 2.46911C0.505187 1.98375 0.79982 1.54274 1.17128 1.17128C1.54274 0.79982 1.98375 0.505187 2.46911 0.304215C2.95447 0.103242 3.47468 -0.000131255 4 1.25074e-07H24C24.5253 -0.000131255 25.0455 0.103242 25.5309 0.304215C26.0163 0.505187 26.4573 0.79982 26.8287 1.17128C27.2002 1.54274 27.4948 1.98375 27.6958 2.46911C27.8968 2.95447 28.0001 3.47468 28 4V16C28 17.0609 27.5786 18.0783 26.8284 18.8284C26.0783 19.5786 25.0609 20 24 20H19.165L15.736 26Z"
+						fill="black"
+					/>
+				</svg>
+			),
+		},
 	];
 	return (
-		<div className="flex justify-center">
+		<div className="flex justify-center pb-[75px]">
 			<div className="mt-[2.1875rem]  w-[81.875rem] space-y-[1.3125rem]">
 				<div>
 					<p className="text-[1.25rem] font-medium">Setting</p>
@@ -997,6 +1181,7 @@ export default function Dashboard() {
 						{selectedTab === "Design" && <Design />}
 						{selectedTab === "Complain" && <Complain />}
 						{selectedTab === "Transaction" && <Transaction />}
+						{selectedTab === "Suggestion" && <Suggestion />}
 					</div>
 				</div>
 			</div>
