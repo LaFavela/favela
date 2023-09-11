@@ -81,14 +81,14 @@ export const getServerSideProps = async (
 	};
 };
 // const constractor = null;
-const constractor = null;
-// {
-// 	name: "Sinar Bata",
-// 	img: "/assets/landing/Designer3.jpg",
-// 	role: "Contractor",
-// 	city: "Jakarta",
-// 	province: "DKI Jakarta",
-// };
+const constractor = 
+{
+	name: "Sinar Bata",
+	img: "/assets/landing/Designer3.jpg",
+	role: "Contractor",
+	city: "Jakarta",
+	province: "DKI Jakarta",
+};
 
 const bank_account = [
 	{
