@@ -10,7 +10,7 @@ export default function Footer() {
 	const handleOnCloseSuggest = () => setShowSuggest(false);
 	return (
 		<div>
-			<div className="mt-20 bottom-0 w-full">
+			<div className="mt-20  bottom-0 w-full">
 				<div className="flex flex-col items-center">
 					<svg
 						className="ml-3"
@@ -39,7 +39,7 @@ export default function Footer() {
 						</defs>
 					</svg>
 
-					<div className="absolute mt-10 flex flex-col items-center space-y-1">
+					<div className="absolute  mt-10 flex flex-col items-center space-y-1">
 						<motion.button
 							whileTap={{ scale: 0.87 }}
 							// transition={{ duration: 0.1 }}

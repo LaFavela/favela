@@ -1148,7 +1148,6 @@ export default function Designer({}: InferGetServerSidePropsType<
 					</motion.button>
 				)}
 			</div>
-			<Footer></Footer>
 		</div>
 	);
 }
