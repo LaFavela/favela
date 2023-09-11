@@ -84,6 +84,7 @@ export interface Database {
           property_size: number
           property_style: number | null
           property_type: number | null
+          rating: number
         }
         Insert: {
           bathroom_count: number
@@ -101,6 +102,7 @@ export interface Database {
           property_size: number
           property_style?: number | null
           property_type?: number | null
+          rating?: number
         }
         Update: {
           bathroom_count?: number
@@ -118,6 +120,7 @@ export interface Database {
           property_size?: number
           property_style?: number | null
           property_type?: number | null
+          rating?: number
         }
         Relationships: [
           {
@@ -395,6 +398,7 @@ export interface Database {
           property_style: number[]
           property_type: number[] | null
           province: number | null
+          rating: number
           updated_at: string | null
           user_id: string
         }
@@ -408,6 +412,7 @@ export interface Database {
           property_style?: number[]
           property_type?: number[] | null
           province?: number | null
+          rating?: number
           updated_at?: string | null
           user_id: string
         }
@@ -421,6 +426,7 @@ export interface Database {
           property_style?: number[]
           property_type?: number[] | null
           province?: number | null
+          rating?: number
           updated_at?: string | null
           user_id?: string
         }
@@ -791,6 +797,7 @@ export interface Database {
           name: string
           price_estimated: number
           property_type: string
+          request_form_id: string | null
           status: string
           type: string
           updated_at: string | null
@@ -802,6 +809,7 @@ export interface Database {
           name?: string
           price_estimated?: number
           property_type?: string
+          request_form_id?: string | null
           status?: string
           type?: string
           updated_at?: string | null
@@ -813,11 +821,19 @@ export interface Database {
           name?: string
           price_estimated?: number
           property_type?: string
+          request_form_id?: string | null
           status?: string
           type?: string
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "transaction_request_form_id_fkey"
+            columns: ["request_form_id"]
+            referencedRelation: "request_form"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       transaction_contributor: {
         Row: {
@@ -884,6 +900,7 @@ export interface Database {
           isConfirmed: boolean
           isPaid: boolean
           media: string
+          offer_by: string | null
           payment: number | null
           title: string
           transaction_id: string | null
@@ -901,6 +918,7 @@ export interface Database {
           isConfirmed?: boolean
           isPaid?: boolean
           media?: string
+          offer_by?: string | null
           payment?: number | null
           title?: string
           transaction_id?: string | null
@@ -918,6 +936,7 @@ export interface Database {
           isConfirmed?: boolean
           isPaid?: boolean
           media?: string
+          offer_by?: string | null
           payment?: number | null
           title?: string
           transaction_id?: string | null
@@ -928,6 +947,12 @@ export interface Database {
             foreignKeyName: "transaction_status_contractor_id_fkey"
             columns: ["contractor_id"]
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transaction_status_offer_by_fkey"
+            columns: ["offer_by"]
+            referencedRelation: "request_form"
             referencedColumns: ["id"]
           },
           {
