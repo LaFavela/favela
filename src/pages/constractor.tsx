@@ -674,9 +674,9 @@ export default function Constractor() {
 												<div key={index} className="">
 													<button
 														value={type.value}
-														onClick={() => handleTagClick(type.value)}
+														onClick={() => handleTagClick(type.label)}
 														className={`text-[12px] hover:bg-[#E4D1BC] font-medium text-start pl-2 w-full rounded-full py-1 pr-5  hover:text-gold ${
-															selectedTags.includes(type.value)
+															selectedTags.includes(type.label)
 																? "bg-[#E4D1BC] text-gold"
 																: ""
 														}`}
@@ -696,9 +696,9 @@ export default function Constractor() {
 												<div key={index} className="">
 													<button
 														value={style.value}
-														onClick={() => handleTagClick(style.value)}
+														onClick={() => handleTagClick(style.label)}
 														className={`text-[12px] hover:bg-[#E4D1BC] text-start pl-1 font-medium w-full rounded-full py-1 pr-5  hover:text-gold ${
-															selectedTags.includes(style.value)
+															selectedTags.includes(style.label)
 																? "bg-[#E4D1BC] text-gold"
 																: ""
 														}`}
