@@ -55,7 +55,7 @@ export default function Transaction() {
 								<Link href={`/transaction/detail/${item.transaction_id.id}`} className=" space-y-[0.875rem]">
 								<div className="flex space-x-3 items-center">
 									<p className="text-[0.875rem] font-semibold text-gold">
-										{item.transaction_id.type}
+										{item.transaction_id.property_type}
 									</p>
 									<p className="text-[0.75rem]">
 										{getDate(item.transaction_id.created_at)}

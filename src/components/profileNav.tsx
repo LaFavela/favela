@@ -4,9 +4,9 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/router";
-import {Database} from "@/types";
+import { Database } from "@/types";
 
-type Profile = Database["public"]["Tables"]["profiles"]["Row"]
+type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
 export default function ProfileNav(
 	props: any = {
@@ -19,11 +19,15 @@ export default function ProfileNav(
 	const [session, setSession] = useState<Profile>();
 	useEffect(() => {
 		const fetch = async () => {
-			const data:User|null = await (await supabase.auth.getUser()).data.user;
-			if (data){
-			const {data:profile} = await supabase.from("profiles").select("*").eq("id", data.id).single();
-			if (profile)
-			setSession(profile);}
+			const data: User | null = await (await supabase.auth.getUser()).data.user;
+			if (data) {
+				const { data: profile } = await supabase
+					.from("profiles")
+					.select("*")
+					.eq("id", data.id)
+					.single();
+				if (profile) setSession(profile);
+			}
 			const role = await supabase.rpc("get_user_role_name");
 			if (role && role.data) setRole(role.data);
 		};
@@ -45,8 +49,7 @@ export default function ProfileNav(
 						<div className=" flex w-[9.8125rem] justify-center rounded-[1rem] bg-white drop-shadow">
 							<div className="my-[0.7rem] ">
 								{/* Profile */}
-								<Link href={"./profile?u=" + (session?.username || "")}
-								>
+								<Link href={"./profile?u=" + (session?.username || "")}>
 									<div className="flex w-[8.4375rem] items-center rounded-[0.5rem] bg-white py-[0.3rem] hover:bg-[#EAEAEA]">
 										<svg
 											className="ml-[0.5rem]"
@@ -183,10 +186,8 @@ export default function ProfileNav(
 										try {
 											const { error } = await supabase.auth.signOut();
 											if (error) throw error;
-											if (router.pathname == "/") {
-												router.reload();
-											} else {
-												router.push("/");
+											{
+												return <Link href={"/"}></Link>;
 											}
 										} catch (error) {
 											console.log(error);

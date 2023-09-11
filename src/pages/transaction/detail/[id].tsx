@@ -52,13 +52,20 @@ export const getServerSideProps = async (
 		.eq("transaction_id", transactionData?.id)
 		.single();
 
-	let { data: contributorData } = await supabase
+	console.log(transactionContributor);
+	let contractor_id = v4();
+	if (transactionContributor?.contractor_id)
+		contractor_id = transactionContributor?.contractor_id;
+
+	let { data: contributorData, error: contributorDataError } = await supabase
 		.from("profiles")
 		.select("*, role_id(*)")
 		.or(
-			`id.eq.${transactionContributor?.client_id},id.eq.${transactionContributor?.designer_id},id.eq.${transactionContributor?.contractor_id}`,
+			`id.eq.${transactionContributor?.client_id},id.eq.${transactionContributor?.designer_id},id.eq.${contractor_id}`,
 		)
 		.order("role_id", { ascending: true });
+
+	console.log(contributorData, contributorDataError);
 
 	const { data: statusData } = await supabase
 		.from("transaction_status")
@@ -81,8 +88,7 @@ export const getServerSideProps = async (
 	};
 };
 // const constractor = null;
-const constractor = 
-{
+const constractor = {
 	name: "Sinar Bata",
 	img: "/assets/landing/Designer3.jpg",
 	role: "Contractor",
@@ -327,7 +333,7 @@ export default function DetailTransaction({
 												return (
 													<div key={idx} className="flex space-x-4">
 														<Link
-															href={`/merchantProfile/${item.id}`}
+															href={`/profile?u=${item.username}`}
 															className="flex space-x-2  h-fit p-1 rounded-full pr-3 hover:bg-[#e6e6e6]"
 														>
 															<div className="relative w-[1.875rem] h-[1.875rem] rounded-full overflow-hidden">
@@ -725,15 +731,29 @@ export function Action(props: actionProps) {
 	const [description, setDescription] = useState("");
 	const [title, setTitle] = useState("");
 
-	function handleConfirm() {
+	async function handleConfirm() {
 		const tempStatus = props.status;
 		tempStatus[tempStatus.length - 1].isConfirmed = true;
 		props.setStatus(tempStatus);
+		const { data: confirmed, error: confirm_error } = await supabase
+			.from("transaction_status")
+			.update({ isConfirmed: true })
+			.eq("id", tempStatus[tempStatus.length - 1].id)
+			.select();
+		const { data: approved, error: approved_error } = await supabase
+			.from("transaction_status")
+			.insert({ title: "Project Has Been Approved", description: "The Project Has Been Approved By Designer", transaction_id: tempStatus[tempStatus.length - 1].transaction_id})
+		console.log(approved, approved_error);
 	}
-	function handlePayment() {
+	async function handlePayment() {
 		const tempStatus = props.status;
 		tempStatus[tempStatus.length - 1].isPaid = true;
 		props.setStatus(tempStatus);
+		const { data, error } = await supabase
+			.from("transaction_status")
+			.update({ isPaid: true })
+			.eq("id", tempStatus[tempStatus.length - 1].id)
+			.select();
 	}
 
 	return (
@@ -769,7 +789,7 @@ export function Action(props: actionProps) {
 						</div>
 					)}
 					{props.status[props.status.length - 1].action_type.find(
-						(item) => item == "Confirmation",
+						(item) => item == "Confirm",
 					) &&
 						(props.user.id !=
 						props.status[props.status.length - 1].created_by ? (
@@ -784,7 +804,11 @@ export function Action(props: actionProps) {
 											handleConfirm();
 											setShowStatus(true);
 											setStatus("success");
-											setDescription("lorem");
+											setDescription(
+												`Status ${
+													props.status[props.status.length - 1].title
+												} Has Been Confirmed`,
+											);
 										}}
 										className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]"
 									>
@@ -865,7 +889,7 @@ export function Action(props: actionProps) {
 								Suggestion:
 							</p>
 							{constractor != null && (
-								<Link href={"/merchantProfile"}>
+								<Link href={"/profile"}>
 									<div className="w-[35.625rem]  flex space-x-3 p-[1rem] rounded-[0.625rem] border-[#e3d0ba] border-[0.1rem]">
 										<div className="relative w-[3.625rem] h-[3.625rem] rounded-[0.375rem] overflow-hidden">
 											<Image
@@ -1420,7 +1444,7 @@ export function Update(props: updateProps) {
 											</p>
 										</div>
 										{constractor != null && (
-											<Link href={"/merchantProfile"}>
+											<Link href={"/profile"}>
 												<div className="w-[31.2rem]  flex space-x-3 p-[1rem] rounded-[0.625rem] border-[#e3d0ba] border-[0.1rem]  hover:bg-[#e4d1bc] ">
 													<div className="relative w-[3.625rem] h-[3.625rem] rounded-[0.375rem] overflow-hidden">
 														<Image
@@ -1687,13 +1711,13 @@ export function ShowDocument(props: documentProps) {
 										Land Image:
 									</p>
 									<div className="flex justify-center items-center space-x-2 overflow-hidden">
-										{requestForm?.land_image.map((
-											image, index) => (
+										{requestForm?.land_image.map((image, index) => (
 											<div key={index} className="relative w-24 h-24">
-												<Image 
-												src={image} alt="" 
-												fill={true} 
-												objectFit={"cover"}
+												<Image
+													src={image}
+													alt=""
+													fill={true}
+													objectFit={"cover"}
 												/>
 											</div>
 										))}
@@ -1706,16 +1730,16 @@ export function ShowDocument(props: documentProps) {
 									<div className="flex justify-center items-center space-x-2 overflow-hidden">
 										{requestForm?.reference_image.map((image, index) => (
 											<div key={index} className="relative w-24 h-24">
-												<Image 
-												src={image} alt="" 
-												fill={true} 
-												objectFit={"cover"}
+												<Image
+													src={image}
+													alt=""
+													fill={true}
+													objectFit={"cover"}
 												/>
 											</div>
 										))}
 									</div>
 								</div>
-								
 							</div>
 
 							<div className="h-10px w-full border-t"></div>
