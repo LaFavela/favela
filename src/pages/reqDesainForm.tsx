@@ -9,6 +9,7 @@ import InputBoxForm from "@/components/inpuBoxForm";
 import { supabase } from "@/lib/supabase";
 import { v4 } from "uuid";
 import { set } from "react-hook-form";
+import { useRouter } from "next/router";
 
 export default function SellDesignForm() {
 	const inputRef = useRef<HTMLInputElement>(null);
@@ -182,6 +183,8 @@ export default function SellDesignForm() {
 	const handleChangeDeadline = (event: any) => {
 		setDeadline(event.target.value);
 	};
+	
+	const router = useRouter();
 
 	const handleSubmit = async (event: any) => {
 		event.preventDefault();
@@ -221,7 +224,6 @@ export default function SellDesignForm() {
 			setReferenceImage(referenceData);
 		});
 
-
 		const { data: request, error } = await supabase
 			.from("request_form")
 			.insert([
@@ -239,13 +241,13 @@ export default function SellDesignForm() {
 					sun_orientation: sunOrientation,
 					wind_orientation: windOrientation,
 					land_shape: landShape,
-					design_name: designName
+					design_name: designName,
 				},
 			])
 			.select()
 			.single();
 
-			console.log(request,error)
+		console.log(request, error);
 
 		const mappedFacilities = await Promise.all(
 			facilities.map(async (item) => {
@@ -261,7 +263,59 @@ export default function SellDesignForm() {
 					.select();
 			}),
 		);
+
+		const property_type = [
+			{ id: 1, type_name: "Villa" },
+			{ id: 2, type_name: "House" },
+			{ id: 3, type_name: "Condominium" },
+			{ id: 4, type_name: "Apartement" },
+		];
+
+		const getTypeTag = (type: number) => {
+			let tag: string | undefined = "";
+			if (type === 1) tag = "Villa";
+			else if (type === 2) tag = "House";
+			else if (type === 3) tag = "Condominium";
+			else if (type === 4) tag = "Apartement";
+			return tag;
+		};
+
+		const idRequest:string = router.query.q as string;
+
+		const { data: transaction, error: transaction_error } = await supabase
+			.from("transaction")
+			.insert([
+				{
+					request_form_id: request?.id,
+					img: request?.reference_image[0],
+					price_estimated: request?.budget,
+					status: "PENDING",
+					name: request?.design_name,
+					property_type: getTypeTag(request?.property_type!),
+				},
+			])
+			.select()
+			.single();
+
+		const user_id = (await supabase.auth.getSession()).data.session?.user.id;
+		console.log(user_id);
+		console.log(transaction?.id)
+		console.log(idRequest)
 		
+		const { data: contribution, error: contribution_error } = await supabase
+			.from("transaction_contributor")
+			.insert([
+				{
+					client_id: user_id!,
+					transaction_id: transaction?.id!,
+					designer_id: idRequest,
+				},
+			])
+			.select();
+			
+		console.log(contribution, contribution);
+		
+
 		// F
 	};
 
@@ -378,7 +432,7 @@ export default function SellDesignForm() {
 										// placeholder="Design Name"
 										onChange={handleChangeLandSize}
 									></InputBoxForm>
-									
+
 									<InputBoxForm
 										form="designForm"
 										type="text"
@@ -526,7 +580,6 @@ export default function SellDesignForm() {
 										placehoder="Select Property Type"
 										onChange={handleChangeStyle}
 									></Dropdown>
-									
 
 									<div className="mt-5 flex ">
 										<p className="text-gold">References</p>
