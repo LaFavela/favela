@@ -9,6 +9,8 @@ import "reactjs-popup/dist/index.css";
 import ShowRating from "../components/rating";
 import { type, style, province } from "@/components/tagList";
 import Link from "next/link";
+import { Database } from "@/types";
+import { supabase } from "@/lib/supabase";
 
 export const constractorData = [
 	{
@@ -253,7 +255,75 @@ export const constractorData = [
 	},
 ];
 
+type Designer = Database["public"]["Tables"]["profile_detail"]["Row"] & {
+	user_id: Database["public"]["Tables"]["profiles"]["Row"];
+	province: Database["public"]["Tables"]["provinsi"]["Row"];
+	city: Database["public"]["Tables"]["kabupaten_kota"]["Row"];
+};
+type Profile = Database["public"]["Tables"]["profiles"]["Row"];
+
+type Province = Database["public"]["Tables"]["provinsi"]["Row"];
+type City = Database["public"]["Tables"]["kabupaten_kota"]["Row"];
+type Style = Database["public"]["Tables"]["property_style"]["Row"];
+type Type = Database["public"]["Tables"]["property_type"]["Row"];
+
 export default function Constractor() {
+	const [property_type, setProperty_type] = useState<Type[]>([]);
+	const [property_style, setProperty_style] = useState<Style[]>([]);
+	const [filteredProvinces, setFilteredProvinces] = useState<Province[]>();
+	const [filteredCities, setFilteredCities] = useState<City[]>();
+
+	const [profiles, setProfiles] = useState<Profile[]>([]); // Initialize profiles with empty array
+	const [profile_detail, setProfile_detail] = useState<Designer[]>([]); // Initialize profile_detail with empty array
+
+	useEffect(() => {
+		const fetchData = async () => {
+			const { data: provinsi } = await supabase.from("provinsi").select("*");
+			const { data: kota } = await supabase.from("kabupaten_kota").select("*");
+			const { data: property_type } = await supabase
+				.from("property_type")
+				.select("*");
+			const { data: property_style } = await supabase
+				.from("property_style")
+				.select("*");
+
+			if (provinsi && kota) {
+				setFilteredProvinces(provinsi); // Initialize filteredProvinces with all provinces
+				setFilteredCities(kota); // Initialize filteredCities with all cities
+			}
+
+			// Assuming setProperty_type and setProperty_style are similar functions
+			if (property_type) setProperty_type(property_type);
+			if (property_style) setProperty_style(property_style);
+
+			const { data: profile } = await supabase
+				.from("profiles")
+				.select("*")
+				.filter("role_id", "eq", 4);
+
+			const ids: string[] = [];
+			profile?.map((item) => {
+				ids.push(item.id);
+			});
+
+			let profile_detail: Designer[] | null = null;
+
+			profile_detail = (
+				await supabase
+					.from("profile_detail")
+					.select(
+						"user_id(*), province(*), city(*), property_type, property_style",
+					)
+					.in("user_id", ids)
+					.returns<Designer[]>()
+			).data;
+
+			if (profile_detail) setProfile_detail(profile_detail);
+		};
+
+		fetchData();
+	}, []); // Remov
+
 	const [hover, setHover] = useState(false);
 	const [index, setIndex] = useState(-1);
 	const [isPressed, setIsPressed] = useState(false);
@@ -349,6 +419,19 @@ export default function Constractor() {
 		setValue(searchTerm);
 		setShowSuggestions(false);
 		console.log("search", searchTerm);
+	};
+
+	const getTag = (type: number[], style: number[]) => {
+		const tag: string[] | undefined = [];
+		for (let i = 0; i < type.length; i++) {
+			property_type.forEach((element) => {
+				if (element.id === type[i]) tag.push(element.type_name!);
+			});
+			property_style.forEach((element) => {
+				if (element.id === style[i]) tag.push(element.style_name!);
+			});
+			return tag;
+		}
 	};
 
 	const [showSuggestions, setShowSuggestions] = useState(false);
@@ -670,18 +753,18 @@ export default function Constractor() {
 											Choose Type
 										</p>
 										<div className="flex flex-col gap-x-2 space-y-1">
-											{type.map((type, index) => (
+											{property_type.map((type, index) => (
 												<div key={index} className="">
 													<button
-														value={type.value}
-														onClick={() => handleTagClick(type.label)}
+														value={type.id}
+														onClick={() => handleTagClick(type.type_name)}
 														className={`text-[12px] hover:bg-[#E4D1BC] font-medium text-start pl-2 w-full rounded-full py-1 pr-5  hover:text-gold ${
-															selectedTags.includes(type.label)
+															selectedTags.includes(type.type_name)
 																? "bg-[#E4D1BC] text-gold"
 																: ""
 														}`}
 													>
-														{type.label}
+														{type.type_name}
 													</button>
 												</div>
 											))}
@@ -692,18 +775,18 @@ export default function Constractor() {
 											Choose Style
 										</p>
 										<div className="flex flex-col gap-x-2 space-y-1 ">
-											{style.map((style, index) => (
+											{property_style.map((style, index) => (
 												<div key={index} className="">
 													<button
-														value={style.value}
-														onClick={() => handleTagClick(style.label)}
+														value={style.id}
+														onClick={() => handleTagClick(style.style_name)}
 														className={`text-[12px] hover:bg-[#E4D1BC] text-start pl-1 font-medium w-full rounded-full py-1 pr-5  hover:text-gold ${
-															selectedTags.includes(style.label)
+															selectedTags.includes(style.style_name)
 																? "bg-[#E4D1BC] text-gold"
 																: ""
 														}`}
 													>
-														{style.label}
+														{style.style_name}
 													</button>
 												</div>
 											))}
@@ -807,12 +890,14 @@ export default function Constractor() {
 
 				<div className="max-w-max  pt-5">
 					<div className=" flex flex-grow flex-row flex-wrap justify-center gap-[1.1rem]">
-						{constractorData
+						{profile_detail
 							.slice(0, visibleItems)
 							.map((constractorData, idx) => {
 								return (
-									<Link href={constractorData.link}
-									key={idx}>
+									<Link
+										href={`/profile/?u=${constractorData.user_id.username}`}
+										key={idx}
+									>
 										<div
 											className={`relative   rounded-[1.5625rem] transition-all overflow-hidden duration-300 h-[21rem] w-[15.46875rem]`}
 											onMouseEnter={() => {
@@ -824,15 +909,17 @@ export default function Constractor() {
 												setIndex(-1);
 											}}
 										>
-											<div className="relative h-full w-full flex-auto">
-												<Image
-													className="rounded-3xl"
-													src={constractorData.img}
-													alt={""}
-													fill={true}
-													style={{ objectFit: "cover" }}
-												/>
-											</div>
+											{
+												<div className="relative h-full w-full flex-auto">
+													<Image
+														className="rounded-3xl"
+														src={constractorData.user_id.avatar_url!}
+														alt={""}
+														fill={true}
+														style={{ objectFit: "cover" }}
+													/>
+												</div>
+											}
 											<motion.div
 												animate={{ opacity: hover && index == idx ? 1 : 0 }}
 												transition={{ ease: "easeIn", duration: 0.2 }}
@@ -866,13 +953,13 @@ export default function Constractor() {
 																	: " text-[0.875rem] text-black truncate px-4 w-[13.125rem]"
 															}`}
 														>
-															{constractorData.nama}
+															{constractorData.user_id.first_name}
 														</p>
 													</span>
 													{hover && index == idx && (
 														<span className="flex   items-center space-x-1 font-semibold">
 															<p className=" text-[0.9375rem] mt-[0.06rem]  text-black">
-																{constractorData.follower}
+																{constractorData.follower_count}
 															</p>
 															<div className=" w-[0.875rem] h-[0.6875rem]  ">
 																<svg
@@ -917,10 +1004,10 @@ export default function Constractor() {
 												{hover && index == idx && (
 													<div className="-pt-2 mb-2 space-y-1">
 														<p className="text-[0.75rem]">
-															{constractorData.city}
+															{constractorData.city.kabupaten}
 														</p>
 														<ShowRating
-															rate={constractorData.rating}
+															rate={4}
 														></ShowRating>
 													</div>
 												)}
@@ -933,16 +1020,22 @@ export default function Constractor() {
 										}
                     `}
 												>
-													{constractorData.tag.slice(0, 2).map((tag, idx) => {
-														return (
-															<div
-																key={idx}
-																className="transition-all duration-300 rounded-full border-[#B17C3F] border-[0.0001rem] px-2"
-															>
-																<p className="font-medium">{tag}</p>
-															</div>
-														);
-													})}
+													
+													{getTag(
+														constractorData?.property_type!,
+														constractorData?.property_style!,
+													)
+														.slice(0, 2)
+														.map((tag, idx) => {
+															return (
+																<div
+																	key={idx}
+																	className="transition-all duration-300 rounded-full border-[#B17C3F] border-[0.0001rem] px-2"
+																>
+																	<p className="font-medium">{tag}</p>
+																</div>
+															);
+														})}
 												</div>
 											</motion.div>
 										</div>
@@ -964,7 +1057,6 @@ export default function Constractor() {
 					</motion.button>
 				)}
 			</div>
-			<Footer></Footer>
 		</div>
 	);
 }
