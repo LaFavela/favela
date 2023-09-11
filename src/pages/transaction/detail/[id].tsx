@@ -188,7 +188,7 @@ export default function DetailTransaction({
 		const pay = [] as any;
 		if (status)
 			status.map((item) => {
-				if (item.payment > 0) {
+				if (item?.payment! > 0) {
 					const temp = {
 						phase: item.title,
 						price: item.payment as number,
