@@ -264,7 +264,6 @@ export default function Profile({
 	const [property_type, setProperty_type] = useState<Property_type[]>([]);
 	const [property_style, setProperty_style] = useState<Property_style[]>([]);
 
-
 	const [session, setSession] = useState<string>();
 	useEffect(() => {
 		const fetch = async () => {
@@ -641,7 +640,12 @@ export default function Profile({
 															</p>
 														</button>
 													) : (
-														<button className="flex gap-2 rounded-full border border-gold bg-white px-3 py-1 hover:bg-[#E0C8AD] hover:border-[#E0C8AD] ">
+														<button
+															className="flex gap-2 rounded-full border border-gold bg-white px-3 py-1 hover:bg-[#E0C8AD] hover:border-[#E0C8AD]"
+															onClick={() =>
+																Router.push(`/reqDesainForm?q=${profile.id}`)
+															}
+														>
 															<span className="mt-[4px]">
 																<svg
 																	width="13"
