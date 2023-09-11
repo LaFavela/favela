@@ -200,6 +200,8 @@ type Members = Database["public"]["Tables"]["member_contractor"]["Row"];
 type Education = Database["public"]["Tables"]["education"]["Row"];
 type Property_type = Database["public"]["Tables"]["property_type"]["Row"];
 type Property_style = Database["public"]["Tables"]["property_style"]["Row"];
+type Transaction = Database["public"]["Tables"]["transaction"]["Row"];
+type Contributor = Database["public"]["Tables"]["transaction_contributor"]["Row"];
 
 export default function Profile({
 	profile,
@@ -277,6 +279,8 @@ export default function Profile({
 			// komen bentar bang error soalnya bang
 			if (property_style) setProperty_style(property_style);
 
+
+			
 			const { data: property_type } = await supabase
 				.from("property_type")
 				.select("*")
@@ -1328,6 +1332,9 @@ interface transactionListProps {
 	handleContractorPick: (value: any) => void;
 }
 export function TransactionList(props: transactionListProps) {
+
+
+
 	function useOutsideAlerter(ref: any) {
 		useEffect(() => {
 			function handleClickOutside(event: any) {
