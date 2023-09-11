@@ -201,7 +201,9 @@ type Education = Database["public"]["Tables"]["education"]["Row"];
 type Property_type = Database["public"]["Tables"]["property_type"]["Row"];
 type Property_style = Database["public"]["Tables"]["property_style"]["Row"];
 type Transaction = Database["public"]["Tables"]["transaction"]["Row"];
-type Contributor = Database["public"]["Tables"]["transaction_contributor"]["Row"];
+type Contributor =
+	Database["public"]["Tables"]["transaction_contributor"]["Row"];
+type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
 export default function Profile({
 	profile,
@@ -266,11 +268,20 @@ export default function Profile({
 	const [property_type, setProperty_type] = useState<Property_type[]>([]);
 	const [property_style, setProperty_style] = useState<Property_style[]>([]);
 
-	const [session, setSession] = useState<string>();
+	const [session, setSession] = useState<Profile>();
 	useEffect(() => {
 		const fetch = async () => {
-			const data = await supabase.rpc("get_current_user_id");
-			if (data && data.data) setSession(data.data);
+			const user = await (await supabase.auth.getUser()).data.user?.id;
+			const { data: username, error: username_error } = await supabase
+				.from("profiles")
+				.select("*")
+				.eq("id", user)
+				.returns<Profile>()
+				.single();
+			console.log(username, username_error);
+			if (username) {
+				setSession(username);
+			}
 			const { data: property_style } = await supabase
 				.from("property_style")
 				.select("*")
@@ -278,8 +289,6 @@ export default function Profile({
 			// komen bentar bang error soalnya bang
 			if (property_style) setProperty_style(property_style);
 
-
-			
 			const { data: property_type } = await supabase
 				.from("property_type")
 				.select("*")
@@ -554,7 +563,7 @@ export default function Profile({
 													</p>
 												</div>
 											)}
-											{session !== profile?.id && (
+											{session?.username !== profile?.username && (
 												<div className="mt-3 flex gap-3">
 													{follower.find((item) => item === userVisitor.id) ? (
 														<AnimatePresence>
@@ -1336,9 +1345,6 @@ interface transactionListProps {
 	handleContractorPick: (value: any) => void;
 }
 export function TransactionList(props: transactionListProps) {
-
-
-
 	function useOutsideAlerter(ref: any) {
 		useEffect(() => {
 			function handleClickOutside(event: any) {

@@ -1020,12 +1020,11 @@ export default function Constractor() {
 										}
                     `}
 												>
-													
 													{getTag(
 														constractorData?.property_type!,
 														constractorData?.property_style!,
 													)
-														.slice(0, 2)
+														?.slice(0, 2)
 														.map((tag, idx) => {
 															return (
 																<div
