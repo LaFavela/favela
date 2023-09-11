@@ -6,10 +6,10 @@ import InputPopUp from "@/components/popUpInput";
 import CloseIcon from "@mui/icons-material/Close";
 import Dropdown from "@/components/dropdwon";
 import InputBoxForm from "@/components/inpuBoxForm";
-import { properti } from "./designProduct";
 import { supabase } from "@/lib/supabase";
 import { v4 } from "uuid";
 import { set } from "react-hook-form";
+import { useRouter } from "next/router";
 
 export default function SellDesignForm() {
 	const inputRef = useRef<HTMLInputElement>(null);
@@ -25,6 +25,7 @@ export default function SellDesignForm() {
 	const [provinsiData, setProvinsiData] = useState<Dropdown[]>([]);
 	const [kotaData, setKotaData] = useState<Dropdown[]>([]);
 	const [propertyTypeData, setPropertyTypeData] = useState<Dropdown[]>([]);
+	const [propertyStyleData, setPropertySyleData] = useState<Dropdown[]>([]);
 
 	useEffect(() => {
 		const init = async () => {
@@ -49,6 +50,18 @@ export default function SellDesignForm() {
 				});
 			});
 			setPropertyTypeData(propertyTypeData);
+
+			const { data: property_style } = await supabase
+				.from("property_style")
+				.select("*");
+			let propertyStyleData: Dropdown[] = [];
+			property_style?.forEach((item) => {
+				propertyStyleData.push({
+					value: item.id,
+					label: item.style_name as string,
+				});
+			});
+			setPropertySyleData(propertyStyleData);
 		};
 		init();
 	}, []);
@@ -105,13 +118,14 @@ export default function SellDesignForm() {
 		}
 	};
 
+	const [designName, setDesignName] = useState("");
 	const [province, setProvince] = useState<number>(NaN);
 	const [city, setCity] = useState<number>(NaN);
-	const [landSize, setLandSize] = useState(0);
-	const [landShape, setLandShape] = useState(0);
-	const [budget, setBudget] = useState(0);
+	const [landSize, setLandSize] = useState("");
+	const [landShape, setLandShape] = useState("");
+	const [budget, setBudget] = useState("");
 	const [propertyType, setPropertyType] = useState<number>(NaN);
-	const [style, setStyle] = useState("");
+	const [style, setStyle] = useState<number>(NaN);
 	const [sunOrientation, setSunOrientation] = useState("");
 	const [windOrientation, setWindOrientation] = useState("");
 	const [additionalInformation, setAdditionalInformation] = useState("");
@@ -142,6 +156,9 @@ export default function SellDesignForm() {
 	const handleChangeLandSize = (event: any) => {
 		setLandSize(event.target.value);
 	};
+	const handleChangeDesignName = (event: any) => {
+		setDesignName(event.target.value);
+	};
 	const handleChangeLandShape = (event: any) => {
 		setLandShape(event.target.value);
 	};
@@ -152,7 +169,7 @@ export default function SellDesignForm() {
 		setPropertyType(event);
 	};
 	const handleChangeStyle = (event: any) => {
-		setStyle(event.target.value);
+		setStyle(event);
 	};
 	const handleChangeSunOrientation = (event: any) => {
 		setSunOrientation(event.target.value);
@@ -166,10 +183,11 @@ export default function SellDesignForm() {
 	const handleChangeDeadline = (event: any) => {
 		setDeadline(event.target.value);
 	};
+	
+	const router = useRouter();
 
 	const handleSubmit = async (event: any) => {
 		event.preventDefault();
-
 		const uuid = v4();
 		const landData: string[] = [];
 		const awaitLand = await Promise.all(
@@ -206,14 +224,12 @@ export default function SellDesignForm() {
 			setReferenceImage(referenceData);
 		});
 
-		console.log(ReferenceImage);
-
-		const { data: request } = await supabase
+		const { data: request, error } = await supabase
 			.from("request_form")
 			.insert([
 				{
-					budget: budget,
-					land_size: landSize,
+					budget: parseInt(budget),
+					land_size: parseInt(landSize),
 					city: city,
 					deadline: deadline,
 					land_image: LandImage,
@@ -221,13 +237,17 @@ export default function SellDesignForm() {
 					property_type: propertyType,
 					province: province,
 					reference_image: ReferenceImage,
-					style: style,
+					property_style: style,
 					sun_orientation: sunOrientation,
 					wind_orientation: windOrientation,
+					land_shape: landShape,
+					design_name: designName,
 				},
 			])
 			.select()
 			.single();
+
+		console.log(request, error);
 
 		const mappedFacilities = await Promise.all(
 			facilities.map(async (item) => {
@@ -243,6 +263,60 @@ export default function SellDesignForm() {
 					.select();
 			}),
 		);
+
+		const property_type = [
+			{ id: 1, type_name: "Villa" },
+			{ id: 2, type_name: "House" },
+			{ id: 3, type_name: "Condominium" },
+			{ id: 4, type_name: "Apartement" },
+		];
+
+		const getTypeTag = (type: number) => {
+			let tag: string | undefined = "";
+			if (type === 1) tag = "Villa";
+			else if (type === 2) tag = "House";
+			else if (type === 3) tag = "Condominium";
+			else if (type === 4) tag = "Apartement";
+			return tag;
+		};
+
+		const idRequest:string = router.query.q as string;
+
+		const { data: transaction, error: transaction_error } = await supabase
+			.from("transaction")
+			.insert([
+				{
+					request_form_id: request?.id,
+					img: request?.reference_image[0],
+					price_estimated: request?.budget,
+					status: "PENDING",
+					name: request?.design_name,
+					property_type: getTypeTag(request?.property_type!),
+				},
+			])
+			.select()
+			.single();
+
+		const user_id = (await supabase.auth.getSession()).data.session?.user.id;
+		console.log(user_id);
+		console.log(transaction?.id)
+		console.log(idRequest)
+		
+		const { data: contribution, error: contribution_error } = await supabase
+			.from("transaction_contributor")
+			.insert([
+				{
+					client_id: user_id!,
+					transaction_id: transaction?.id!,
+					designer_id: idRequest,
+				},
+			])
+			.select();
+			
+		console.log(contribution, contribution);
+		
+
+		// F
 	};
 
 	const handleAddFacilities = () => {
@@ -312,7 +386,7 @@ export default function SellDesignForm() {
 	return (
 		<div>
 			<div>
-				<div className="container relative mx-auto mt-20 flex h-10 max-w-[1320px] justify-between">
+				<div className="container relative mx-auto mt-20 flex max-w-[1320px] justify-between">
 					<div className=" container relative max-w-[884px] ">
 						<form onSubmit={handleSubmit}>
 							<p className="text-[20px] font-medium ml-1">Request Desain</p>
@@ -321,6 +395,14 @@ export default function SellDesignForm() {
 									<p className="text-[15px] font-semibold text-gold">
 										General Information
 									</p>
+									<InputBoxForm
+										form="designForm"
+										type="text"
+										title="Design Name"
+										value={designName}
+										// placeholder="Design Name"
+										onChange={handleChangeDesignName}
+									></InputBoxForm>
 									<Dropdown
 										form="ReqDesainForm"
 										styleClass="text-gold flex gap-[120px] mt-2 w-full pr-7"
@@ -344,12 +426,13 @@ export default function SellDesignForm() {
 
 									<InputBoxForm
 										form="designForm"
-										type="text"
+										type="number"
 										title="Land Size"
 										value={landSize}
 										// placeholder="Design Name"
 										onChange={handleChangeLandSize}
 									></InputBoxForm>
+
 									<InputBoxForm
 										form="designForm"
 										type="text"
@@ -487,15 +570,16 @@ export default function SellDesignForm() {
 										placehoder="Select Property Type"
 										onChange={handleChangePropertyType}
 									></Dropdown>
-									<InputBoxForm
-										className=""
-										form="designForm"
-										type="text"
-										title="Style "
+									<Dropdown
+										styleClass="text-gold flex gap-[42px] mt-2 w-full pr-7"
+										styleClassTag="border-2 border-gold rounded-[7px] w-full"
+										styleText="w-[193px]"
+										title="Property Style"
+										data={propertyStyleData}
 										value={style}
-										// placeholder="Design Name"
+										placehoder="Select Property Type"
 										onChange={handleChangeStyle}
-									></InputBoxForm>
+									></Dropdown>
 
 									<div className="mt-5 flex ">
 										<p className="text-gold">References</p>
@@ -724,9 +808,9 @@ export default function SellDesignForm() {
 							<div className="pb-20 justify-end w-full flex">
 								<button
 									type="submit"
-									className="bg-gold rounded-full py-3 px-7 text-white text-[15px] hover:bg-goldhov "
+									className="bg-gold rounded-xl py-2 px-7 text-white text-[15px] hover:bg-goldhov "
 								>
-									Save
+									Send
 								</button>
 							</div>
 							{/* </Link> */}
@@ -736,17 +820,15 @@ export default function SellDesignForm() {
 					<div className="container max-w-[400px]">
 						<div className="mb-10 w-full rounded-3xl bg-white drop-shadow-landingShado mt-14">
 							<div className="px-7 py-6">
-								<p className="text-[17px] font-medium">Lorem Ipsum</p>
+								<p className="text-[17px] font-medium mb-2">Request Design</p>
 								<p className="text-[15px]">
-									Morbi lobortis aliquet nisl. Lorem ipsum dolor sit amet,
-									consectetur adipiscing elit. Pellentesque maximus felis id
-									varius imperdiet. Donec condimentum bibendum tempus. Proin ac
-									massa non felis ultricies varius eget ut est. Aliquam
-									scelerisque velit in lorem pellentesque, a vulputate dolor
-									accumsan. Nulla tortor ipsum, placerat eget risus ut, sagittis
-									tincidunt lectus. Donec in dui erat. Duis eu risus tristique,
-									rhoncus erat et, iaculis elit. Mauris id suscipit libero, id
-									fringilla nisi. Duis a vestibulum est.
+									The design request feature on a website is a tool that allows
+									users to submit their project design requests to architects or
+									designers. With this feature, users can easily communicate
+									their needs, fill in project details, and expect a response
+									from design professionals, which helps facilitate efficient
+									collaboration and ensure that the design project better
+									reflects the users vision and expectations.
 								</p>
 							</div>
 						</div>
