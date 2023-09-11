@@ -274,6 +274,27 @@ export default function Design({}: InferGetServerSidePropsType<
 		console.log("search", searchTerm);
 	};
 
+	useEffect(() => {
+		// router.replace(
+		// 	{
+		// 		query: { ...router.query, style: selectedStyleTag, type: selectedTags },
+		// 	},
+		// 	undefined,
+		// 	{ shallow: true },
+		// );
+		const fetch = async () => {
+			let { data: design, error } = await supabase
+				.from("design")
+				.select("*")
+				// .or(
+				// 	`and(property_style.cs.{${selectedStyleTag}},property_type.cs.{${selectedTags}})`,
+				// );
+			console.log(design, error);
+			if (design) setDesign(design);
+		};
+		fetch();
+	}, [selectedTags]);
+
 	return (
 		<div>
 			<div className="container mx-auto mt-10 max-w-[1314px]">
@@ -591,18 +612,18 @@ export default function Design({}: InferGetServerSidePropsType<
 											Choose Type
 										</p>
 										<div className="flex flex-col gap-x-2 space-y-1">
-											{type.map((type, index) => (
+											{property_type.map((type, index) => (
 												<div key={index} className="">
 													<button
-														value={type.value}
-														onClick={() => handleTagClick(type.value)}
+														value={type.id}
+														onClick={() => handleTagClick(type.type_name)}
 														className={`text-[12px] hover:bg-[#E4D1BC] font-medium text-start pl-2 w-full rounded-full py-1 pr-5  hover:text-gold ${
-															selectedTags.includes(type.value)
+															selectedTags.includes(type.type_name)
 																? "bg-[#E4D1BC] text-gold"
 																: ""
 														}`}
 													>
-														{type.label}
+														{type.type_name}
 													</button>
 												</div>
 											))}
@@ -613,18 +634,18 @@ export default function Design({}: InferGetServerSidePropsType<
 											Choose Style
 										</p>
 										<div className="flex flex-col gap-x-2 space-y-1 ">
-											{style.map((style, index) => (
+											{property_style.map((style, index) => (
 												<div key={index} className="">
 													<button
-														value={style.value}
-														onClick={() => handleTagClick(style.value)}
+														value={style.id}
+														onClick={() => handleTagClick(style.style_name)}
 														className={`text-[12px] hover:bg-[#E4D1BC] text-start pl-1 font-medium w-full rounded-full py-1 pr-5  hover:text-gold ${
-															selectedTags.includes(style.value)
+															selectedTags.includes(style.style_name)
 																? "bg-[#E4D1BC] text-gold"
 																: ""
 														}`}
 													>
-														{style.label}
+														{style.style_name}
 													</button>
 												</div>
 											))}
@@ -673,113 +694,112 @@ export default function Design({}: InferGetServerSidePropsType<
 					<div className=" flex flex-grow flex-row flex-wrap justify-center gap-[1.1rem]">
 						{design.slice(0, visibleItems).map((designerData, idx) => {
 							return (
-								<Link 
-								key={idx} href={`/design/${designerData.id}`}>
-								<div
-									className={`relative rounded-[1.5625rem] transition-all overflow-hidden duration-300 h-[21rem] w-[15.46875rem]`}
-									onMouseEnter={() => {
-										setHover(true);
-										setIndex(idx);
-									}}
-									onMouseLeave={() => {
-										setHover(false);
-										setIndex(-1);
-									}}
-								>
-									<div className="relative h-full w-full flex-auto">
-										<Image
-											className="rounded-3xl"
-											src={
-												designerData.preview_image !== null
-													? designerData.preview_image[0]
-													: "https://via.placeholder.com/400"
-											}
-											alt={""}
-											fill={true}
-											style={{ objectFit: "cover" }}
-										/>
-									</div>
-									<motion.div
-										animate={{ opacity: hover && index == idx ? 1 : 0 }}
-										transition={{ ease: "easeIn", duration: 0.2 }}
-										className={` ${
-											hover && index == idx
-												? "absolute top-0 h-full w-full bg-[#00000035]"
-												: ""
-										}`}
-									></motion.div>
-									<motion.div
-										layout
-										transition={{ duration: 0.2 }}
-										className={` rounded-t-[1.5625rem]  text-[#4B4B4B]  ${
-											hover && index == idx
-												? "p-6 absolute bottom-0  w-full bg-[#ffffffe7]"
-												: "p-2 space-y-1 absolute bottom-0 w-full bg-[#ffffffc0]"
-										}`}
+								<Link key={idx} href={`/design/${designerData.id}`}>
+									<div
+										className={`relative rounded-[1.5625rem] transition-all overflow-hidden duration-300 h-[21rem] w-[15.46875rem]`}
+										onMouseEnter={() => {
+											setHover(true);
+											setIndex(idx);
+										}}
+										onMouseLeave={() => {
+											setHover(false);
+											setIndex(-1);
+										}}
 									>
-										<div
-											className={`flex   ${
+										<div className="relative h-full w-full flex-auto">
+											<Image
+												className="rounded-3xl"
+												src={
+													designerData.preview_image !== null
+														? designerData.preview_image[0]
+														: "https://via.placeholder.com/400"
+												}
+												alt={""}
+												fill={true}
+												style={{ objectFit: "cover" }}
+											/>
+										</div>
+										<motion.div
+											animate={{ opacity: hover && index == idx ? 1 : 0 }}
+											transition={{ ease: "easeIn", duration: 0.2 }}
+											className={` ${
 												hover && index == idx
-													? "justify-between items-start"
-													: "justify-center items-center text-center"
+													? "absolute top-0 h-full w-full bg-[#00000035]"
+													: ""
+											}`}
+										></motion.div>
+										<motion.div
+											layout
+											transition={{ duration: 0.2 }}
+											className={` rounded-t-[1.5625rem]  text-[#4B4B4B]  ${
+												hover && index == idx
+													? "p-6 absolute bottom-0  w-full bg-[#ffffffe7]"
+													: "p-2 space-y-1 absolute bottom-0 w-full bg-[#ffffffc0]"
 											}`}
 										>
-											<span className="flex flex-col space-y-2">
-												<p
-													className={`align-middle  font-semibold ${
-														hover && index == idx
-															? " text-[#4B4B4B] text-[1.0625rem]"
-															: " text-[0.875rem] text-black truncate px-4 w-[13.125rem]"
-													}`}
-												>
-													{designerData.name !== null
-														? designerData.name
-														: "No Name"}
-												</p>
-											</span>
-											{hover && index == idx && (
-												<span className="flex   items-center space-x-1 font-semibold">
-													<p className=" text-[0.9375rem] mt-[0.150rem]  text-black">
-														{"Rp" + calculate(designerData.price)}
+											<div
+												className={`flex   ${
+													hover && index == idx
+														? "justify-between items-start"
+														: "justify-center items-center text-center"
+												}`}
+											>
+												<span className="flex flex-col space-y-2">
+													<p
+														className={`align-middle  font-semibold ${
+															hover && index == idx
+																? " text-[#4B4B4B] text-[1.0625rem]"
+																: " text-[0.875rem] text-black truncate px-4 w-[13.125rem]"
+														}`}
+													>
+														{designerData.name !== null
+															? designerData.name
+															: "No Name"}
 													</p>
 												</span>
-											)}
-										</div>
-										{hover && index == idx && (
-											<div className="-pt-2 mb-2 space-y-1">
-												<p className="text-[0.75rem]">{}</p>
-												<ShowRating
-													rate={designerData.bedroom_count}
-												></ShowRating>
+												{hover && index == idx && (
+													<span className="flex   items-center space-x-1 font-semibold">
+														<p className=" text-[0.9375rem] mt-[0.150rem]  text-black">
+															{"Rp" + calculate(designerData.price)}
+														</p>
+													</span>
+												)}
 											</div>
-										)}
-										<div
-											className={` flex  space-x-1  text-[0.5625rem] text-[#B17C3F] 
+											{hover && index == idx && (
+												<div className="-pt-2 mb-2 space-y-1">
+													<p className="text-[0.75rem]">{}</p>
+													<ShowRating
+														rate={designerData.bedroom_count}
+													></ShowRating>
+												</div>
+											)}
+											<div
+												className={` flex  space-x-1  text-[0.5625rem] text-[#B17C3F] 
                     ${
 											hover && index == idx
 												? "justify-start"
 												: " justify-center "
 										}
                     `}
-										>
-											{getTags(
-												designerData?.property_type!,
-												designerData?.property_style!,
-											)
-												.slice(0, 2)
-												.map((tag, idx) => {
-													return (
-														<div
-															key={idx}
-															className="transition-all duration-300 rounded-full border-[#B17C3F] border-[0.0001rem] px-2"
-														>
-															<p className="font-medium">{tag}</p>
-														</div>
-													);
-												})}
-										</div>
-									</motion.div>
-								</div>
+											>
+												{getTags(
+													designerData?.property_type!,
+													designerData?.property_style!,
+												)
+													.slice(0, 2)
+													.map((tag, idx) => {
+														return (
+															<div
+																key={idx}
+																className="transition-all duration-300 rounded-full border-[#B17C3F] border-[0.0001rem] px-2"
+															>
+																<p className="font-medium">{tag}</p>
+															</div>
+														);
+													})}
+											</div>
+										</motion.div>
+									</div>
 								</Link>
 							);
 						})}
