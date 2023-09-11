@@ -315,7 +315,7 @@ export default function SellDesignForm() {
 			
 		console.log(contribution, contribution);
 		
-
+		router.push(`/transaction/`);
 		// F
 	};
 

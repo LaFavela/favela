@@ -28,7 +28,7 @@ export default function Transaction() {
 				.select("*, transaction_id(*)")
 				.or(
 					`client_id.eq.${session?.id},contractor_id.eq.${session?.id},designer_id.eq.${session?.id}`,
-				)
+				).order("created_at", { ascending: false })
 				.returns<Transactions[]>();
 			if (data) setTransactionData(data);
 		};
@@ -41,7 +41,7 @@ export default function Transaction() {
 
 	return (
 		<div className="flex justify-center">
-			<div className="mt-[2.1875rem] w-[81.875rem] space-y-[1.3125rem]">
+			<div className="mt-[2.1875rem] w-[81.875rem] min-h-screen space-y-[1.3125rem]">
 				<div>
 					<p className="text-[1.25rem] font-medium">Transaction</p>
 				</div>
