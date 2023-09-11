@@ -476,8 +476,8 @@ export default function Design({}: InferGetServerSidePropsType<
 							</div>
 
 							{/* BATAS SORT KIRI */}
-
-							<div className="mr-3 mt-2">
+												{/* Sorting Button */}
+							{/* <div className="mr-3 mt-2">
 								<motion.button
 									whileTap={{ scale: 0.85 }}
 									onClick={handleLabelClick2}
@@ -658,7 +658,7 @@ export default function Design({}: InferGetServerSidePropsType<
 										</motion.div>
 									)}
 								</AnimatePresence>
-							</div>
+							</div> */}
 						</div>
 					</div>
 					<AnimatePresence>

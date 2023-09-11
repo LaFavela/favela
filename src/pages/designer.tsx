@@ -474,7 +474,6 @@ export default function Designer({}: InferGetServerSidePropsType<
 
 	const [showSuggestions, setShowSuggestions] = useState(false);
 
-	
 	const router = useRouter();
 
 	useEffect(() => {
@@ -503,7 +502,7 @@ export default function Designer({}: InferGetServerSidePropsType<
 				)
 				.in("user_id", ids)
 				.or(
-					`and(property_style.cs.{${selectedStyleTag}},property_type.cs.{${selectedTags}})`
+					`and(property_style.cs.{${selectedStyleTag}},property_type.cs.{${selectedTags}})`,
 				)
 				.returns<Designer[]>();
 			console.log(profile_detail, error);
@@ -667,8 +666,8 @@ export default function Designer({}: InferGetServerSidePropsType<
 							</div>
 
 							{/* BATAS SORT KIRI */}
-
-							<div className="mr-3 mt-2">
+							{/* Sort Button */}
+							{/* <div className="mr-3 mt-2">
 								<motion.button
 									whileTap={{ scale: 0.85 }}
 									onClick={handleLabelClick2}
@@ -849,7 +848,7 @@ export default function Designer({}: InferGetServerSidePropsType<
 										</motion.div>
 									)}
 								</AnimatePresence>
-							</div>
+							</div> */}
 						</div>
 					</div>
 					<AnimatePresence>

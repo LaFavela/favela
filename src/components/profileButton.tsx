@@ -57,7 +57,7 @@ export default function ProfileButton() {
 
 	return (
 		<div className="flex items-center gap-5 ">
-			<NotifButton></NotifButton>
+			{/* <NotifButton></NotifButton> */}
 			<div
 				ref={wrapperRef}
 				onClick={() => {
