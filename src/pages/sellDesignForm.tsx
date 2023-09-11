@@ -263,7 +263,7 @@ export default function SellDesignForm() {
 	return (
 		<div>
 			<div>
-				<div className="container relative mx-auto mt-20 flex h-10 max-w-[1320px] justify-between">
+				<div className="container relative mx-auto mt-20 flex max-w-[1320px] justify-between">
 					<div className=" container relative max-w-[884px] ">
 						<form onSubmit={handleSubmitDesign}>
 							<p className="text-[20px] font-medium ml-1">Sell Design</p>
