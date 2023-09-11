@@ -81,7 +81,8 @@ export const getServerSideProps = async (
 	};
 };
 // const constractor = null;
-const constractor = {
+const constractor = 
+{
 	name: "Sinar Bata",
 	img: "/assets/landing/Designer3.jpg",
 	role: "Contractor",
@@ -203,6 +204,7 @@ export default function DetailTransaction({
 	const handleOnCloseStatus = () => {
 		setShowStatus(false);
 	};
+	const [requestFormID, setRequestFormID] = useState("");
 	const [statustype, setStatustype] = useState("");
 	const [description, setDescription] = useState("");
 	const [title, setTitle] = useState("");
@@ -494,6 +496,8 @@ export default function DetailTransaction({
 									<div key={idx}>
 										<Progress
 											status={item}
+											setRequestFormID={setRequestFormID}
+											requestFormID={item.offer_by ? item.offer_by : ""}
 											length={status.length}
 											id={idx}
 											srcMedia={srcMedia}
@@ -533,6 +537,7 @@ export default function DetailTransaction({
 						transactionId={transactionId}
 					/>
 					<ShowDocument
+						form_id={requestFormID}
 						visible={showDocument}
 						onClose={handleOnCloseDocument}
 						setShowDocument={setShowDocument}
@@ -559,7 +564,6 @@ export default function DetailTransaction({
 					/>
 				</div>
 			</div>
-			<Footer></Footer>
 		</div>
 	);
 }
@@ -571,7 +575,8 @@ interface progressProps {
 	srcMedia: string;
 	srcContract: string;
 	extraInfo: string;
-
+	requestFormID: string;
+	setRequestFormID: (value: string) => void;
 	setSrcMedia: (value: string) => void;
 	setSrcContract: (value: string) => void;
 	setExtraInfo: (value: string) => void;
@@ -620,34 +625,68 @@ export function Progress(props: progressProps) {
 						</p>
 					</div>
 				)}
-
-				{(props.status.media != "" ||
-					props.status.contract != "" ||
-					props.status.extra_info != "") && (
-					<motion.div
-						whileTap={{ scale: 0.85 }}
-						onClick={() => {
-							props.setSrcMedia(props.status.media);
-							props.setSrcContract(props.status.contract);
-							props.setExtraInfo(props.status.extra_info);
-							props.setShowDocument(true);
-						}}
-						className="mt-2 h-fit w-fit  p-1 rounded-md hover:bg-gray-200"
-					>
-						<svg
-							width="11"
-							height="14"
-							viewBox="0 0 11 14"
-							fill="none"
-							xmlns="http://www.w3.org/2000/svg"
+				<div className="flex space-x-0 items-center">
+					{(props.status.media != "" ||
+						props.status.contract != "" ||
+						props.status.extra_info != "") && (
+						<motion.div
+							whileTap={{ scale: 0.85 }}
+							onClick={() => {
+								props.setSrcMedia(props.status.media);
+								props.setSrcContract(props.status.contract);
+								props.setExtraInfo(props.status.extra_info);
+								props.setShowDocument(true);
+							}}
+							className="mt-2 h-fit w-fit  p-1 rounded-md hover:bg-gray-200"
 						>
-							<path
-								d="M3.999 0C3.46857 0 2.95986 0.210714 2.58479 0.585786C2.20971 0.960859 1.999 1.46957 1.999 2V10C1.999 10.5304 2.20971 11.0391 2.58479 11.4142C2.95986 11.7893 3.46857 12 3.999 12H9C9.53043 12 10.0391 11.7893 10.4142 11.4142C10.7893 11.0391 11 10.5304 11 10V4.5H10.998V3.414C10.9979 3.01645 10.84 2.6352 10.559 2.354L8.645 0.439C8.3638 0.157982 7.98255 8.48813e-05 7.585 0H3.999ZM9 11H3.999C3.73378 11 3.47943 10.8946 3.29189 10.7071C3.10436 10.5196 2.999 10.2652 2.999 10V2C2.999 1.73478 3.10436 1.48043 3.29189 1.29289C3.47943 1.10536 3.73378 1 3.999 1H6.999V2.5C6.999 2.89782 7.15704 3.27936 7.43834 3.56066C7.71964 3.84196 8.10118 4 8.499 4H9.999V5.061H10V10C10 10.2652 9.89464 10.5196 9.70711 10.7071C9.51957 10.8946 9.26522 11 9 11ZM9.791 3H8.498C8.36539 3 8.23821 2.94732 8.14445 2.85355C8.05068 2.75979 7.998 2.63261 7.998 2.5V1.207L9.791 3ZM0 3C0 2.73478 0.105357 2.48043 0.292893 2.29289C0.48043 2.10536 0.734784 2 1 2V10C1 10.7956 1.31607 11.5587 1.87868 12.1213C2.44129 12.6839 3.20435 13 4 13H9C9 13.2652 8.89464 13.5196 8.70711 13.7071C8.51957 13.8946 8.26522 14 8 14H3.79C2.78483 14 1.82083 13.6007 1.11007 12.8899C0.399303 12.1792 0 11.2152 0 10.21V3Z"
-								fill="#B17C3F"
-							/>
-						</svg>
-					</motion.div>
-				)}
+							<svg
+								width="11"
+								height="14"
+								viewBox="0 0 11 14"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<path
+									d="M3.999 0C3.46857 0 2.95986 0.210714 2.58479 0.585786C2.20971 0.960859 1.999 1.46957 1.999 2V10C1.999 10.5304 2.20971 11.0391 2.58479 11.4142C2.95986 11.7893 3.46857 12 3.999 12H9C9.53043 12 10.0391 11.7893 10.4142 11.4142C10.7893 11.0391 11 10.5304 11 10V4.5H10.998V3.414C10.9979 3.01645 10.84 2.6352 10.559 2.354L8.645 0.439C8.3638 0.157982 7.98255 8.48813e-05 7.585 0H3.999ZM9 11H3.999C3.73378 11 3.47943 10.8946 3.29189 10.7071C3.10436 10.5196 2.999 10.2652 2.999 10V2C2.999 1.73478 3.10436 1.48043 3.29189 1.29289C3.47943 1.10536 3.73378 1 3.999 1H6.999V2.5C6.999 2.89782 7.15704 3.27936 7.43834 3.56066C7.71964 3.84196 8.10118 4 8.499 4H9.999V5.061H10V10C10 10.2652 9.89464 10.5196 9.70711 10.7071C9.51957 10.8946 9.26522 11 9 11ZM9.791 3H8.498C8.36539 3 8.23821 2.94732 8.14445 2.85355C8.05068 2.75979 7.998 2.63261 7.998 2.5V1.207L9.791 3ZM0 3C0 2.73478 0.105357 2.48043 0.292893 2.29289C0.48043 2.10536 0.734784 2 1 2V10C1 10.7956 1.31607 11.5587 1.87868 12.1213C2.44129 12.6839 3.20435 13 4 13H9C9 13.2652 8.89464 13.5196 8.70711 13.7071C8.51957 13.8946 8.26522 14 8 14H3.79C2.78483 14 1.82083 13.6007 1.11007 12.8899C0.399303 12.1792 0 11.2152 0 10.21V3Z"
+									fill="#B17C3F"
+								/>
+							</svg>
+						</motion.div>
+					)}
+					{props.status.offer_by != "" && (
+						<motion.div
+							whileTap={{ scale: 0.85 }}
+							onClick={() => {
+								// props.setSrcMedia(props.status.media);
+								// props.setSrcContract(props.status.contract);
+								// props.setExtraInfo(props.status.extra_info);
+								props.setRequestFormID(props.requestFormID);
+								props.setShowDocument(true);
+							}}
+							className="mt-2 h-fit w-fit flex justify-center items-center  p-1 rounded-md hover:bg-gray-200"
+						>
+							<svg
+								width="12"
+								height="12"
+								viewBox="0 0 12 12"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<g clip-path="url(#clip0_2999_1278)">
+									<path
+										d="M10.5 7.5H11.25V12H0.75V3.75H1.5V1.5H2.25V0H10.5V7.5ZM3 0.75V1.5H9V7.5H9.75V0.75H3ZM2.25 2.25V3.75H4.2832L8.0332 7.5H8.25V2.25H2.25ZM10.5 11.25V8.25H7.7168L3.9668 4.5H1.5V11.25H10.5Z"
+										fill="#339873"
+									/>
+								</g>
+								<defs>
+									<clipPath id="clip0_2999_1278">
+										<rect width="12" height="12" fill="white" />
+									</clipPath>
+								</defs>
+							</svg>
+						</motion.div>
+					)}
+				</div>
 			</div>
 		</div>
 	);
@@ -796,7 +835,9 @@ export function Action(props: actionProps) {
 						) : props.status[props.status.length - 1].isPaid ? (
 							<p className="text-[0.8rem] text-[#4B4B4B]">Paid</p>
 						) : (
-							<p className="text-[0.8rem] text-[#4B4B4B]">Waiting For Payment to be Paid</p>
+							<p className="text-[0.8rem] text-[#4B4B4B]">
+								Waiting For Payment to be Paid
+							</p>
 						))}
 					{props.status[props.status.length - 1].action_type.find(
 						(item) => item == "Finish Project",
@@ -1470,12 +1511,14 @@ interface documentProps {
 	srcMedia: string;
 	srcContract: string;
 	extraInfo: string;
+	form_id: string;
 
 	setSrcMedia: (value: string) => void;
 	setSrcContract: (value: string) => void;
 	setExtraInfo: (value: string) => void;
 }
 
+type Request_Form = Database["public"]["Tables"]["request_form"]["Row"];
 export function ShowDocument(props: documentProps) {
 	function useOutsideAlerter(ref: any) {
 		useEffect(() => {
@@ -1490,6 +1533,18 @@ export function ShowDocument(props: documentProps) {
 			};
 		}, [ref]);
 	}
+	const [requestForm, setRequestForm] = useState<Request_Form>();
+	useEffect(() => {
+		const fetch = async () => {
+			const { data: req_form } = await supabase
+				.from("request_form")
+				.select("*")
+				.eq("id", props.form_id)
+				.single();
+			if (req_form) setRequestForm(req_form);
+		};
+		if (props.form_id != "") fetch();
+	});
 	const wrapperRef = useRef(null);
 	useOutsideAlerter(wrapperRef);
 
@@ -1518,39 +1573,188 @@ export function ShowDocument(props: documentProps) {
 		<div>
 			{props.visible && (
 				<div className="fixed h-screen w-screen left-0 flex justify-center items-center">
-					<motion.div
-						initial={{ scale: 0.9, opacity: 0 }}
-						animate={{ scale: 1, opacity: 1 }}
-						ref={wrapperRef}
-						className="flex space-y-6 flex-col items-center justify-center   bg-white rounded-[1.5625rem] w-[34.5625rem] overflow-hidden  drop-shadow-landingShado"
-					>
-						<div className="h-[3rem] w-full border-b flex  items-center">
-							<p className=" ml-8">Additional Information</p>
-						</div>
+					{props.form_id != "" ? (
+						<motion.div
+							initial={{ scale: 0.9, opacity: 0 }}
+							animate={{ scale: 1, opacity: 1 }}
+							ref={wrapperRef}
+							className="flex space-y-6 flex-col items-center   bg-white rounded-[1.5625rem] w-[40rem] overflow-hidden  drop-shadow-landingShado"
+						>
+							<div className="h-[3rem] w-full border-b flex  items-center">
+								<p className=" ml-8">Project Request</p>
+							</div>
+							<div className="flex flex-col items-start w-full ml-16 space-y-1 -mt-5">
+								<div className="flex space-x-2">
+									<p className="text-gold text-[0.8rem] flex items-center">
+										Design Name:
+									</p>
+									<p className="flex items-center text-[0.8rem]">
+										{requestForm?.design_name}
+									</p>
+								</div>
+								<div className="flex space-x-2">
+									<p className="text-gold text-[0.8rem] flex items-center">
+										Property Type:
+									</p>
+									<p className="flex items-center text-[0.8rem]">
+										{requestForm?.property_type}
+									</p>
+								</div>
+								<div className="flex space-x-2">
+									<p className="text-gold text-[0.8rem] flex items-center">
+										Property Style:
+									</p>
+									<p className="flex items-center text-[0.8rem]">
+										{requestForm?.property_style}
+									</p>
+								</div>
+								{/* <div className="flex space-x-2">
+									<p className="text-gold text-[0.8rem] flex items-center">
+										Fasilities:
+									</p>
+									<p className="flex items-center text-[0.8rem]">
+										{requestForm?.}
+									</p>
+								</div> */}
+								<div className="flex space-x-2">
+									<p className="text-gold text-[0.8rem] flex items-center">
+										Location:
+									</p>
+									<p className="flex items-center text-[0.8rem]">
+										{requestForm?.city + " " + requestForm?.province}
+									</p>
+								</div>
+								<div className="flex space-x-2">
+									<p className="text-gold text-[0.8rem] flex items-center">
+										Land Size:
+									</p>
+									<p className="flex items-center text-[0.8rem]">
+										{requestForm?.land_size + " m2"}
+									</p>
+								</div>
+								<div className="flex space-x-2">
+									<p className="text-gold text-[0.8rem] flex items-center">
+										Land Shape:
+									</p>
+									<p className="flex items-center text-[0.8rem]">
+										{requestForm?.land_shape}
+									</p>
+								</div>
+								<div className="flex space-x-2">
+									<p className="text-gold text-[0.8rem] flex items-center">
+										Sun Orientaton:
+									</p>
+									<p className="flex items-center text-[0.8rem]">
+										{requestForm?.sun_orientation}
+									</p>
+								</div>
+								<div className="flex space-x-2">
+									<p className="text-gold text-[0.8rem] flex items-center">
+										Wind Orientation:
+									</p>
+									<p className="flex items-center text-[0.8rem]">
+										{requestForm?.wind_orientation}
+									</p>
+								</div>
+								<div className="flex space-x-2">
+									<p className="text-gold text-[0.8rem] flex items-center">
+										More Information:
+									</p>
+									<p className="flex items-center text-[0.8rem]">
+										{requestForm?.information}
+									</p>
+								</div>
+								<div className="flex space-x-2">
+									<p className="text-gold text-[0.8rem] flex items-center">
+										Budget:
+									</p>
+									<p className="flex items-center text-[0.8rem]">
+										{"Rp" +
+											Number(requestForm?.budget).toLocaleString("en-Us") +
+											".00"}
+									</p>
+								</div>
+								<div className="flex space-x-2">
+									<p className="text-gold text-[0.8rem] flex items-center">
+										Deadline:
+									</p>
+									<p className="flex items-center text-[0.8rem]">
+										{requestForm?.deadline}
+									</p>
+								</div>
+								<div className="flex flex-col">
+									<p className="text-gold text-[0.8rem] flex items-center">
+										Land Image:
+									</p>
+									<div className="flex justify-center items-center space-x-2 overflow-hidden">
+										{requestForm?.land_image.map((
+											image, index) => (
+											<div key={index} className="relative w-24 h-24">
+												<Image 
+												src={image} alt="" 
+												fill={true} 
+												objectFit={"cover"}
+												/>
+											</div>
+										))}
+									</div>
+								</div>
+								<div className="flex flex-col">
+									<p className="text-gold text-[0.8rem] flex items-center">
+										Reference Image:
+									</p>
+									<div className="flex justify-center items-center space-x-2 overflow-hidden">
+										{requestForm?.reference_image.map((image, index) => (
+											<div key={index} className="relative w-24 h-24">
+												<Image 
+												src={image} alt="" 
+												fill={true} 
+												objectFit={"cover"}
+												/>
+											</div>
+										))}
+									</div>
+								</div>
+								
+							</div>
 
-						<p className="text-[0.75rem] w-[29.9375rem] break-all">
-							{props.extraInfo}
-						</p>
-						<div className="flex space-x-4">
-							{props.srcMedia != "" && (
-								<button
-									onClick={handleDownloadMedia}
-									className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]"
-								>
-									Download Media
-								</button>
-							)}
-							{props.srcContract != "" && (
-								<button
-									onClick={handleDownloadContract}
-									className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]"
-								>
-									Download Contract
-								</button>
-							)}
-						</div>
-						<div className="h-10px w-full border-t"></div>
-					</motion.div>
+							<div className="h-10px w-full border-t"></div>
+						</motion.div>
+					) : (
+						<motion.div
+							initial={{ scale: 0.9, opacity: 0 }}
+							animate={{ scale: 1, opacity: 1 }}
+							ref={wrapperRef}
+							className="flex space-y-6 flex-col items-center justify-center   bg-white rounded-[1.5625rem] w-[45rem] overflow-hidden  drop-shadow-landingShado"
+						>
+							<div className="h-[3rem] w-full border-b flex  items-center">
+								<p className=" ml-8">Additional Information</p>
+							</div>
+
+							<p className="text-[0.75rem] w-[29.9375rem] break-all">
+								{props.extraInfo}
+							</p>
+							<div className="flex space-x-4">
+								{props.srcMedia != "" && (
+									<button
+										onClick={handleDownloadMedia}
+										className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]"
+									>
+										Download Media
+									</button>
+								)}
+								{props.srcContract != "" && (
+									<button
+										onClick={handleDownloadContract}
+										className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]"
+									>
+										Download Contract
+									</button>
+								)}
+							</div>
+							<div className="h-10px w-full border-t"></div>
+						</motion.div>
+					)}
 				</div>
 			)}
 		</div>
