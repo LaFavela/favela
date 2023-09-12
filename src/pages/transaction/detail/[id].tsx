@@ -740,10 +740,27 @@ export function Action(props: actionProps) {
 			.update({ isConfirmed: true })
 			.eq("id", tempStatus[tempStatus.length - 1].id)
 			.select();
-		const { data: approved, error: approved_error } = await supabase
-			.from("transaction_status")
-			.insert({ title: "Project Has Been Approved", description: "The Project Has Been Approved By Designer", transaction_id: tempStatus[tempStatus.length - 1].transaction_id})
-		console.log(approved, approved_error);
+		if (
+			!tempStatus[tempStatus.length - 1].offer_by ||
+			tempStatus[tempStatus.length - 1].offer_by != ""
+		) {
+			const { data: approved, error: approved_error } = await supabase
+				.from("transaction_status")
+				.insert({
+					title: "Project Has Been Approved",
+					description: "The Project Has Been Approved By Designer",
+					transaction_id: tempStatus[tempStatus.length - 1].transaction_id,
+				});
+			const { data: channel, error: channel_error } = await supabase
+				.from("channel")
+				.insert([
+					{
+						client_id: props.transactionContributor.client_id,
+						server_id: props.transactionContributor.designer_id,
+					},
+				]);
+			console.log(approved, approved_error);
+		}
 	}
 	async function handlePayment() {
 		const tempStatus = props.status;
@@ -1258,6 +1275,11 @@ export function Update(props: updateProps) {
 		if (newStatus) {
 			props.setStatus([...props.status, newStatus]);
 			props.handlePaymentTrack();
+			// const { data: updateStatus,error } = await supabase
+			// 	.from("transaction")
+			// 	.update({ status: newStatus.title })
+			// 	.eq("id", props.transactionId);
+			// console.log(updateStatus,error)
 		}
 		props.setShowUpdate(false);
 	}
@@ -1915,6 +1937,7 @@ interface reviewProps {
 	propertyId: string | null;
 	contractorId: string | null;
 	transactionId: string | null;
+	designId: string | null;
 }
 export function Review(props: reviewProps) {
 	function useOutsideAlerter(ref: any) {

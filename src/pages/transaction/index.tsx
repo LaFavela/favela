@@ -95,7 +95,7 @@ export default function Transaction() {
 												Status:
 											</p>
 											<p className="text-[0.75rem] font-light ">
-												{item.transaction_id.id}
+												{item.transaction_id.status}
 											</p>
 										</div>
 									</div>

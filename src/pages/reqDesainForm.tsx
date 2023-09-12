@@ -290,9 +290,10 @@ export default function SellDesignForm() {
 					request_form_id: request?.id,
 					img: request?.reference_image[0],
 					price_estimated: request?.budget,
-					status: "PENDING",
+					status: "Awaiting Approval",
 					name: request?.design_name,
 					property_type: getTypeTag(request?.property_type!),
+					type: "BUILD"
 				},
 			])
 			.select()
@@ -317,7 +318,7 @@ export default function SellDesignForm() {
 
 		console.log(contribution, contribution);
 
-		router.push(`/transaction/${transaction?.id}`);
+		router.push(`/transaction/detail/${transaction?.id}`);
 	};
 
 	const handleAddFacilities = () => {
