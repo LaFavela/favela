@@ -432,8 +432,10 @@ export default function DesignProduct({
 						</div>
 						<div className="flex place-items-end  justify-end">
 							{ session === "client" ? (
-								<Link
-									href={"/reqDesainForm"}
+								<button
+									onClick={() => {
+										Router.push(`/reqDesainForm?q=${design.created_by}`)
+									}}
 									className=" flex h-[2.066875rem] w-[6.319375rem] items-center justify-center space-x-1 rounded-full bg-[#B17C3F] hover:bg-[#cca273] text-white"
 								>
 									<svg
@@ -452,7 +454,7 @@ export default function DesignProduct({
 									</svg>
 
 									<p className="text-[0.75rem] ">Request</p>
-								</Link>) : null
+								</button>) : null
 							}
 						</div>
 					</div>

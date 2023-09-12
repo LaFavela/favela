@@ -7,6 +7,7 @@ import Popup from "reactjs-popup";
 import { motion, AnimatePresence } from "framer-motion";
 import "reactjs-popup/dist/index.css";
 import ShowRating from "../components/rating";
+import { Skeleton } from "@mui/material";
 import { type, style, province, apalah } from "@/components/tagList";
 import { supabase } from "@/lib/supabase";
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
@@ -277,10 +278,14 @@ export default function Designer({}: InferGetServerSidePropsType<
 	const [filteredCities, setFilteredCities] = useState<City[]>();
 
 	const [profiles, setProfiles] = useState<Profile[]>([]); // Initialize profiles with empty array
-	const [profile_detail, setProfile_detail] = useState<Designer[]>([]); // Initialize profile_detail with empty array
+	const [profile_detail, setProfile_detail] = useState<Designer[]>([]);
 
+	const [isLoading, setIsLoading] = useState(true);
+	// Initialize profile_detail with empty array
+	const [visibleItems, setVisibleItems] = useState(10); 
 	useEffect(() => {
 		const fetchData = async () => {
+			setIsLoading(true);
 			const { data: provinsi } = await supabase.from("provinsi").select("*");
 			const { data: kota } = await supabase.from("kabupaten_kota").select("*");
 			const { data: property_type } = await supabase
@@ -323,6 +328,7 @@ export default function Designer({}: InferGetServerSidePropsType<
 			).data;
 
 			if (profile_detail) setProfile_detail(profile_detail);
+			setIsLoading(false);
 		};
 
 		fetchData();
@@ -358,7 +364,7 @@ export default function Designer({}: InferGetServerSidePropsType<
 		setIsPressed(!isPressed);
 	};
 
-	const [visibleItems, setVisibleItems] = useState(10); // Jumlah item yang terlihat awalnya
+	// Jumlah item yang terlihat awalnya
 	const [loadCount] = useState(5); // Jumlah item yang ditambahkan setiap kali "load more" diklik
 	const loadMore = () => {
 		setVisibleItems((prevVisibleItems) => prevVisibleItems + loadCount);
@@ -474,7 +480,6 @@ export default function Designer({}: InferGetServerSidePropsType<
 
 	const [showSuggestions, setShowSuggestions] = useState(false);
 
-	
 	const router = useRouter();
 
 	useEffect(() => {
@@ -489,7 +494,7 @@ export default function Designer({}: InferGetServerSidePropsType<
 			const { data: profile } = await supabase
 				.from("profiles")
 				.select("*")
-				.filter("role_id", "eq", 3);
+				.filter("role_id", "eq", 3).limit(visibleItems);
 
 			const ids: string[] = [];
 			profile?.map((item) => {
@@ -503,7 +508,7 @@ export default function Designer({}: InferGetServerSidePropsType<
 				)
 				.in("user_id", ids)
 				.or(
-					`and(property_style.cs.{${selectedStyleTag}},property_type.cs.{${selectedTags}})`
+					`and(property_style.cs.{${selectedStyleTag}},property_type.cs.{${selectedTags}})`,
 				)
 				.returns<Designer[]>();
 			console.log(profile_detail, error);
@@ -513,23 +518,34 @@ export default function Designer({}: InferGetServerSidePropsType<
 	}, [selectedStyleTag, selectedTags, selectedRegion]);
 
 	return (
-		<div>
+		<div className="min-h-screen">
 			<div className="container mx-auto mt-10 max-w-[1314px]">
-				<div className="relative ">
-					{/* <img src="assets/build/bg.jpg" alt="" className="rounded-2xl" /> */}
-					<Image
-						src={"/assets/build/bg.jpg"}
-						alt={""}
-						width={1314}
-						height={466}
-						className="rounded-2xl"
-					></Image>
-					<div className="absolute bottom-[10rem] ml-28">
-						<p className="w-[30rem] text-[33px] font-normal text-white">
-							Find Your Dream Property Design by Consult With Designers
-						</p>
+				{isLoading ? (
+					<div className="relative  ">
+						<Skeleton
+							variant="rounded"
+							className="rounded-xl"
+							width={1314}
+							height={466}
+						/>
 					</div>
-				</div>
+				) : (
+					<div className="relative ">
+						{/* <img src="assets/build/bg.jpg" alt="" className="rounded-2xl" /> */}
+						<Image
+							src={"/assets/build/bg.jpg"}
+							alt={""}
+							width={1314}
+							height={466}
+							className="rounded-2xl"
+						></Image>
+						<div className="absolute bottom-[10rem] ml-28">
+							<p className="w-[30rem] text-[33px] font-normal text-white">
+								Find Your Dream Property Design by Consult With Designers
+							</p>
+						</div>
+					</div>
+				)}
 
 				<div className="mt-5 sticky top-[4.8rem]  z-30">
 					<div className="relative">
@@ -990,7 +1006,14 @@ export default function Designer({}: InferGetServerSidePropsType<
 				<div className="max-w-max  pt-5">
 					<div className=" flex flex-grow flex-row flex-wrap justify-center gap-[1.1rem]">
 						{profile_detail?.slice(0, visibleItems).map((designerData, idx) => {
-							return (
+							return isLoading ? (
+								<Skeleton
+									variant="rounded"
+									className="rounded-xl"
+									width={247}
+									height={336}
+								/>
+							) : (
 								<Link
 									key={idx}
 									href={`/profile?u=${designerData.user_id.username}`}
