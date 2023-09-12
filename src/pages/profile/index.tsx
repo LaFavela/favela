@@ -499,7 +499,7 @@ export default function Profile({
 											</span>
 											<p className="ml-2 text-[11px]">500 Review</p>
 										</div>
-										<div className="mt-1 flex">
+										{/* <div className="mt-1 flex">
 											<span>
 												<svg
 													width="16"
@@ -527,7 +527,7 @@ export default function Profile({
 												</svg>
 											</span>
 											<p className="ml-3 text-[11px]">500k Followers</p>
-										</div>
+										</div> */}
 										<div>
 											<p className="mt-1 text-[13px] w-[18.5rem] text-[#9C9797]">
 												{kota?.kabupaten!}, {provinsi?.provinsi!}, Indonesia
@@ -583,7 +583,7 @@ export default function Profile({
 											)}
 											{session?.username !== profile?.username && (
 												<div className="mt-3 flex gap-3">
-													{follower.find((item) => item === userVisitor.id) ? (
+													{/* {follower.find((item) => item === userVisitor.id) ? (
 														<AnimatePresence>
 															<motion.button
 																initial={{ opacity: 0, scaleX: 0.5 }}
@@ -641,7 +641,7 @@ export default function Profile({
 																Follow
 															</p>
 														</motion.button>
-													)}
+													)} */}
 
 													{role?.role_name === "contractor" ? (
 														<button
@@ -1291,7 +1291,7 @@ export default function Profile({
 
 				{/* BATAS CONTAINER */}
 
-				<div className=" container w-[400px]   drop-shadow-landingShado ml-10 ">
+				{/* <div className=" container w-[400px]   drop-shadow-landingShado ml-10 ">
 					<div className="w-full rounded-3xl bg-white pb-10 ">
 						<p className="px-8  pt-8 text-[17px]">Recomended For You</p>
 						{other.map((other, index) => (
@@ -1335,7 +1335,7 @@ export default function Profile({
 							</div>
 						))}
 					</div>
-				</div>
+				</div> */}
 				<IMGPreview
 					src={srcIMG}
 					onClose={handleOnCloseIMG}

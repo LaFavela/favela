@@ -684,7 +684,7 @@ export default function Designer({}: InferGetServerSidePropsType<
 
 							{/* BATAS SORT KIRI */}
 
-							<div className="mr-3 mt-2">
+							{/* <div className="mr-3 mt-2">
 								<motion.button
 									whileTap={{ scale: 0.85 }}
 									onClick={handleLabelClick2}
@@ -865,7 +865,7 @@ export default function Designer({}: InferGetServerSidePropsType<
 										</motion.div>
 									)}
 								</AnimatePresence>
-							</div>
+							</div> */}
 						</div>
 					</div>
 					<AnimatePresence>
@@ -1075,7 +1075,7 @@ export default function Designer({}: InferGetServerSidePropsType<
 														{designerData.user_id.last_name}
 													</p>
 												</span>
-												{hover && index == idx && (
+												{/* {hover && index == idx && (
 													<span className="flex   items-center space-x-1 font-semibold">
 														<p className=" text-[0.9375rem] mt-[0.06rem]  text-black">
 															{200}
@@ -1114,7 +1114,7 @@ export default function Designer({}: InferGetServerSidePropsType<
 															</svg>
 														</div>
 													</span>
-												)}
+												)} */}
 											</div>
 											{hover && index == idx && (
 												<div className="-pt-2 mb-2 space-y-1">
