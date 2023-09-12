@@ -1,4 +1,4 @@
-export type Json =
+﻿export type Json =
   | string
   | number
   | boolean
@@ -791,6 +791,7 @@ export interface Database {
       }
       transaction: {
         Row: {
+          contractor_request: string | null
           created_at: string
           id: string
           img: string
@@ -803,6 +804,7 @@ export interface Database {
           updated_at: string | null
         }
         Insert: {
+          contractor_request?: string | null
           created_at?: string
           id?: string
           img?: string
@@ -815,6 +817,7 @@ export interface Database {
           updated_at?: string | null
         }
         Update: {
+          contractor_request?: string | null
           created_at?: string
           id?: string
           img?: string
@@ -828,6 +831,12 @@ export interface Database {
         }
         Relationships: [
           {
+            foreignKeyName: "transaction_contractor_request_fkey"
+            columns: ["contractor_request"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "transaction_request_form_id_fkey"
             columns: ["request_form_id"]
             referencedRelation: "request_form"
@@ -840,6 +849,7 @@ export interface Database {
           client_id: string | null
           contractor_id: string | null
           created_at: string
+          design_id: string | null
           designer_id: string | null
           id: string
           transaction_id: string
@@ -848,6 +858,7 @@ export interface Database {
           client_id?: string | null
           contractor_id?: string | null
           created_at?: string
+          design_id?: string | null
           designer_id?: string | null
           id?: string
           transaction_id: string
@@ -856,6 +867,7 @@ export interface Database {
           client_id?: string | null
           contractor_id?: string | null
           created_at?: string
+          design_id?: string | null
           designer_id?: string | null
           id?: string
           transaction_id?: string
@@ -871,6 +883,12 @@ export interface Database {
             foreignKeyName: "transaction_contributor_contractor_id_fkey"
             columns: ["contractor_id"]
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transaction_contributor_design_id_fkey"
+            columns: ["design_id"]
+            referencedRelation: "design"
             referencedColumns: ["id"]
           },
           {
@@ -946,6 +964,12 @@ export interface Database {
           {
             foreignKeyName: "transaction_status_contractor_id_fkey"
             columns: ["contractor_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transaction_status_created_by_fkey"
+            columns: ["created_by"]
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
