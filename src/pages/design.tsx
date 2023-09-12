@@ -4,6 +4,7 @@ import Image from "next/image";
 import Footer from "@/components/footer";
 import React from "react";
 import Popup from "reactjs-popup";
+import { Skeleton } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
 import "reactjs-popup/dist/index.css";
 import ShowRating from "../components/rating";
@@ -298,6 +299,7 @@ export default function Design({}: InferGetServerSidePropsType<
 		tag = property_style[style - 1].style_name!;
 		return tag;
 	};
+	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		// router.replace(
@@ -307,13 +309,14 @@ export default function Design({}: InferGetServerSidePropsType<
 		// 	undefined,
 		// 	{ shallow: true },
 		// );
+		setIsLoading(true);
 		const fetch = async () => {
 			let { data: design, error } = await supabase
 				.from("design")
 				.select("*, property_type, property_style")
 				.or(
-					`and(property_style.in.{${selectedStyleTag}},property_type.cs.{${selectedTags}})`
-				)
+					`and(property_style.in.{${selectedStyleTag}},property_type.cs.{${selectedTags}})`,
+				);
 			console.log(design, error);
 			if (!design) {
 				design = (
@@ -323,27 +326,41 @@ export default function Design({}: InferGetServerSidePropsType<
 				).data;
 			}
 			if (design) setDesign(design);
+			setIsLoading(false);
 		};
 		fetch();
 	}, [selectedTags, selectedStyleTag]);
 
 	return (
 		<div>
-			<div className="container mx-auto mt-10 max-w-[1314px]">
+			<div className="container mx-auto mt-10 max-w-[1314px] min-h-screen">
 				<div className="relative w-[82.125rem] h-[29.125rem] rounded-2xl overflow-hidden  ">
 					{/* <img src="assets/build/bg.jpg" alt="" className="rounded-2xl" /> */}
 					<div className="absolute w-full h-full bg-[#00000054]"></div>
-					<Image
-						src={"/assets/build/designBg.png"}
-						alt={""}
-						width={1314}
-						height={466}
-					></Image>
-					<div className="absolute bottom-[10rem] ml-28">
-						<p className="w-[30rem] text-[33px] font-normal text-white">
-							Discover the best designs from designers
-						</p>
-					</div>
+					{isLoading ? (
+						<div className="relative  ">
+							<Skeleton
+								variant="rounded"
+								className="rounded-xl"
+								width={1314}
+								height={466}
+							/>
+						</div>
+					) : (
+						<div>
+							<Image
+								src={"/assets/build/designBg.png"}
+								alt={""}
+								width={1314}
+								height={466}
+							></Image>
+							<div className="absolute bottom-[10rem] ml-28">
+								<p className="w-[30rem] text-[33px] font-normal text-white">
+									Discover the best designs from designers
+								</p>
+							</div>
+						</div>
+					)}
 				</div>
 
 				<div className="mt-5 sticky top-[4.8rem]  z-30">
@@ -757,7 +774,14 @@ export default function Design({}: InferGetServerSidePropsType<
 				<div className="max-w-max  pt-5">
 					<div className=" flex flex-grow flex-row flex-wrap justify-center gap-[1.1rem]">
 						{design.slice(0, visibleItems).map((designerData, idx) => {
-							return (
+							return isLoading ? (
+								<Skeleton
+									variant="rounded"
+									className="rounded-xl"
+									width={247}
+									height={336}
+								/>
+							) : (
 								<Link key={idx} href={`/design/${designerData.id}`}>
 									<div
 										className={`relative rounded-[1.5625rem] transition-all overflow-hidden duration-300 h-[21rem] w-[15.46875rem]`}
@@ -839,12 +863,8 @@ export default function Design({}: InferGetServerSidePropsType<
 											)}
 											<div
 												className={` flex  space-x-1  text-[0.5625rem] text-[#B17C3F] 
-                    ${
-											hover && index == idx
-												? "justify-start"
-												: " justify-center "
-										}
-                    `}
+						${hover && index == idx ? "justify-start" : " justify-center "}
+						`}
 											>
 												{getTags(
 													designerData?.property_type!,

@@ -219,32 +219,36 @@ export default function Profile({
 	// show Project or Transaction list pop up
 	const [showTransactionList, setShowTransactionList] = useState(false);
 	const handleOnCloseTransactionList = () => setShowTransactionList(false);
-	const [transaction_data, setTransaction_data] = useState([
-		{
-			id: 1,
-			transaction_type: "Build",
-			property_name: "Rumah Mewah",
-			contractor_id: "",
-			created_at: "16 January 2023",
-		},
-		{
-			id: 1,
-			transaction_type: "Build",
-			property_name: "Rumah Mewah",
-			contractor_id: "",
-			created_at: "16 January 2023",
-		},
-	]);
-	const handleContractorPick = (transaction_id: any) => {
-		const temp = [...transaction_data];
-		const index = transaction_data.findIndex(
-			(item) => item.id === transaction_id,
-		);
-		temp[index].contractor_id = profile.id;
-		setTransaction_data(temp);
-		transaction_data.map((item) => {
-			console.log(item.contractor_id);
-		});
+	
+	const handleContractorPick = async (transaction_id: any) => {
+		
+		// const currentTransactionContributor = transaction_contributor.filter(
+		// 	(item) => item.transaction_id === transaction_id,
+		// )
+		console.log(transaction_id)
+
+		const { data: contributor, error } = await supabase
+			.from("transaction_contributor")
+			.update({
+				contractor_id: profile.id,
+			})
+			.eq("transaction_id", transaction_id)
+			.select();
+
+		console.log(contributor, error);
+		// console.log(currentTransactionContributor );
+		// const temp = [...transaction_contributor];
+		// currentTransactionContributor.con
+		
+		
+		// .findIndex(
+		// 	(item) => item.id === transaction_id,
+		// );
+		// temp[index].contractor_id = profile.id;
+		// setTransaction_data(temp);
+		// transaction_data.map((item) => {
+		// 	console.log(item.contractor_id);
+		// });
 	};
 
 	// Daftar ID Follower
@@ -260,6 +264,8 @@ export default function Profile({
 		setFollower(follower.filter((item) => item !== userVisitor.id));
 	};
 
+	const [transaction_data, setTransaction_data] = useState<Transaction[]>([]);
+	const [transaction_contributor, setTransactionContributor] = useState<Contributor[]>([]);
 	const [design, setDesign] = useState<Design[]>([]);
 	const [project, setProject] = useState<Project[]>([]);
 	const [experience, setExperience] = useState<Experience[]>([]);
@@ -288,6 +294,18 @@ export default function Profile({
 				.in("id", profile_detail?.property_style!);
 			// komen bentar bang error soalnya bang
 			if (property_style) setProperty_style(property_style);
+
+			const {data: contributor} = await supabase
+				.from("transaction_contributor")
+				.select("*")
+			if (contributor) setTransactionContributor(contributor);
+
+
+
+			const { data: transaction_data } = await supabase
+				.from("transaction")
+				.select("*")
+			if (transaction_data) setTransaction_data(transaction_data);
 
 			const { data: property_type } = await supabase
 				.from("property_type")
@@ -1340,8 +1358,7 @@ interface transactionListProps {
 	visible: boolean;
 	setShowTransactionList: (visible: boolean) => void;
 	onClose: () => void;
-
-	transaction_data: any;
+	transaction_data: Transaction[];
 	handleContractorPick: (value: any) => void;
 }
 export function TransactionList(props: transactionListProps) {
@@ -1406,12 +1423,12 @@ export function TransactionList(props: transactionListProps) {
 											</svg>
 										</div> */}
 											<div className="flex-col justify-center w-full pr-5">
-												<p className="text-[0.7rem] ml-4 font-medium">
-													{item.transaction_type}
+												<p className="text-[0.7rem] capitalize ml-4 font-medium">
+													{item.type}
 												</p>
 												<div className="flex justify-between w-full items-center ">
 													<p className="text-[0.9rem] ml-4 font-semibold">
-														{item.property_name}
+														{item.name}
 													</p>
 													<p className="text-[0.6rem]">{item.created_at}</p>
 												</div>

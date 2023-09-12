@@ -1,5 +1,4 @@
-import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -7,162 +6,284 @@ import InputBoxSettings from "@/components/inputBoxSetting";
 import CloseIcon from "@mui/icons-material/Close";
 import InputPopUp from "@/components/popUpInput";
 import Dropdown from "@/components/dropdwon";
-import { it } from "node:test";
+import { supabase } from "@/lib/supabase";
+import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
+import { useRouter } from "next/router";
+import { Database } from "@/types";
+import { set } from "react-hook-form";
+import { profile } from "console";
+import { style } from "@/components/tagList";
+import { v4 } from "uuid";
+
+// export const getServerSideProps = async (
+// 	context: GetServerSidePropsContext,
+// ) => {
+// 	context.res.setHeader("Cache-Control", "s-maxage=20, stale-while-revalidate");
+// 	const params = context.query.u;
+
+// 	// if (user == null) {
+// 	// 	return {
+// 	// 		notFound: true,
+// 	// 	};
+// 	// }
+
+// 	// return {
+// 	// 	props: { user, role },
+// 	// };
+// };
 
 const user = {
 	role: "Admin",
 };
 
-function Profile() {
+type Profile = Database["public"]["Tables"]["profiles"]["Row"];
+type ProfileDetail = Database["public"]["Tables"]["profile_detail"]["Row"];
+
+interface Dropdown {
+	value: number;
+	label: string;
+}
+
+function Profile(props:{role:string}) {
+	const [profiles, setProfiles] = useState<Profile>();
+	const [profile_details, setProfile_details] = useState<ProfileDetail>();
+
+	const [username, setUsername] = useState<string>("");
+	const [first_name, setFirst_Name] = useState<string>("");
+	const [last_name, setLast_Name] = useState<string>("");
+	const [provinsi, setProvinsi] = useState<number>(0);
+	const [about, setAbout] = useState<string>("");
+	const [avatar_url, setAvatar_url] = useState<string>("");
+	const [background_url, setBackground_url] = useState<string>("");
+	const [kabupaten, setKabupaten] = useState<number>(0);
+	const [style_name, setStyle_name] = useState<number[]>([0]);
+	const [type_name, setType_name] = useState<number[]>([0]);
+
+	const [provinsiData, setProvinsiData] = useState<Dropdown[]>([]);
+	const [kotaData, setKotaData] = useState<Dropdown[]>([]);
+	const [propertyTypeData, setPropertyTypeData] = useState<Dropdown[]>([]);
+	const [propertyStyleData, setPropertyStyleData] = useState<Dropdown[]>([]);
+	useEffect(() => {
+		const fetch = async () => {
+			const { user: user } = (await supabase.auth.getUser()).data;
+			const { data: profiles, error } = await supabase
+				.from("profiles")
+				.select(`*`)
+				.eq("id", user?.id)
+				.single();
+			if (profiles) setProfiles(profiles);
+			const { data: profile_details } = await supabase
+				.from("profile_detail")
+				.select(`*`)
+				.eq("user_id", user?.id)
+				.single();
+			if (profile_details) setProfile_details(profile_details);
+
+			const { data: provinsi } = await supabase.from("provinsi").select("*");
+			let provinsiData: Dropdown[] = [];
+			provinsi?.forEach((item) => {
+				provinsiData.push({
+					value: item.id,
+					label: item.provinsi,
+				});
+			});
+			setProvinsiData(provinsiData);
+
+			const { data: property_type } = await supabase
+				.from("property_type")
+				.select("*");
+			let propertyTypeData: Dropdown[] = [];
+			property_type?.forEach((item) => {
+				propertyTypeData.push({
+					value: item.id,
+					label: item.type_name as string,
+				});
+			});
+			setPropertyTypeData(propertyTypeData);
+
+			const { data: property_style } = await supabase
+				.from("property_style")
+				.select("*");
+			let propertyStyleData: Dropdown[] = [];
+			property_style?.forEach((item) => {
+				propertyStyleData.push({
+					value: item.id,
+					label: item.style_name as string,
+				});
+			});
+			setPropertyStyleData(propertyStyleData);
+
+			setUsername(profiles?.username as string);
+			setFirst_Name(profiles?.first_name as string);
+			setLast_Name(profiles?.last_name as string);
+			setProvinsi(profile_details?.province as number);
+			setAbout(profile_details?.about as string);
+			setKabupaten(profile_details?.city as number);
+			setType_name(profile_details?.property_type as number[]);
+			setStyle_name(profile_details?.property_style as number[]);
+			setAvatar_url(profiles?.avatar_url as string);
+			setBackground_url(profile_details?.banner as string);
+		};
+		fetch();
+	}, []);
 	const [biodata, setBiodata] = useState<
 		{
 			username: string;
-			firstName: string;
-			lastName: string;
-			province: string;
+			first_name: string;
+			last_name: string;
+			provinsi: string;
 			about: string;
-			preview: string;
-			backgroundPreview: string;
-			selectedCity: string;
-			propertyType: string[];
-			propertyStyle: string[];
+			avatar_url: string;
+			background_url: string;
+			kabupaten: string;
+			style_name: number[];
+			type_name: number[];
 		}[]
 	>([]); //UNTTUK NAMPUNG SEMUA ARRAY USETATE
-
-	const [username, setUsername] = useState("");
-	const [firstName, setFirstName] = useState("");
-	const [lastName, setLastName] = useState("");
-	const [province, setProvince] = useState("");
-	const [about, setAbout] = useState("");
-	const [selectedCity, setSelectedCity] = useState("");
-	const [propertyType, setPropertyType] = useState<string[]>([""]);
-	const [propertyStyle, setPropertyStyle] = useState<string[]>([""]);
-	const [preview, setPreview] = useState("");
-	const [backgroundPreview, setBackgroundPreview] = useState("");
 
 	const handleChangeUsername = (event: any) => {
 		setUsername(event.target.value);
 	};
 
 	const handleChangeFirstname = (event: any) => {
-		setFirstName(event.target.value);
+		setFirst_Name(event.target.value);
 	};
 
 	const handleChangeLastName = (event: any) => {
-		setLastName(event.target.value);
+		setLast_Name(event.target.value);
 	};
 
 	const handleChangeProvince = (event: any) => {
-		setProvince(event);
+		setProvinsi(event);
 	};
 
 	const handleChangeAbout = (event: any) => {
 		setAbout(event.target.value);
 	};
 
-	const handleLandImageChange = (
+	const handleLandImageChange = async (
 		event: React.ChangeEvent<HTMLInputElement>,
 	) => {
 		const file = event.target.files?.[0]; // Get the selected file
 		if (file) {
 			const reader = new FileReader();
 			reader.onload = () => {
-				setPreview(reader.result as string);
+				setAvatar_url(reader.result as string);
 			};
 			reader.readAsDataURL(file); // Read the selected file as a data URL
+			const uuid = v4();
+			const upload = await supabase.storage
+				.from("avatars")
+				.upload(`${profiles?.id}/${uuid}`, file)
+				.then(async (r) => {
+					const { publicUrl } = supabase.storage
+						.from("avatars")
+						.getPublicUrl(`${profiles?.id}/${uuid}`).data;
+					return publicUrl;
+				});
+			setAvatar_url(upload as string);
 		} else {
-			setPreview(""); // Clear the preview if no file is selected
+			setAvatar_url(""); // Clear the preview if no file is selected
 		}
 	};
-	const handleClick = () => {
+	const handleClickChangeAvatar = () => {
 		const fileInput = document.getElementById("profilePicture");
 		if (fileInput) {
 			fileInput.click();
 		}
 	};
 
-	const handleBackGroundChange = (
+	const handleBackGroundChange = async (
 		event: React.ChangeEvent<HTMLInputElement>,
 	) => {
 		const file = event.target.files?.[0]; // Get the selected file
 		if (file) {
 			const reader = new FileReader();
 			reader.onload = () => {
-				setBackgroundPreview(reader.result as string);
+				setBackground_url(reader.result as string);
 			};
 			reader.readAsDataURL(file); // Read the selected file as a data URL
+			const uuid = v4();
+			const upload = await supabase.storage
+				.from("avatars")
+				.upload(`${profiles?.id}/${uuid}`, file)
+				.then(async (r) => {
+					const { publicUrl } = supabase.storage
+						.from("avatars")
+						.getPublicUrl(`${profiles?.id}/${uuid}`).data;
+					return publicUrl;
+				});
+			setBackground_url(upload as string);
 		} else {
-			setBackgroundPreview(""); // Clear the preview if no file is selected
+			setBackground_url(""); // Clear the preview if no file is selected
 		}
 	};
-	const handleClickBackground = () => {
+	const handleClickBackgroundChange = () => {
 		const fileInput = document.getElementById("BackgroundPicture");
 		if (fileInput) {
 			fileInput.click();
 		}
 	};
 
-	const handleChangePropertyType = (index: number, value: string) => {
-		const updatedPropertyType = [...propertyType];
-		updatedPropertyType[index] = value;
-		setPropertyType(updatedPropertyType);
+	const handleChangePropertyType = (index: number, value: number) => {
+		const updated_type_name = [...type_name];
+		updated_type_name[index] = value;
+		setType_name(updated_type_name);
 	};
 
 	const handleAddPropertyType = () => {
-		setPropertyType([...propertyType, ""]);
+		setType_name([...type_name, -1]);
 	};
 
 	const handleDeletePropertyType = (index: number) => {
-		const updatedPropertType = propertyType.filter((_, i) => i !== index);
-		setPropertyType(updatedPropertType);
+		const updated_type_name = type_name.filter((_, i) => i !== index);
+		setType_name(updated_type_name);
 	};
 
-	const handleChangePropertyStyle = (index: number, value: string) => {
-		const updatedPropertyStyle = [...propertyStyle];
+	const handleChangePropertyStyle = (index: number, value: number) => {
+		const updatedPropertyStyle = [...style_name];
 		updatedPropertyStyle[index] = value;
-		setPropertyStyle(updatedPropertyStyle);
+		setStyle_name(updatedPropertyStyle);
 	};
 
 	const handleAddPropertyStyle = () => {
-		setPropertyStyle([...propertyStyle, ""]);
+		setStyle_name([...style_name, -1]);
 	};
 
 	const handleDeletePropertyStyle = (index: number) => {
-		const updatedPropertStyle = propertyStyle.filter((_, i) => i !== index);
-		setPropertyStyle(updatedPropertStyle);
+		const updatedPropertStyle = style_name.filter((_, i) => i !== index);
+		setStyle_name(updatedPropertStyle);
 	};
 
 	const handleDropdown = (city: any) => {
-		setSelectedCity(city);
+		setStyle_name(city);
 	};
 
 	// HANDLE BUTTON BUAT SUBMIT
-	const handleBiodataSubmit = (event: any) => {
-		event.preventDefault();
-		const newBiodata = {
-			username,
-			firstName,
-			lastName,
-			province,
-			preview,
-			backgroundPreview,
-			propertyType: [...propertyType],
-			propertyStyle: [...propertyStyle],
-			selectedCity,
-			about,
-		};
+	const handleBiodataSubmit = async (event: any) => {
+		const user = (await supabase.auth.getUser()).data.user;
 
-		setBiodata([...biodata, newBiodata]);
-		setPreview("");
-		setBackgroundPreview("");
-		setUsername("");
-		setFirstName("");
-		setLastName("");
-		setProvince("");
-		setPropertyType([]);
-		setPropertyStyle([]);
-		setSelectedCity("");
-		setAbout("");
+		const { data, error } = await supabase
+			.from("profiles")
+			.update({
+				username,
+				first_name,
+				last_name,
+				avatar_url,
+			})
+			.eq("id", user?.id);
+
+		const { data: data2, error: error2 } = await supabase
+			.from("profile_detail")
+			.update({
+				province: provinsi,
+				property_style: [...style_name],
+				property_type: [...type_name],
+				city: kabupaten,
+				about,
+				banner: background_url,
+			})
+			.eq("user_id", user?.id);
 	};
 
 	const [openChooseRole, setOpenChooseRole] = useState(false);
@@ -207,10 +328,10 @@ function Profile() {
 						<div className="border-2 border-gold rounded-[8px]">
 							<div className="w-[18]rem">
 								<div className="h-[158px] w-[159px]">
-									{preview ? (
+									{avatar_url ? (
 										<Image
-											src={preview}
-											alt="Preview"
+											src={avatar_url}
+											alt="avatar_url"
 											width={159}
 											height={158}
 											className="h-[158px] w-[159px] rounded-[7px] object-cover rounded-b-none"
@@ -228,7 +349,7 @@ function Profile() {
 									<button
 										type="button"
 										className="text-[12px] font-medium h-[28px] w-[159px] rounded-[7px] rounded-t-none border-2 border-[#B17C3F] bg-gold text-white duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white "
-										onClick={handleClick}
+										onClick={handleClickChangeAvatar}
 									>
 										Change Profile Image
 									</button>
@@ -246,9 +367,9 @@ function Profile() {
 						<div className="border-gold border-2 rounded-[8px]">
 							<div className="w-[18]rem">
 								<div className="h-[158px] w-[549px]">
-									{backgroundPreview ? (
+									{background_url ? (
 										<Image
-											src={backgroundPreview}
+											src={background_url}
 											alt="Preview"
 											width={549}
 											height={158}
@@ -267,7 +388,7 @@ function Profile() {
 									<button
 										type="button"
 										className="text-[12px] font-medium h-[28px] w-[549px] rounded-[7px] rounded-t-none border-2 border-[#B17C3F] bg-gold text-white duration-300 ease-in-out hover:border-[#d9b285] hover:bg-[#d9b285] hover:text-white "
-										onClick={handleClickBackground}
+										onClick={handleClickBackgroundChange}
 									>
 										Change Background Image
 									</button>
@@ -289,7 +410,7 @@ function Profile() {
 							form="biodata-Form"
 							type="text"
 							title="Username"
-							value={username}
+							value={username!}
 							placeholder={"Enter Username"}
 							onChange={handleChangeUsername}
 						></InputBoxSettings>
@@ -297,7 +418,7 @@ function Profile() {
 							form="biodata-Form"
 							type="text"
 							title="Firstname"
-							value={firstName}
+							value={first_name!}
 							placeholder={"Enter Firstname"}
 							onChange={handleChangeFirstname}
 						></InputBoxSettings>
@@ -305,17 +426,17 @@ function Profile() {
 							form="biodata-Form"
 							type="text"
 							title="Lastname"
-							value={lastName}
+							value={last_name}
 							placeholder={"Enter Lastname"}
 							onChange={handleChangeLastName}
 						></InputBoxSettings>
 
-						{(user.role === "Designer" ||
-							user.role === "Contractor" ||
-							user.role === "Admin") && (
+						{(props.role === "designer" ||
+							props.role === "contractor" ||
+							props.role === "admin") && (
 							<div>
 								<div>
-									{propertyType.map((item, index) => (
+									{type_name?.map((item, index) => (
 										<div key={index}>
 											{index == 0 ? (
 												<Dropdown
@@ -324,13 +445,7 @@ function Profile() {
 													styleClassTag="py-[4px] border-2 border-gold rounded-[7px] w-full"
 													styleText="w-[200px] text-[15px]"
 													title="Property Type"
-													data={[
-														{ value: "Type1", label: "Type1" },
-														{ value: "Type2", label: "Type2" },
-														{ value: "Type3", label: "Type3" },
-														{ value: "Type4", label: "Type4" },
-														{ value: "Type5", label: "Type5" },
-													]}
+													data={propertyTypeData}
 													value={item}
 													placehoder="Select Property Type"
 													onChange={(e: any) =>
@@ -344,13 +459,7 @@ function Profile() {
 														styleClass="text-gold text-[13px] flex gap-[48px] mt-2 w-full pr-1"
 														styleClassTag="border-2 border-gold rounded-[7px] w-full py-[4px] ml-[147px]"
 														title=""
-														data={[
-															{ value: "Type1", label: "Type1" },
-															{ value: "Type2", label: "Type2" },
-															{ value: "Type3", label: "Type3" },
-															{ value: "Type4", label: "Type4" },
-															{ value: "Type5", label: "Type5" },
-														]}
+														data={propertyTypeData}
 														value={item}
 														placehoder="Select Property Type"
 														onChange={(e: any) =>
@@ -362,7 +471,7 @@ function Profile() {
 											)}
 
 											<div className="ml-[187px] mt-2 flex pr-2 text-gold text-[11px]">
-												{propertyType.length > index + 1 ? (
+												{type_name.length > index + 1 ? (
 													<div className="w-full flex justify-end">
 														<button
 															onClick={() => handleDeletePropertyType(index)}
@@ -384,7 +493,7 @@ function Profile() {
 								</div>
 
 								<div>
-									{propertyStyle.map((item, index) => (
+									{style_name?.map((item, index) => (
 										<div key={index}>
 											{index == 0 ? (
 												<Dropdown
@@ -393,13 +502,7 @@ function Profile() {
 													styleClassTag="py-[4px] border-2 border-gold rounded-[7px] w-full"
 													styleText="w-[200px] text-[15px]"
 													title="Property Style"
-													data={[
-														{ value: "Style1", label: "Style1" },
-														{ value: "Style2", label: "Style2" },
-														{ value: "Style3", label: "Style3" },
-														{ value: "Style4", label: "Style4" },
-														{ value: "Style5", label: "Style5" },
-													]}
+													data={propertyStyleData}
 													value={item}
 													placehoder="Select Property Style"
 													onChange={(e: any) =>
@@ -413,13 +516,7 @@ function Profile() {
 														styleClass="text-gold text-[13px] flex gap-[48px] mt-2 w-full pr-1"
 														styleClassTag="border-2 border-gold rounded-[7px] w-full py-[4px] ml-[147px]"
 														title=""
-														data={[
-															{ value: "Style1", label: "Style1" },
-															{ value: "Style2", label: "Style2" },
-															{ value: "Style3", label: "Style3" },
-															{ value: "Style4", label: "Style4" },
-															{ value: "Style5", label: "Style5" },
-														]}
+														data={propertyStyleData}
 														value={item}
 														placehoder="Select Property Style"
 														onChange={(e: any) =>
@@ -431,7 +528,7 @@ function Profile() {
 											)}
 
 											<div className="ml-[187px] mt-2 flex pr-2 text-gold text-[11px]">
-												{propertyStyle.length > index + 1 ? (
+												{style_name.length > index + 1 ? (
 													<div className="w-full flex justify-end">
 														<button
 															onClick={() => handleDeletePropertyStyle(index)}
@@ -467,7 +564,7 @@ function Profile() {
 								{ value: "Dompu", label: "Dompu" },
 								{ value: "Sumbawa", label: "Sumbawa" },
 							]}
-							value={province}
+							value={provinsi}
 							placehoder="Select Province"
 							onChange={handleChangeProvince}
 						></Dropdown>
@@ -484,7 +581,7 @@ function Profile() {
 								{ value: "Dompu", label: "Dompu" },
 								{ value: "Sumbawa", label: "Sumbawa" },
 							]}
-							value={selectedCity}
+							value={kabupaten}
 							placehoder="Select City"
 							onChange={handleDropdown}
 						></Dropdown>
@@ -509,9 +606,10 @@ function Profile() {
 						</label>
 					</div>
 					<div className="pb-20 justify-end w-full flex mt-16">
-						{user.role === "" && (
+						{props.role === "client" && (
 							<div className="my-auto">
 								<button
+									type="button"
 									onClick={handleOpenChooseRole}
 									className="mr-5 text-[16px] underline text-gold"
 								>
@@ -532,14 +630,14 @@ function Profile() {
 	);
 }
 
-function Project() {
+function Project(props:{role:string}) {
 	const [projects, setProjects] = useState<
 		{
 			institution: string;
 			title: string;
 			departement: string;
-			dateFrom: string;
-			dateUntil: string;
+			start_date: string;
+			end_date: string;
 			information: string;
 			image: string[];
 		}[]
@@ -548,8 +646,8 @@ function Project() {
 	const [title, setTitle] = useState("");
 	const [departement, setDepartement] = useState("");
 	const [information, setInformation] = useState("");
-	const [dateFrom, setDateFrom] = useState("");
-	const [dateUntil, setDateUntil] = useState("");
+	const [start_date, setStart_date] = useState("");
+	const [end_date, setEnd_date] = useState("");
 	const [image, setImage] = useState<string[]>([]);
 
 	const handleInstitutionChange = (event: any) => {
@@ -567,13 +665,12 @@ function Project() {
 	const handleDepartementChange = (event: any) => {
 		setDepartement(event.target.value);
 	};
-
-	const handleDateFromChange = (event: any) => {
-		setDateFrom(event.target.value);
+	const handleStartDateChange = (event: any) => {
+		setStart_date(event.target.value);
 	};
 
-	const handleDateUntilChange = (event: any) => {
-		setDateUntil(event.target.value);
+	const handleEndDateChange = (event: any) => {
+		setEnd_date(event.target.value);
 	};
 
 	const inputRef = useRef<HTMLInputElement>(null);
@@ -609,8 +706,8 @@ function Project() {
 			institution,
 			title,
 			departement,
-			dateFrom,
-			dateUntil,
+			start_date,
+			end_date,
 			information,
 			image: [...image],
 		};
@@ -620,8 +717,8 @@ function Project() {
 		setTitle("");
 		setInformation("");
 		setDepartement("");
-		setDateFrom("");
-		setDateUntil("");
+		setStart_date("");
+		setEnd_date("");
 		setImage([]);
 	};
 
@@ -633,8 +730,8 @@ function Project() {
 		setEditProjectIndex(index);
 		setInstitution(projectToEdit.institution);
 		setTitle(projectToEdit.title);
-		setDateFrom(projectToEdit.dateFrom);
-		setDateUntil(projectToEdit.dateUntil);
+		setStart_date(projectToEdit.start_date);
+		setEnd_date(projectToEdit.end_date);
 		setInformation(projectToEdit.information);
 		setImage(projectToEdit.image);
 		setIsEditProject(true);
@@ -646,16 +743,16 @@ function Project() {
 			...updateProjects[index],
 			institution,
 			title,
-			dateFrom,
-			dateUntil,
+			start_date,
+			end_date,
 			information,
 			image: [...image],
 		};
 		setProjects(updateProjects);
 		setInstitution("");
 		setTitle("");
-		setDateFrom("");
-		setDateUntil("");
+		setStart_date("");
+		setEnd_date("");
 		setInformation("");
 		setImage([]);
 		setIsEditProject(false);
@@ -680,9 +777,9 @@ function Project() {
 	return (
 		<div>
 			{projectModal && (
-				<div className="fixed inset-0 z-10 flex items-center justify-center">
-					<div className="absolute bottom-0 -left-[200px] -top-[164px] z-10 flex w-screen h-[100vh] items-center justify-center bg-black/40">
-						<div className="modal-content w-[553px] rounded-3xl bg-white">
+				<div className="">
+					<div className="flex h-full w-full fixed left-0 justify-center -top-20">
+						<div className="absolute modal-content w-[553px] rounded-3xl bg-white drop-shadow-landingShado">
 							<div className="border-b-2 border-gold/60">
 								<h2 className="mx-8 my-4  text-[18px]">Detail Project</h2>
 							</div>
@@ -708,18 +805,18 @@ function Project() {
 									<InputPopUp
 										title="From"
 										type="date"
-										value={dateFrom}
+										value={start_date}
 										required
 										className="bg-white"
-										onChange={handleDateFromChange}
+										onChange={handleStartDateChange}
 									></InputPopUp>
 									<InputPopUp
 										title="Until"
 										type="date"
-										value={dateUntil}
+										value={end_date}
 										required
 										className="bg-white"
-										onChange={handleDateUntilChange}
+										onChange={handleEndDateChange}
 									></InputPopUp>
 									<label className="mt-4 gap-24 pr-14">
 										<span className="mt-2 w-[120px] text-[10px]  text-[#B17C3F] ">
@@ -839,9 +936,9 @@ function Project() {
 			)}
 
 			{isEditProject && editProjectIndex != -1 && (
-				<div className="fixed inset-0 z-10 flex items-center justify-center">
-					<div className="absolute bottom-0 -left-[200px] -top-[164px] z-10 flex w-screen h-[100vh] items-center justify-center bg-black/40">
-						<div className="modal-content w-[553px] rounded-3xl bg-white">
+				<div className="">
+					<div className="flex h-full w-full fixed left-0 justify-center -top-20">
+						<div className="absolute modal-content w-[553px] rounded-3xl bg-white drop-shadow-landingShado">
 							<div className="border-b-2 border-gold/60">
 								<h2 className="mx-8 my-4  text-[18px]"> Edit Detail Project</h2>
 							</div>
@@ -863,16 +960,16 @@ function Project() {
 								<InputPopUp
 									title="From"
 									type="date"
-									value={dateFrom}
+									value={start_date}
 									required
-									onChange={handleDateFromChange}
+									onChange={handleStartDateChange}
 								></InputPopUp>
 								<InputPopUp
 									title="Until"
 									type="date"
-									value={dateUntil}
+									value={end_date}
 									required
-									onChange={handleDateUntilChange}
+									onChange={handleEndDateChange}
 								></InputPopUp>
 								<label className="mt-4 gap-24 pr-14">
 									<span className="mt-2 w-[120px] text-[10px]  text-[#B17C3F] ">
@@ -989,7 +1086,7 @@ function Project() {
 				</div>
 			)}
 
-			{Project.length > 0 ? (
+			{projects.length > 0 ? (
 				<div className="flex flex-col items-center justify-center">
 					{projects.map((projects, index) => (
 						<div key={index} className="flex">
@@ -1051,10 +1148,10 @@ function Project() {
 										</div>
 										<p className="text-[15px]">{projects.title}</p>
 										<p className="text-black/60 text-[15px]">
-											{projects.dateFrom.substr(0, 0 + 4)} -
-											{projects.dateUntil.substr(0, 0 + 4) === "2023"
+											{projects.start_date.substr(0, 0 + 4)} -
+											{projects.end_date.substr(0, 0 + 4) === "2023"
 												? " Now"
-												: projects.dateUntil.substr(0, 0 + 4)}
+												: projects.end_date.substr(0, 0 + 4)}
 										</p>
 									</span>
 								</div>
@@ -1116,10 +1213,10 @@ function Project() {
 										</div>
 										<p className="text-[15px]">{projects.title}</p>
 										<p className="text-black/60 text-[15px]">
-											{projects.dateFrom.substr(0, 0 + 4)} -
-											{projects.dateUntil.substr(0, 0 + 4) === "2023"
+											{projects.start_date.substr(0, 0 + 4)} -
+											{projects.end_date.substr(0, 0 + 4) === "2023"
 												? " Now"
-												: projects.dateUntil.substr(0, 0 + 4)}
+												: projects.end_date.substr(0, 0 + 4)}
 										</p>
 									</span>
 								</div>
@@ -1129,7 +1226,7 @@ function Project() {
 				</div>
 			) : (
 				<div>
-					{user.role === "Admin" && (
+					{props.role === "Admin" && (
 						<div className="flex flex-col items-center justify-center mt-36 pb-5">
 							<p className="text-[19px] font-medium">No Project Registered</p>
 							<p className="text-[12px]  text-[#BEB8B8]">
@@ -1137,7 +1234,7 @@ function Project() {
 							</p>
 						</div>
 					)}
-					{user.role === "Contractor" && (
+					{props.role === "Contractor" && (
 						<div className="flex flex-col items-center justify-center mt-16 pb-5">
 							<p className="text-[19px] font-medium">No Project Registered</p>
 							<p className="text-[12px]  text-[#BEB8B8]">
@@ -1146,7 +1243,7 @@ function Project() {
 						</div>
 					)}
 
-					{user.role === "Designer" && (
+					{props.role === "designer" && (
 						<div className="flex flex-col items-center justify-center mt-24 pb-5">
 							<p className="text-[19px] font-medium">No Project Registered</p>
 							<p className="text-[12px]  text-[#BEB8B8]">
@@ -1169,7 +1266,7 @@ function Project() {
 	);
 }
 
-function Member() {
+function Member(props:{role:string}) {
 	//state untuk member
 	const [members, setMembers] = useState<
 		{ name: string; job: string; description: string }[]
@@ -1246,9 +1343,9 @@ function Member() {
 	return (
 		<div>
 			{modal && (
-				<div className="fixed inset-0 z-10 flex items-center justify-center">
-					<div className="absolute bottom-0 -left-[200px] -top-[164px] z-10 flex w-screen h-[100vh] items-center justify-center bg-black/40">
-						<div className="modal-content w-[553px] rounded-3xl bg-white">
+				<div className="">
+					<div className="flex h-full w-full fixed left-0 justify-center top-0">
+						<div className="absolute modal-content w-[553px] rounded-3xl bg-white drop-shadow-landingShado">
 							<div className="border-b-2 border-gold/60">
 								<h2 className="mx-8 my-4  text-[18px]">Detail Member</h2>
 							</div>
@@ -1310,9 +1407,9 @@ function Member() {
 			)}
 
 			{isEditPopupOpen && editMemberIndex !== -1 && (
-				<div className="fixed inset-0 z-10 flex items-center justify-center">
-					<div className="absolute bottom-0 -left-[200px] -top-[164px] z-10 flex w-screen h-[100vh] items-center justify-center bg-black/40">
-						<div className="z-50 modal-content w-[553px] rounded-3xl bg-white">
+				<div className="">
+					<div className="flex h-full w-full fixed left-0 justify-center top-0">
+						<div className="absolute modal-content w-[553px] rounded-3xl bg-white drop-shadow-landingShado">
 							<div className="border-b-2 border-gold/60">
 								<h2 className="mx-8 my-4  text-[18px]">Edit Detail Member</h2>
 							</div>
@@ -1462,7 +1559,7 @@ function Member() {
 				</div>
 			) : (
 				<div>
-					{user.role === "Admin" && (
+					{props.role === "Admin" && (
 						<div className="flex flex-col items-center justify-center mt-36 pb-5">
 							<p className="text-[19px] font-medium">No Member Registered</p>
 							<p className="text-[12px]  text-[#BEB8B8]">
@@ -1470,7 +1567,7 @@ function Member() {
 							</p>
 						</div>
 					)}
-					{user.role === "Contractor" && (
+					{props.role === "Contractor" && (
 						<div className="flex flex-col items-center justify-center mt-16 pb-5">
 							<p className="text-[19px] font-medium">No Member Registered</p>
 							<p className="text-[12px]  text-[#BEB8B8]">
@@ -1493,62 +1590,62 @@ function Member() {
 	);
 }
 
-function Education() {
+function Education(props:{role:string}) {
 	const [education, setEducation] = useState<
 		{
-			studyInstitution: string;
-			studyTitle: string;
-			studyDepartement: string;
-			StudyFrom: string;
-			StudyUntil: string;
-			studyDescription: string;
+			institution: string;
+			title: string;
+			departement: string;
+			start_date: string;
+			end_date: string;
+			description: string;
 		}[]
 	>([]);
 
-	const [studyInstitution, setStudyInstitution] = useState("");
-	const [studyTitle, setStudyTitle] = useState("");
-	const [studyDepartement, setStudyDepartement] = useState("");
-	const [StudyFrom, setStudyFrom] = useState("");
-	const [StudyUntil, setStudyUntil] = useState("");
-	const [studyDescription, setStudyDescription] = useState("");
+	const [institution, setInstitution] = useState("");
+	const [title, setTitle] = useState("");
+	const [departement, setDepartement] = useState("");
+	const [start_date, setStart_date] = useState("");
+	const [end_date, setEnd_date] = useState("");
+	const [description, setDescription] = useState("");
 
 	const handleStudyIntitutionChange = (event: any) => {
-		setStudyInstitution(event.target.value);
+		setInstitution(event.target.value);
 	};
-	const handleStudyTitleChange = (event: any) => {
-		setStudyTitle(event.target.value);
+	const handletitleChange = (event: any) => {
+		setTitle(event.target.value);
 	};
-	const handleStudyDepartementChange = (event: any) => {
-		setStudyDepartement(event.target.value);
+	const handledepartementChange = (event: any) => {
+		setDepartement(event.target.value);
 	};
-	const handleStudyFromChange = (event: any) => {
-		setStudyFrom(event.target.value);
+	const handlestart_dateChange = (event: any) => {
+		setStart_date(event.target.value);
 	};
-	const handleStudyUntilChange = (event: any) => {
-		setStudyUntil(event.target.value);
+	const handleend_dateChange = (event: any) => {
+		setEnd_date(event.target.value);
 	};
-	const handleStudyDescriptionChange = (event: any) => {
-		setStudyDescription(event.target.value);
+	const handledescriptionChange = (event: any) => {
+		setDescription(event.target.value);
 	};
 
 	const handleEducationSubmit = (event: any) => {
 		event.preventDefault();
 		const newEducation = {
-			studyInstitution,
-			studyTitle,
-			studyDepartement,
-			StudyFrom,
-			StudyUntil,
-			studyDescription,
+			institution,
+			title,
+			departement,
+			start_date,
+			end_date,
+			description,
 		};
 
 		setEducation([...education, newEducation]);
-		setStudyDescription("");
-		setStudyInstitution("");
-		setStudyTitle("");
-		setStudyDepartement("");
-		setStudyFrom("");
-		setStudyUntil("");
+		setDescription("");
+		setInstitution("");
+		setTitle("");
+		setDepartement("");
+		setStart_date("");
+		setEnd_date("");
 	};
 
 	const [isEditEducationOpen, setIsEditEducationOpen] = useState(false);
@@ -1557,12 +1654,12 @@ function Education() {
 	const openEditEducation = (index: number) => {
 		const educationToEdit = education[index];
 		setEditEducationIndex(index);
-		setStudyInstitution(educationToEdit.studyInstitution);
-		setStudyTitle(educationToEdit.studyTitle);
-		setStudyDepartement(educationToEdit.studyDepartement);
-		setStudyFrom(educationToEdit.StudyFrom);
-		setStudyUntil(educationToEdit.StudyUntil);
-		setStudyDescription(educationToEdit.studyDescription);
+		setInstitution(educationToEdit.institution);
+		setTitle(educationToEdit.title);
+		setDepartement(educationToEdit.departement);
+		setStart_date(educationToEdit.start_date);
+		setEnd_date(educationToEdit.end_date);
+		setDescription(educationToEdit.description);
 		setIsEditEducationOpen(true);
 	};
 
@@ -1570,20 +1667,20 @@ function Education() {
 		const updateEducation = [...education];
 		updateEducation[index] = {
 			...updateEducation[index],
-			studyInstitution,
-			studyTitle,
-			studyDepartement,
-			StudyFrom,
-			StudyUntil,
-			studyDescription,
+			institution,
+			title,
+			departement,
+			start_date,
+			end_date,
+			description,
 		};
 		setEducation(updateEducation);
-		setStudyInstitution("");
-		setStudyTitle("");
-		setStudyDepartement("");
-		setStudyFrom("");
-		setStudyUntil("");
-		setStudyDescription("");
+		setInstitution("");
+		setTitle("");
+		setDepartement("");
+		setStart_date("");
+		setEnd_date("");
+		setDescription("");
 		setIsEditEducationOpen(false);
 	};
 
@@ -1603,9 +1700,9 @@ function Education() {
 	return (
 		<div>
 			{isEducationOpen && (
-				<div className="fixed inset-0 z-10 flex items-center justify-center">
-					<div className="absolute bottom-0 -left-[200px] -top-[164px] z-10 flex w-screen h-[100vh] items-center justify-center bg-black/40">
-						<div className="modal-content w-[553px] rounded-3xl bg-white">
+				<div className="">
+					<div className="flex h-full w-full fixed left-0 justify-center -top-20">
+						<div className="absolute modal-content w-[553px] rounded-3xl bg-white drop-shadow-landingShado">
 							<div className="border-b-2 border-gold/60">
 								<h2 className="mx-8 my-4  text-[18px]">Detail Education</h2>
 							</div>
@@ -1614,7 +1711,7 @@ function Education() {
 									<InputPopUp
 										type="text"
 										title="Institution"
-										value={studyInstitution}
+										value={institution}
 										onChange={handleStudyIntitutionChange}
 										className="bg-white"
 										required
@@ -1622,32 +1719,32 @@ function Education() {
 									<InputPopUp
 										title="Title"
 										type="text"
-										value={studyTitle}
+										value={title}
 										className="bg-white"
 										required
-										onChange={handleStudyTitleChange}
+										onChange={handletitleChange}
 									></InputPopUp>
 									<InputPopUp
 										title="Departement"
 										type="text"
-										value={studyDepartement}
+										value={departement}
 										className="bg-white"
 										required
-										onChange={handleStudyDepartementChange}
+										onChange={handledepartementChange}
 									></InputPopUp>
 									<InputPopUp
 										title="From"
 										type="date"
-										value={StudyFrom}
+										value={start_date}
 										className="bg-white"
-										onChange={handleStudyFromChange}
+										onChange={handlestart_dateChange}
 									></InputPopUp>
 									<InputPopUp
 										title="Until"
 										type="date"
-										value={StudyUntil}
+										value={end_date}
 										className="bg-white"
-										onChange={handleStudyUntilChange}
+										onChange={handleend_dateChange}
 									></InputPopUp>
 									<label className="mt-4 gap-24 pr-14">
 										<span className="mt-2 w-[120px] text-[10px]  text-[#B17C3F] ">
@@ -1655,8 +1752,8 @@ function Education() {
 										</span>
 										<textarea
 											id="description"
-											value={studyDescription}
-											onChange={handleStudyDescriptionChange}
+											value={description}
+											onChange={handledescriptionChange}
 											placeholder="Description"
 											className=" mt-1 block w-[440px] h-[127px] rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
 											maxLength={500}
@@ -1689,9 +1786,9 @@ function Education() {
 			)}
 
 			{isEditEducationOpen && editEducationIndex !== -1 && (
-				<div className="fixed inset-0 z-10 flex items-center justify-center">
-					<div className="absolute bottom-0 -left-[200px] -top-[164px] z-10 flex w-screen h-[100vh] items-center justify-center bg-black/40">
-						<div className="modal-content w-[553px] rounded-3xl bg-white">
+				<div className="">
+					<div className="flex h-full w-full fixed left-0 justify-center -top-20">
+						<div className="absolute modal-content w-[553px] rounded-3xl bg-white drop-shadow-landingShado">
 							<div className="border-b-2 border-gold/60">
 								<h2 className="mx-8 my-4  text-[18px]">
 									{" "}
@@ -1702,7 +1799,7 @@ function Education() {
 								<InputPopUp
 									type="text"
 									title="Institution"
-									value={studyInstitution}
+									value={institution}
 									onChange={handleStudyIntitutionChange}
 									className="bg-white"
 									required
@@ -1710,32 +1807,32 @@ function Education() {
 								<InputPopUp
 									title="Title"
 									type="text"
-									value={studyTitle}
+									value={title}
 									className="bg-white"
 									required
-									onChange={handleStudyTitleChange}
+									onChange={handletitleChange}
 								></InputPopUp>
 								<InputPopUp
 									title="Departement"
 									type="text"
-									value={studyDepartement}
+									value={departement}
 									className="bg-white"
 									required
-									onChange={handleStudyDepartementChange}
+									onChange={handledepartementChange}
 								></InputPopUp>
 								<InputPopUp
 									title="From"
 									type="date"
-									value={StudyFrom}
+									value={start_date}
 									className="bg-white"
-									onChange={handleStudyFromChange}
+									onChange={handlestart_dateChange}
 								></InputPopUp>
 								<InputPopUp
 									title="Until"
 									type="date"
-									value={StudyUntil}
+									value={end_date}
 									className="bg-white"
-									onChange={handleStudyUntilChange}
+									onChange={handleend_dateChange}
 								></InputPopUp>
 								<label className="mt-4 gap-24 pr-14">
 									<span className="mt-2 w-[120px] text-[10px]  text-[#B17C3F] ">
@@ -1743,8 +1840,8 @@ function Education() {
 									</span>
 									<textarea
 										id="description"
-										value={studyDescription}
-										onChange={handleStudyDescriptionChange}
+										value={description}
+										onChange={handledescriptionChange}
 										placeholder="Description"
 										className=" mt-1 block w-[440px] h-[127px] rounded-md border border-[#B17C3F] bg-white px-3 py-2 text-[#B17C3F] placeholder-slate-400 shadow-sm focus:border-[#B17C3F] focus:outline-none focus:ring-1 focus:ring-[#B17C3F] sm:text-sm"
 										maxLength={500}
@@ -1805,7 +1902,7 @@ function Education() {
 									<span className="ml-8 w-full ">
 										<div className="flex w-full  justify-between">
 											<p className="text-[17px] font-medium">
-												{education.studyInstitution}
+												{education.institution}
 											</p>
 
 											<div className="flex gap-2">
@@ -1841,13 +1938,13 @@ function Education() {
 											</div>
 										</div>
 										<p>
-											{education.studyTitle} , {education.studyDepartement}
+											{education.title} , {education.departement}
 										</p>
 										<p className="text-black/60">
-											{education.StudyFrom.substr(0, 0 + 4)} -
-											{education.StudyUntil.substr(0, 0 + 4) === "2023"
+											{education.start_date.substr(0, 0 + 4)} -
+											{education.end_date.substr(0, 0 + 4) === "2023"
 												? " Now"
-												: education.StudyUntil.substr(0, 0 + 4)}
+												: education.end_date.substr(0, 0 + 4)}
 										</p>
 									</span>
 								</div>
@@ -1877,7 +1974,7 @@ function Education() {
 									<span className="ml-8 w-full ">
 										<div className="flex w-full  justify-between">
 											<p className="text-[17px] font-medium">
-												{education.studyInstitution}
+												{education.institution}
 											</p>
 
 											<div className="flex gap-2">
@@ -1913,13 +2010,13 @@ function Education() {
 											</div>
 										</div>
 										<p>
-											{education.studyTitle} , {education.studyDepartement}
+											{education.title} , {education.departement}
 										</p>
 										<p className="text-black/60">
-											{education.StudyFrom.substr(0, 0 + 4)} -
-											{education.StudyUntil.substr(0, 0 + 4) === "2023"
+											{education.start_date.substr(0, 0 + 4)} -
+											{education.end_date.substr(0, 0 + 4) === "2023"
 												? " Now"
-												: education.StudyUntil.substr(0, 0 + 4)}
+												: education.end_date.substr(0, 0 + 4)}
 										</p>
 									</span>
 								</div>
@@ -1929,7 +2026,7 @@ function Education() {
 				</div>
 			) : (
 				<div>
-					{user.role === "Admin" && (
+					{props.role === "Admin" && (
 						<div className="flex flex-col items-center justify-center mt-36 pb-5">
 							<p className="text-[19px] font-medium">No Education Registered</p>
 							<p className="text-[12px]  text-[#BEB8B8]">
@@ -1937,7 +2034,7 @@ function Education() {
 							</p>
 						</div>
 					)}
-					{user.role === "Designer" && (
+					{props.role === "designer" && (
 						<div className="flex flex-col items-center justify-center mt-24 pb-5">
 							<p className="text-[19px] font-medium">No Education Registered</p>
 							<p className="text-[12px]  text-[#BEB8B8]">
@@ -1960,14 +2057,14 @@ function Education() {
 	);
 }
 
-function Experience() {
+function Experience(props:{role:string}) {
 	const [experience, setExperience] = useState<
 		{
 			institution: string;
 			title: string;
 			departement: string;
-			dateFrom: string;
-			dateUntil: string;
+			start_date: string;
+			end_date: string;
 			information: string;
 		}[]
 	>([]);
@@ -1975,8 +2072,8 @@ function Experience() {
 	const [title, setTitle] = useState("");
 	const [departement, setDepartement] = useState("");
 	const [information, setInformation] = useState("");
-	const [dateFrom, setDateFrom] = useState("");
-	const [dateUntil, setDateUntil] = useState("");
+	const [start_date, setStart_date] = useState("");
+	const [end_date, setEnd_date] = useState("");
 
 	const handleInstitutionChange = (event: any) => {
 		setInstitution(event.target.value);
@@ -1995,11 +2092,11 @@ function Experience() {
 	};
 
 	const handleDateFromChange = (event: any) => {
-		setDateFrom(event.target.value);
+		setStart_date(event.target.value);
 	};
 
 	const handleDateUntilChange = (event: any) => {
-		setDateUntil(event.target.value);
+		setEnd_date(event.target.value);
 	};
 
 	const handleExperienceSubmit = (event: any) => {
@@ -2008,8 +2105,8 @@ function Experience() {
 			institution,
 			title,
 			departement,
-			dateFrom,
-			dateUntil,
+			start_date,
+			end_date,
 			information,
 		};
 		setExperience([...experience, newExperience]);
@@ -2018,8 +2115,8 @@ function Experience() {
 		setTitle("");
 		setInformation("");
 		setDepartement("");
-		setDateFrom("");
-		setDateUntil("");
+		setStart_date("");
+		setEnd_date("");
 	};
 
 	const [isEditExperience, setIsEditExperience] = useState(false);
@@ -2030,8 +2127,8 @@ function Experience() {
 		setEditExperienceIndex(index);
 		setInstitution(experienceToEdit.institution);
 		setTitle(experienceToEdit.title);
-		setDateFrom(experienceToEdit.dateFrom);
-		setDateUntil(experienceToEdit.dateUntil);
+		setStart_date(experienceToEdit.start_date);
+		setEnd_date(experienceToEdit.end_date);
 		setInformation(experienceToEdit.information);
 
 		setIsEditExperience(true);
@@ -2043,15 +2140,15 @@ function Experience() {
 			...updateExperience[index],
 			institution,
 			title,
-			dateFrom,
-			dateUntil,
+			start_date,
+			end_date,
 			information,
 		};
 		setExperience(updateExperience);
 		setInstitution("");
 		setTitle("");
-		setDateFrom("");
-		setDateUntil("");
+		setStart_date("");
+		setEnd_date("");
 		setInformation("");
 		setIsEditExperience(false);
 	};
@@ -2070,13 +2167,15 @@ function Experience() {
 	const openExperiencePopUp = () => {
 		setExperienceModal(!experienceModal);
 	};
+	
+	console.log(user)
 
 	return (
 		<div>
 			{experienceModal && (
-				<div className="fixed inset-0 z-10 flex items-center justify-center">
-					<div className="absolute bottom-0 -left-[200px] -top-[164px] z-10 flex w-screen h-[100vh] items-center justify-center bg-black/40">
-						<div className="modal-content w-[553px] rounded-3xl bg-white">
+				<div className="">
+					<div className="flex h-full w-full fixed left-0 justify-center -top-20">
+						<div className="absolute modal-content w-[553px] rounded-3xl bg-white drop-shadow-landingShado">
 							<div className="border-b-2 border-gold/60">
 								<h2 className="mx-8 my-4  text-[18px]">Detail Experience</h2>
 							</div>
@@ -2110,7 +2209,7 @@ function Experience() {
 									<InputPopUp
 										title="From"
 										type="date"
-										value={dateFrom}
+										value={start_date}
 										required
 										className="bg-white"
 										onChange={handleDateFromChange}
@@ -2118,7 +2217,7 @@ function Experience() {
 									<InputPopUp
 										title="Until"
 										type="date"
-										value={dateUntil}
+										value={end_date}
 										required
 										className="bg-white"
 										onChange={handleDateUntilChange}
@@ -2164,9 +2263,9 @@ function Experience() {
 			)}
 
 			{isEditExperience && editExperienceIndex != -1 && (
-				<div className="fixed inset-0 z-10 flex items-center justify-center">
-					<div className="absolute bottom-0 -left-[200px] -top-[164px] z-10 flex w-screen h-[100vh] items-center justify-center bg-black/40">
-						<div className="modal-content w-[553px] rounded-3xl bg-white">
+				<div className="">
+					<div className="flex h-full w-full fixed left-0 justify-center -top-20">
+						<div className="absolute modal-content w-[553px] rounded-3xl bg-white drop-shadow-landingShado">
 							<div className="border-b-2 border-gold/60">
 								<h2 className="mx-8 my-4  text-[18px]"> Edit Detail Project</h2>
 							</div>
@@ -2196,14 +2295,14 @@ function Experience() {
 								<InputPopUp
 									title="From"
 									type="date"
-									value={dateFrom}
+									value={start_date}
 									required
 									onChange={handleDateFromChange}
 								></InputPopUp>
 								<InputPopUp
 									title="Until"
 									type="date"
-									value={dateUntil}
+									value={end_date}
 									required
 									onChange={handleDateUntilChange}
 								></InputPopUp>
@@ -2309,10 +2408,10 @@ function Experience() {
 											{experience.title}, {experience.departement}
 										</p>
 										<p className="text-black/60 text-[15px]">
-											{experience.dateFrom.substr(0, 0 + 4)} -
-											{experience.dateUntil.substr(0, 0 + 4) === "2023"
+											{experience.start_date.substr(0, 0 + 4)} -
+											{experience.end_date.substr(0, 0 + 4) === "2023"
 												? " Now"
-												: experience.dateUntil.substr(0, 0 + 4)}
+												: experience.end_date.substr(0, 0 + 4)}
 										</p>
 									</span>
 								</div>
@@ -2376,10 +2475,10 @@ function Experience() {
 											{experience.title}, {experience.departement}
 										</p>
 										<p className="text-black/60 text-[15px]">
-											{experience.dateFrom.substr(0, 0 + 4)} -
-											{experience.dateUntil.substr(0, 0 + 4) === "2023"
+											{experience.start_date.substr(0, 0 + 4)} -
+											{experience.end_date.substr(0, 0 + 4) === "2023"
 												? " Now"
-												: experience.dateUntil.substr(0, 0 + 4)}
+												: experience.end_date.substr(0, 0 + 4)}
 										</p>
 									</span>
 								</div>
@@ -2389,7 +2488,7 @@ function Experience() {
 				</div>
 			) : (
 				<div>
-					{user.role === "Admin" && (
+					{props.role === "Admin" && (
 						<div className="flex flex-col items-center justify-center mt-36 pb-5">
 							<p className="text-[19px] font-medium">
 								No Experience Registered
@@ -2399,7 +2498,7 @@ function Experience() {
 							</p>
 						</div>
 					)}
-					{user.role === "Designer" && (
+					{user.role === "designer" && (
 						<div className="flex flex-col items-center justify-center mt-24 pb-5">
 							<p className="text-[19px] font-medium">
 								No Experience Registered
@@ -2424,7 +2523,7 @@ function Experience() {
 	);
 }
 
-function Design() {
+function Design(props:{role:string}) {
 	const designItem = [
 		{
 			id: 1,
@@ -2448,50 +2547,32 @@ function Design() {
 
 	const [design, setDesign] = useState<
 		{
-			designName: string;
-			designDescription: string;
-			previewImage: string[];
-			sellingPrice: number;
-			propertyType: string;
-			propertyStyle: string;
-			featureDescription: string;
-			floorPlanImage: string[];
-			bedRoomsTotal: number;
-			bathRoomsTotal: number;
-			propertySize: number;
-			others: string[];
+			name: string;
+			preview_image: string[];
+			price: number;
+			bedroom_count: number;
+			bathroom_count: number;
+			property_size: number;
 		}[]
 	>([
 		{
-			designName: designItem[0].name,
-			designDescription: "",
-			previewImage: [designItem[0].image],
-			sellingPrice: designItem[0].price,
-			propertyType: "",
-			propertyStyle: "",
-			featureDescription: "",
-			floorPlanImage: [""],
-			bedRoomsTotal: designItem[0].bedroom,
-			bathRoomsTotal: designItem[0].bathroom,
-			propertySize: designItem[0].area,
-			others: [""],
+			name: designItem[0].name,
+			preview_image: [designItem[0].image],
+			price: designItem[0].price,
+			bedroom_count: designItem[0].bedroom,
+			bathroom_count: designItem[0].bathroom,
+			property_size: designItem[0].area,
 		},
 	]);
 
-	const [designName, setDesignName] = useState(designItem[0].name);
-	const [designDescription, setDesignDescription] = useState("");
-	const [previewImage, setPreviewImage] = useState<string[]>([
+	const [name, setName] = useState(designItem[0].name);
+	const [preview_image, setPreview_image] = useState<string[]>([
 		designItem[0].image,
 	]);
-	const [sellingPrice, setSellingPrice] = useState(0);
-	const [propertyType, setPropertyType] = useState("");
-	const [propertyStyle, setPropertyStyle] = useState("");
-	const [featureDescription, setFeatureDescription] = useState("");
-	const [floorPlanImage, setFloorPlanImage] = useState<string[]>([]);
-	const [bedRoomsTotal, setBedRoomsTotal] = useState(designItem[0].bedroom);
-	const [bathRoomsTotal, setBathRoomsTotal] = useState(designItem[0].bathroom);
-	const [propertySize, setPropertySize] = useState(designItem[0].price);
-	const [others, setOthers] = useState<string[]>([""]);
+	const [price, setprice] = useState(0);
+	const [bedroom_count, setbedroom_count] = useState(designItem[0].bedroom);
+	const [bathroom_count, setbathroom_count] = useState(designItem[0].bathroom);
+	const [property_size, setProperty_size] = useState(designItem[0].price);
 
 	const handleDesignDelete = (index: number) => {
 		const updatedDesign = design.filter((_, i) => i !== index);
@@ -2509,7 +2590,7 @@ function Design() {
 									<span>
 										<Image
 											className="rounded-[10px]"
-											src={item.previewImage[index]}
+											src={item.preview_image[index]}
 											alt=""
 											width={75}
 											height={66}
@@ -2517,9 +2598,7 @@ function Design() {
 									</span>
 									<span className="ml-5 w-full ">
 										<div className="flex w-full  justify-between">
-											<p className="text-[17px] font-medium">
-												{item.designName}
-											</p>
+											<p className="text-[17px] font-medium">{item.name}</p>
 
 											<div className="flex gap-2">
 												<button onClick={() => handleDesignDelete(index)}>
@@ -2574,7 +2653,7 @@ function Design() {
 													/>
 												</svg>
 												<p className="my-auto text-[14px]">
-													{item.bedRoomsTotal}
+													{item.bedroom_count}
 												</p>
 											</span>
 											<span className=" flex gap-1">
@@ -2593,7 +2672,7 @@ function Design() {
 												</svg>
 
 												<p className="my-auto text-[14px]">
-													{item.bathRoomsTotal}
+													{item.bathroom_count}
 												</p>
 											</span>
 											<span className=" flex gap-1">
@@ -2621,12 +2700,12 @@ function Design() {
 													/>
 												</svg>
 												<p className="my-auto text-[14px]">
-													{item.propertySize} m2
+													{item.property_size} m2
 												</p>
 											</span>
 										</div>
 										<p className="text-[15px] font-semibold">
-											Rp. {item.sellingPrice}
+											Rp. {Number(item.price).toLocaleString("en-US")}.00
 										</p>
 									</span>
 								</div>
@@ -2715,7 +2794,7 @@ function Design() {
 							</p>
 						</div>
 					)}
-					{user.role === "Designer" && (
+					{user.role === "designer" && (
 						<div className="flex flex-col items-center justify-center mt-24 pb-5">
 							<p className="text-[19px] font-medium">No Design Registered</p>
 							<p className="text-[12px]  text-[#BEB8B8]">
@@ -2737,13 +2816,11 @@ function Design() {
 	);
 }
 
-function Account() {
-	// const [newEmail, setNewEmail] = useState("");
+function Account(props:{role:string}) {
 	const data = [
 		{
 			email: "ramadhanialqadri12@gmail.com",
 			password: "12345",
-			paymentPassword: "54321",
 		},
 	];
 
@@ -2804,9 +2881,22 @@ function Account() {
 		setIsEditEmailOpen(!isEditEmailOpen);
 	};
 
+	const closeEditEmail = () => {
+		setIsEditEmailOpen(false);
+		setPassword("");
+		setNewEmail("");
+	};
+
 	const [isEditPasswordOpen, setIsEditPasswordOpen] = useState(false);
 	const openEditPasswordPopUp = () => {
 		setIsEditPasswordOpen(!isEditPasswordOpen);
+	};
+
+	const closeEditPassword = () => {
+		setIsEditPasswordOpen(false);
+		setPassword("");
+		setNewPassword("");
+		setConfirmedPassword("");
 	};
 
 	const [isSaveClcik, setIsClick] = useState(false);
@@ -2842,7 +2932,7 @@ function Account() {
 									></InputPopUp>
 									<InputPopUp
 										type="password"
-										title="Password"
+										title="Current Password"
 										value={password}
 										onChange={handlePasswordInput}
 									></InputPopUp>
@@ -2862,7 +2952,7 @@ function Account() {
 									</button>
 									<button
 										className="my-3 mr-14 rounded-full border-[1px] border-gold px-5 py-1 text-[13px] hover:border-red-400 hover:bg-red-400 hover:text-white"
-										onClick={openEditEmailPopUp}
+										onClick={closeEditEmail}
 									>
 										Close
 									</button>
@@ -2884,7 +2974,7 @@ function Account() {
 								<div className="ml-14 py-5">
 									<InputPopUp
 										type="password"
-										title="Last password"
+										title="Current password"
 										value={password}
 										onChange={handlePasswordInput}
 									></InputPopUp>
@@ -2901,7 +2991,7 @@ function Account() {
 									></InputPopUp>
 									<InputPopUp
 										type="password"
-										title="New Password"
+										title="Confirm Password"
 										value={confirmedPassword}
 										onChange={handleConfirmPasswordInput}
 									></InputPopUp>
@@ -2923,7 +3013,7 @@ function Account() {
 									</button>
 									<button
 										className="my-3 mr-14 rounded-full border-[1px] border-gold px-5 py-1 text-[13px] hover:border-red-400 hover:bg-red-400 hover:text-white"
-										onClick={openEditPasswordPopUp}
+										onClick={closeEditPassword}
 									>
 										Close
 									</button>
@@ -2967,7 +3057,7 @@ function Account() {
 	);
 }
 
-function BankAccount() {
+function BankAccount(props:{role:string}) {
 	const bankAccountData = [
 		{
 			bankName: "Bank BRI",
@@ -3013,9 +3103,9 @@ function BankAccount() {
 	return (
 		<div>
 			{isPopUpOpen && (
-				<div className="fixed inset-0 z-10 flex items-center justify-center">
-					<div className="absolute bottom-0 -left-[200px] -top-[164px] z-10 flex w-screen h-[100vh] items-center justify-center bg-black/40">
-						<div className="modal-content w-[553px] rounded-3xl bg-white">
+				<div className="">
+					<div className="flex h-full w-full fixed left-0 justify-center top-20">
+						<div className="absolute modal-content w-[553px] rounded-3xl bg-white drop-shadow-landingShado">
 							<div className="border-b-2 border-gold/60">
 								<h2 className="mx-8 my-4  text-[18px]"> Bank Account</h2>
 							</div>
@@ -3115,7 +3205,7 @@ function BankAccount() {
 				</div>
 			) : (
 				<div>
-					{user.role === "" && (
+					{user.role === "client" && (
 						<div className="flex flex-col items-center justify-center mt-8 pb-5">
 							<p className="text-[19px] font-medium">No Account Registered</p>
 							<p className="text-[12px]  text-[#BEB8B8]">
@@ -3132,7 +3222,7 @@ function BankAccount() {
 						</div>
 					)}
 
-					{user.role === "Designer" && (
+					{user.role === "designer" && (
 						<div className="flex flex-col items-center justify-center mt-24 pb-5">
 							<p className="text-[19px] font-medium">No Account Registered</p>
 							<p className="text-[12px]  text-[#BEB8B8]">
@@ -3165,6 +3255,15 @@ function BankAccount() {
 }
 
 export default function Setting() {
+	const [role, setRole] = useState<string>("client");
+	// useffect that run once
+	useEffect(() => {
+		const fetch = async () => {
+			const role = await supabase.rpc("get_user_role_name");
+			if (role && role.data) setRole(role.data);
+		};
+		fetch();
+	});
 	const [selectedTab, setSelectedTab] = useState<string | null>("Profile");
 	const [color, setColor] = useState([
 		"#B17C3F",
@@ -3193,7 +3292,7 @@ export default function Setting() {
 	const navItem = [
 		{
 			name: "Profile",
-			role: ["Admin", "", "Designer", "Contractor"],
+			role: ["admin", "client", "designer", "contractor"],
 			icon: (
 				<svg
 					width="18"
@@ -3221,7 +3320,7 @@ export default function Setting() {
 		},
 		{
 			name: "Project",
-			role: ["Admin", "Designer", "Contractor"],
+			role: ["admin", "designer", "contractor"],
 			icon: (
 				<svg
 					width="22"
@@ -3241,7 +3340,7 @@ export default function Setting() {
 		},
 		{
 			name: "Member",
-			role: ["Admin", "Contractor"],
+			role: ["admin", "contractor"],
 			icon: (
 				<svg
 					width="25"
@@ -3260,7 +3359,7 @@ export default function Setting() {
 		},
 		{
 			name: "Education",
-			role: ["Admin", "Designer"],
+			role: ["admin", "designer"],
 			icon: (
 				<svg
 					width="26"
@@ -3280,7 +3379,7 @@ export default function Setting() {
 		},
 		{
 			name: "Experience",
-			role: ["Admin", "Designer"],
+			role: ["admin", "designer"],
 			icon: (
 				<svg
 					width="21"
@@ -3300,7 +3399,7 @@ export default function Setting() {
 		},
 		{
 			name: "Design",
-			role: ["Admin", "Designer"],
+			role: ["admin", "designer"],
 			icon: (
 				<svg
 					width="26"
@@ -3320,7 +3419,7 @@ export default function Setting() {
 		},
 		{
 			name: "Account",
-			role: ["Admin", "", "Designer", "Contractor"],
+			role: ["admin", "client", "designer", "contractor"],
 			icon: (
 				<svg
 					width="21"
@@ -3340,7 +3439,7 @@ export default function Setting() {
 		},
 		{
 			name: "Bank Account",
-			role: ["Admin", "", "Designer", "Contractor"],
+			role: ["admin", "client", "designer", "contractor"],
 			icon: (
 				<svg
 					width="26"
@@ -3370,7 +3469,7 @@ export default function Setting() {
 					<div className="w-[20.5625rem] space-y-6">
 						{navItem.map(
 							(item, idx) =>
-								item.role.includes(user.role) && (
+								item.role.includes(role!) && (
 									<div
 										key={idx}
 										onClick={() => {
@@ -3406,19 +3505,17 @@ export default function Setting() {
 					</div>
 					{/* content Right */}
 					<div className="w-[58.375rem]  border-l-2">
-						{selectedTab === "Profile" && <Profile />}
-						{selectedTab === "Project" && <Project />}
-						{selectedTab === "Member" && <Member />}
-						{selectedTab === "Education" && <Education />}
-						{selectedTab === "Experience" && <Experience />}
-						{selectedTab === "Design" && <Design />}
-						{selectedTab === "Account" && <Account />}
-						{selectedTab === "Bank Account" && <BankAccount />}
+						{selectedTab === "Profile" && <Profile role={role} />}
+						{selectedTab === "Project" && <Project  role={role}/>}
+						{selectedTab === "Member" && <Member  role={role}/>}
+						{selectedTab === "Education" && <Education  role={role}/>}
+						{selectedTab === "Experience" && <Experience  role={role}/>}
+						{selectedTab === "Design" && <Design  role={role}/>}
+						{selectedTab === "Account" && <Account  role={role}/>}
+						{selectedTab === "Bank Account" && <BankAccount  role={role} />}
 					</div>
 				</div>
 			</div>
 		</div>
 	);
 }
-
-export function Content() {}
