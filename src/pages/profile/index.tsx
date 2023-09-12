@@ -14,6 +14,7 @@ import { toCapitalize } from "@/tools/uppercase";
 import { useRouter } from "next/router";
 import { Database } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
+import { getDate } from "@/tools/time";
 
 export const getServerSideProps = async (
 	context: GetServerSidePropsContext,
@@ -219,13 +220,12 @@ export default function Profile({
 	// show Project or Transaction list pop up
 	const [showTransactionList, setShowTransactionList] = useState(false);
 	const handleOnCloseTransactionList = () => setShowTransactionList(false);
-	
+
 	const handleContractorPick = async (transaction_id: any) => {
-		
 		// const currentTransactionContributor = transaction_contributor.filter(
 		// 	(item) => item.transaction_id === transaction_id,
 		// )
-		console.log(transaction_id)
+		console.log(transaction_id);
 
 		const { data: contributor, error } = await supabase
 			.from("transaction")
@@ -239,8 +239,7 @@ export default function Profile({
 		// console.log(currentTransactionContributor );
 		// const temp = [...transaction_contributor];
 		// currentTransactionContributor.con
-		
-		
+
 		// .findIndex(
 		// 	(item) => item.id === transaction_id,
 		// );
@@ -265,7 +264,9 @@ export default function Profile({
 	};
 
 	const [transaction_data, setTransaction_data] = useState<Transaction[]>([]);
-	const [transaction_contributor, setTransactionContributor] = useState<Contributor[]>([]);
+	const [transaction_contributor, setTransactionContributor] = useState<
+		Contributor[]
+	>([]);
 	const [design, setDesign] = useState<Design[]>([]);
 	const [project, setProject] = useState<Project[]>([]);
 	const [experience, setExperience] = useState<Experience[]>([]);
@@ -295,17 +296,21 @@ export default function Profile({
 			// komen bentar bang error soalnya bang
 			if (property_style) setProperty_style(property_style);
 
-			const {data: contributor} = await supabase
+			const { data: contributor } = await supabase
 				.from("transaction_contributor")
 				.select("*")
+				.or(`designer_id.eq.${user},client_id.eq.${user}`);
 			if (contributor) setTransactionContributor(contributor);
 
-
-
-			const { data: transaction_data } = await supabase
-				.from("transaction")
-				.select("*")
-			if (transaction_data) setTransaction_data(transaction_data);
+			const contributor_id = contributor?.map((item) => item.transaction_id);
+			if (contributor_id) {
+				const { data: transaction_data, error: transaction_error } = await supabase
+					.from("transaction")
+					.select("*")
+					.in("id", contributor_id);
+					console.log(transaction_data, transaction_error);
+				if (transaction_data) setTransaction_data(transaction_data);
+			}
 
 			const { data: property_type } = await supabase
 				.from("property_type")
@@ -1430,7 +1435,7 @@ export function TransactionList(props: transactionListProps) {
 													<p className="text-[0.9rem] ml-4 font-semibold">
 														{item.name}
 													</p>
-													<p className="text-[0.6rem]">{item.created_at}</p>
+													<p className="text-[0.6rem]">{getDate(item.created_at)}</p>
 												</div>
 											</div>
 										</div>
