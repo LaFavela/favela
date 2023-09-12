@@ -85,7 +85,7 @@ const responsive = {
 };
 // Carousel End
 export default function DesignProduct({
-	design,
+	design
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	// sdfghjkl
 	// const [designs, setDesign] = useState<Design>();
@@ -434,7 +434,7 @@ export default function DesignProduct({
 							{ session === "client" ? (
 								<button
 									onClick={() => {
-										Router.push(`/reqDesainForm?q=${design.created_by}`)
+										Router.push(`/reqDesainForm?q=${design.created_by}&id=${design.id}`)
 									}}
 									className=" flex h-[2.066875rem] w-[6.319375rem] items-center justify-center space-x-1 rounded-full bg-[#B17C3F] hover:bg-[#cca273] text-white"
 								>

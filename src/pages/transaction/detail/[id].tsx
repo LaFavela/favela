@@ -36,7 +36,7 @@ export const getServerSideProps = async (
 
 	const { data: transactionData } = await supabase
 		.from("transaction")
-		.select("*")
+		.select("*, contractor_request(*)")
 		.eq("id", params)
 		.single();
 
@@ -436,6 +436,7 @@ export default function DetailTransaction({
 										contributorData ? contributorData : [{} as Profile]
 									}
 									user={user ? user : ({} as User)}
+									transactionData={transactionData}
 								></Action>
 							)}
 							{/* Review Box */}
@@ -541,6 +542,7 @@ export default function DetailTransaction({
 						setShowUpdate={setShowUpdate}
 						handlePaymentTrack={handlePaymentTrack}
 						transactionId={transactionId}
+						transactionData={transactionData}
 					/>
 					<ShowDocument
 						form_id={requestFormID}
@@ -698,6 +700,10 @@ export function Progress(props: progressProps) {
 	);
 }
 
+type Transaction = Database["public"]["Tables"]["transaction"]["Row"] & {
+	contractor_request: Database["public"]["Tables"]["profiles"]["Row"];
+};
+
 interface actionProps {
 	isReviewed: boolean;
 	status: Status[];
@@ -706,6 +712,7 @@ interface actionProps {
 	setTitleReview: (value: string) => void;
 	setDescReview: (value: string) => void;
 	setRatingReview: (value: number) => void;
+	transactionData: Transaction;
 	contributorData: Profile[];
 	transactionContributor: Contributor;
 	user: User;
@@ -740,10 +747,50 @@ export function Action(props: actionProps) {
 			.update({ isConfirmed: true })
 			.eq("id", tempStatus[tempStatus.length - 1].id)
 			.select();
-		const { data: approved, error: approved_error } = await supabase
-			.from("transaction_status")
-			.insert({ title: "Project Has Been Approved", description: "The Project Has Been Approved By Designer", transaction_id: tempStatus[tempStatus.length - 1].transaction_id})
-		console.log(approved, approved_error);
+		if (tempStatus.length === 1) {
+			const { data: approved, error: approved_error } = await supabase
+				.from("transaction_status")
+				.insert({
+					title: "Project Has Been Approved",
+					description: "The Project Has Been Approved By Designer",
+					transaction_id: tempStatus[tempStatus.length - 1].transaction_id,
+				});
+			const { data: channel, error: channel_error } = await supabase
+				.from("channel")
+				.insert([
+					{
+						client_id: props.transactionContributor.client_id,
+						server_id: props.transactionContributor.designer_id,
+					},
+				]);
+			console.log(approved, approved_error);
+		} else if (
+			tempStatus[tempStatus.length - 1].action_type.includes("Contractor")
+		) {
+			const { data: contributor, error } = await supabase
+				.from("transaction_contributor")
+				.update({
+					contractor_id: props.transactionData.contractor_request.id,
+				})
+				.eq("transaction_id", tempStatus[tempStatus.length - 1].transaction_id)
+				.select();
+			const { data: channel, error: channel_error } = await supabase
+				.from("channel")
+				.insert([
+					{
+						client_id: props.transactionContributor.client_id,
+						server_id: props.transactionContributor.contractor_id,
+					},
+				]);
+			const { data: channel2, error: channel2_error } = await supabase
+				.from("channel")
+				.insert([
+					{
+						client_id: props.transactionContributor.designer_id,
+						server_id: props.transactionContributor.contractor_id,
+					},
+				]);
+		}
 	}
 	async function handlePayment() {
 		const tempStatus = props.status;
@@ -888,12 +935,19 @@ export function Action(props: actionProps) {
 							<p className="w-[35.625rem] text-[0.75rem] text-[#4B4B4B]">
 								Suggestion:
 							</p>
-							{constractor != null && (
-								<Link href={"/profile"}>
+							{props.transactionData.contractor_request != null && (
+								<Link
+									href={`/profile?u=${props.transactionData.contractor_request.username}`}
+								>
 									<div className="w-[35.625rem]  flex space-x-3 p-[1rem] rounded-[0.625rem] border-[#e3d0ba] border-[0.1rem]">
 										<div className="relative w-[3.625rem] h-[3.625rem] rounded-[0.375rem] overflow-hidden">
 											<Image
-												src={constractor?.img}
+												src={
+													props.transactionData.contractor_request?.avatar_url
+														? props.transactionData.contractor_request
+																?.avatar_url
+														: ""
+												}
 												alt="constractor"
 												fill={true}
 												objectFit="cover"
@@ -901,14 +955,10 @@ export function Action(props: actionProps) {
 										</div>
 										<div className="flex flex-col justify-between">
 											<p className="text-[0.875rem] font-medium">
-												{constractor?.name}
+												{props.transactionData.contractor_request?.first_name}{" "}
+												{props.transactionData.contractor_request?.last_name}
 											</p>
-											<p className="text-[0.75rem] font-light">
-												{constractor?.role}
-											</p>
-											<p className="text-[0.625rem] font-light">
-												{constractor?.city}, {constractor?.province}
-											</p>
+											<p className="text-[0.75rem] font-light">Contractor</p>
 										</div>
 									</div>
 								</Link>
@@ -931,7 +981,7 @@ export function Action(props: actionProps) {
 														handleConfirm();
 														setShowStatus(true);
 														setStatus("success");
-														setDescription("lorem");
+														setDescription("Contractor Has Been Accepted");
 													}}
 													className="m-1 flex justify-center items-center text-[#B17C3F] text-[0.75rem] font-medium border-2 w-[10.25rem] border-[#B17C3F] hover:bg-[#e3d0ba] rounded-full h-[1.8125rem]"
 												>
@@ -973,6 +1023,7 @@ export function Action(props: actionProps) {
 					contractorId={props.transactionContributor.contractor_id}
 					designerId={props.transactionContributor.designer_id}
 					transactionId={props.transactionContributor.transaction_id}
+					designId={props.transactionContributor.design_id}
 				/>
 				<PaymentPopUp
 					statusPayment={statusPayment}
@@ -1000,6 +1051,7 @@ interface updateProps {
 	visible: boolean;
 	onClose: (value: boolean) => void;
 	setShowUpdate: (value: boolean) => void;
+	transactionData: Transaction;
 	transactionId: string;
 }
 export function Update(props: updateProps) {
@@ -1258,6 +1310,11 @@ export function Update(props: updateProps) {
 		if (newStatus) {
 			props.setStatus([...props.status, newStatus]);
 			props.handlePaymentTrack();
+			// const { data: updateStatus,error } = await supabase
+			// 	.from("transaction")
+			// 	.update({ status: newStatus.title })
+			// 	.eq("id", props.transactionId);
+			// console.log(updateStatus,error)
 		}
 		props.setShowUpdate(false);
 	}
@@ -1443,12 +1500,18 @@ export function Update(props: updateProps) {
 												Contractor Recommendation
 											</p>
 										</div>
-										{constractor != null && (
+										{props.transactionData.contractor_request != null && (
 											<Link href={"/profile"}>
 												<div className="w-[31.2rem]  flex space-x-3 p-[1rem] rounded-[0.625rem] border-[#e3d0ba] border-[0.1rem]  hover:bg-[#e4d1bc] ">
 													<div className="relative w-[3.625rem] h-[3.625rem] rounded-[0.375rem] overflow-hidden">
 														<Image
-															src={constractor.img}
+															src={
+																props.transactionData.contractor_request
+																	.avatar_url
+																	? props.transactionData.contractor_request
+																			.avatar_url
+																	: ""
+															}
 															alt="constractor"
 															fill={true}
 															objectFit="cover"
@@ -1456,13 +1519,17 @@ export function Update(props: updateProps) {
 													</div>
 													<div className="flex flex-col justify-between">
 														<p className="text-[0.875rem] font-medium">
-															{constractor.name}
+															{
+																props.transactionData.contractor_request
+																	.first_name
+															}{" "}
+															{
+																props.transactionData.contractor_request
+																	.last_name
+															}
 														</p>
 														<p className="text-[0.75rem] font-light">
-															{constractor.role}
-														</p>
-														<p className="text-[0.625rem] font-light">
-															{constractor.city}, {constractor.province}
+															Contractor
 														</p>
 													</div>
 												</div>
@@ -1915,6 +1982,7 @@ interface reviewProps {
 	propertyId: string | null;
 	contractorId: string | null;
 	transactionId: string | null;
+	designId: string | null;
 }
 export function Review(props: reviewProps) {
 	function useOutsideAlerter(ref: any) {
