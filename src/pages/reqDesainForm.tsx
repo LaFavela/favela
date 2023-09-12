@@ -281,6 +281,7 @@ export default function SellDesignForm() {
 		};
 
 		const idRequest: string = router.query.q as string;
+		const idDesign: string = router.query.id as string;
 
 		const { data: transaction, error: transaction_error } = await supabase
 			.from("transaction")
@@ -309,13 +310,14 @@ export default function SellDesignForm() {
 					client_id: user_id!,
 					transaction_id: transaction?.id!,
 					designer_id: idRequest,
+					design_id: idDesign,
 				},
 			])
 			.select();
 
 		console.log(contribution, contribution);
 
-		// F
+		router.push(`/transaction/${transaction?.id}`);
 	};
 
 	const handleAddFacilities = () => {
