@@ -16,6 +16,10 @@ import { Database } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
 import { getDate } from "@/tools/time";
 
+type Review = Database["public"]["Tables"]["review"]["Row"] & {
+	created_by: Database["public"]["Tables"]["profiles"]["Row"];
+};
+
 export const getServerSideProps = async (
 	context: GetServerSidePropsContext,
 ) => {
@@ -58,8 +62,14 @@ export const getServerSideProps = async (
 		.eq("id", profile_detail?.city)
 		.single();
 
+	const { data: review } = await supabase
+		.from("review")
+		.select("*")
+		.or(`contractor_id.eq.${profile?.id},designer_id.eq.${profile?.id}`)
+		.returns<Review[]>();
+
 	return {
-		props: { profile, profile_detail, role, provinsi, kota },
+		props: { profile, profile_detail, role, provinsi, kota, review },
 	};
 };
 
@@ -212,6 +222,7 @@ export default function Profile({
 	role,
 	provinsi,
 	kota,
+	review,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	// Visible Item For Member and Review
 	const [visibleItemMembers, setVisibleItemMembers] = useState(3);
@@ -361,7 +372,17 @@ export default function Profile({
 		new Array(reviewData.length).fill(false),
 	);
 
-	const handleIconClick = (index: any) => {
+	const handleIconClick = async (index: any, id: number) => {
+		let { data, error } = await supabase.rpc("increment_review_likes", {
+			review_id: id,
+		});
+
+		if (error) console.error(error);
+		else console.log(data);
+
+		if (error) console.error(error);
+		else console.log(data);
+
 		const newReviewLikes = [...reviewLikes]; // Create a copy of the reviewLikes array
 		newReviewLikes[index] = !newReviewLikes[index]; // Toggle the like state for the clicked review
 		setReviewLikes(newReviewLikes); // Update the state
@@ -502,7 +523,9 @@ export default function Profile({
 													readOnly
 												/>
 											</span>
-											<p className="ml-2 text-[11px]">500 Review</p>
+											<p className="ml-2 text-[11px]">
+												{reviewData.length} Reviews
+											</p>
 										</div>
 										{/* <div className="mt-1 flex">
 											<span>
@@ -1166,107 +1189,117 @@ export default function Profile({
 						<div className="flex flex-col gap-5 px-12 py-10">
 							<p className="text-[25px] font-semibold">Review</p>
 
-							{reviewData.slice(0, visibleItemReview).map((review, index) => {
-								return (
-									<div
-										className={`container flex  max-w-full  gap-x-6 
+							{review &&
+								review
+									.slice(0, visibleItemReview)
+									.map((review: Review, index: number) => {
+										return (
+											<div
+												className={`container flex  max-w-full  gap-x-6 
                     
                     ${
 											index == reviewData.length - 1
 												? "bg-white"
 												: "border-b-2 border-gray-200 bg-white"
 										}`}
-										key={index}
-									>
-										<div>
-											<Image
-												src={review.photo}
-												alt=""
-												style={{
-													maxWidth: "42px",
-													maxHeight: "42px",
-													width: "100%",
-													height: "100%",
-												}}
-												height={42}
-												width={42}
-												className="rounded-full"
-											></Image>
-										</div>
-										<div className=" mb-4 w-[605px]">
-											<div className="flex">
-												<p className="text-[16px] font-medium text-black">
-													{review.name}
-												</p>
-												<p className="text-[13px] text-black/50 ml-3 my-auto">
-													3 days ago
-												</p>
-											</div>
-											<span className="text-[11px]">
-												<Rating
-													className="gap-2"
-													name="half-rating"
-													defaultValue={review.rating}
-													precision={0.5}
-													icon={
-														<Image
-															src={"/assets/profile/fill.png"}
-															alt="Custom Icon"
-															style={{
-																maxWidth: "8.33px",
-																maxHeight: "8.33px",
-																width: "100%",
-																height: "100%",
-															}}
-															width={8.33}
-															height={8.33}
-														/>
-													}
-													emptyIcon={
-														<Image
-															src="/assets/profile/empty.png"
-															alt="Custom Icon"
-															style={{
-																maxWidth: "8.33px",
-																maxHeight: "8.33px",
-																width: "100%",
-																height: "100%",
-															}}
-															width={8.33}
-															height={8.33}
-														/>
-													}
-													readOnly
-												/>
-											</span>
-											<div className="gap-2">
-												<p className="text-[14px]"></p>
-												<p className="text-[14px] font-medium">
-													{review.title}
-												</p>
-											</div>
-											<p className="mt-2 text-justify text-[12px] font-normal text-[#4B4B4B]  w-[710px]">
-												{review.content}
-											</p>
-											<button
-												className="mt-2 flex "
-												onClick={() => handleIconClick(index)}
+												key={index}
 											>
-												{reviewLikes[index] ? (
-													<ThumbUpAltIcon />
-												) : (
-													<ThumbUpOffAltIcon />
-												)}
-												<span className="text-[15px] text-black/50 ml-3 my-auto">
-													{reviewLikes[index]
-														? `${review.likes + 1}`
-														: `${review.likes}`}
-												</span>
-											</button>
-										</div>
-									</div>
-								);
-							})}
+												<div>
+													<Image
+														src={
+															review.created_by.avatar_url
+																? review.created_by.avatar_url
+																: ""
+														}
+														alt=""
+														style={{
+															maxWidth: "42px",
+															maxHeight: "42px",
+															width: "100%",
+															height: "100%",
+														}}
+														height={42}
+														width={42}
+														className="rounded-full"
+													></Image>
+												</div>
+												<div className=" mb-4 w-[605px]">
+													<div className="flex">
+														<p className="text-[16px] font-medium text-black">
+															{review.created_by.first_name}{" "}
+															{review.created_by.last_name}
+														</p>
+														<p className="text-[13px] text-black/50 ml-3 my-auto">
+															3 days ago
+														</p>
+													</div>
+													<span className="text-[11px]">
+														<Rating
+															className="gap-2"
+															name="half-rating"
+															defaultValue={review.rating ? review.rating : 0}
+															precision={0.5}
+															icon={
+																<Image
+																	src={"/assets/profile/fill.png"}
+																	alt="Custom Icon"
+																	style={{
+																		maxWidth: "8.33px",
+																		maxHeight: "8.33px",
+																		width: "100%",
+																		height: "100%",
+																	}}
+																	width={8.33}
+																	height={8.33}
+																/>
+															}
+															emptyIcon={
+																<Image
+																	src="/assets/profile/empty.png"
+																	alt="Custom Icon"
+																	style={{
+																		maxWidth: "8.33px",
+																		maxHeight: "8.33px",
+																		width: "100%",
+																		height: "100%",
+																	}}
+																	width={8.33}
+																	height={8.33}
+																/>
+															}
+															readOnly
+														/>
+													</span>
+													<div className="gap-2">
+														<p className="text-[14px]"></p>
+														<p className="text-[14px] font-medium">
+															{review.title}
+														</p>
+													</div>
+													<p className="mt-2 text-justify text-[12px] font-normal text-[#4B4B4B]  w-[710px]">
+														{review.description}
+													</p>
+													<button
+														className="mt-2 flex "
+														onClick={async () =>
+															handleIconClick(index, review.id)
+														}
+													>
+														{reviewLikes[index] ? (
+															<ThumbUpAltIcon />
+														) : (
+															<ThumbUpOffAltIcon />
+														)}
+														<span className="text-[15px] text-black/50 ml-3 my-auto">
+															{reviewLikes[index]
+																? `${review.likes + 1}`
+																: `${review.likes}`}
+														</span>
+													</button>
+												</div>
+											</div>
+										);
+									})}
 							{reviewData.length > 3 && (
 								<div className="flex justify-center cursor-pointer ">
 									{visibleItemReview < reviewData.length ? (

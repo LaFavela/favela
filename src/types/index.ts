@@ -1,4 +1,4 @@
-﻿export type Json =
+export type Json =
   | string
   | number
   | boolean
@@ -717,10 +717,12 @@ export interface Database {
         Row: {
           contractor_id: string | null
           created_at: string
+          created_by: string | null
           description: string
           design_id: string | null
           designer_id: string | null
           id: number
+          likes: number
           rating: number | null
           title: string
           transaction_id: string | null
@@ -728,10 +730,12 @@ export interface Database {
         Insert: {
           contractor_id?: string | null
           created_at?: string
+          created_by?: string | null
           description?: string
           design_id?: string | null
           designer_id?: string | null
           id?: number
+          likes?: number
           rating?: number | null
           title?: string
           transaction_id?: string | null
@@ -739,10 +743,12 @@ export interface Database {
         Update: {
           contractor_id?: string | null
           created_at?: string
+          created_by?: string | null
           description?: string
           design_id?: string | null
           designer_id?: string | null
           id?: number
+          likes?: number
           rating?: number | null
           title?: string
           transaction_id?: string | null
@@ -751,6 +757,12 @@ export interface Database {
           {
             foreignKeyName: "review_contractor_id_fkey"
             columns: ["contractor_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "review_created_by_fkey"
+            columns: ["created_by"]
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -1020,6 +1032,12 @@ export interface Database {
       get_user_role_name: {
         Args: Record<PropertyKey, never>
         Returns: string
+      }
+      increment_review_likes: {
+        Args: {
+          review_id: number
+        }
+        Returns: undefined
       }
       insert_education: {
         Args: {

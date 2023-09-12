@@ -2014,7 +2014,21 @@ export function Review(props: reviewProps) {
 	const [rating, setRating] = useState(0);
 
 	//
-	const handleSubmitReview = () => {
+	const handleSubmitReview = async () => {
+		const { data, error } = await supabase
+			.from("review")
+			.insert([
+				{
+					title: title,
+					rating: rating,
+					description: description,
+					contractor_id: props.contractorId,
+					design_id: props.designId,
+					transaction_id: props.transactionId,
+				},
+			])
+			.select();
+
 		props.setReviewed(true);
 		props.setTitleReview(title);
 		props.setDescReview(description);
