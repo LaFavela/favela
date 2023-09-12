@@ -228,11 +228,11 @@ export default function Profile({
 		console.log(transaction_id)
 
 		const { data: contributor, error } = await supabase
-			.from("transaction_contributor")
+			.from("transaction")
 			.update({
-				contractor_id: profile.id,
+				contractor_request: profile.id,
 			})
-			.eq("transaction_id", transaction_id)
+			.eq("id", transaction_id)
 			.select();
 
 		console.log(contributor, error);
