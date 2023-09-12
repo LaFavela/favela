@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import InputBox from "@/components/inpuBox";
@@ -183,13 +183,14 @@ export default function SellDesignForm() {
 	const handleChangeDeadline = (event: any) => {
 		setDeadline(event.target.value);
 	};
-	
+
 	const router = useRouter();
+
+	const landData: string[] = useMemo(() => [], []);
 
 	const handleSubmit = async (event: any) => {
 		event.preventDefault();
 		const uuid = v4();
-		const landData: string[] = [];
 		const awaitLand = await Promise.all(
 			LandImage.map(async (item) => {
 				const fileUuid = v4();
@@ -201,10 +202,9 @@ export default function SellDesignForm() {
 					.from("request_design")
 					.getPublicUrl(`${uuid}/land/${fileUuid}`).data;
 				landData.push(publicUrl);
+				console.log(landData);
 			}),
-		).then(() => {
-			setLandImage(landData);
-		});
+		);
 
 		const referenceData: string[] = [];
 		const awaitReference = await Promise.all(
@@ -232,11 +232,11 @@ export default function SellDesignForm() {
 					land_size: parseInt(landSize),
 					city: city,
 					deadline: deadline,
-					land_image: LandImage,
+					land_image: landData,
 					information: additionalInformation,
 					property_type: propertyType,
 					province: province,
-					reference_image: ReferenceImage,
+					reference_image: referenceData,
 					property_style: style,
 					sun_orientation: sunOrientation,
 					wind_orientation: windOrientation,
@@ -280,7 +280,7 @@ export default function SellDesignForm() {
 			return tag;
 		};
 
-		const idRequest:string = router.query.q as string;
+		const idRequest: string = router.query.q as string;
 
 		const { data: transaction, error: transaction_error } = await supabase
 			.from("transaction")
@@ -299,9 +299,9 @@ export default function SellDesignForm() {
 
 		const user_id = (await supabase.auth.getSession()).data.session?.user.id;
 		console.log(user_id);
-		console.log(transaction?.id)
-		console.log(idRequest)
-		
+		console.log(transaction?.id);
+		console.log(idRequest);
+
 		const { data: contribution, error: contribution_error } = await supabase
 			.from("transaction_contributor")
 			.insert([
@@ -312,9 +312,8 @@ export default function SellDesignForm() {
 				},
 			])
 			.select();
-			
+
 		console.log(contribution, contribution);
-		
 
 		// F
 	};
@@ -368,6 +367,7 @@ export default function SellDesignForm() {
 			setLandImage((prevImages) => [...prevImages, ...newImages]);
 		}
 	};
+
 	const handleImageDelete = (index: number) => {
 		const updatedImages = [...LandImage];
 		updatedImages.splice(index, 1);
